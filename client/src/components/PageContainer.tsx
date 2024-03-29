@@ -17,8 +17,8 @@ export const PageContainer = ({
   headerClassName?: string;
 }) => {
   return isLoading ? (
-    <div className="flex flex-1 justify-center items-center">
-      <Loader2 className="w-14 h-14 lg:w-28 lg:h-28 animate-spin" />
+    <div className="flex h-full justify-center items-center">
+      <Loader2 className="w-10 h-10 lg:w-20 lg:h-20 animate-spin" />
     </div>
   ) : (
     <div className={cn('space-y-4 sm:p-4 md:p-6 p-2 items-center justify-center', containerClassName)}>

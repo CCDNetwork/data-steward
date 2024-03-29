@@ -1,0 +1,41 @@
+module.exports = {
+  root: true,
+  env: { browser: true, es2020: true, node: true },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:prettier/recommended',
+    'prettier',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
+  ],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'postcss.config.js', 'tailwind.config.js', 'vite.config.ts'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['react-refresh', 'unused-imports', '@typescript-eslint', 'react', 'import', 'prettier'],
+  rules: {
+    'import/default': 0,
+    'import/no-named-as-default-member': 0,
+    'import/no-unresolved': 'warn',
+    'no-unused-vars': 'off',
+    'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    'unused-imports/no-unused-imports': 'warn',
+    'react/prop-types': 'off',
+    '@typescript-eslint/no-explicit-any': 0,
+    'import/no-named-as-default': 0,
+  },
+  settings: {
+    'import/resolver': {
+      typescript: true,
+    },
+  },
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+  },
+};

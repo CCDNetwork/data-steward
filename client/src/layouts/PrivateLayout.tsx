@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { Transition } from '@headlessui/react';
+
 import { useAuth } from '@/providers/GlobalProvider';
 import { cn } from '@/helpers/utils';
 import { APP_ROUTE, NAVIGATION_ITEMS } from '@/helpers/constants';
 import { MyProfileItemWithDropdown } from '@/components/MyProfileItemWithDropdown';
-import { Button } from '@/components/ui/button';
 import { DynamicMobileHamburger } from '@/components/DynamicMobileHamburger';
 
 interface Props {
@@ -17,8 +17,9 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
   const { pathname } = useLocation();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
 
+  // remove or condition for role later
   const navigationItemsFilteredByRole = useMemo(() => {
-    return NAVIGATION_ITEMS.filter((navItem) => navItem.allowedRoles?.includes('owner'));
+    return NAVIGATION_ITEMS.filter((navItem) => navItem.allowedRoles?.includes(user.role || 'owner'));
   }, [user]);
 
   // if (!user.id || !isLoggedIn) {
@@ -120,7 +121,6 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
           </div>
         </div>
 
-        {/* <!-- Mobile menu, show/hide based on menu state. --> */}
         <div className="md:hidden">
           <Transition appear={true} show={isMobileNavOpen} id="mobile-menu">
             <Transition.Child
@@ -131,11 +131,11 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
               leaveTo="transform scale-95 opacity-0 max-h-0"
             >
               <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-                {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
                 {navigationItemsFilteredByRole.map((item) => (
                   <NavLink
                     key={item.name}
                     to={item.to}
+                    onClick={() => setIsMobileNavOpen(false)}
                     className={cn(
                       'rounded-md px-3 py-2 text-base block font-medium transition-colors text-white duration-150 ease-linear',
                       {
@@ -166,6 +166,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
                 <div className="mt-3 space-y-1 px-2">
                   <NavLink
                     to={APP_ROUTE.MyProfile}
+                    onClick={() => setIsMobileNavOpen(false)}
                     className={cn(
                       'rounded-md px-3 block py-2 text-base font-medium transition-colors text-white duration-150 ease-linear',
                       {
@@ -196,12 +197,8 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
         </div>
       </nav>
       <main>
-        <div className="mx-auto max-w-7xl ">
-          {/* line below is from lincaro */}
-          {/* <main className="relative flex flex-1 flex-col h-[100svh] sm:h-screen overflow-x-auto"> */}
-          {/* <!-- Your content --> */}
-          {children}
-        </div>
+        {/* <main className="relative flex flex-1 flex-col h-[100svh] sm:h-screen overflow-x-auto"> */}
+        <div className="mx-auto max-w-7xl h-[calc(100svh-64px)]">{children}</div>
       </main>
     </div>
   );

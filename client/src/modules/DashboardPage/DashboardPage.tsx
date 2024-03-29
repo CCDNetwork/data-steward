@@ -1,6 +1,6 @@
 import { PageContainer } from '@/components/PageContainer';
 
-export const Dashboard = () => {
+export const DashboardPage = () => {
   return (
     <PageContainer pageTitle="Dashboard">
       <div>Dashboard Page</div>
