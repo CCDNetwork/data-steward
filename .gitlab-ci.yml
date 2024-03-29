@@ -29,7 +29,7 @@ build-client:
     - yarn
     - echo VITE_API_URL=$API_URL > .env
     - yarn build
-    - mv dist /web-build
+    - mv dist ../web-build
     - echo "Build successful"
   artifacts:
     expire_in: 1 hour
@@ -48,12 +48,10 @@ publish-client:
     - apk add docker
   script:
     - echo "Publishing app (ID $CI_PIPELINE_ID)"
-    - pwd
-    - ls
-    - cd /client
-    - cp deployment/Dockerfile /web-build
-    - cp deployment/nginx.conf /web-build
-    - cd /web-build
+    - cd client
+    - cp deployment/Dockerfile ../web-build
+    - cp deployment/nginx.conf ../web-build
+    - cd ../web-build
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build --load -t $CI_REGISTRY/init/qommit-admin/image:$IMAGE_TAG .
     - docker push $CI_REGISTRY/init/qommit-admin/image:$IMAGE_TAG
