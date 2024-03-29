@@ -48,6 +48,8 @@ publish-client:
     - apk add docker
   script:
     - echo "Publishing app (ID $CI_PIPELINE_ID)"
+    - pwd
+    - ls
     - cd /client
     - cp deployment/Dockerfile /web-build
     - cp deployment/nginx.conf /web-build
