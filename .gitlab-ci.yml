@@ -29,7 +29,7 @@ build-client:
     - yarn
     - echo VITE_API_URL=$API_URL > .env
     - yarn build
-    - mv dist web-build
+    - mv dist /web-build
     - echo "Build successful"
   artifacts:
     expire_in: 1 hour
