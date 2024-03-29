@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'Altone Trial';
+  src:
+    local('Altone Trial Bold'),
+    local('AltoneTrial-Bold'),
+    url('AltoneTrial-Bold.woff2') format('woff2'),
+    url('AltoneTrial-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}

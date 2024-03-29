@@ -1,0 +1,74 @@
+image: node:18-alpine
+
+stages:
+  - build
+  - publish
+  - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ''
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      variables:
+        IMAGE_TAG: 'dev'
+        REMOTE_URL: '168.119.189.177'
+        API_URL: 'https://ccd-api.initdevelopment.com'
+
+build-client:
+  stage: build
+  before_script:
+    - apk update
+    - apk add yarn
+  script:
+    - echo "Building app"
+    - cd client
+    - yarn
+    - echo VITE_API_URL=$API_URL > .env
+    - yarn build
+    - mv dist web-build
+    - echo "Build successful"
+  artifacts:
+    expire_in: 1 hour
+    name: web-build
+    paths:
+      - web-build
+
+publish-client:
+  stage: publish
+  only:
+    - develop
+  services:
+    - docker:18.09.7-dind
+  before_script:
+    - apk update
+    - apk add docker
+  script:
+    - echo "Publishing app (ID $CI_PIPELINE_ID)"
+    - cd /client
+    - cp deployment/Dockerfile /web-build
+    - cp deployment/nginx.conf /web-build
+    - cd /web-build
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --load -t $CI_REGISTRY/init/qommit-admin/image:$IMAGE_TAG .
+    - docker push $CI_REGISTRY/init/qommit-admin/image:$IMAGE_TAG
+    - echo "Publishing complete"
+
+deploy:
+  stage: deploy
+  only:
+    - develop
+  before_script:
+    - apk update
+    - apk add openssh rsync bash
+    - mkdir /root/.ssh
+    - touch /root/.ssh/id_rsa
+    - echo -e $SSH_KEY | awk '{gsub("\\\\n","\n")};1' >> /root/.ssh/id_rsa
+    - chmod 600 /root/.ssh/id_rsa
+  script:
+    - echo "Deploying app (ID $CI_PIPELINE_ID)"
+    - ssh -o StrictHostKeyChecking=no ubuntu@$REMOTE_URL /home/ubuntu/run-services.sh
+    - echo "Deployment complete"
