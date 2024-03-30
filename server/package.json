@@ -1,0 +1,22 @@
+{
+  "name": "ccd-server",
+  "version": "1.0.0",
+  "repository": "https://gitlab.init.hr/init/ccd-server.git",
+  "author": "Jakov Glavas <jakov@init.hr>",
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.1.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged -r"
+    }
+  },
+  "scripts": {
+    "initial-setup": "dotnet new tool-manifest && dotnet tool install husky && dotnet husky install && dotnet tool install csharpier --version 0.23.0",
+    "preinstall": "dotnet tool restore",
+    "build": "cd Ccd.Server && dotnet publish -o build -c Release --runtime linux-x64 /p:TrimUnusedDependencies=true",
+    "test": "cd Ccd.Tests && dotnet test",
+    "check-formatting": "dotnet-csharpier . --check"
+  }
+}

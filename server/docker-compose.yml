@@ -1,0 +1,11 @@
+version: '3.2'
+
+services:
+
+  database:
+    image: postgres
+    container_name: ccd-server
+    env_file:
+      - 'docker-compose.env'
+    ports:
+      - 5432:5432

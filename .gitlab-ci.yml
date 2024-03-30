@@ -24,18 +24,35 @@ build-client:
     - apk update
     - apk add yarn
   script:
-    - echo "Building app"
+    - echo "Building CCD client"
     - cd client
     - yarn
     - echo VITE_API_URL=$API_URL > .env
     - yarn build
-    - mv dist ../web-build
+    - mv dist ../client-build
     - echo "Build successful"
   artifacts:
     expire_in: 1 hour
-    name: web-build
+    name: client-build
     paths:
-      - web-build
+      - client-build
+
+build-server:
+  stage: build
+  before_script:
+    - apk update
+    - apk add nodejs npm
+  script:
+    - echo "Building CCD server"
+    - npm install
+    - npm run build
+    - mv Ccd.Server/build server-build
+    - echo "Build successful"
+  artifacts:
+    expire_in: 1 hour
+    name: server-build
+    paths:
+      - server-build
 
 publish-client:
   stage: publish
@@ -47,11 +64,11 @@ publish-client:
     - apk update
     - apk add docker
   script:
-    - echo "Publishing app (ID $CI_PIPELINE_ID)"
+    - echo "Publishing client (ID $CI_PIPELINE_ID)"
     - cd client
-    - cp deployment/Dockerfile ../web-build
-    - cp deployment/nginx.conf ../web-build
-    - cd ../web-build
+    - cp deployment/Dockerfile ../client-build
+    - cp deployment/nginx.conf ../client-build
+    - cd ../client-build
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build --load -t $CI_REGISTRY/init/ccd-data-portal/image:$IMAGE_TAG .
     - docker push $CI_REGISTRY/init/ccd-data-portal/image:$IMAGE_TAG

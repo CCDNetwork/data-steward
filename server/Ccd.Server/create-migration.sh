@@ -1,0 +1,1 @@
+dotnet ef migrations add $1 --verbose --context=CcdContext && dotnet ef database update
