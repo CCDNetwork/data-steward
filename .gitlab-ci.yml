@@ -39,6 +39,7 @@ build-client:
 
 build-server:
   stage: build
+  image: mcr.microsoft.com/dotnet/sdk:8.0-alpine
   before_script:
     - apk update
     - apk add nodejs npm
