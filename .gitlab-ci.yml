@@ -44,9 +44,10 @@ build-server:
     - apk add nodejs npm
   script:
     - echo "Building CCD server"
+    - cd server
     - npm install
     - npm run build
-    - mv Ccd.Server/build server-build
+    - mv Ccd.Server/build ../server-build
     - echo "Build successful"
   artifacts:
     expire_in: 1 hour
@@ -65,13 +66,30 @@ publish-client:
     - apk add docker
   script:
     - echo "Publishing client (ID $CI_PIPELINE_ID)"
-    - cd client
-    - cp deployment/Dockerfile ../client-build
-    - cp deployment/nginx.conf ../client-build
-    - cd ../client-build
+    - cp client/deployment/Dockerfile client-build
+    - cp client/deployment/nginx.conf client-build
+    - cd client-build
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --load -t $CI_REGISTRY/init/ccd-data-portal/image:$IMAGE_TAG .
-    - docker push $CI_REGISTRY/init/ccd-data-portal/image:$IMAGE_TAG
+    - docker build --load -t $CI_REGISTRY/init/ccd-data-portal/image:client-$IMAGE_TAG .
+    - docker push $CI_REGISTRY/init/ccd-data-portal/image:client-$IMAGE_TAG
+    - echo "Publishing complete"
+
+publish-server:
+  stage: publish
+  only:
+    - develop
+  services:
+    - docker:18.09.7-dind
+  before_script:
+    - apk update
+    - apk add docker
+  script:
+    - echo "Publishing client (ID $CI_PIPELINE_ID)"
+    - cp server/deployment/Dockerfile server-build
+    - cd server-build
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --load -t $CI_REGISTRY/init/ccd-data-portal/image:server-$IMAGE_TAG .
+    - docker push $CI_REGISTRY/init/ccd-data-portal/image:server-$IMAGE_TAG
     - echo "Publishing complete"
 
 deploy:
