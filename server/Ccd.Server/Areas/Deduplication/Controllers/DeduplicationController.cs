@@ -17,7 +17,7 @@ public class OrganizationController : ControllerBaseExtended
         _mapper = mapper;
     }
 
-    [HttpPost("list")]
+    [HttpPost("lists")]
     // [PermissionLevel(UserRole.User)]
     public async Task<ActionResult> AddList(DeduplicationListAddRequest model)
     {
