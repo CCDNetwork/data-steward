@@ -5,18 +5,58 @@ import { DUMMY_DATA } from '@/modules/DeduplicationPage/constants';
 
 import { columns } from './columns';
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const DeduplicationPage = () => {
   const pagination = usePagination();
 
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
 
+  const handleUploadListClick = async () => {
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    fileInput.click();
+  };
+
+  const handleUploadChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await axios.post(`${API_URL}/api/v1/deduplication/lists`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        const csvText = response.data;
+
+        const blob = new Blob([csvText], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'deduplication.csv';
+        a.click();
+      } catch (error) {
+        console.error('Failed to upload file');
+      }
+
+      e.target.value = '';
+    }
+  };
+
   return (
     <PageContainer
       pageTitle="Deduplication"
       headerNode={
         <div className="flex gap-3">
-          <Button type="button">Upload list</Button>
+          <Button type="button" onClick={handleUploadListClick}>
+            Upload list
+          </Button>
           <Button type="button">Upload revised list</Button>
         </div>
       }
@@ -32,6 +72,7 @@ export const DeduplicationPage = () => {
         onSearchChange={onSearchChange}
         columns={columns}
       />
+      <input type="file" className="hidden" id="file-input" onChange={handleUploadChange} />
     </PageContainer>
   );
 };
