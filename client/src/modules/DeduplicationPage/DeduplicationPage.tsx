@@ -31,16 +31,16 @@ export const DeduplicationPage = () => {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+          responseType: 'arraybuffer',
         });
 
-        const csvText = response.data;
-
-        const blob = new Blob([csvText], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'deduplication.csv';
-        a.click();
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'deduplication.' + file.name.split('.').pop());
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
       } catch (error) {
         console.error('Failed to upload file');
       }
