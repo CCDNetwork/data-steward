@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
 using System.IO;
+using ClosedXML.Excel;
 
 namespace Ccd.Server.Deduplication;
 
@@ -25,13 +26,19 @@ public class OrganizationController : ControllerBaseExtended
 
         if (file == null)
             throw new BadRequestException("File is required");
+        
+        using var workbook = new XLWorkbook(file.OpenReadStream());
+        
+        var worksheet = workbook.Worksheet(1);
+        var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber();
+        
+        var duplicateColumn = worksheet.Cell(1, lastColumnIndex + 1);
+        duplicateColumn.Value = "Duplicate";
 
-        byte[] fileBytes;
-        using (var memoryStream = new MemoryStream())
-        {
-            await file.CopyToAsync(memoryStream);
-            fileBytes = memoryStream.ToArray();
-        }
+        using var memoryStream = new MemoryStream();
+        
+        workbook.SaveAs(memoryStream);
+        var fileBytes = memoryStream.ToArray();
 
         return File(fileBytes, "application/octet-stream", file.FileName);
     }
