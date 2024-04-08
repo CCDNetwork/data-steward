@@ -1,10 +1,10 @@
-import { Tenant } from '@/services/tenants';
+import { Organization } from '@/services/organizations';
 import { User } from '@/services/users';
 
 export interface AuthData {
   token: string;
   user: User;
-  tenant: Tenant;
+  organization: Organization;
 }
 
 export interface LoginRequest {

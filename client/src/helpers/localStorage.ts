@@ -1,4 +1,4 @@
-import { Tenant } from '@/services/tenants';
+import { Organization } from '@/services/organizations';
 import { User, initialUser } from '@/services/users';
 
 export class LocalStorage {
@@ -22,20 +22,20 @@ export class LocalStorage {
   static setUser = (user: User) => localStorage.setItem('user', JSON.stringify(user));
   static removeUser = () => localStorage.removeItem('user');
 
-  // Manage tenant
-  static getTenant = (): Tenant | null => {
-    const stringTenant = localStorage.getItem('tenant');
-    if (!stringTenant) {
+  // Manage organization
+  static getOrganization = (): Organization | null => {
+    const stringOrganization = localStorage.getItem('organization');
+    if (!stringOrganization) {
       return null;
     }
-    return JSON.parse(stringTenant);
+    return JSON.parse(stringOrganization);
   };
 
-  static setTenant = (tenant: Tenant) => {
-    localStorage.setItem('tenant', JSON.stringify(tenant));
+  static setOrganization = (organization: Organization) => {
+    localStorage.setItem('organization', JSON.stringify(organization));
   };
 
-  static removeTenant = () => {
-    localStorage.removeItem('tenant');
+  static removeOrganization = () => {
+    localStorage.removeItem('organization');
   };
 }

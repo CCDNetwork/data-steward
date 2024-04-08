@@ -8,7 +8,7 @@ export const api = axios.create({
 });
 
 api.defaults.headers.common.Authorization = `Bearer ${LocalStorage.getToken()}`;
-api.defaults.headers.common['tenant-id'] = `${LocalStorage.getTenant()?.id}`;
+api.defaults.headers.common['organization-id'] = `${LocalStorage.getOrganization()?.id}`;
 
 api.interceptors.response.use(
   (config) => config,
@@ -16,7 +16,7 @@ api.interceptors.response.use(
     if (error.response !== undefined && error.response.status === 401) {
       LocalStorage.removeToken();
       LocalStorage.removeUser();
-      LocalStorage.removeTenant();
+      LocalStorage.removeOrganization();
     }
 
     return Promise.reject(error);
