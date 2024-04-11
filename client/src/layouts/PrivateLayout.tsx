@@ -17,14 +17,13 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
   const { pathname } = useLocation();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
 
-  // remove or condition for role later
   const navigationItemsFilteredByRole = useMemo(() => {
-    return NAVIGATION_ITEMS.filter((navItem) => navItem.allowedRoles?.includes(user.role || 'owner'));
+    return NAVIGATION_ITEMS.filter((navItem) => navItem.allowedRoles?.includes(user.role));
   }, [user]);
 
-  // if (!user.id || !isLoggedIn) {
-  //   return <Navigate to={APP_ROUTE.SignIn} />;
-  // }
+  if (!user.id || !isLoggedIn) {
+    return <Navigate to={APP_ROUTE.SignIn} />;
+  }
 
   // return (
   //   <div className="relative flex overflow-hidden">
