@@ -1,7 +1,7 @@
 using AutoMapper;
 using Ccd.Server.Users;
 using Ccd.Server.Organizations;
-using Ccd.Server.FieldSettings;
+using Ccd.Server.BeneficiaryAttributes;
 
 namespace Ccd.Server.Mappings;
 
@@ -20,6 +20,6 @@ public class Mappings : Profile
         CreateMap<UserResponse, UserShortResponse>();
         CreateMap<User, UserShortResponse>();
 
-        CreateMap<FieldSetting, FieldSettingResponse>();
+        CreateMap<BeneficiaryAttribute, BeneficiaryAttributeResponse>();
     }
 }

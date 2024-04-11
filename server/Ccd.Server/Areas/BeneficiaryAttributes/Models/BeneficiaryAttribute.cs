@@ -1,6 +1,6 @@
-namespace Ccd.Server.FieldSettings;
+namespace Ccd.Server.BeneficiaryAttributes;
 
-public class FieldSettingResponse
+public class BeneficiaryAttribute
 {
     public int Id { get; set; }
     public string Name { get; set; }

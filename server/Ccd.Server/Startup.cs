@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using AspNetCore.Authentication.ApiKey;
 using Dapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -12,11 +11,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using File = System.IO.File;
+using Npgsql;
 using Ccd.Server.Authentication;
 using Ccd.Server.Data;
 using Ccd.Server.Email;
@@ -24,10 +24,8 @@ using Ccd.Server.Helpers;
 using Ccd.Server.Notifications;
 using Ccd.Server.Users;
 using Ccd.Server.Storage;
-using File = System.IO.File;
+using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Organizations;
-using Npgsql;
-using Ccd.Server.FieldSettings;
 
 namespace Ccd.Server;
 
@@ -157,7 +155,7 @@ public class Startup
         services.AddScoped<OrganizationService>();
         services.AddScoped<UserService>();
         services.AddScoped<AuthenticationService>();
-        services.AddScoped<FieldSettingsService>();
+        services.AddScoped<BeneficiaryAttributeService>();
         services.AddScoped<IStorageService, StorageService>();
         services.AddScoped<INotificationService, NotificationService>();
 

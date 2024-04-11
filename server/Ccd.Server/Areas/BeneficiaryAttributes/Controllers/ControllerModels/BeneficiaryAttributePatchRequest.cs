@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Ccd.Server.FieldSettings;
+namespace Ccd.Server.BeneficiaryAttributes;
 
-public class FieldSettingPatchRequest
+public class BeneficiaryAttributePatchRequest
 {
     [Required]
     public bool UsedForDeduplication { get; set; }
