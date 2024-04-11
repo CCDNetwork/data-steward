@@ -27,6 +27,7 @@ using Ccd.Server.Storage;
 using File = System.IO.File;
 using Ccd.Server.Organizations;
 using Npgsql;
+using Ccd.Server.FieldSettings;
 
 namespace Ccd.Server;
 
@@ -156,6 +157,7 @@ public class Startup
         services.AddScoped<OrganizationService>();
         services.AddScoped<UserService>();
         services.AddScoped<AuthenticationService>();
+        services.AddScoped<FieldSettingsService>();
         services.AddScoped<IStorageService, StorageService>();
         services.AddScoped<INotificationService, NotificationService>();
 
@@ -165,7 +167,7 @@ public class Startup
         services.AddAutoMapper(typeof(Mappings.Mappings));
         services.AddScoped<DbUserTrackingService>();
         services.AddSingleton<DateTimeProvider>();
-        
+
         SqlMapper.AddTypeHandler(new DateTimeHandler());
     }
 
@@ -187,11 +189,11 @@ public class Startup
 
         // global cors policy
         app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-        
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.UsePermissionLevel();
-        
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapGet("/", context => context.Response.WriteAsync("Ccd API"));
@@ -217,7 +219,7 @@ public class Startup
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "CcdServerTests Server");
         });
-        
+
         if (ccdContext.Database.GetPendingMigrations().Any())
         {
             Console.WriteLine("Applying DB migrations");

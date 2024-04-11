@@ -31,3 +31,6 @@ Folder.DotSettings.user
 obj/
 bin/
 setenv.sh
+.mono
+pull-dev-db.sh
+appsettings.Development.json
