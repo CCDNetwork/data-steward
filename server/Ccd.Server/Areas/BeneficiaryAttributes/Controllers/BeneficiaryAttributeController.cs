@@ -9,7 +9,7 @@ using Ccd.Server.Users;
 namespace Ccd.Server.BeneficiaryAttributes;
 
 [ApiController]
-[Route("/api/v1/field-settings")]
+[Route("/api/v1/beneficiary-attribute")]
 public class BeneficiaryAttributeController : ControllerBaseExtended
 {
     private readonly IMapper _mapper;
@@ -25,7 +25,6 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<List<BeneficiaryAttributeResponse>>> GetBeneficiaryAttributes()
     {
-        Console.WriteLine("BeneficiaryAttributesController.GetBeneficiaryAttributes");
         var beneficiaryAttributes = await _beneficiaryAttributeService.GetBeneficiaryAttributes();
         var response = _mapper.Map<List<BeneficiaryAttributeResponse>>(beneficiaryAttributes);
         return Ok(response);
