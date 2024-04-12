@@ -48,7 +48,7 @@ public class Mappings : Profile
             return result.ToUniversalTime();
         }
 
-        if (DateTime.TryParseExact(date, "MM.dd.yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
+        if (DateTime.TryParseExact(date, "MM.dd.yyyy", null, DateTimeStyles.None, out result))
         {
             return result.ToUniversalTime();
         }
