@@ -32,7 +32,7 @@ public class CcdContext : DbContext
     public DbSet<UserOrganization> UserOrganizations { get; set; }
     public DbSet<Beneficionary> Beneficionary { get; set; }
     public DbSet<BeneficiaryAttribute> BeneficiaryAttributes { get; set; }
-    public DbSet<List> List { get; set; }
+    public DbSet<List> Lists { get; set; }
 
     private void seedData(ModelBuilder modelBuilder)
     {
