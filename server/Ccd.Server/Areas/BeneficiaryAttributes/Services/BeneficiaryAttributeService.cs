@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Ccd.Server.Data;
+using System.Linq;
 
 namespace Ccd.Server.BeneficiaryAttributes;
 
@@ -20,7 +21,7 @@ public class BeneficiaryAttributeService
 
     public async Task<List<BeneficiaryAttribute>> GetBeneficiaryAttributes()
     {
-        var beneficiaryAttributes = await _context.BeneficiaryAttributes.ToListAsync();
+        var beneficiaryAttributes = await _context.BeneficiaryAttributes.OrderBy(e => e.Id).ToListAsync();
         return beneficiaryAttributes;
     }
 
