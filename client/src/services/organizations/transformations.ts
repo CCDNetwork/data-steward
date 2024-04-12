@@ -9,6 +9,14 @@ export const resToOrganization = (res: any): Organization => {
   };
 };
 
+export const organizationToReq = (data: any): Omit<Organization, 'id'> => {
+  const req: any = {
+    name: data.name ?? '',
+  };
+
+  return req;
+};
+
 export const organizationMeToReq = (data: any): Omit<Organization, 'id'> => {
   const req: any = {
     name: data.name ?? '',

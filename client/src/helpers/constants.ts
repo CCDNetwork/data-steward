@@ -11,6 +11,7 @@ export enum APP_ROUTE {
   Deduplication = '/deduplication',
   Referrals = '/referrals',
   BeneficiaryAttributes = '/beneficiary-attributes',
+  Organizations = '/organizations',
   // PUBLIC
   ForgotPassword = '/forgot-password',
   ResetPassword = '/reset-password',
@@ -30,6 +31,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   { name: 'Beneficiaries', to: APP_ROUTE.Beneficiaries, allowedRoles: [UserRole.Owner, UserRole.User] },
   { name: 'Deduplication', to: APP_ROUTE.Deduplication, allowedRoles: [UserRole.Owner, UserRole.User] },
   { name: 'Referrals', to: APP_ROUTE.Referrals, allowedRoles: [UserRole.Owner, UserRole.User] },
+  { name: 'Organizations', to: APP_ROUTE.Organizations, allowedRoles: [UserRole.Admin] },
   { name: 'Users', to: APP_ROUTE.Users, allowedRoles: [UserRole.Admin] },
   { name: 'Beneficiary Attributes', to: APP_ROUTE.BeneficiaryAttributes, allowedRoles: [UserRole.Admin] },
 ];

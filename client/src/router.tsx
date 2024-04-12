@@ -20,6 +20,7 @@ import { UserRole } from '@/services/users';
 import { BeneficiaryAttributesPage } from '@/modules/BeneficiaryAttributesPage';
 import { UsersPage } from '@/modules/Users/UsersPage';
 import { UserPage, UsersProvider } from '@/modules/Users';
+import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from '@/modules/Organizations';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +43,13 @@ export const router = createBrowserRouter(
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
           <Route path={APP_ROUTE.BeneficiaryAttributes} element={<BeneficiaryAttributesPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+          <Route path={APP_ROUTE.Organizations} element={<OrganizationsProvider />}>
+            <Route index element={<OrganizationsPage />} />
+            <Route path=":id" element={<DynamicRoute component={<OrganizationPage />} />} />
+          </Route>
         </Route>
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
