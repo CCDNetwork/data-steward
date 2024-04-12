@@ -33,7 +33,7 @@ export const router = createBrowserRouter(
           <Route path={APP_ROUTE.Beneficiaries} element={<BeneficiariesPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
           <Route path={APP_ROUTE.Deduplication} element={<DeduplicationPage />} />
         </Route>
 

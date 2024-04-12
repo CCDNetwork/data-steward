@@ -25,7 +25,7 @@ export const PageContainer = ({
   ) : (
     <div className={cn('space-y-4 sm:p-4 md:p-6 p-2 items-center justify-center', containerClassName)}>
       <div className={cn('flex items-center justify-between space-y-2', headerClassName)}>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-1">
           <h2 className="text-2xl sm:text-2xl font-bold tracking-tight">{pageTitle}</h2>
           {pageSubtitle && <h2 className="max-w-2xl leading-6 text-muted-foreground">{pageSubtitle}</h2>}
         </div>

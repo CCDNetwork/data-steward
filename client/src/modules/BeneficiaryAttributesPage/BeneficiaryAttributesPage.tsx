@@ -14,7 +14,7 @@ import { toast } from '@/components/ui/use-toast';
 export const BeneficiaryAttributesPage = () => {
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = usePagination();
 
-  const { data: beneficiaryAttributes, isLoading: queryLoading } = useBeneficiaryAttributes();
+  const { data: beneficiaryAttributes } = useBeneficiaryAttributes();
   const { toggleDeduplication } = useBeneficiaryAttributesMutation();
 
   const onDeduplicationToggleClick = async ({ id, usedForDeduplication }: BeneficiaryAttribute) => {
@@ -39,7 +39,7 @@ export const BeneficiaryAttributesPage = () => {
       <DataTable
         data={beneficiaryAttributes ?? []}
         pagination={DUMMY_DATA.meta}
-        isQueryLoading={queryLoading || toggleDeduplication.isLoading}
+        isQueryLoading={false}
         currentPage={currentPage}
         pageClicked={onPageChange}
         pageSizeClicked={onPageSizeChange}
