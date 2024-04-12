@@ -7,6 +7,7 @@ import { cn } from '@/helpers/utils';
 import { APP_ROUTE, NAVIGATION_ITEMS } from '@/helpers/constants';
 import { MyProfileItemWithDropdown } from '@/components/MyProfileItemWithDropdown';
 import { DynamicMobileHamburger } from '@/components/DynamicMobileHamburger';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface Props {
   children?: React.ReactNode;
@@ -20,6 +21,8 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
   const navigationItemsFilteredByRole = useMemo(() => {
     return NAVIGATION_ITEMS.filter((navItem) => navItem.allowedRoles?.includes(user.role));
   }, [user]);
+
+  const userInitials = `${user.firstName[0] ?? ''} ${user.lastName[0] ?? ''}`;
 
   if (!user.id || !isLoggedIn) {
     return <Navigate to={APP_ROUTE.SignIn} />;
@@ -84,6 +87,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
   return (
     <div className="min-h-[100svh]">
       <nav className="bg-primary">
+        {/* DESKTOP NAVIGATION */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
@@ -119,7 +123,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
             <DynamicMobileHamburger isOpen={isMobileNavOpen} setIsOpen={setIsMobileNavOpen} />
           </div>
         </div>
-
+        {/* MOBILE NAVIGATION */}
         <div className="md:hidden">
           <Transition appear={true} show={isMobileNavOpen} id="mobile-menu">
             <Transition.Child
@@ -154,11 +158,16 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
               <div className="border-t border-white/20 pb-3 pt-4">
                 <div className="flex items-center px-5">
                   <div className="flex-shrink-0">
-                    <img className="h-10 w-10 rounded-full" src="https://placehold.co/400" alt="" />
+                    <Avatar>
+                      <AvatarImage src="profileimageurlgoeshere" />
+                      <AvatarFallback className="bg-foreground/30 text-background -tracking-wider capitalize">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
                   <div className="ml-3">
-                    <div className="text-base font-medium text-white">User Name</div>
-                    <div className="text-sm font-medium text-white/80">email@example.com</div>
+                    <div className="text-base font-medium text-white">{`${user.firstName ?? ''} ${user.lastName ?? ''}`}</div>
+                    <div className="text-sm font-medium text-white/80">{user.email ?? ''}</div>
                   </div>
                   {/*  possible notification button would go here */}
                 </div>

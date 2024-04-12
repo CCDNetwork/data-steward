@@ -15,6 +15,9 @@ import { PermissionDeniedPage } from '@/modules/Public/PermissionDeniedPage';
 import { ReferralsPage } from '@/modules/ReferralsPage';
 import { DeduplicationPage } from '@/modules/DeduplicationPage';
 import { BeneficiariesPage } from '@/modules/BeneficiariesPage';
+import { ProtectedRoute } from '@/layouts/ProtectedRoute';
+import { UserRole } from '@/services/users';
+import { BeneficiaryAttributesPage } from '@/modules/BeneficiaryAttributesPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,9 +25,22 @@ export const router = createBrowserRouter(
       <Route path="/" element={<PrivateLayout />}>
         <Route index element={<Navigate to={APP_ROUTE.Dashboard} replace />} />
         <Route path={APP_ROUTE.Dashboard} element={<DashboardPage />} />
-        <Route path={APP_ROUTE.Beneficiaries} element={<BeneficiariesPage />} />
-        <Route path={APP_ROUTE.Deduplication} element={<DeduplicationPage />} />
-        <Route path={APP_ROUTE.Referrals} element={<ReferralsPage />} />
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+          <Route path={APP_ROUTE.Beneficiaries} element={<BeneficiariesPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+          <Route path={APP_ROUTE.Deduplication} element={<DeduplicationPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+          <Route path={APP_ROUTE.Referrals} element={<ReferralsPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+          <Route path={APP_ROUTE.BeneficiaryAttributes} element={<BeneficiaryAttributesPage />} />
+        </Route>
         {/* <Route element={<ProtectedRoute rolesAllowed={[UserRole.Owner]} />}>
           <Route path={APP_ROUTE.Users} element={<UsersPage />} />
         </Route> */}

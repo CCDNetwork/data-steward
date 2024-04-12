@@ -24,7 +24,7 @@ export const MyProfileItemWithDropdown = () => {
   const navigate = useNavigate();
   const { setTheme } = useTheme();
 
-  const userInitials = `${user.firstName[0] ?? 'N'} ${user.lastName[0] ?? 'A'}`;
+  const userInitials = `${user.firstName[0] ?? ''} ${user.lastName[0] ?? ''}`;
 
   return (
     <DropdownMenu>
