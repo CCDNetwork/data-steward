@@ -6,6 +6,7 @@ import { useGlobalErrors } from '@/providers/GlobalProvider';
 import { resToUser, userToReq } from './transformations';
 import { User, UserProfileRequestPayload } from './types';
 import { api } from '../api';
+import { UserEditFormData } from '@/modules/Users/UserPage/validations';
 
 enum QueryKeys {
   Users = 'users',
@@ -36,8 +37,8 @@ const postUser = async (data: any): Promise<User> => {
   return resToUser(resp.data);
 };
 
-const putUser = async (data: any & { id: string }): Promise<User> => {
-  const resp = await api.put(`/users/${data.id}`, userToReq(data));
+const putUser = async ({ payload, userId }: { payload: UserEditFormData; userId: string }): Promise<User> => {
+  const resp = await api.put(`/users/${userId}`, userToReq(payload));
   return resToUser(resp.data);
 };
 

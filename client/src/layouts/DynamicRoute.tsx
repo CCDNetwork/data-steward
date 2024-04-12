@@ -28,7 +28,9 @@ export const DynamicRoute = ({ component }: DynamicRouteProps) => {
         <div className="text-center">
           <p className="font-semibold text-destructive">Error</p>
           <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Oops, something went wrong</h1>
-          <p className="mt-6 text-base leading-7 text-muted-foreground">An unexpected error has occured.</p>
+          <p className="mt-6 text-base leading-7 text-muted-foreground whitespace-pre-line">
+            {'An unexpected error has occured or a requested \n resource does not exist.'}
+          </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Button onClick={() => navigate(-1)}>
               <ArrowLeft className="mr-2 h-4 w-4" />

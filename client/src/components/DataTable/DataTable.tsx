@@ -19,6 +19,7 @@ interface DataTableProps<TData, TValue> {
   pagination?: MetaData;
   columns: TableColumn<TValue>[];
   isQueryLoading: boolean;
+  onRowClick?: (row: TValue) => void;
   pageClicked?: (newPage: number) => void;
   pageSizeClicked?: (newPageSize: number) => void;
   onSearchChange?: (searchValue: string) => void;
@@ -31,6 +32,7 @@ export function DataTable<TData, TValue>({
   currentPage,
   columns,
   isQueryLoading,
+  onRowClick,
   pageClicked,
   pageSizeClicked,
   onSearchChange,
@@ -115,7 +117,12 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'} className="truncate">
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  className="truncate"
+                  onClick={() => (onRowClick ? onRowClick(row.original) : null)}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}

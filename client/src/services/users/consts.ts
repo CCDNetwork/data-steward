@@ -14,4 +14,6 @@ export const initialUser: User = {
   activatedAt: null,
   createdAt: null,
   role: '',
+  language: '',
+  organizations: [],
 };

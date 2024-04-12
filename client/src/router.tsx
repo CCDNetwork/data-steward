@@ -18,6 +18,8 @@ import { BeneficiariesPage } from '@/modules/BeneficiariesPage';
 import { ProtectedRoute } from '@/layouts/ProtectedRoute';
 import { UserRole } from '@/services/users';
 import { BeneficiaryAttributesPage } from '@/modules/BeneficiaryAttributesPage';
+import { UsersPage } from '@/modules/Users/UsersPage';
+import { UserPage, UsersProvider } from '@/modules/Users';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,9 +43,14 @@ export const router = createBrowserRouter(
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
           <Route path={APP_ROUTE.BeneficiaryAttributes} element={<BeneficiaryAttributesPage />} />
         </Route>
-        {/* <Route element={<ProtectedRoute rolesAllowed={[UserRole.Owner]} />}>
-          <Route path={APP_ROUTE.Users} element={<UsersPage />} />
-        </Route> */}
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+          <Route path={APP_ROUTE.Users} element={<UsersProvider />}>
+            <Route index element={<UsersPage />} />
+            <Route path=":id" element={<DynamicRoute component={<UserPage />} />} />
+          </Route>
+        </Route>
+
         <Route path={APP_ROUTE.MyProfile} element={<DynamicRoute component={<MyProfilePage />} />} />
       </Route>
 
