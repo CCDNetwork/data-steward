@@ -63,8 +63,6 @@ public class DeduplicationService
             worksheet.Cell(i, lastColumnIndex).Value =
                 deduplicationRecords.Any((e) => AreRecordsEqual(e, record, beneficiaryAttributes)) ? "YES" : "NO";
 
-            _context.Beneficionary.Add(_mapper.Map<Beneficionary>(record));
-
             deduplicationRecords.Add(record);
         }
 

@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
+using Ccd.Server.Notifications;
 
 namespace Ccd.Server.Deduplication;
 
@@ -18,19 +19,25 @@ public class DeduplicationController : ControllerBaseExtended
         _deduplicationService = deduplicationService;
     }
 
-    [HttpPost("lists")]
-    // [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult> AddList(DeduplicationListAddRequest model)
-    {
-        var fileBytes = await _deduplicationService.AddList(model);
-        return File(fileBytes, "application/octet-stream", model.File.FileName);
-    }
-
     [HttpPost("deduplicate")]
     // [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult> Deduplicate(DeduplicationListAddRequest model)
+    public async Task<ActionResult> Deduplicate([FromForm] DeduplicationListAddRequest model)
     {
-        var fileBytes = await _deduplicationService.Deduplicate(this.OrganizationId, model);
+        if (!DeduplicationType.IsValid(model.Type))
+        {
+            throw new BadRequestException("Invalid deduplication type.");
+        }
+
+        byte[] fileBytes;
+        if (model.Type == DeduplicationType.Single)
+        {
+            fileBytes = await _deduplicationService.AddList(model);
+        }
+        else
+        {
+            fileBytes = await _deduplicationService.Deduplicate(this.OrganizationId, model);
+        }
+
         return File(fileBytes, "application/octet-stream", model.File.FileName);
     }
 }
