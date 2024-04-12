@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
 using ClosedXML.Excel;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Deduplication;
 
@@ -26,6 +28,7 @@ public class DeduplicationService
     {
         var file = model.File ?? throw new BadRequestException("File is required");
         using var workbook = new XLWorkbook(file.OpenReadStream());
+        var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
 
         var worksheet = workbook.Worksheet(1);
         var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
@@ -58,7 +61,7 @@ public class DeduplicationService
             };
 
             worksheet.Cell(i, lastColumnIndex).Value =
-                deduplicationRecords.Any((e) => AreRecordsEqual(e, record)) ? "YES" : "NO";
+                deduplicationRecords.Any((e) => AreRecordsEqual(e, record, beneficiaryAttributes)) ? "YES" : "NO";
 
             _context.Beneficionary.Add(_mapper.Map<Beneficionary>(record));
 
@@ -80,13 +83,15 @@ public class DeduplicationService
         var file = model.File ?? throw new BadRequestException("File is required");
         using var workbook = new XLWorkbook(file.OpenReadStream());
 
+        var beneficionaries = _context.Beneficionary.Include(e => e.Organization).ToList();
+        var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
         var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, OrganizationId = organizationId })).Entity;
 
         var worksheet = workbook.Worksheet(1);
         var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
 
         var deduplicationRecords = new List<DeduplicationRecord>();
-        var beneficionaries = new List<Beneficionary>();
+        var newBeneficionaries = new List<Beneficionary>();
 
         for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
         {
@@ -109,14 +114,24 @@ public class DeduplicationService
                 AssistanceEnd = worksheet.Cell(i, 15).Value.ToString()
             };
 
-            worksheet.Cell(i, lastColumnIndex).Value =
-                deduplicationRecords.Any((e) => AreRecordsEqual(e, record)) ? "YES" : "NO";
+            worksheet.Cell(i, lastColumnIndex).Value = "NO";
+            worksheet.Cell(i, lastColumnIndex + 1).Value = "";
+
+            beneficionaries.ForEach((e) =>
+            {
+                var exists = AreRecordsEqual(e, record, beneficiaryAttributes);
+                if (exists)
+                {
+                    worksheet.Cell(i, lastColumnIndex).Value = "YES";
+                    worksheet.Cell(i, lastColumnIndex + 1).Value = e.Organization.Name;
+                }
+            });
 
             var beneficionary = _mapper.Map<Beneficionary>(record);
             beneficionary.ListId = list.Id;
             beneficionary.OrganizationId = organizationId;
 
-            beneficionaries.Add(beneficionary);
+            newBeneficionaries.Add(beneficionary);
             deduplicationRecords.Add(record);
         }
 
@@ -124,15 +139,36 @@ public class DeduplicationService
         workbook.SaveAs(memoryStream);
         var fileBytes = memoryStream.ToArray();
 
-        await _context.AddRangeAsync(beneficionaries);
+        await _context.AddRangeAsync(newBeneficionaries);
         await _context.SaveChangesAsync();
 
         return fileBytes;
     }
 
-    public bool AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord)
+    public bool AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
     {
-        var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
+        foreach (var attribute in beneficiaryAttributes)
+        {
+            var attributeName = Regex.Replace(attribute.Name, @"\s+", "");
+            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null);
+            var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null);
+
+            if (existingValue == null || newValue == null)
+            {
+                return false;
+            }
+
+            if (existingValue.ToString() != newValue.ToString())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public bool AreRecordsEqual(Beneficionary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
+    {
         foreach (var attribute in beneficiaryAttributes)
         {
             var attributeName = Regex.Replace(attribute.Name, @"\s+", "");
