@@ -9,6 +9,7 @@ using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Data;
 using Ccd.Server.Deduplication.Controllers.ControllerModels;
 using Ccd.Server.Helpers;
+using Ccd.Server.Users;
 using ClosedXML.Excel;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
@@ -39,13 +40,23 @@ public class DeduplicationService
         return new { organizationId };
     }
 
+    private async Task resolveDependencies(DeduplicationListResponse listing)
+    {
+        if (listing.UserCreatedId != null)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(e => e.Id == listing.UserCreatedId);
+            listing.UserCreated = _mapper.Map<UserResponse>(user);
+        }
+    }
+
     public async Task<PagedApiResponse<DeduplicationListResponse>> GetAllListings(Guid organizationId, RequestParameters requestParameters)
     {
         return await PagedApiResponse<DeduplicationListResponse>.GetFromSql(
             _context,
             _selectSql,
             getSelectSqlParams(organizationId),
-            requestParameters
+            requestParameters,
+            resolveDependencies
         );
     }
 
@@ -101,14 +112,14 @@ public class DeduplicationService
         return fileBytes;
     }
 
-    public async Task<byte[]> Deduplicate(Guid organizationId, DeduplicationListAddRequest model)
+    public async Task<byte[]> Deduplicate(Guid organizationId, Guid userId, DeduplicationListAddRequest model)
     {
         var file = model.File ?? throw new BadRequestException("File is required");
         using var workbook = new XLWorkbook(file.OpenReadStream());
 
         var beneficionaries = _context.Beneficionary.Include(e => e.Organization).ToList();
         var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
-        var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, OrganizationId = organizationId })).Entity;
+        var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
 
         var worksheet = workbook.Worksheet(1);
         var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;

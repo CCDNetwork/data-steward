@@ -42,7 +42,7 @@ public class DeduplicationController : ControllerBaseExtended
         }
         else
         {
-            fileBytes = await _deduplicationService.Deduplicate(this.OrganizationId, model);
+            fileBytes = await _deduplicationService.Deduplicate(this.OrganizationId, this.UserId, model);
         }
 
         return File(fileBytes, "application/octet-stream", model.File.FileName);
