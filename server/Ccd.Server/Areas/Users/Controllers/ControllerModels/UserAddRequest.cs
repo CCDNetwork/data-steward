@@ -14,6 +14,10 @@ public class UserAddRequest
     [Required]
     public string LastName { get; set; }
 
+
+    [Required]
+    public string Password { get; set; }
+
     [Required]
     public Guid OrganizationId { get; set; }
 }

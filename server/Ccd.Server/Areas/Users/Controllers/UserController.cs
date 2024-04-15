@@ -15,16 +15,19 @@ public class UserController : ControllerBaseExtended
     private readonly UserService _userService;
     private readonly IMapper _mapper;
     private readonly CcdContext _context;
+    private readonly DateTimeProvider _dateTimeProvider;
 
     public UserController(
         UserService userService,
         IMapper mapper,
-        CcdContext context
+        CcdContext context,
+        DateTimeProvider dateTimeProvider
     )
     {
         _userService = userService;
         _mapper = mapper;
         _context = context;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     [HttpGet]
@@ -60,6 +63,8 @@ public class UserController : ControllerBaseExtended
             throw new BadRequestException("User with this email already exists");
 
         var user = _mapper.Map<User>(model);
+        user.Password = AuthenticationHelper.HashPassword(user, model.Password);
+        user.ActivatedAt = _dateTimeProvider.UtcNow;
 
         user = await _userService.AddUser(user);
         await _userService.SetOrganizationRole(user.Id, model.OrganizationId, UserRole.User);
@@ -98,6 +103,12 @@ public class UserController : ControllerBaseExtended
     {
         var user = await _userService.GetUserById(id) ?? throw new NotFoundException();
         model.Patch(user);
+
+        if (model.Password != null)
+        {
+            user.Password = AuthenticationHelper.HashPassword(user, model.Password);
+        }
+        user.ActivatedAt = _dateTimeProvider.UtcNow;
 
         var newUser = await _userService.UpdateUser(user);
         var response = await _userService.GetUserApi(id: newUser.Id);

@@ -16,7 +16,6 @@ namespace Ccd.Server.Users;
 public class UserService
 {
     private readonly CcdContext _context;
-    private readonly DateTimeProvider _dateTimeProvider;
     private readonly EmailManagerService _emailManagerService;
     private readonly IMapper _mapper;
 
@@ -37,7 +36,7 @@ public class UserService
 
     private object getSelectSqlParams(Guid? id = null, string email = null, Guid? organizationId = null)
     {
-        return new {id, email, organizationId};
+        return new { id, email, organizationId };
     }
 
     public UserService(CcdContext context, DateTimeProvider dateTimeProvider, EmailManagerService emailManagerService,
@@ -45,7 +44,6 @@ public class UserService
     )
     {
         _context = context;
-        _dateTimeProvider = dateTimeProvider;
         _emailManagerService = emailManagerService;
         _mapper = mapper;
     }
