@@ -51,22 +51,19 @@ public class UserController : ControllerBaseExtended
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<UserResponse>> Add([FromBody] UserAddRequest model)
     {
-        if (!UserRole.IsValidRole(model.Role))
-            throw new BadRequestException("Invalid user role");
+        if (model.OrganizationId == Guid.Empty)
+            throw new BadRequestException("OrganizationId is required.");
 
-        var existingUserOrganization = await _userService.GetUserByEmail(email: model.Email);
-
-        if (existingUserOrganization != null)
+        var existingUser = await _userService.GetUserByEmail(model.Email);
+        if (existingUser != null)
             throw new BadRequestException("User with this email already exists");
 
         var user = _mapper.Map<User>(model);
 
-        user.Password = AuthenticationHelper.HashPassword(user, model.Password);
-
         user = await _userService.AddUser(user);
-        await _userService.SetOrganizationRole(user.Id, this.OrganizationId, model.Role);
+        await _userService.SetOrganizationRole(user.Id, model.OrganizationId, UserRole.User);
 
-        var result = await _userService.GetUserApi(this.OrganizationId, user.Id);
+        var result = await _userService.GetUserApi(model.OrganizationId, user.Id);
 
         return Created("", result);
     }
@@ -93,7 +90,7 @@ public class UserController : ControllerBaseExtended
 
         return Ok(result);
     }
-    
+
     [HttpDelete("{id}")]
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<UserResponse>> Delete(Guid id)
@@ -143,7 +140,7 @@ public class UserController : ControllerBaseExtended
 
         return Ok(result);
     }
-    
+
     [HttpGet("email")]
     public async Task<ActionResult<UserEmailResponse>> CheckUserEmail([FromQuery] string email)
     {

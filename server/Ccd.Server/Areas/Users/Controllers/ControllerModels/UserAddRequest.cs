@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Ccd.Server.Users;
@@ -10,17 +9,11 @@ public class UserAddRequest
     public string Email { get; set; }
 
     [Required]
-    public string Password { get; set; }
-
-    [Required]
     public string FirstName { get; set; }
 
     [Required]
     public string LastName { get; set; }
 
     [Required]
-    public string Role { get; set; }
-    
-    [Required]
-    public string Language { get; set; } = "en";
+    public Guid OrganizationId { get; set; }
 }
