@@ -1,4 +1,4 @@
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 
 import { GlobalProvider } from '@/providers/GlobalProvider';
 import { PrivateLayout } from '@/layouts/PrivateLayout';
@@ -21,19 +21,23 @@ import { BeneficiaryAttributesPage } from '@/modules/BeneficiaryAttributesPage';
 import { UsersPage } from '@/modules/Users/UsersPage';
 import { UserPage, UsersProvider } from '@/modules/Users';
 import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from '@/modules/Organizations';
+import { RoleBasedIndexRoute } from '@/layouts/RoleBasedIndexRoute';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<GlobalProvider />}>
       <Route path="/" element={<PrivateLayout />}>
-        <Route index element={<Navigate to={APP_ROUTE.Dashboard} replace />} />
-        <Route path={APP_ROUTE.Dashboard} element={<DashboardPage />} />
+        <Route index element={<RoleBasedIndexRoute />} />
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+          <Route path={APP_ROUTE.Dashboard} element={<DashboardPage />} />
+        </Route>
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
           <Route path={APP_ROUTE.Beneficiaries} element={<BeneficiariesPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
           <Route path={APP_ROUTE.Deduplication} element={<DeduplicationPage />} />
         </Route>
 
