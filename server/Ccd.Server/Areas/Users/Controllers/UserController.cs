@@ -4,6 +4,7 @@ using AutoMapper;
 using Ccd.Server.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Data;
+using Ccd.Server.Areas.Users.Controllers.ControllerModels;
 
 namespace Ccd.Server.Users;
 
@@ -89,6 +90,19 @@ public class UserController : ControllerBaseExtended
         var result = await _userService.GetUserApi(this.OrganizationId, user.Id);
 
         return Ok(result);
+    }
+
+    [HttpPatch("{id}")]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult<UserResponse>> Patch(Guid id, [FromBody] UserPatchRequest model)
+    {
+        var user = await _userService.GetUserById(id) ?? throw new NotFoundException();
+        model.Patch(user);
+
+        var newUser = await _userService.UpdateUser(user);
+        var response = await _userService.GetUserApi(id: newUser.Id);
+
+        return Ok(response);
     }
 
     [HttpDelete("{id}")]
