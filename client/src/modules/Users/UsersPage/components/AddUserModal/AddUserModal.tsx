@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckIcon, Command, SendHorizonal, UserPlus2 } from 'lucide-react';
+import { SendHorizonal, UserPlus2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -19,15 +19,10 @@ import { useUserMutation } from '@/services/users/api';
 import { toast } from '@/components/ui/use-toast';
 
 import { AddUserModalForm, AddUserModalFormSchema } from './validation';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/helpers/utils';
-import { CaretSortIcon } from '@radix-ui/react-icons';
-import { CommandInput, CommandEmpty, CommandGroup, CommandItem } from 'cmdk';
-import { useOrganizations } from '@/services/organizations/api';
-import { usePagination } from '@/helpers/pagination';
+import { AsyncSelect } from '@/components/AsyncSelect';
+import { useOrganizationsInfinite } from '@/services/organizations/api';
 
 export const AddUserModal = () => {
-  const pagination = usePagination();
   const [open, setOpen] = useState<boolean>(false);
   const form = useForm<AddUserModalForm>({
     defaultValues: {
@@ -36,15 +31,13 @@ export const AddUserModal = () => {
       email: '',
       password: '',
       confirmPassword: '',
-      organizationId: '',
+      organization: null,
     },
     mode: 'onSubmit',
     resolver: zodResolver(AddUserModalFormSchema),
   });
 
   const { control, handleSubmit, reset } = form;
-
-  const { data: organizations } = useOrganizations(pagination);
 
   const { addUser } = useUserMutation();
 
@@ -70,6 +63,8 @@ export const AddUserModal = () => {
     setOpen((old) => !old);
     reset();
   };
+
+  console.log(form.getValues());
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -128,56 +123,13 @@ export const AddUserModal = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="organizationId"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Organization</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn('w-[200px] justify-between', !field.value && 'text-muted-foreground')}
-                          >
-                            {field.value
-                              ? organizations?.data?.find((organization) => organization.id === field.value)?.id
-                              : 'Select language'}
-                            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
-                        <Command>
-                          <CommandInput placeholder="Search framework..." className="h-9" />
-                          <CommandEmpty>No framework found.</CommandEmpty>
-                          <CommandGroup>
-                            {organizations?.data?.map((organization) => (
-                              <CommandItem
-                                value={organization.name}
-                                key={organization.id}
-                                onSelect={() => {
-                                  form.setValue('organizationId', organization.id);
-                                }}
-                              >
-                                {organization.name}
-                                <CheckIcon
-                                  className={cn(
-                                    'ml-auto h-4 w-4',
-                                    organization.id === field.value ? 'opacity-100' : 'opacity-0',
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
+              <AsyncSelect
+                label="Organization"
+                name="organization"
+                control={control}
+                useInfiniteQueryFunction={useOrganizationsInfinite}
+                labelKey="name"
+                valueKey="id"
               />
               <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
                 <FormField

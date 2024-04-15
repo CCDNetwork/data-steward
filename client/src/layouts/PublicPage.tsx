@@ -3,7 +3,6 @@ import { Loader2 } from 'lucide-react';
 
 import { useAuth } from '@/providers/GlobalProvider';
 
-import { APP_ROUTE } from '@/helpers/constants';
 import { ModeToggle } from '@/components/ModeToggle';
 import { cn } from '@/helpers/utils';
 
@@ -39,7 +38,7 @@ export const PublicPage = ({
   const { isLoggedIn } = useAuth();
 
   if (isLoggedIn && shouldRedirect) {
-    return <Navigate to={APP_ROUTE.Dashboard} />;
+    return <Navigate to="/" />;
   }
 
   if (isLoading) {

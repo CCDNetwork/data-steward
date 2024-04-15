@@ -13,7 +13,7 @@ export const RegistrationSuccessPage = () => {
   const onActionButtonClick = () => navigate(APP_ROUTE.SignIn);
 
   if (isLoggedIn) {
-    return <Navigate to={APP_ROUTE.Dashboard} />;
+    return <Navigate to={'/'} />;
   }
 
   return (

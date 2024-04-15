@@ -7,5 +7,6 @@ export const dataToUserEditFormData = (data: User): UserEditFormData => {
     email: data.email,
     firstName: data.firstName,
     lastName: data.lastName,
+    organization: data.organizations[0],
   };
 };

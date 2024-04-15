@@ -58,6 +58,11 @@ const putUserMe = async (data: UserProfileRequestPayload): Promise<User> => {
   return resToUser(resp.data);
 };
 
+const patchUser = async ({ userId, data }: { userId: string; data: UserEditFormData }): Promise<User> => {
+  const resp = await api.patch(`/users/${userId}`, userToReq(data));
+  return resToUser(resp.data);
+};
+
 //
 // GET hooks
 //
@@ -102,6 +107,9 @@ export const useUserMutation = () => {
     }),
     editUserMe: useMutation(putUserMe, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.UserMe]),
+    }),
+    patchUser: useMutation(patchUser, {
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Users]),
     }),
   };
 };

@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@/services/api';
 import {
@@ -84,6 +84,26 @@ export const useOrganization = ({ id, isCreate }: { id: string; isCreate: boolea
     enabled: !isCreate,
     onError: () => onSetCollectionNotFound(true),
   });
+};
+
+export const useOrganizationsInfinite = (pagination: PaginationRequest, enabled: boolean) => {
+  return useInfiniteQuery(
+    [QueryKeys.Organizations, 'infinite', pagination],
+    ({ pageParam = 1 }) => {
+      return fetchOrganizations({ ...pagination, page: pageParam });
+    },
+    {
+      getNextPageParam: (data) => {
+        if (data.meta.page === data.meta.totalPages) {
+          return undefined;
+        }
+        const nextPage = data.meta.page + 1;
+        return nextPage;
+      },
+      enabled,
+      cacheTime: 20000,
+    },
+  );
 };
 
 //

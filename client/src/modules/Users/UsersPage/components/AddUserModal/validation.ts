@@ -1,5 +1,10 @@
 import * as z from 'zod';
 
+const OrganizationSchema = z.object({
+  id: z.string().min(1, { message: 'Organization Id is required' }),
+  name: z.string().min(1, { message: 'Organization name is required' }),
+});
+
 export const AddUserModalFormSchema = z
   .object({
     firstName: z.string().min(1, { message: 'First name is required' }),
@@ -15,7 +20,7 @@ export const AddUserModalFormSchema = z
       { message: 'Password must contain at least 8 characters' },
     ),
     confirmPassword: z.string().optional(),
-    organizationId: z.string().min(1, { message: 'Organization is required' }),
+    organization: z.union([OrganizationSchema.nullable(), z.literal(null)]),
   })
   .refine(
     (data) => {

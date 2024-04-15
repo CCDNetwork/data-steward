@@ -11,8 +11,10 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input';
 
 import { dataToUserEditFormData } from './form-transformation';
-import { UserEditFormData, UserEditFormSchema } from './validations';
 import { defaultUserEditFormFormValues } from './const';
+import { AsyncSelect } from '@/components/AsyncSelect';
+import { useOrganizationsInfinite } from '@/services/organizations/api';
+import { UserEditFormData, UserEditFormSchema } from './validations';
 
 export const UserPage = () => {
   const { id: userId } = useIdFromParams();
@@ -117,6 +119,67 @@ export const UserPage = () => {
                     <FormItem>
                       <FormControl>
                         <Input id="email" className="sm:max-w-sm" disabled placeholder="Email Address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </dd>
+            </div>
+            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
+              <dt className="text-sm font-medium leading-6 ">Organization</dt>
+              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
+                <AsyncSelect
+                  name="organization"
+                  control={control}
+                  useInfiniteQueryFunction={useOrganizationsInfinite}
+                  labelKey="name"
+                  valueKey="id"
+                  wrapperClassName="sm:max-w-sm"
+                />
+              </dd>
+            </div>
+            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
+              <dt className="text-sm font-medium leading-6 ">Password</dt>
+              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
+                <FormField
+                  control={control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          id="password"
+                          autoComplete="new-password"
+                          placeholder="Password"
+                          type="password"
+                          className="sm:max-w-sm"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </dd>
+            </div>
+            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
+              <dt className="text-sm font-medium leading-6 ">Confirm password</dt>
+              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
+                <FormField
+                  control={control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          id="confirmPassword"
+                          autoComplete="new-password"
+                          placeholder="Confirm password"
+                          className="sm:max-w-sm"
+                          type="password"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

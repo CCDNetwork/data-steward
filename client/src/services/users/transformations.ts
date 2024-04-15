@@ -20,7 +20,7 @@ export const userToReq = (data: any): Omit<User, 'id'> => {
     email: data.email,
     firstName: data.firstName,
     lastName: data.lastName,
-    organizationId: data.organizationId,
+    organizationId: data.organization.id,
   };
 
   if (data.password) {
