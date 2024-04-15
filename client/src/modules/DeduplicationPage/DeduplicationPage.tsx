@@ -1,20 +1,27 @@
+import { useState } from 'react';
 import axios from 'axios';
 
 import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
-import { DUMMY_DATA } from '@/modules/DeduplicationPage/constants';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/providers/GlobalProvider';
+import { useDeduplicationListings } from '@/services/deduplication';
+import { usePagination } from '@/helpers/pagination';
 
 import { columns } from './columns';
-import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const DeduplicationPage = () => {
+  const queryClient = useQueryClient();
+  const pagination = usePagination();
+  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
   const { organization, token } = useAuth();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { data: listings, isLoading: queryLoading } = useDeduplicationListings(pagination);
 
   const handleUploadListClick = async () => {
     const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -52,6 +59,7 @@ export const DeduplicationPage = () => {
         document.body.appendChild(link);
         link.click();
         link.remove();
+        queryClient.invalidateQueries(['deduplication-listings']);
       } catch (error) {
         console.error('Failed to upload file');
       }
@@ -76,7 +84,17 @@ export const DeduplicationPage = () => {
         </div>
       }
     >
-      <DataTable data={DUMMY_DATA.data} isQueryLoading={false} columns={columns} />
+      <DataTable
+        data={listings?.data ?? []}
+        pagination={listings?.meta}
+        isQueryLoading={queryLoading}
+        currentPage={currentPage}
+        pageClicked={onPageChange}
+        pageSizeClicked={onPageSizeChange}
+        headerClicked={onSortChange}
+        onSearchChange={onSearchChange}
+        columns={columns}
+      />
       <input
         type="file"
         className="hidden"

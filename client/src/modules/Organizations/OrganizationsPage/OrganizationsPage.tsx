@@ -68,6 +68,7 @@ export const OrganizationsPage = () => {
         onAction={handleDeleteOrganization}
         confirmButtonLoading={deleteOrganization.isLoading}
         actionButtonVariant="destructive"
+        onCancel={() => setOrganizationToDelete(null)}
       />
     </PageContainer>
   );

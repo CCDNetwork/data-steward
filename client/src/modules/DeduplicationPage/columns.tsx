@@ -11,13 +11,28 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TableColumn } from '@/components/DataTable/types';
-import { DUMMY_TYPE } from '@/modules/DeduplicationPage/constants';
+import { DeduplicationListing } from '@/services/deduplication';
 
-export const columns: TableColumn<DUMMY_TYPE>[] = [
+export const columns: TableColumn<DeduplicationListing>[] = [
   {
-    accessorKey: 'uploadDate',
-    id: 'uploadDate',
-    header: 'Upload Date',
+    accessorKey: 'uploadUser',
+    id: 'uploadUser',
+    header: 'Upload User',
+    cell: ({ row }) => {
+      const { userCreated } = row.original;
+
+      return <div>{`${userCreated?.firstName ?? '-'} ${userCreated?.lastName ?? '-'}`}</div>;
+    },
+  },
+  {
+    accessorKey: 'fileName',
+    id: 'fileName',
+    header: 'File Name',
+  },
+  {
+    accessorKey: 'createdAt',
+    id: 'createdAt',
+    header: 'Created At',
     cell: ({ getValue }) => {
       return (
         <div className="flex flex-col">
@@ -27,19 +42,16 @@ export const columns: TableColumn<DUMMY_TYPE>[] = [
     },
   },
   {
-    accessorKey: 'uploadUser',
-    id: 'uploadUser',
-    header: 'Upload User',
-  },
-  {
-    accessorKey: 'filename',
-    id: 'filename',
-    header: 'Filename',
-  },
-  {
-    accessorKey: 'duplicates',
-    id: 'duplicates',
-    header: 'Duplicates',
+    accessorKey: 'updatedAt',
+    id: 'updatedAt',
+    header: 'Updated At',
+    cell: ({ getValue }) => {
+      return (
+        <div className="flex flex-col">
+          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy')}</span>
+        </div>
+      );
+    },
   },
   {
     id: 'actions',

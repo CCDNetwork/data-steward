@@ -20,7 +20,7 @@ export const UserPage = () => {
   const { id: userId } = useIdFromParams();
 
   const { data: userData, isLoading: queryLoading } = useUser({ id: userId, isCreate: false });
-  const { editUser } = useUserMutation();
+  const { patchUser } = useUserMutation();
 
   const form = useForm<UserEditFormData>({
     defaultValues: defaultUserEditFormFormValues,
@@ -38,7 +38,7 @@ export const UserPage = () => {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      await editUser.mutateAsync({ payload: values, userId });
+      await patchUser.mutateAsync({ data: values, userId });
       toast({
         title: 'Success!',
         variant: 'default',
@@ -65,8 +65,8 @@ export const UserPage = () => {
         <Button
           type="submit"
           onClick={onSubmit}
-          isLoading={editUser.isLoading}
-          disabled={formState.isSubmitting || editUser.isLoading || !formState.isDirty}
+          isLoading={patchUser.isLoading}
+          disabled={formState.isSubmitting || patchUser.isLoading || !formState.isDirty}
         >
           Save
         </Button>

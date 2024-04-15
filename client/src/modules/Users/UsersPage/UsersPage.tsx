@@ -67,6 +67,7 @@ export const UsersPage = () => {
         onAction={handleDeleteUser}
         confirmButtonLoading={deleteUser.isLoading}
         actionButtonVariant="destructive"
+        onCancel={() => setUserToDelete(null)}
       />
     </PageContainer>
   );

@@ -18,6 +18,7 @@ interface Props {
   confirmButtonLabel?: string;
   confirmButtonLoading?: boolean;
   actionButtonVariant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  onCancel: () => void;
   onAction: () => Promise<void>;
 }
 
@@ -29,6 +30,7 @@ export const ConfirmationDialog = ({
   cancelButtonLabel = 'Cancel',
   confirmButtonLoading,
   actionButtonVariant = 'default',
+  onCancel,
   onAction,
 }: Props) => {
   return (
@@ -39,7 +41,7 @@ export const ConfirmationDialog = ({
           <AlertDialogDescription>{body}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{cancelButtonLabel}</AlertDialogCancel>
+          <AlertDialogCancel onClick={onCancel}>{cancelButtonLabel}</AlertDialogCancel>
           <Button
             type="button"
             variant={actionButtonVariant}
