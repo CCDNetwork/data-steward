@@ -9,11 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
 import { Button } from '@/components/ui/button';
 import { Organization } from '@/services/organizations';
 
-export const columns = (): TableColumn<Organization>[] => [
+export const columns = (
+  setOrganizationToDelete: React.Dispatch<React.SetStateAction<Organization | null>>,
+): TableColumn<Organization>[] => [
   {
     accessorKey: 'name',
     id: 'name',
@@ -22,7 +23,7 @@ export const columns = (): TableColumn<Organization>[] => [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const reference = row.original;
+      const organization = row.original;
 
       return (
         <div className="text-right">
@@ -38,13 +39,21 @@ export const columns = (): TableColumn<Organization>[] => [
               <DropdownMenuItem
                 onClick={(e: React.SyntheticEvent) => {
                   e.stopPropagation();
-                  navigator.clipboard.writeText(reference.id);
+                  navigator.clipboard.writeText(organization.id);
                 }}
               >
                 Copy ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-500 focus:text-white focus:bg-red-500">Delete</DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-red-500 focus:text-white focus:bg-red-500"
+                onClick={(e: React.SyntheticEvent) => {
+                  e.stopPropagation();
+                  setOrganizationToDelete(organization);
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

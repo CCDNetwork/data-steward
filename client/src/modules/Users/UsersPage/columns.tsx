@@ -12,7 +12,7 @@ import {
 import { User } from '@/services/users';
 import { Button } from '@/components/ui/button';
 
-export const columns = (): TableColumn<User>[] => [
+export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<User | null>>): TableColumn<User>[] => [
   {
     accessorKey: 'firstName',
     id: 'firstName',
@@ -41,7 +41,7 @@ export const columns = (): TableColumn<User>[] => [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const reference = row.original;
+      const user = row.original;
 
       return (
         <div className="text-right">
@@ -54,9 +54,24 @@ export const columns = (): TableColumn<User>[] => [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(reference.id)}>Copy ID</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e: React.SyntheticEvent) => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(user.id);
+                }}
+              >
+                Copy ID
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-500">Delete</DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-red-500 focus:text-white focus:bg-red-500"
+                onClick={(e: React.SyntheticEvent) => {
+                  e.stopPropagation();
+                  setUserToDelete(user);
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

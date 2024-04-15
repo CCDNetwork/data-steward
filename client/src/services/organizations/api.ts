@@ -102,7 +102,7 @@ export const useOrganizationMutation = () => {
     addOrganization: useMutation(postOrganization, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organizations]),
     }),
-    removeOrganization: useMutation(deleteOrganization, {
+    deleteOrganization: useMutation(deleteOrganization, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organizations]),
     }),
   };
