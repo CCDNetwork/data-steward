@@ -15,6 +15,7 @@ public class Mappings : Profile
         CreateMap<Organization, OrganizationResponse>();
         CreateMap<Organization, OrganizationUserResponse>();
         CreateMap<OrganizationUpdateRequest, Organization>();
+        CreateMap<OrganizationAddRequest, Organization>();
 
         CreateMap<UserAddRequest, User>();
         CreateMap<UserUpdateRequest, User>();

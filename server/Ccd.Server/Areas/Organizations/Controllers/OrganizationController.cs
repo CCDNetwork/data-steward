@@ -30,20 +30,6 @@ public class OrganizationController : ControllerBaseExtended
         return Ok(organizations);
     }
 
-    [HttpGet("me")]
-    [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult<OrganizationResponse>> GetCurrentOrganization()
-    {
-        return await _organizationService.GetOrganizationApi(this.OrganizationId);
-    }
-
-    [HttpPut("me")]
-    [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult<OrganizationResponse>> UpdateCurrentOrganization(OrganizationUpdateRequest model)
-    {
-        return await Update(model, this.OrganizationId);
-    }
-
     [HttpGet("{id}")]
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<OrganizationResponse>> GetOrganization(Guid id)
@@ -54,6 +40,19 @@ public class OrganizationController : ControllerBaseExtended
             throw new NotFoundException();
 
         return Ok(organization);
+    }
+
+
+    [HttpPost]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult<OrganizationResponse>> Add([FromBody] OrganizationAddRequest model)
+    {
+        var organization = _mapper.Map<Organization>(model);
+
+        var newOrganizaiton = await _organizationService.AddOrganization(organization);
+        var result = await _organizationService.GetOrganizationApi(newOrganizaiton.Id);
+
+        return Ok(result);
     }
 
     [HttpPut("{id}")]
@@ -88,5 +87,19 @@ public class OrganizationController : ControllerBaseExtended
         await _organizationService.DeleteOrganization(organization);
 
         return Ok(result);
+    }
+
+    [HttpGet("me")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult<OrganizationResponse>> GetCurrentOrganization()
+    {
+        return await _organizationService.GetOrganizationApi(this.OrganizationId);
+    }
+
+    [HttpPut("me")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult<OrganizationResponse>> UpdateCurrentOrganization(OrganizationUpdateRequest model)
+    {
+        return await Update(model, this.OrganizationId);
     }
 }
