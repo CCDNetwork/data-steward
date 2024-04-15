@@ -2,20 +2,19 @@ import axios from 'axios';
 
 import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
-import { usePagination } from '@/helpers/pagination';
 import { DUMMY_DATA } from '@/modules/DeduplicationPage/constants';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/providers/GlobalProvider';
 
 import { columns } from './columns';
+import { useState } from 'react';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const DeduplicationPage = () => {
-  const pagination = usePagination();
   const { organization } = useAuth();
 
-  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleUploadListClick = async () => {
     const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -27,13 +26,14 @@ export const DeduplicationPage = () => {
     fileInput.click();
   };
 
-  const handleUploadChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'single' | 'multiple') => {
+    setIsLoading(true);
     const file = e.target.files?.[0];
 
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('type', 'single');
+      formData.append('type', type);
 
       try {
         const response = await axios.post(`${API_URL}/api/v1/deduplication/deduplicate`, formData, {
@@ -57,42 +57,13 @@ export const DeduplicationPage = () => {
 
       e.target.value = '';
     }
-  };
-  const handleUploadRevisedListChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'multiple');
-
-      try {
-        const response = await axios.post(`${API_URL}/api/v1/deduplication/deduplicate`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'organization-id': organization?.id,
-          },
-          responseType: 'arraybuffer',
-        });
-
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'deduplication.' + file.name.split('.').pop());
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      } catch (error) {
-        console.error('Failed to upload file');
-      }
-
-      e.target.value = '';
-    }
+    setIsLoading(false);
   };
 
   return (
     <PageContainer
       pageTitle="Deduplication"
+      isLoading={isLoading}
       headerNode={
         <div className="flex gap-3">
           <Button type="button" onClick={handleUploadListClick}>
@@ -104,19 +75,19 @@ export const DeduplicationPage = () => {
         </div>
       }
     >
-      <DataTable
-        data={DUMMY_DATA.data}
-        pagination={DUMMY_DATA.meta}
-        isQueryLoading={false}
-        currentPage={currentPage}
-        pageClicked={onPageChange}
-        pageSizeClicked={onPageSizeChange}
-        headerClicked={onSortChange}
-        onSearchChange={onSearchChange}
-        columns={columns}
+      <DataTable data={DUMMY_DATA.data} isQueryLoading={false} columns={columns} />
+      <input
+        type="file"
+        className="hidden"
+        id="file-input"
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadChange(e, 'single')}
       />
-      <input type="file" className="hidden" id="file-input" onChange={handleUploadChange} />
-      <input type="file" className="hidden" id="file-input-revised" onChange={handleUploadRevisedListChange} />
+      <input
+        type="file"
+        className="hidden"
+        id="file-input-revised"
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleUploadChange(e, 'multiple')}
+      />
     </PageContainer>
   );
 };

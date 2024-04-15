@@ -75,12 +75,14 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex flex-1 pb-4 justify-between items-center">
-        <Input
-          type="search"
-          placeholder="Search..."
-          className="max-w-[250px]"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange?.(e.target.value)}
-        />
+        {onSearchChange && (
+          <Input
+            type="search"
+            placeholder="Search..."
+            className="max-w-[250px]"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange?.(e.target.value)}
+          />
+        )}
       </div>
 
       <div className="border rounded-md">

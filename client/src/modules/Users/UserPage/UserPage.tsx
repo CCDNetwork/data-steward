@@ -55,6 +55,8 @@ export const UserPage = () => {
     <PageContainer
       pageTitle="User Information"
       pageSubtitle="Personal details"
+      containerClassName="sm:p-6 p-0 pt-6"
+      headerClassName="sm:px-0 px-6"
       isLoading={queryLoading}
       headerNode={
         <Button
@@ -70,7 +72,7 @@ export const UserPage = () => {
       <Form {...form}>
         <div className="mt-6 border-t border-border/80">
           <dl className="divide-y divide-border/80">
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-0">
+            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
               <dt className="text-sm font-medium leading-6">First Name</dt>
               <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
                 <FormField
@@ -87,7 +89,7 @@ export const UserPage = () => {
                 />
               </dd>
             </div>
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-0">
+            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
               <dt className="text-sm font-medium leading-6 ">Last Name</dt>
               <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
                 <FormField
@@ -104,7 +106,7 @@ export const UserPage = () => {
                 />
               </dd>
             </div>
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-0">
+            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
               <dt className="text-sm font-medium leading-6 ">Email address</dt>
               <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
                 <FormField

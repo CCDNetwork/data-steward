@@ -89,13 +89,13 @@ export const useOrganizationMutation = () => {
 
   return {
     editOrganizationMe: useMutation(putOrganizationMe, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organization]),
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organizations]),
     }),
     editOrganization: useMutation(putOrganization, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organization]),
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organizations]),
     }),
     addOrganization: useMutation(postOrganization, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organization]),
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organizations]),
     }),
   };
 };

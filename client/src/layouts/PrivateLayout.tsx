@@ -129,8 +129,8 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
             <Transition.Child
               className="transition-all duration-300 overflow-hidden"
               enterFrom="transform scale-95 opacity-0 max-h-0"
-              enterTo="transform scale-100 opacity-100 max-h-96"
-              leaveFrom="transform scale-100 opacity-100 max-h-96"
+              enterTo="transform scale-100 opacity-100 max-h-[410px]"
+              leaveFrom="transform scale-100 opacity-100 max-h-[410px]"
               leaveTo="transform scale-95 opacity-0 max-h-0"
             >
               <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">

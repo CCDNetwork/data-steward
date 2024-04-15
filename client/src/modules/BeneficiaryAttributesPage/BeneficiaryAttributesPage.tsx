@@ -1,7 +1,5 @@
 import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
-import { usePagination } from '@/helpers/pagination';
-import { DUMMY_DATA } from '@/modules/DeduplicationPage/constants';
 import {
   BeneficiaryAttribute,
   useBeneficiaryAttributes,
@@ -12,8 +10,6 @@ import { columns } from './columns';
 import { toast } from '@/components/ui/use-toast';
 
 export const BeneficiaryAttributesPage = () => {
-  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = usePagination();
-
   const { data: beneficiaryAttributes } = useBeneficiaryAttributes();
   const { toggleDeduplication } = useBeneficiaryAttributesMutation();
 
@@ -38,13 +34,7 @@ export const BeneficiaryAttributesPage = () => {
     <PageContainer pageTitle="Beneficiary Attributes">
       <DataTable
         data={beneficiaryAttributes ?? []}
-        pagination={DUMMY_DATA.meta}
         isQueryLoading={false}
-        currentPage={currentPage}
-        pageClicked={onPageChange}
-        pageSizeClicked={onPageSizeChange}
-        headerClicked={onSortChange}
-        onSearchChange={onSearchChange}
         columns={columns(onDeduplicationToggleClick)}
       />
     </PageContainer>
