@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
 using Ccd.Server.Notifications;
+using Ccd.Server.Users;
 
 namespace Ccd.Server.Deduplication;
 
@@ -10,17 +11,23 @@ namespace Ccd.Server.Deduplication;
 [Route("/api/v1/deduplication")]
 public class DeduplicationController : ControllerBaseExtended
 {
-    private readonly IMapper _mapper;
     private readonly DeduplicationService _deduplicationService;
 
-    public DeduplicationController(IMapper mapper, DeduplicationService deduplicationService)
+    public DeduplicationController(DeduplicationService deduplicationService)
     {
-        _mapper = mapper;
         _deduplicationService = deduplicationService;
     }
 
+    [HttpGet("listings")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult> GetAllListings([FromQuery] RequestParameters requestParameters)
+    {
+        var listings = await _deduplicationService.GetAllListings(this.OrganizationId, requestParameters);
+        return Ok(listings);
+    }
+
     [HttpPost("deduplicate")]
-    // [PermissionLevel(UserRole.User)]
+    [PermissionLevel(UserRole.User)]
     public async Task<ActionResult> Deduplicate([FromForm] DeduplicationListAddRequest model)
     {
         if (!DeduplicationType.IsValid(model.Type))

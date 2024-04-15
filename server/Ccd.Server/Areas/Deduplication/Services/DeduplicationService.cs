@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Data;
+using Ccd.Server.Deduplication.Controllers.ControllerModels;
 using Ccd.Server.Helpers;
 using ClosedXML.Excel;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Deduplication;
@@ -22,6 +24,29 @@ public class DeduplicationService
     {
         _context = context;
         _mapper = mapper;
+    }
+
+    private readonly string _selectSql =
+    $@"SELECT DISTINCT ON (l.id)
+                 l.*
+            FROM
+                 list as l
+            WHERE
+                (@organizationId is null OR l.organization_id = @organizationId)";
+
+    private object getSelectSqlParams(Guid? organizationId = null)
+    {
+        return new { organizationId };
+    }
+
+    public async Task<PagedApiResponse<DeduplicationListResponse>> GetAllListings(Guid organizationId, RequestParameters requestParameters)
+    {
+        return await PagedApiResponse<DeduplicationListResponse>.GetFromSql(
+            _context,
+            _selectSql,
+            getSelectSqlParams(organizationId),
+            requestParameters
+        );
     }
 
     public async Task<byte[]> AddList(DeduplicationListAddRequest model)
