@@ -57,6 +57,7 @@ export const OrganizationPage = () => {
       pageTitle="Organization Information"
       pageSubtitle="Details about organization"
       isLoading={queryLoading}
+      withBackButton
       headerNode={
         <Button
           type="submit"

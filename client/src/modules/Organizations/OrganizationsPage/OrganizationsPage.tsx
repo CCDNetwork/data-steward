@@ -9,6 +9,7 @@ import { AddOrganizationModal } from '@/modules/Organizations/OrganizationsPage/
 
 import { columns } from './columns';
 import { useOrganizations } from '@/services/organizations/api';
+import { APP_ROUTE } from '@/helpers/constants';
 
 export const OrganizationsPage = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const OrganizationsPage = () => {
   const { data: organizations, isLoading: queryLoading } = useOrganizations(pagination);
 
   const onOrganizationTableRowClick = (organizationRow: Organization) =>
-    navigate(`/organizations/${organizationRow.id}`);
+    navigate(`${APP_ROUTE.Organizations}/${organizationRow.id}`);
 
   return (
     <PageContainer pageTitle="Organizations" headerNode={<AddOrganizationModal />}>

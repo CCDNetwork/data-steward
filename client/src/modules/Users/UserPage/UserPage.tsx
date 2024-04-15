@@ -58,6 +58,7 @@ export const UserPage = () => {
       containerClassName="sm:p-6 p-0 pt-6"
       headerClassName="sm:px-0 px-6"
       isLoading={queryLoading}
+      withBackButton
       headerNode={
         <Button
           type="submit"

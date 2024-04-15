@@ -8,6 +8,7 @@ import { AddUserModal } from '@/modules/Users/UsersPage/components';
 import { User } from '@/services/users';
 
 import { columns } from './columns';
+import { APP_ROUTE } from '@/helpers/constants';
 
 export const UsersPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export const UsersPage = () => {
 
   const { data: users, isLoading: queryLoading } = useUsers(pagination);
 
-  const onUserTableRowClick = (userRow: User) => navigate(`/users/${userRow.id}`);
+  const onUserTableRowClick = (userRow: User) => navigate(`${APP_ROUTE.Users}/${userRow.id}`);
 
   return (
     <PageContainer pageTitle="Users" headerNode={<AddUserModal />}>

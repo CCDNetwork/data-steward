@@ -35,9 +35,16 @@ export const columns = (): TableColumn<Organization>[] => [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(reference.id)}>Copy ID</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e: React.SyntheticEvent) => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(reference.id);
+                }}
+              >
+                Copy ID
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-500">Delete</DropdownMenuItem>
+              <DropdownMenuItem className="text-red-500 focus:text-white focus:bg-red-500">Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

@@ -62,6 +62,11 @@ export const useOrganizationMe = ({ queryEnabled = false }: { queryEnabled: bool
   return useQuery([QueryKeys.Organization], fetchOrganizationMe, { enabled: queryEnabled });
 };
 
+const deleteOrganization = async (id: string): Promise<Organization> => {
+  const resp = await api.delete(`/organizations/${id}`);
+  return resToOrganization(resp.data);
+};
+
 //
 // GET HOOKS
 //
@@ -95,6 +100,9 @@ export const useOrganizationMutation = () => {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organizations]),
     }),
     addOrganization: useMutation(postOrganization, {
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organizations]),
+    }),
+    removeOrganization: useMutation(deleteOrganization, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Organizations]),
     }),
   };

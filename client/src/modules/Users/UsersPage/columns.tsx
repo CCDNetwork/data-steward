@@ -35,7 +35,7 @@ export const columns = (): TableColumn<User>[] => [
     cell: ({ row }) => {
       const { organizations } = row.original;
 
-      return <div>{organizations[0].name}</div>;
+      return <div>{organizations[0].name ?? '-'}</div>;
     },
   },
   {

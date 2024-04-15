@@ -11,7 +11,7 @@ export const resToUser = (res: any): User => {
     createdAt: res.createdAt ? new Date(res.createdAt) : null,
     role: res.role ?? '',
     language: res.language ?? '',
-    organizations: (res.organizations || []).map(resToOrganization),
+    organizations: res.organizations ? res.organizations.map(resToOrganization) : [],
   };
 };
 
