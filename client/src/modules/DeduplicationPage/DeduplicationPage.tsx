@@ -12,7 +12,7 @@ import { useState } from 'react';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const DeduplicationPage = () => {
-  const { organization } = useAuth();
+  const { organization, token } = useAuth();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -40,6 +40,7 @@ export const DeduplicationPage = () => {
           headers: {
             'Content-Type': 'multipart/form-data',
             'organization-id': organization?.id,
+            Authorization: `Bearer ${token}`,
           },
           responseType: 'arraybuffer',
         });

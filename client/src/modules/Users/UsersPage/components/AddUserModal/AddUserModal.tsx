@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SendHorizonal, UserPlus2 } from 'lucide-react';
+import { CheckIcon, Command, SendHorizonal, UserPlus2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -19,20 +19,32 @@ import { useUserMutation } from '@/services/users/api';
 import { toast } from '@/components/ui/use-toast';
 
 import { AddUserModalForm, AddUserModalFormSchema } from './validation';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/helpers/utils';
+import { CaretSortIcon } from '@radix-ui/react-icons';
+import { CommandInput, CommandEmpty, CommandGroup, CommandItem } from 'cmdk';
+import { useOrganizations } from '@/services/organizations/api';
+import { usePagination } from '@/helpers/pagination';
 
 export const AddUserModal = () => {
+  const pagination = usePagination();
   const [open, setOpen] = useState<boolean>(false);
   const form = useForm<AddUserModalForm>({
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
+      password: '',
+      confirmPassword: '',
+      organizationId: '',
     },
     mode: 'onSubmit',
     resolver: zodResolver(AddUserModalFormSchema),
   });
 
   const { control, handleSubmit, reset } = form;
+
+  const { data: organizations } = useOrganizations(pagination);
 
   const { addUser } = useUserMutation();
 
@@ -67,7 +79,7 @@ export const AddUserModal = () => {
           Add new
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Add a new user</DialogTitle>
           <DialogDescription>Submit user information below.</DialogDescription>
@@ -75,32 +87,34 @@ export const AddUserModal = () => {
         <Form {...form}>
           <form onSubmit={onSubmit}>
             <div className="grid grid-cols-1 gap-4">
-              <FormField
-                control={control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First name</FormLabel>
-                    <FormControl>
-                      <Input id="firstName" placeholder="John" type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last name</FormLabel>
-                    <FormControl>
-                      <Input id="lastName" placeholder="Doe" type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
+                <FormField
+                  control={control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First name</FormLabel>
+                      <FormControl>
+                        <Input id="firstName" placeholder="John" type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last name</FormLabel>
+                      <FormControl>
+                        <Input id="lastName" placeholder="Doe" type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={control}
                 name="email"
@@ -114,6 +128,98 @@ export const AddUserModal = () => {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="organizationId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Organization</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn('w-[200px] justify-between', !field.value && 'text-muted-foreground')}
+                          >
+                            {field.value
+                              ? organizations?.data?.find((organization) => organization.id === field.value)?.id
+                              : 'Select language'}
+                            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                          <CommandInput placeholder="Search framework..." className="h-9" />
+                          <CommandEmpty>No framework found.</CommandEmpty>
+                          <CommandGroup>
+                            {organizations?.data?.map((organization) => (
+                              <CommandItem
+                                value={organization.name}
+                                key={organization.id}
+                                onSelect={() => {
+                                  form.setValue('organizationId', organization.id);
+                                }}
+                              >
+                                {organization.name}
+                                <CheckIcon
+                                  className={cn(
+                                    'ml-auto h-4 w-4',
+                                    organization.id === field.value ? 'opacity-100' : 'opacity-0',
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
+                <FormField
+                  control={control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="password"
+                          autoComplete="new-password"
+                          placeholder="Password"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm password</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="confirmPassword"
+                          autoComplete="new-password"
+                          placeholder="Confirm password"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <DialogFooter>
                 <div className="w-full">
                   <Button
