@@ -64,8 +64,6 @@ export const AddUserModal = () => {
     reset();
   };
 
-  console.log(form.getValues());
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
