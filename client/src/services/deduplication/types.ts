@@ -15,6 +15,7 @@ export interface UserCreated {
 export interface DeduplicationListing {
   id: string;
   fileName: string;
+  duplicates: number;
   userCreated: UserCreated | null;
   createdAt: Date | null;
   updatedAt: Date | null;

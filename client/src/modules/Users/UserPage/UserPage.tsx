@@ -9,9 +9,8 @@ import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { AsyncSelect } from '@/components/AsyncSelect';
-import { useOrganizationsInfinite } from '@/services/organizations/api';
-import { Organization } from '@/services/organizations';
+// import { AsyncSelect } from '@/components/AsyncSelect';
+// import { useOrganizationsInfinite } from '@/services/organizations/api';
 
 import { dataToUserEditFormData } from './form-transformation';
 import { defaultUserEditFormFormValues } from './const';
@@ -23,7 +22,7 @@ export const UserPage = () => {
   const { data: userData, isLoading: queryLoading } = useUser({ id: userId, isCreate: false });
   const { patchUser } = useUserMutation();
 
-  const form = useForm<Omit<UserEditFormData, 'organization'> & { organization: Organization | null }>({
+  const form = useForm<UserEditFormData>({
     defaultValues: defaultUserEditFormFormValues,
     resolver: zodResolver(UserEditFormSchema),
   });
@@ -127,7 +126,7 @@ export const UserPage = () => {
                 />
               </dd>
             </div>
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
+            {/* <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
               <dt className="text-sm font-medium leading-6 ">Organization</dt>
               <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
                 <AsyncSelect
@@ -139,7 +138,7 @@ export const UserPage = () => {
                   wrapperClassName="sm:max-w-sm"
                 />
               </dd>
-            </div>
+            </div> */}
             <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
               <dt className="text-sm font-medium leading-6 ">Password</dt>
               <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">

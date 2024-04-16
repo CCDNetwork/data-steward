@@ -7,7 +7,6 @@ import { resToUser, userToReq } from './transformations';
 import { User, UserProfileRequestPayload } from './types';
 import { api } from '../api';
 import { UserEditFormData } from '@/modules/Users/UserPage/validations';
-import { Organization } from '@/services/organizations';
 
 enum QueryKeys {
   Users = 'users',
@@ -59,13 +58,7 @@ const putUserMe = async (data: UserProfileRequestPayload): Promise<User> => {
   return resToUser(resp.data);
 };
 
-const patchUser = async ({
-  userId,
-  data,
-}: {
-  userId: string;
-  data: Omit<UserEditFormData, 'organization'> & { organization: Organization | null };
-}): Promise<User> => {
+const patchUser = async ({ userId, data }: { userId: string; data: UserEditFormData }): Promise<User> => {
   const resp = await api.patch(`/users/${userId}`, userToReq(data));
   return resToUser(resp.data);
 };

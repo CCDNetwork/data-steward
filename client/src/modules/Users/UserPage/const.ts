@@ -4,5 +4,5 @@ export const defaultUserEditFormFormValues = {
   email: '',
   password: '',
   confirmPassword: '',
-  organization: null,
+  // organization: null,
 };

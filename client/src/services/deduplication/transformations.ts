@@ -20,6 +20,7 @@ export const resToDeduplicationListing = (res: any): DeduplicationListing => {
   return {
     id: res.id ?? '',
     fileName: res.fileName ?? '',
+    duplicates: res.duplicates ?? 0,
     userCreated: res.userCreated ? resToUserCreated(res.userCreated) : null,
     createdAt: res.createdAt ?? null,
     updatedAt: res.updatedAt ?? null,

@@ -30,6 +30,18 @@ export const columns: TableColumn<DeduplicationListing>[] = [
     header: 'File Name',
   },
   {
+    accessorKey: 'duplicates',
+    id: 'duplicates',
+    header: 'Duplicates',
+    cell: ({ getValue }) => {
+      return (
+        <div className="flex flex-col">
+          <span>{(getValue() as number) || 'none'}</span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'createdAt',
     id: 'createdAt',
     header: 'Created At',
