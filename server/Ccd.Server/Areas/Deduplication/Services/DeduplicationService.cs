@@ -11,7 +11,6 @@ using Ccd.Server.Deduplication.Controllers.ControllerModels;
 using Ccd.Server.Helpers;
 using Ccd.Server.Users;
 using ClosedXML.Excel;
-using Dapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Deduplication;
@@ -120,6 +119,7 @@ public class DeduplicationService
         var beneficionaries = _context.Beneficionary.Include(e => e.Organization).ToList();
         var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
         var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
+        var totalDuplicates = 0;
 
         var worksheet = workbook.Worksheet(1);
         var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
@@ -151,19 +151,22 @@ public class DeduplicationService
             worksheet.Cell(i, lastColumnIndex).Value = "NO";
             worksheet.Cell(i, lastColumnIndex + 1).Value = "";
 
-            beneficionaries.ForEach((e) =>
+            var duplicates = 0;
+            foreach (var e in beneficionaries)
             {
                 var exists = AreRecordsEqual(e, record, beneficiaryAttributes);
                 if (exists)
                 {
+                    duplicates++;
                     worksheet.Cell(i, lastColumnIndex).Value = "YES";
                     worksheet.Cell(i, lastColumnIndex + 1).Value = e.Organization.Name;
                 }
-            });
+            }
 
             var beneficionary = _mapper.Map<Beneficionary>(record);
             beneficionary.ListId = list.Id;
             beneficionary.OrganizationId = organizationId;
+            totalDuplicates += duplicates;
 
             newBeneficionaries.Add(beneficionary);
             deduplicationRecords.Add(record);
@@ -172,6 +175,8 @@ public class DeduplicationService
         using var memoryStream = new MemoryStream();
         workbook.SaveAs(memoryStream);
         var fileBytes = memoryStream.ToArray();
+
+        list.Duplicates = totalDuplicates;
 
         await _context.AddRangeAsync(newBeneficionaries);
         await _context.SaveChangesAsync();

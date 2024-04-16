@@ -14,6 +14,7 @@ public class List
     public Guid OrganizationId { get; set; }
     public Organization Organization { get; set; }
     public string FileName { get; set; }
+    public int Duplicates { get; set; }
 
     [ForeignKey("User")]
     public Guid? UserCreatedId { get; set; }
