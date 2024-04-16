@@ -90,7 +90,10 @@ export const AsyncSelect = <T,>({
   return (
     <div className={cn('relative rounded-md w-full react-select-container', wrapperClassName)}>
       {label && (
-        <label htmlFor={name} className={cn('block text-sm mb-2 font-medium', labelClassName)}>
+        <label
+          htmlFor={name}
+          className={cn('block text-sm mb-2 font-medium', { 'text-red-500': !!fieldState.error }, labelClassName)}
+        >
           {label}
         </label>
       )}
