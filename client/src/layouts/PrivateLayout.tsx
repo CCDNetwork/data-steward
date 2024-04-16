@@ -28,62 +28,6 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
     return <Navigate to={APP_ROUTE.SignIn} />;
   }
 
-  // return (
-  //   <div className="relative flex overflow-hidden">
-  //     <div className="flex w-fit md:w-[300px] z-10">
-  //       <div className="flex max-w-[300px] h-full grow flex-col gap-y-5 overflow-y-auto bg-secondary dark:bg-secondary/10 border-r border-border px-6">
-  //         <div className="flex mt-5 justify-center md:justify-start shrink-0 items-center">
-  //           <Link to="/" className="flex">
-  //             <img className="h-10 md:mb-1 w-auto" src="https://placehold.co/400" loading="lazy" alt="company-logo" />
-  //             <span className="hidden md:block font-altone pl-2 text-[38px] leading-none align-text-bottom self-end">
-  //               Application
-  //             </span>
-  //           </Link>
-  //         </div>
-  //         <nav className="flex flex-1 flex-col">
-  //           <ul role="list" className="flex flex-1 flex-col gap-y-7">
-  //             <li>
-  //               <ul role="list" className="-mx-2 space-y-2 flex flex-col items-center md:block md:items-baseline">
-  //                 {navigationItemsFilteredByRole.map((item) => (
-  //                   <li key={item.name}>
-  //                     <NavLink
-  //                       to={item.to}
-  //                       className={cn(
-  //                         'group flex gap-x-3 w-fit md:w-full rounded-md p-2 text-sm leading-6 font-semibold transition-colors duration-150 ease-linear',
-  //                         { 'bg-primary text-primary-foreground': pathname.includes(item.to) },
-  //                         {
-  //                           'text-secondary-foreground hover:bg-primary/10': !pathname.includes(item.to),
-  //                         },
-  //                       )}
-  //                     >
-  //                       <item.icon className="h-6 w-6 shrink-0 " aria-hidden="true" />
-  //                       <p className="hidden md:block">{item.name}</p>
-  //                       {item.count ? (
-  //                         <span
-  //                           className={cn(
-  //                             'hidden md:block ml-auto w-9 min-w-max whitespace-nowrap rounded-full bg-primary px-2.5 py-0.5 text-center text-xs font-medium leading-5 text-primary-foreground',
-  //                             { 'bg-secondary text-primary': pathname.includes(item.to) },
-  //                           )}
-  //                           aria-hidden="true"
-  //                         >
-  //                           {item.count}
-  //                         </span>
-  //                       ) : null}
-  //                     </NavLink>
-  //                   </li>
-  //                 ))}
-  //               </ul>
-  //             </li>
-  //             <MyProfileItemWithDropdown />
-  //           </ul>
-  //         </nav>
-  //       </div>
-  //     </div>
-
-  //     <main className="relative flex flex-1 flex-col h-[100svh] sm:h-screen overflow-x-auto">{children}</main>
-  //   </div>
-  // );
-
   return (
     <div className="min-h-[100svh]">
       <nav className="bg-primary">
@@ -103,11 +47,11 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
                       className={cn(
                         'rounded-md px-3 py-2 text-sm font-medium transition-colors text-white duration-150 ease-linear',
                         {
-                          'bg-foreground/20 text-primary-foreground dark:text-white dark:bg-blue-600':
+                          'bg-foreground/20 text-primary-foreground dark:text-white dark:bg-blue-700':
                             pathname.includes(item.to),
                         },
                         {
-                          'hover:bg-secondary-foreground/5 hover:dark:bg-blue-600/40': !pathname.includes(item.to),
+                          'hover:bg-secondary-foreground/5 hover:dark:bg-blue-700/40': !pathname.includes(item.to),
                         },
                       )}
                     >

@@ -16,6 +16,10 @@
   }
 }
 
+.react-select-container input {
+  --tw-ring-shadow: 0 0 #000 !important;
+}
+
 /* BLUE #3B81F6 */
 
 @layer base {
@@ -49,7 +53,9 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
+    /* commented line is a lighter shade of blue and the one below is the same as for light theme */
+    /* --primary: 217.2 91.2% 59.8%; */
+    --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;

@@ -1,9 +1,12 @@
 import * as z from 'zod';
 
-const OrganizationSchema = z.object({
-  id: z.string().min(1, { message: 'Organization Id is required' }),
-  name: z.string().min(1, { message: 'Organization name is required' }),
-});
+const OrganizationSchema = z.object(
+  {
+    id: z.string().min(1, { message: 'Organization Id is required' }),
+    name: z.string().min(1, { message: 'Organization name is required' }),
+  },
+  { invalid_type_error: 'Organization is required' },
+);
 
 export const AddUserModalFormSchema = z
   .object({
@@ -20,7 +23,7 @@ export const AddUserModalFormSchema = z
       { message: 'Password must contain at least 8 characters' },
     ),
     confirmPassword: z.string().optional(),
-    organization: z.union([OrganizationSchema.nullable(), z.literal(null)]),
+    organization: OrganizationSchema,
   })
   .refine(
     (data) => {

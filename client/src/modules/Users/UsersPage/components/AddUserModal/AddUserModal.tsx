@@ -17,14 +17,15 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useUserMutation } from '@/services/users/api';
 import { toast } from '@/components/ui/use-toast';
-
-import { AddUserModalForm, AddUserModalFormSchema } from './validation';
 import { AsyncSelect } from '@/components/AsyncSelect';
 import { useOrganizationsInfinite } from '@/services/organizations/api';
 
+import { AddUserModalForm, AddUserModalFormSchema } from './validation';
+import { Organization } from '@/services/organizations';
+
 export const AddUserModal = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const form = useForm<AddUserModalForm>({
+  const form = useForm<Omit<AddUserModalForm, 'organization'> & { organization: Organization | null }>({
     defaultValues: {
       firstName: '',
       lastName: '',

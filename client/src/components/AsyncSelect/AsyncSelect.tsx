@@ -90,7 +90,7 @@ export const AsyncSelect = <T,>({
   return (
     <div className={cn('relative rounded-md w-full react-select-container', wrapperClassName)}>
       {label && (
-        <label htmlFor={name} className={cn('block text-sm mb-1 font-medium', labelClassName)}>
+        <label htmlFor={name} className={cn('block text-sm mb-2 font-medium', labelClassName)}>
           {label}
         </label>
       )}
@@ -108,14 +108,41 @@ export const AsyncSelect = <T,>({
         isDisabled={disabled}
         isLoading={isOpen && query?.isLoading}
         onInputChange={handleInputChange}
+        theme={(theme) => ({
+          ...theme,
+          borderRadius: 6,
+          colors: {
+            primary: 'bg-primary',
+            danger: 'bg-destructive',
+            primary25: 'bg-primary/20',
+            primary50: 'bg-primary/50',
+            primary75: 'bg-primary/80',
+            neutral0: 'bg-transparent',
+            neutral5: 'bg-background/5',
+            neutral10: 'bg-background/10',
+            neutral20: 'bg-background/20',
+            neutral30: 'bg-background/30',
+            neutral40: 'bg-background/40',
+            neutral50: 'bg-background/50',
+            neutral60: 'bg-background/60',
+            neutral70: 'bg-background/70',
+            neutral80: 'bg-background/80',
+            neutral90: 'bg-background/90',
+            dangerLight: 'bg-destructive/80',
+          },
+        })}
         classNames={{
+          control: (state) =>
+            state.isFocused ? 'border border-primary outline-none ring-1 ring-ring' : 'border-border',
           input: () => 'text-sm',
+          indicatorSeparator: () => 'bg-muted-foreground',
           singleValue: () => 'text-sm',
-          placeholder: () => 'text-sm',
-          menu: () => 'text-sm',
+          placeholder: () => 'text-sm text-muted-foreground',
+          menu: () => 'text-sm bg-background border border-border',
+          option: (state) => (state.isSelected ? 'text-primary font-bold hover:bg-muted' : 'bg-muted'),
         }}
       />
-      {!!fieldState.error && <p className="text-error-main text-sm mt-0.5 font-medium">{fieldState.error.message}</p>}
+      {!!fieldState.error && <p className="text-red-500 text-[0.8rem] mt-2 font-medium">{fieldState.error.message}</p>}
     </div>
   );
 };
