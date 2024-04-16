@@ -2,7 +2,7 @@ import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpe
 import { api } from '@/services';
 import { resToDeduplicationListing } from '@/services/deduplication/transformations';
 import { DeduplicationListing } from '@/services/deduplication/types';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 enum QueryKeys {
   DeduplicationListings = 'deduplication-listings',
@@ -20,9 +20,20 @@ export const fetchDeduplicationListings = async (
   };
 };
 
+const deleteDeduplicationData = async (): Promise<object> => {
+  const resp = await api.delete('/deduplication');
+  return resp.data;
+};
+
 export const useDeduplicationListings = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
   return useQuery(
     [QueryKeys.DeduplicationListings, currentPage, pageSize, sortBy, sortDirection, debouncedSearch],
     () => fetchDeduplicationListings({ page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch }),
   );
+};
+
+export const useDeduplicationMutation = () => {
+  return {
+    wipeDeduplicationData: useMutation(deleteDeduplicationData),
+  };
 };
