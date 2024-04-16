@@ -8,6 +8,7 @@ public class DeduplicationListResponse
 {
     public Guid Id { get; set; }
     public string FileName { get; set; }
+    public int Duplicates { get; set; }
 
     [JsonIgnore]
     public Guid? UserCreatedId { get; set; }

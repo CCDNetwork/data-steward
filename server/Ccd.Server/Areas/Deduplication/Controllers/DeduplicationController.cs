@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
 using Ccd.Server.Notifications;
 using Ccd.Server.Users;
+using Ccd.Server.Deduplication.Controllers.ControllerModels;
 
 namespace Ccd.Server.Deduplication;
 
@@ -20,7 +21,7 @@ public class DeduplicationController : ControllerBaseExtended
 
     [HttpGet("listings")]
     [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult> GetAllListings([FromQuery] RequestParameters requestParameters)
+    public async Task<ActionResult<DeduplicationListResponse>> GetAllListings([FromQuery] RequestParameters requestParameters)
     {
         var listings = await _deduplicationService.GetAllListings(this.OrganizationId, requestParameters);
         return Ok(listings);
