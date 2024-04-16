@@ -47,4 +47,13 @@ public class DeduplicationController : ControllerBaseExtended
 
         return File(fileBytes, "application/octet-stream", model.File.FileName);
     }
+
+    // TODO: Just for demo purposes
+    [HttpDelete]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult> DeleteListings()
+    {
+        await _deduplicationService.DeleteListings();
+        return NoContent();
+    }
 }

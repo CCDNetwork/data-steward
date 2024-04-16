@@ -184,7 +184,13 @@ public class DeduplicationService
         return fileBytes;
     }
 
-    public bool AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
+    public async Task DeleteListings()
+    {
+        await _context.Database.ExecuteSqlRawAsync("DELETE FROM beneficionary");
+        await _context.Database.ExecuteSqlRawAsync("DELETE FROM list");
+    }
+
+    private static bool AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
     {
         foreach (var attribute in beneficiaryAttributes)
         {
@@ -206,7 +212,7 @@ public class DeduplicationService
         return true;
     }
 
-    public bool AreRecordsEqual(Beneficionary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
+    private static bool AreRecordsEqual(Beneficionary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
     {
         foreach (var attribute in beneficiaryAttributes)
         {
