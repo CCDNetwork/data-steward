@@ -9,11 +9,12 @@ import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { AsyncSelect } from '@/components/AsyncSelect';
+import { useOrganizationsInfinite } from '@/services/organizations/api';
+import { Organization } from '@/services/organizations';
 
 import { dataToUserEditFormData } from './form-transformation';
 import { defaultUserEditFormFormValues } from './const';
-import { AsyncSelect } from '@/components/AsyncSelect';
-import { useOrganizationsInfinite } from '@/services/organizations/api';
 import { UserEditFormData, UserEditFormSchema } from './validations';
 
 export const UserPage = () => {
@@ -22,7 +23,7 @@ export const UserPage = () => {
   const { data: userData, isLoading: queryLoading } = useUser({ id: userId, isCreate: false });
   const { patchUser } = useUserMutation();
 
-  const form = useForm<UserEditFormData>({
+  const form = useForm<Omit<UserEditFormData, 'organization'> & { organization: Organization | null }>({
     defaultValues: defaultUserEditFormFormValues,
     resolver: zodResolver(UserEditFormSchema),
   });
