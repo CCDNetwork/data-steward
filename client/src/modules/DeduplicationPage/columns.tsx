@@ -48,7 +48,7 @@ export const columns: TableColumn<DeduplicationListing>[] = [
     cell: ({ getValue }) => {
       return (
         <div className="flex flex-col">
-          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy')}</span>
+          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm:ss')}</span>
         </div>
       );
     },
@@ -60,7 +60,7 @@ export const columns: TableColumn<DeduplicationListing>[] = [
     cell: ({ getValue }) => {
       return (
         <div className="flex flex-col">
-          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy')}</span>
+          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm:ss')}</span>
         </div>
       );
     },
