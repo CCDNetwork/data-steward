@@ -1,6 +1,0 @@
-{
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "editor.quickSuggestions": {
-    "strings": true
-  }
-}
