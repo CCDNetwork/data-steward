@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { TableColumn } from '@/components/DataTable/types';
 import { ChevronsUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/helpers/utils';
 
 interface DataTableProps<TData, TValue> {
   data: TData[];
@@ -122,7 +123,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className="truncate"
+                  className={cn('truncate', { 'cursor-pointer': !!onRowClick })}
                   onClick={() => (onRowClick ? onRowClick(row.original) : null)}
                 >
                   {row.getVisibleCells().map((cell) => (

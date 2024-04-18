@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
@@ -36,15 +35,6 @@ export const columns = (
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={(e: React.SyntheticEvent) => {
-                  e.stopPropagation();
-                  navigator.clipboard.writeText(organization.id);
-                }}
-              >
-                Copy ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-500 focus:text-white focus:bg-red-500"
                 onClick={(e: React.SyntheticEvent) => {

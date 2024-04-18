@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { User } from '@/services/users';
@@ -54,15 +53,6 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={(e: React.SyntheticEvent) => {
-                  e.stopPropagation();
-                  navigator.clipboard.writeText(user.id);
-                }}
-              >
-                Copy ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-500 focus:text-white focus:bg-red-500"
                 onClick={(e: React.SyntheticEvent) => {
