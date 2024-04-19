@@ -5,12 +5,12 @@ import {
   useBeneficiaryAttributes,
   useBeneficiaryAttributesMutation,
 } from '@/services/beneficiaryAttribute';
-
-import { columns } from './columns';
 import { toast } from '@/components/ui/use-toast';
 
+import { columns } from './columns';
+
 export const BeneficiaryAttributesPage = () => {
-  const { data: beneficiaryAttributes } = useBeneficiaryAttributes();
+  const { data: beneficiaryAttributes, isLoading: beneficiaryAttributesLoading } = useBeneficiaryAttributes();
   const { toggleDeduplication } = useBeneficiaryAttributesMutation();
 
   const onDeduplicationToggleClick = async ({ id, usedForDeduplication }: BeneficiaryAttribute) => {
@@ -31,7 +31,7 @@ export const BeneficiaryAttributesPage = () => {
   };
 
   return (
-    <PageContainer pageTitle="Beneficiary Attributes">
+    <PageContainer pageTitle="Beneficiary Attributes" isLoading={beneficiaryAttributesLoading}>
       <DataTable
         data={beneficiaryAttributes ?? []}
         isQueryLoading={false}
