@@ -133,7 +133,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
                       },
                     )}
                   >
-                    Your Profile
+                    My Profile
                   </NavLink>
                   <button
                     type="button"

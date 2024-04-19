@@ -8,8 +8,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User } from '@/services/users';
+import { User, UserRole } from '@/services/users';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/helpers/utils';
 
 export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<User | null>>): TableColumn<User>[] => [
   {
@@ -35,6 +37,26 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
       const { organizations } = row.original;
 
       return <div>{organizations[0].name ?? '-'}</div>;
+    },
+  },
+  {
+    accessorKey: 'role',
+    id: 'role',
+    header: 'Role',
+    cell: ({ row }) => {
+      const { role } = row.original;
+
+      return (
+        <Badge
+          className={cn(
+            'capitalize',
+            { 'bg-blue-600 dark:text-white hover:bg-blue-600': role === UserRole.Admin },
+            { 'bg-green-600 dark:text-white hover:bg-green-600': role === UserRole.User },
+          )}
+        >
+          {role}
+        </Badge>
+      );
     },
   },
   {
