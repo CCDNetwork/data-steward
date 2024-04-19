@@ -124,6 +124,16 @@ public class DeduplicationService
         var worksheet = workbook.Worksheet(1);
         var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
 
+        // Add new duplicate header
+        worksheet.Cell(1, lastColumnIndex).Style.Fill.BackgroundColor = XLColor.Gainsboro;
+        worksheet.Cell(1, lastColumnIndex).Style.Font.Bold = true;
+        worksheet.Cell(1, lastColumnIndex).Value = "duplicate";
+
+        // Add new organization header
+        worksheet.Cell(1, lastColumnIndex + 1).Style.Fill.BackgroundColor = XLColor.Gainsboro;
+        worksheet.Cell(1, lastColumnIndex + 1).Style.Font.Bold = true;
+        worksheet.Cell(1, lastColumnIndex + 1).Value = "organization";
+
         var deduplicationRecords = new List<DeduplicationRecord>();
         var newBeneficionaries = new List<Beneficionary>();
 
