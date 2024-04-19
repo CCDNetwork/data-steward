@@ -79,7 +79,7 @@ export const DeduplicationPage = () => {
             Internal deduplication
           </Button>
           <Button type="button" onClick={handleUploadRevisedListClick}>
-            Full deduplication
+            Registry deduplication
           </Button>
         </div>
       }
