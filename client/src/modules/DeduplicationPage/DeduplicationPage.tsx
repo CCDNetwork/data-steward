@@ -76,10 +76,10 @@ export const DeduplicationPage = () => {
       headerNode={
         <div className="flex gap-3">
           <Button type="button" onClick={handleUploadListClick}>
-            Upload list
+            Internal deduplication
           </Button>
           <Button type="button" onClick={handleUploadRevisedListClick}>
-            Upload revised list
+            Full deduplication
           </Button>
         </div>
       }
