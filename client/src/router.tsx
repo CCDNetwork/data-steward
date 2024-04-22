@@ -73,10 +73,6 @@ export const router = createBrowserRouter(
       <Route path={APP_ROUTE.ForgotPassword} element={<ForgotPasswordPage />} />
       <Route path={APP_ROUTE.ResetPassword} element={<PasswordResetPage />} />
       <Route path="*" element={<NotFoundPage />} />
-      {/* <Route path={APP_ROUTE.Register} element={<RegisterPage />} /> */}
-      {/* <Route path={APP_ROUTE.RegistrationSuccess} element={<RegistrationSuccessPage />} /> */}
-      {/* <Route path={APP_ROUTE.ActivateAccount} element={<ActivateAccountPage />} /> */}
-      {/* <Route path={APP_ROUTE.UserPasswordSetup} element={<UserPasswordSetupPage />} /> */}
     </Route>,
   ),
 );
