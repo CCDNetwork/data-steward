@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Ccd.Server.Data;
 using Ccd.Server.Email;
 using Ccd.Server.Helpers;
-using Ccd.Server.Users;
+using System.Linq;
 
 namespace Ccd.Server.Organizations;
 
 public class OrganizationService
 {
-    private readonly IMapper _mapperService;
-    private readonly UserService _userService;
     private readonly CcdContext _context;
     private readonly DateTimeProvider _dateTimeProvider;
     private readonly EmailManagerService _emailManagerService;
@@ -33,15 +30,11 @@ public class OrganizationService
     }
 
     public OrganizationService(
-        IMapper mapperService,
-        UserService userService,
         CcdContext context,
         DateTimeProvider dateTimeProvider,
         EmailManagerService emailManagerService
     )
     {
-        _mapperService = mapperService;
-        _userService = userService;
         _context = context;
         _dateTimeProvider = dateTimeProvider;
         _emailManagerService = emailManagerService;
@@ -75,6 +68,9 @@ public class OrganizationService
 
     public async Task DeleteOrganization(Organization organization)
     {
+        await DeleteUsersFromOrganization(organization);
+        await DeleteReferralsFromOrganization(organization);
+
         _context.Organizations.Remove(organization);
         await _context.SaveChangesAsync();
     }
@@ -98,5 +94,31 @@ public class OrganizationService
             getSelectSqlParams(),
             requestParameters
         );
+    }
+
+    private async Task DeleteUsersFromOrganization(Organization organization)
+    {
+        var userOrganizations = await _context.UserOrganizations.Where(e => e.OrganizationId == organization.Id).ToListAsync();
+        foreach (var userOrganization in userOrganizations)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(e => e.Id == userOrganization.UserId);
+            if (user.IsDeleted)
+            {
+                _context.UserOrganizations.Remove(userOrganization);
+                _context.Users.Remove(user);
+            }
+            else
+            {
+                throw new BadRequestException("Cannot delete organization with active users.");
+            }
+        }
+    }
+
+    private async Task DeleteReferralsFromOrganization(Organization organization)
+    {
+        var refferals = await _context.Referrals.Where(e =>
+            (e.OrganizationCreatedId == organization.Id) ||
+            (e.OrganizationReferredToId == organization.Id)).ToListAsync();
+        _context.Referrals.RemoveRange(refferals);
     }
 }
