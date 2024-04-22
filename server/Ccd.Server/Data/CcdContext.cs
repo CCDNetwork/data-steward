@@ -8,6 +8,7 @@ using Ccd.Server.Storage;
 using Ccd.Server.Organizations;
 using Ccd.Server.Deduplication;
 using Ccd.Server.BeneficiaryAttributes;
+using Ccd.Server.Referrals;
 
 namespace Ccd.Server.Data;
 
@@ -33,6 +34,7 @@ public class CcdContext : DbContext
     public DbSet<Beneficionary> Beneficionary { get; set; }
     public DbSet<BeneficiaryAttribute> BeneficiaryAttributes { get; set; }
     public DbSet<List> Lists { get; set; }
+    public DbSet<Referral> Referrals { get; set; }
 
     private void seedData(ModelBuilder modelBuilder)
     {

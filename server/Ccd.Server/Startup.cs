@@ -27,6 +27,7 @@ using Ccd.Server.Storage;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Organizations;
 using Ccd.Server.Deduplication;
+using Ccd.Server.Referrals;
 
 namespace Ccd.Server;
 
@@ -156,6 +157,7 @@ public class Startup
         services.AddScoped<AuthenticationService>();
         services.AddScoped<DeduplicationService>();
         services.AddScoped<BeneficiaryAttributeService>();
+        services.AddScoped<ReferralService>();
         services.AddScoped<IStorageService, StorageService>();
         services.AddScoped<INotificationService, NotificationService>();
 
