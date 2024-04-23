@@ -6,6 +6,7 @@ using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Deduplication;
 using System.Globalization;
 using Ccd.Server.Referrals;
+using Ccd.Server.Templates;
 
 namespace Ccd.Server.Mappings;
 
@@ -45,6 +46,10 @@ public class Mappings : Profile
             dest => dest.OrganizationReferredToId,
             opt => opt.MapFrom(src => src.OrganizationId)
         );
+
+        // Template mappings
+        CreateMap<Template, TemplateResponse>();
+        CreateMap<TemplateAddRequest, Template>();
     }
 
     private static DateTime ParseDate(string date)
