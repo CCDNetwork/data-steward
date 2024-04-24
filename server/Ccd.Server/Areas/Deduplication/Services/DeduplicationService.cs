@@ -80,8 +80,8 @@ public class DeduplicationService
         {
             var record = new DeduplicationRecord
             {
-                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
                 FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
+                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
                 Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
                 DateofBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
                 CommunityID = worksheet.Cell(i, GetHeaderIndex(template.CommunityID, worksheet)).Value.ToString(),
@@ -228,7 +228,7 @@ public class DeduplicationService
     {
         foreach (var attribute in beneficiaryAttributes)
         {
-            var attributeName = Regex.Replace(attribute.Name, @"\s+", "");
+            var attributeName = attribute.AttributeName;
             var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null);
             var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null);
 
@@ -250,7 +250,7 @@ public class DeduplicationService
     {
         foreach (var attribute in beneficiaryAttributes)
         {
-            var attributeName = Regex.Replace(attribute.Name, @"\s+", "");
+            var attributeName = attribute.AttributeName;
             var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null);
             var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null);
 

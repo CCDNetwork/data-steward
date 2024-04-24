@@ -41,24 +41,24 @@ public class CcdContext : DbContext
     private void seedData(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<BeneficiaryAttribute>().HasData(
-            new BeneficiaryAttribute { Id = 1, Name = "First Name", Type = "string", UsedForDeduplication = true },
-            new BeneficiaryAttribute { Id = 2, Name = "Family Name", Type = "string", UsedForDeduplication = true },
-            new BeneficiaryAttribute { Id = 3, Name = "Gender", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 4, Name = "Date of Birth", Type = "DateTime", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 5, Name = "Community ID", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 6, Name = "HH ID", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 7, Name = "Mobile Phone ID", Type = "int", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 8, Name = "Gov ID Type", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 9, Name = "Gov ID Number", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 10, Name = "Other ID Type", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 11, Name = "Other ID Number", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 12, Name = "Assistance Details", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 13, Name = "Activity", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 14, Name = "Currency", Type = "string", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 15, Name = "Currency Amount", Type = "int", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 16, Name = "Start Date", Type = "DateTime", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 17, Name = "End Date", Type = "DateTime", UsedForDeduplication = false },
-            new BeneficiaryAttribute { Id = 18, Name = "Frequency", Type = "string", UsedForDeduplication = false }
+            new BeneficiaryAttribute { Id = 1, Name = "First Name", AttributeName = "FirstName", Type = "string", UsedForDeduplication = true },
+            new BeneficiaryAttribute { Id = 2, Name = "Family Name", AttributeName = "FamilyName", Type = "string", UsedForDeduplication = true },
+            new BeneficiaryAttribute { Id = 3, Name = "Gender", AttributeName = "Gender", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 4, Name = "Date of Birth", AttributeName = "DateofBirth", Type = "DateTime", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 5, Name = "Community ID", AttributeName = "CommunityID", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 6, Name = "HH ID", AttributeName = "HHID", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 7, Name = "Mobile Phone ID", AttributeName = "MobilePhoneID", Type = "int", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 8, Name = "Gov ID Type", AttributeName = "GovIDType", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 9, Name = "Gov ID Number", AttributeName = "GovIDNumber", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 10, Name = "Other ID Type", AttributeName = "OtherIDType", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 11, Name = "Other ID Number", AttributeName = "OtherIDNumber", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 12, Name = "Assistance Details", AttributeName = "AssistanceDetails", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 13, Name = "Activity", AttributeName = "Activity", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 14, Name = "Currency", AttributeName = "Currency", Type = "string", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 15, Name = "Currency Amount", AttributeName = "CurrencyAmount", Type = "int", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 16, Name = "Start Date", AttributeName = "StartDate", Type = "DateTime", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 17, Name = "End Date", AttributeName = "EndDate", Type = "DateTime", UsedForDeduplication = false },
+            new BeneficiaryAttribute { Id = 18, Name = "Frequency", AttributeName = "Frequency", Type = "string", UsedForDeduplication = false }
         );
     }
 
