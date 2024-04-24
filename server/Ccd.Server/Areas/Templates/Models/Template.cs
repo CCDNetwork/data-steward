@@ -8,6 +8,7 @@ namespace Ccd.Server.Templates;
 public class Template : UserChangeTracked
 {
     public Guid Id { get; set; } = IdProvider.NewId();
+    [QuickSearchable]
     public string Name { get; set; }
     public string FirstName { get; set; }
     public string FamilyName { get; set; }
