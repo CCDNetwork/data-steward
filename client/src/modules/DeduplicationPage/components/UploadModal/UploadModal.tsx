@@ -81,15 +81,15 @@ export const UploadModal = ({ isOpen, deduplicationType, setIsOpen }: Props) => 
           responseType: 'arraybuffer',
         });
 
-        if (type === 'single') {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'deduplication.' + file.name.split('.').pop());
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-        } else {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'deduplication.' + file.name.split('.').pop());
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        if (type === 'multiple') {
           queryClient.invalidateQueries(['deduplication-listings']);
         }
 
