@@ -59,7 +59,7 @@ public class DeduplicationService
         );
     }
 
-    public async Task<byte[]> AddList(Guid organizationId, DeduplicationListAddRequest model)
+    public async Task<byte[]> InternalDeduplication(Guid organizationId, DeduplicationListAddRequest model)
     {
         var file = model.File ?? throw new BadRequestException("File is required");
         using var workbook = new XLWorkbook(file.OpenReadStream());
@@ -116,7 +116,7 @@ public class DeduplicationService
         return fileBytes;
     }
 
-    public async Task<byte[]> Deduplicate(Guid organizationId, Guid userId, DeduplicationListAddRequest model)
+    public async Task<byte[]> RegistryDeduplication(Guid organizationId, Guid userId, DeduplicationListAddRequest model)
     {
         var file = model.File ?? throw new BadRequestException("File is required");
         using var workbook = new XLWorkbook(file.OpenReadStream());
@@ -140,7 +140,6 @@ public class DeduplicationService
         worksheet.Cell(1, lastColumnIndex + 1).Style.Font.Bold = true;
         worksheet.Cell(1, lastColumnIndex + 1).Value = "organization";
 
-        var deduplicationRecords = new List<DeduplicationRecord>();
         var newBeneficionaries = new List<Beneficionary>();
 
         for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
@@ -188,7 +187,6 @@ public class DeduplicationService
             totalDuplicates += duplicates;
 
             newBeneficionaries.Add(beneficionary);
-            deduplicationRecords.Add(record);
         }
 
         using var memoryStream = new MemoryStream();

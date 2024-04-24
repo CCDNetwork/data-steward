@@ -38,11 +38,11 @@ public class DeduplicationController : ControllerBaseExtended
         byte[] fileBytes;
         if (model.Type == DeduplicationType.Single)
         {
-            fileBytes = await _deduplicationService.AddList(this.OrganizationId, model);
+            fileBytes = await _deduplicationService.InternalDeduplication(this.OrganizationId, model);
         }
         else
         {
-            fileBytes = await _deduplicationService.Deduplicate(this.OrganizationId, this.UserId, model);
+            fileBytes = await _deduplicationService.RegistryDeduplication(this.OrganizationId, this.UserId, model);
         }
 
         return File(fileBytes, "application/octet-stream", model.File.FileName);

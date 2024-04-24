@@ -15,7 +15,7 @@ public class Beneficionary
     public DateTime? DateOfBirth { get; set; }
     public string CommunityId { get; set; }
     public string HhId { get; set; }
-    public int? MobilePhoneId { get; set; }
+    public string MobilePhoneId { get; set; }
     public string GovIdType { get; set; }
     public string GovIdNumber { get; set; }
     public string OtherIdType { get; set; }
@@ -23,7 +23,7 @@ public class Beneficionary
     public string AssistanceDetails { get; set; }
     public string Activity { get; set; }
     public string Currency { get; set; }
-    public int CurrencyAmount { get; set; }
+    public string CurrencyAmount { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public string Frequency { get; set; }

@@ -34,6 +34,12 @@ public class Mappings : Profile
             .ForMember(
                 dest => dest.DateOfBirth,
                 opt => opt.MapFrom(src => ParseDate(src.DateofBirth))
+            ).ForMember(
+                dest => dest.StartDate,
+                opt => opt.MapFrom(src => ParseDate(src.StartDate))
+            ).ForMember(
+                dest => dest.EndDate,
+                opt => opt.MapFrom(src => ParseDate(src.EndDate))
             );
 
         // Referral mappings
@@ -52,8 +58,13 @@ public class Mappings : Profile
         CreateMap<TemplateAddRequest, Template>();
     }
 
-    private static DateTime ParseDate(string date)
+    private static DateTime? ParseDate(string date)
     {
+        if (string.IsNullOrEmpty(date))
+        {
+            return null;
+        }
+
         if (DateTime.TryParseExact(date, "MM-dd-yyyy", null, DateTimeStyles.None, out var result))
         {
             return result.ToUniversalTime();
