@@ -5,6 +5,7 @@ using Ccd.Server.Helpers;
 using Ccd.Server.Notifications;
 using Ccd.Server.Users;
 using Ccd.Server.Deduplication.Controllers.ControllerModels;
+using System;
 
 namespace Ccd.Server.Deduplication;
 
@@ -31,15 +32,13 @@ public class DeduplicationController : ControllerBaseExtended
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult> Deduplicate([FromForm] DeduplicationListAddRequest model)
     {
-        if (!DeduplicationType.IsValid(model.Type))
-        {
-            throw new BadRequestException("Invalid deduplication type.");
-        }
+        if (!DeduplicationType.IsValid(model.Type)) throw new BadRequestException("Invalid deduplication type.");
+        if (model.TemplateId == Guid.Empty) throw new BadRequestException("Template ID is required.");
 
         byte[] fileBytes;
         if (model.Type == DeduplicationType.Single)
         {
-            fileBytes = await _deduplicationService.AddList(model);
+            fileBytes = await _deduplicationService.AddList(this.OrganizationId, model);
         }
         else
         {

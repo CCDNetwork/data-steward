@@ -33,7 +33,7 @@ public class Mappings : Profile
         CreateMap<DeduplicationRecord, Beneficionary>()
             .ForMember(
                 dest => dest.DateOfBirth,
-                opt => opt.MapFrom(src => ParseDate(src.DateOfBirth))
+                opt => opt.MapFrom(src => ParseDate(src.DateofBirth))
             );
 
         // Referral mappings

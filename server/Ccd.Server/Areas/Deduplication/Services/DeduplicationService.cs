@@ -59,10 +59,12 @@ public class DeduplicationService
         );
     }
 
-    public async Task<byte[]> AddList(DeduplicationListAddRequest model)
+    public async Task<byte[]> AddList(Guid organizationId, DeduplicationListAddRequest model)
     {
         var file = model.File ?? throw new BadRequestException("File is required");
         using var workbook = new XLWorkbook(file.OpenReadStream());
+
+        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
         var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
 
         var worksheet = workbook.Worksheet(1);
@@ -78,21 +80,24 @@ public class DeduplicationService
         {
             var record = new DeduplicationRecord
             {
-                TimestampOriginal = worksheet.Cell(i, 1).Value.ToString(),
-                RegistrationOrg = worksheet.Cell(i, 2).Value.ToString(),
-                RegistrationOrgId = worksheet.Cell(i, 3).Value.ToString(),
-                FamilyName = worksheet.Cell(i, 4).Value.ToString(),
-                FirstName = worksheet.Cell(i, 5).Value.ToString(),
-                Gender = worksheet.Cell(i, 6).Value.ToString(),
-                DateOfBirth = worksheet.Cell(i, 7).Value.ToString(),
-                MobilePhone = worksheet.Cell(i, 8).Value.ToString(),
-                GovIdType = worksheet.Cell(i, 9).Value.ToString(),
-                GovIdNumber = worksheet.Cell(i, 10).Value.ToString(),
-                AssistanceOrd = worksheet.Cell(i, 11).Value.ToString(),
-                AssistanceCategory = worksheet.Cell(i, 12).Value.ToString(),
-                AssistanceAmount = worksheet.Cell(i, 13).Value.ToString(),
-                AssistanceStart = worksheet.Cell(i, 14).Value.ToString(),
-                AssistanceEnd = worksheet.Cell(i, 15).Value.ToString()
+                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
+                FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
+                Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
+                DateofBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
+                CommunityID = worksheet.Cell(i, GetHeaderIndex(template.CommunityID, worksheet)).Value.ToString(),
+                HHID = worksheet.Cell(i, GetHeaderIndex(template.HHID, worksheet)).Value.ToString(),
+                MobilePhoneID = worksheet.Cell(i, GetHeaderIndex(template.MobilePhoneID, worksheet)).Value.ToString(),
+                GovIDType = worksheet.Cell(i, GetHeaderIndex(template.GovIDType, worksheet)).Value.ToString(),
+                GovIDNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIDNumber, worksheet)).Value.ToString(),
+                OtherIDType = worksheet.Cell(i, GetHeaderIndex(template.OtherIDType, worksheet)).Value.ToString(),
+                OtherIDNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIDNumber, worksheet)).Value.ToString(),
+                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
+                Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
+                Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
+                CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
+                StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
+                EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
+                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
 
             worksheet.Cell(i, lastColumnIndex).Value =
@@ -116,6 +121,7 @@ public class DeduplicationService
         var file = model.File ?? throw new BadRequestException("File is required");
         using var workbook = new XLWorkbook(file.OpenReadStream());
 
+        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
         var beneficionaries = _context.Beneficionary.Include(e => e.Organization).ToList();
         var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
         var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
@@ -141,21 +147,24 @@ public class DeduplicationService
         {
             var record = new DeduplicationRecord
             {
-                TimestampOriginal = worksheet.Cell(i, 1).Value.ToString(),
-                RegistrationOrg = worksheet.Cell(i, 2).Value.ToString(),
-                RegistrationOrgId = worksheet.Cell(i, 3).Value.ToString(),
-                FamilyName = worksheet.Cell(i, 4).Value.ToString(),
-                FirstName = worksheet.Cell(i, 5).Value.ToString(),
-                Gender = worksheet.Cell(i, 6).Value.ToString(),
-                DateOfBirth = worksheet.Cell(i, 7).Value.ToString(),
-                MobilePhone = worksheet.Cell(i, 8).Value.ToString(),
-                GovIdType = worksheet.Cell(i, 9).Value.ToString(),
-                GovIdNumber = worksheet.Cell(i, 10).Value.ToString(),
-                AssistanceOrd = worksheet.Cell(i, 11).Value.ToString(),
-                AssistanceCategory = worksheet.Cell(i, 12).Value.ToString(),
-                AssistanceAmount = worksheet.Cell(i, 13).Value.ToString(),
-                AssistanceStart = worksheet.Cell(i, 14).Value.ToString(),
-                AssistanceEnd = worksheet.Cell(i, 15).Value.ToString()
+                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
+                FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
+                Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
+                DateofBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
+                CommunityID = worksheet.Cell(i, GetHeaderIndex(template.CommunityID, worksheet)).Value.ToString(),
+                HHID = worksheet.Cell(i, GetHeaderIndex(template.HHID, worksheet)).Value.ToString(),
+                MobilePhoneID = worksheet.Cell(i, GetHeaderIndex(template.MobilePhoneID, worksheet)).Value.ToString(),
+                GovIDType = worksheet.Cell(i, GetHeaderIndex(template.GovIDType, worksheet)).Value.ToString(),
+                GovIDNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIDNumber, worksheet)).Value.ToString(),
+                OtherIDType = worksheet.Cell(i, GetHeaderIndex(template.OtherIDType, worksheet)).Value.ToString(),
+                OtherIDNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIDNumber, worksheet)).Value.ToString(),
+                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
+                Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
+                Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
+                CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
+                StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
+                EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
+                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
 
             worksheet.Cell(i, lastColumnIndex).Value = "NO";
@@ -198,6 +207,21 @@ public class DeduplicationService
     {
         await _context.Database.ExecuteSqlRawAsync("DELETE FROM beneficionary");
         await _context.Database.ExecuteSqlRawAsync("DELETE FROM list");
+    }
+
+    private static int GetHeaderIndex(string templateValue, IXLWorksheet worksheet)
+    {
+        foreach (var cell in worksheet.Row(1).Cells())
+        {
+            if (cell.Value.ToString() == templateValue)
+            {
+                return cell.WorksheetColumn().ColumnNumber();
+            }
+        }
+
+        // TODO: find a better way to handle this
+        // This is the last cell index
+        return 16384;
     }
 
     private static bool AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
