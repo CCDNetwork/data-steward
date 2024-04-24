@@ -80,6 +80,11 @@ public class Mappings : Profile
             return result.ToUniversalTime();
         }
 
+        if (DateTime.TryParseExact(date, "dd/MM/yyyy", null, DateTimeStyles.None, out result))
+        {
+            return result.ToUniversalTime();
+        }
+
         if (DateTime.TryParseExact(date, "MM.dd.yyyy", null, DateTimeStyles.None, out result))
         {
             return result.ToUniversalTime();
