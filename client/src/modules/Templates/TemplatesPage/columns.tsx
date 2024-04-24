@@ -1,6 +1,7 @@
-import { MoreHorizontal } from 'lucide-react';
+import { formatDate } from 'date-fns';
 
 import { TableColumn } from '@/components/DataTable/types';
+import { Template } from '@/services/templates';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,61 +10,55 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, UserRole } from '@/services/users';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/helpers/utils';
+import { MoreHorizontal } from 'lucide-react';
 
-export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<User | null>>): TableColumn<User>[] => [
+export const columns = (
+  setTemplateToDelete: React.Dispatch<React.SetStateAction<Template | null>>,
+): TableColumn<Template>[] => [
   {
-    accessorKey: 'firstName',
-    id: 'firstName',
-    header: 'First Name',
+    accessorKey: 'name',
+    id: 'name',
+    header: 'Template Name',
   },
   {
-    accessorKey: 'lastName',
-    id: 'lastName',
-    header: 'Last Name',
-  },
-  {
-    accessorKey: 'email',
-    id: 'email',
-    header: 'Email',
-  },
-  {
-    accessorKey: 'organizations',
-    id: 'organizations',
-    header: 'Organization',
+    accessorKey: 'userCreated',
+    id: 'userCreated',
+    header: 'User Created',
     cell: ({ row }) => {
-      const { organizations } = row.original;
+      const { userCreated } = row.original;
 
-      return <div>{organizations[0].name ?? '-'}</div>;
+      return <div>{`${userCreated?.firstName ?? '-'} ${userCreated?.lastName ?? '-'}`}</div>;
     },
   },
   {
-    accessorKey: 'role',
-    id: 'role',
-    header: 'Role',
-    cell: ({ row }) => {
-      const { role } = row.original;
-
+    accessorKey: 'createdAt',
+    id: 'createdAt',
+    header: 'Created At',
+    cell: ({ getValue }) => {
       return (
-        <Badge
-          className={cn(
-            'capitalize',
-            { 'bg-blue-600 dark:text-white hover:bg-blue-600': role === UserRole.Admin },
-            { 'bg-green-600 dark:text-white hover:bg-green-600': role === UserRole.User },
-          )}
-        >
-          {role}
-        </Badge>
+        <div className="flex flex-col">
+          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm:ss')}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    id: 'updatedAt',
+    header: 'Updated At',
+    cell: ({ getValue }) => {
+      return (
+        <div className="flex flex-col">
+          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm:ss')}</span>
+        </div>
       );
     },
   },
   {
     id: 'actions',
     cell: ({ row }) => {
-      const user = row.original;
+      const template = row.original;
 
       return (
         <div className="text-right">
@@ -81,7 +76,7 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
                 className="text-red-500 focus:text-white focus:bg-red-500"
                 onClick={(e: React.SyntheticEvent) => {
                   e.stopPropagation();
-                  setUserToDelete(user);
+                  setTemplateToDelete(template);
                 }}
               >
                 Delete

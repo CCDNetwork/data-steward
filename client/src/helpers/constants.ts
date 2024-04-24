@@ -17,9 +17,7 @@ export enum APP_ROUTE {
   ResetPassword = '/reset-password',
   SuccessPage = '/success',
   PermissionDenied = '/permission-denied',
-  // Register = '/register',
-  // ActivateAccount = '/activation',
-  // RegistrationSuccess = '/registration-successful',
+  Templates = '/templates',
 }
 
 export enum PAGE_TYPE {
@@ -34,4 +32,5 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   { name: 'Organizations', to: APP_ROUTE.Organizations, allowedRoles: [UserRole.Admin] },
   { name: 'Users', to: APP_ROUTE.Users, allowedRoles: [UserRole.Admin] },
   { name: 'Beneficiary Attributes', to: APP_ROUTE.BeneficiaryAttributes, allowedRoles: [UserRole.Admin] },
+  { name: 'Templates', to: APP_ROUTE.Templates, allowedRoles: [UserRole.User] },
 ];

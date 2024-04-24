@@ -23,6 +23,8 @@ import { UserPage, UsersProvider } from '@/modules/Users';
 import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from '@/modules/Organizations';
 import { RoleBasedIndexRoute } from '@/layouts/RoleBasedIndexRoute';
 
+import { TemplatePage, TemplatesPage, TemplatesProvider } from './modules/Templates';
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<GlobalProvider />}>
@@ -60,6 +62,13 @@ export const router = createBrowserRouter(
           <Route path={APP_ROUTE.Users} element={<UsersProvider />}>
             <Route index element={<UsersPage />} />
             <Route path=":id" element={<DynamicRoute component={<UserPage />} />} />
+          </Route>
+        </Route>
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+          <Route path={APP_ROUTE.Templates} element={<TemplatesProvider />}>
+            <Route index element={<TemplatesPage />} />
+            <Route path=":id" element={<DynamicRoute component={<TemplatePage />} />} />
           </Route>
         </Route>
 

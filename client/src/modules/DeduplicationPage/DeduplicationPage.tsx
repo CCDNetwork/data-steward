@@ -72,6 +72,7 @@ export const DeduplicationPage = () => {
   return (
     <PageContainer
       pageTitle="Deduplication"
+      pageSubtitle="Deduplication list"
       isLoading={isLoading}
       headerNode={
         <div className="flex gap-3">
