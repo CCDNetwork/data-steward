@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 
 import { useSearchParams } from 'react-router-dom';
@@ -72,6 +72,12 @@ export function DataTable<TData, TValue>({
       headerClicked(column.id, sort);
     }
   };
+
+  useEffect(() => {
+    if (currentPage && pagination && pageClicked && pagination?.totalPages < currentPage) {
+      pageClicked(pagination.totalPages);
+    }
+  }, [currentPage, pageClicked, pagination]);
 
   return (
     <div>

@@ -6,7 +6,6 @@ export const TemplateFormSchema = z.object({
   familyName: z.string(),
   gender: z.string(),
   dateofBirth: z.string(),
-  communityID: z.string(),
   hhid: z.string(),
   mobilePhoneID: z.string(),
   govIDType: z.string(),
@@ -20,6 +19,10 @@ export const TemplateFormSchema = z.object({
   startDate: z.string(),
   endDate: z.string(),
   frequency: z.string(),
+  adminLevel1: z.string(),
+  adminLevel2: z.string(),
+  adminLevel3: z.string(),
+  adminLevel4: z.string(),
 });
 
 export type TemplateForm = z.infer<typeof TemplateFormSchema>;

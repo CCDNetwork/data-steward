@@ -4,7 +4,6 @@ export const defaultTemplateFormValues = {
   familyName: '',
   gender: '',
   dateofBirth: '',
-  communityID: '',
   hhid: '',
   mobilePhoneID: '',
   govIDType: '',
@@ -18,6 +17,10 @@ export const defaultTemplateFormValues = {
   startDate: '',
   endDate: '',
   frequency: '',
+  adminLevel1: '',
+  adminLevel2: '',
+  adminLevel3: '',
+  adminLevel4: '',
 };
 
 export const STANDARDIZED_TEMPLATE_FIELDS: { [key: string]: string } = {
@@ -25,7 +28,6 @@ export const STANDARDIZED_TEMPLATE_FIELDS: { [key: string]: string } = {
   familyName: 'string',
   gender: 'string',
   dateofBirth: 'DateTime',
-  communityID: 'string',
   hhid: 'string',
   mobilePhoneID: 'integer',
   govIDType: 'string',
@@ -39,4 +41,8 @@ export const STANDARDIZED_TEMPLATE_FIELDS: { [key: string]: string } = {
   startDate: 'DateTime',
   endDate: 'DateTime',
   frequency: 'string',
+  adminLevel1: 'string',
+  adminLevel2: 'string',
+  adminLevel3: 'string',
+  adminLevel4: 'string',
 };

@@ -9,7 +9,6 @@ export const dataToTemplateEditForm = (data: Template): TemplateForm => {
     familyName: data.familyName,
     gender: data.gender,
     dateofBirth: data.dateofBirth,
-    communityID: data.communityID,
     hhid: data.hhid,
     mobilePhoneID: data.mobilePhoneID,
     govIDType: data.govIDType,
@@ -23,5 +22,9 @@ export const dataToTemplateEditForm = (data: Template): TemplateForm => {
     startDate: data.startDate,
     endDate: data.endDate,
     frequency: data.frequency,
+    adminLevel1: data.adminLevel1,
+    adminLevel2: data.adminLevel2,
+    adminLevel3: data.adminLevel3,
+    adminLevel4: data.adminLevel4,
   };
 };

@@ -7,7 +7,6 @@ export interface Template {
   familyName: string;
   gender: string;
   dateofBirth: string;
-  communityID: string;
   hhid: string;
   mobilePhoneID: string;
   govIDType: string;
@@ -24,4 +23,8 @@ export interface Template {
   userCreated: User | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  adminLevel1: string;
+  adminLevel2: string;
+  adminLevel3: string;
+  adminLevel4: string;
 }

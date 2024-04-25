@@ -4,7 +4,6 @@ export const defaultTemplateFormValues = {
   familyName: '',
   gender: '',
   dateofBirth: '',
-  communityID: '',
   hhid: '',
   mobilePhoneID: '',
   govIDType: '',
@@ -18,4 +17,8 @@ export const defaultTemplateFormValues = {
   startDate: '',
   endDate: '',
   frequency: '',
+  adminLevel1: '',
+  adminLevel2: '',
+  adminLevel3: '',
+  adminLevel4: '',
 };

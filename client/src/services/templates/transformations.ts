@@ -10,7 +10,6 @@ export const resToTemplate = (res: any): Template => {
     familyName: res.familyName ?? '',
     gender: res.gender ?? '',
     dateofBirth: res.dateofBirth ?? '',
-    communityID: res.communityID ?? '',
     hhid: res.hhid ?? '',
     mobilePhoneID: res.mobilePhoneID ?? '',
     govIDType: res.govIDType ?? '',
@@ -24,6 +23,10 @@ export const resToTemplate = (res: any): Template => {
     startDate: res.startDate ?? '',
     endDate: res.endDate ?? '',
     frequency: res.frequency ?? '',
+    adminLevel1: res.adminLevel1 ?? '',
+    adminLevel2: res.adminLevel2 ?? '',
+    adminLevel3: res.adminLevel3 ?? '',
+    adminLevel4: res.adminLevel4 ?? '',
     userCreated: res.userCreated ? resToUser(res.userCreated) : null,
     createdAt: res.createdAt ? new Date(res.createdAt) : null,
     updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
@@ -37,7 +40,6 @@ export const templateToReq = (data: any): Omit<Template, 'id' | 'userCreated' | 
     familyName: data.familyName,
     gender: data.gender,
     dateofBirth: data.dateofBirth,
-    communityID: data.communityID,
     hhid: data.hhid,
     mobilePhoneID: data.mobilePhoneID,
     govIDType: data.govIDType,
@@ -51,6 +53,10 @@ export const templateToReq = (data: any): Omit<Template, 'id' | 'userCreated' | 
     startDate: data.startDate,
     endDate: data.endDate,
     frequency: data.frequency,
+    adminLevel1: data.adminLevel1,
+    adminLevel2: data.adminLevel2,
+    adminLevel3: data.adminLevel3,
+    adminLevel4: data.adminLevel4,
   };
 
   return req;
