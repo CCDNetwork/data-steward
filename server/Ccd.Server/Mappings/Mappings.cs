@@ -7,6 +7,7 @@ using Ccd.Server.Deduplication;
 using System.Globalization;
 using Ccd.Server.Referrals;
 using Ccd.Server.Templates;
+using Ccd.Server.Helpers;
 
 namespace Ccd.Server.Mappings;
 
@@ -65,31 +66,24 @@ public class Mappings : Profile
             return null;
         }
 
-        if (DateTime.TryParseExact(date, "MM-dd-yyyy", null, DateTimeStyles.None, out var result))
+        var formats = new[] {
+            "MM-dd-yyyy",
+            "yyyyMMdd",
+            "MM/dd/yyyy",
+            "dd/MM/yyyy",
+            "MM.dd.yyyy",
+            "dd.MM.yyyy. hh:mm:ss",
+            "dd/M/yyyy hh:mm:ss tt",
+            "d/M/yyyy hh:mm:ss tt",
+            "M/d/yyyy hh:mm:ss tt",
+        };
+
+        if (DateTime.TryParseExact(date, formats, null, DateTimeStyles.None, out var result))
         {
             return result.ToUniversalTime();
         }
 
-        if (DateTime.TryParseExact(date, "yyyyMMdd", null, DateTimeStyles.None, out result))
-        {
-            return result.ToUniversalTime();
-        }
-
-        if (DateTime.TryParseExact(date, "MM/dd/yyyy", null, DateTimeStyles.None, out result))
-        {
-            return result.ToUniversalTime();
-        }
-
-        if (DateTime.TryParseExact(date, "dd/MM/yyyy", null, DateTimeStyles.None, out result))
-        {
-            return result.ToUniversalTime();
-        }
-
-        if (DateTime.TryParseExact(date, "MM.dd.yyyy", null, DateTimeStyles.None, out result))
-        {
-            return result.ToUniversalTime();
-        }
-
-        throw new Exception("Invalid date format");
+        Console.WriteLine($"Invalid date format: {date}");
+        throw new BadRequestException("Invalid date format.");
     }
 }

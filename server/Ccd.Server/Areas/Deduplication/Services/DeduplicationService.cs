@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ccd.Server.BeneficiaryAttributes;
@@ -227,18 +226,13 @@ public class DeduplicationService
         foreach (var attribute in beneficiaryAttributes)
         {
             var attributeName = attribute.AttributeName;
-            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null);
-            var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null);
+            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
+            var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
 
-            if (existingValue == null || newValue == null)
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) return false;
+            if (existingValue == null || newValue == null) return false;
+            if (existingValue != newValue) return false;
 
-            if (existingValue.ToString() != newValue.ToString())
-            {
-                return false;
-            }
         }
 
         return true;
@@ -249,18 +243,12 @@ public class DeduplicationService
         foreach (var attribute in beneficiaryAttributes)
         {
             var attributeName = attribute.AttributeName;
-            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null);
-            var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null);
+            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
+            var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
 
-            if (existingValue == null || newValue == null)
-            {
-                return false;
-            }
-
-            if (existingValue.ToString() != newValue.ToString())
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) return false;
+            if (existingValue == null || newValue == null) return false;
+            if (existingValue != newValue) return false;
         }
 
         return true;
