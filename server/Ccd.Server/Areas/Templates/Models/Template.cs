@@ -13,7 +13,10 @@ public class Template : UserChangeTracked
     public string FamilyName { get; set; }
     public string Gender { get; set; }
     public string DateofBirth { get; set; }
-    public string CommunityID { get; set; }
+    public string AdminLevel1 { get; set; }
+    public string AdminLevel2 { get; set; }
+    public string AdminLevel3 { get; set; }
+    public string AdminLevel4 { get; set; }
     public string HHID { get; set; }
     public string MobilePhoneID { get; set; }
     public string GovIDType { get; set; }
