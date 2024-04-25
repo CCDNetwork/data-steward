@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json.Serialization;
+using Ccd.Server.Helpers;
 using Ccd.Server.Users;
 
 namespace Ccd.Server.Deduplication.Controllers.ControllerModels;
@@ -7,6 +8,7 @@ namespace Ccd.Server.Deduplication.Controllers.ControllerModels;
 public class DeduplicationListResponse
 {
     public Guid Id { get; set; }
+    [QuickSearchable]
     public string FileName { get; set; }
     public int Duplicates { get; set; }
 

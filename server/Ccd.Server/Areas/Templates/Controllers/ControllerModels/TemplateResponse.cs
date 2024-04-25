@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using Ccd.Server.Organizations;
+using Ccd.Server.Helpers;
 using Ccd.Server.Users;
 
 namespace Ccd.Server.Templates;
@@ -8,6 +8,7 @@ namespace Ccd.Server.Templates;
 public class TemplateResponse
 {
     public Guid Id { get; set; }
+    [QuickSearchable]
     public string Name { get; set; }
     public string FirstName { get; set; }
     public string FamilyName { get; set; }
