@@ -21,7 +21,8 @@ public class TemplateService
              FROM
                  template r
              WHERE
-                (@id is null OR r.id = @id)";
+                (@id is null OR r.id = @id) AND
+                (@organizationId is null OR r.organization_id = @organizationId)";
 
     private object getSelectSqlParams(Guid? id = null, Guid? organizationId = null)
     {
