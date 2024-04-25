@@ -33,6 +33,7 @@ export const columns: TableColumn<DeduplicationListing>[] = [
   },
   {
     accessorKey: 'createdAt',
+    isSortable: true,
     id: 'createdAt',
     header: 'Created At',
     cell: ({ getValue }) => {

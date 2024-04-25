@@ -4,7 +4,7 @@ import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
 import { Button } from '@/components/ui/button';
 import { useDeduplicationListings } from '@/services/deduplication';
-import { usePagination } from '@/helpers/pagination';
+import { SortDirection, usePagination } from '@/helpers/pagination';
 
 import { columns } from './columns';
 import { UploadModal } from './components/UploadModal';
@@ -16,7 +16,11 @@ export const DeduplicationPage = () => {
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false);
   const [deduplicationType, setDeduplicationType] = useState<'single' | 'multiple'>('single');
 
-  const { data: listings, isLoading: queryLoading } = useDeduplicationListings(pagination);
+  const { data: listings, isLoading: queryLoading } = useDeduplicationListings({
+    ...pagination,
+    sortBy: 'createdAt',
+    sortDirection: SortDirection.Desc,
+  });
 
   const handleDeduplicationButtonClick = (type: 'single' | 'multiple') => {
     setUploadModalOpen(true);
