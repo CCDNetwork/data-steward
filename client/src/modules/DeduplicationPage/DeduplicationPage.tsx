@@ -10,17 +10,13 @@ import { columns } from './columns';
 import { UploadModal } from './components/UploadModal';
 
 export const DeduplicationPage = () => {
-  const pagination = usePagination();
+  const pagination = usePagination({ initialPagination: { sortBy: 'createdAt', sortDirection: SortDirection.Desc } });
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
 
   const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false);
   const [deduplicationType, setDeduplicationType] = useState<'single' | 'multiple'>('single');
 
-  const { data: listings, isLoading: queryLoading } = useDeduplicationListings({
-    ...pagination,
-    sortBy: 'createdAt',
-    sortDirection: SortDirection.Desc,
-  });
+  const { data: listings, isLoading: queryLoading } = useDeduplicationListings(pagination);
 
   const handleDeduplicationButtonClick = (type: 'single' | 'multiple') => {
     setUploadModalOpen(true);
