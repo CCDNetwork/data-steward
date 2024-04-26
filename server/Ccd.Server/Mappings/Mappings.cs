@@ -78,7 +78,7 @@ public class Mappings : Profile
             "M/d/yyyy hh:mm:ss tt",
         };
 
-        if (DateTime.TryParseExact(date, formats, null, DateTimeStyles.AdjustToUniversal, out var result))
+        if (DateTime.TryParseExact(date, formats, null, DateTimeStyles.AssumeUniversal, out var result))
         {
             return result.ToUniversalTime();
         }
