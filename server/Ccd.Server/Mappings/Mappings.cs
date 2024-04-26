@@ -70,6 +70,7 @@ public class Mappings : Profile
             "MM-dd-yyyy",
             "yyyyMMdd",
             "MM/dd/yyyy",
+            "MM/dd/yyyy hh:mm:ss",
             "dd/MM/yyyy",
             "MM.dd.yyyy",
             "dd.MM.yyyy. hh:mm:ss",
