@@ -84,6 +84,6 @@ public class Mappings : Profile
         }
 
         Console.WriteLine($"Invalid date format: {date}");
-        throw new BadRequestException("Invalid date format.");
+        return null;
     }
 }
