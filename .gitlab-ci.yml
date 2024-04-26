@@ -8,15 +8,20 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ''
+  DOCKER_TLS_CERTDIR: ""
 
 workflow:
   rules:
     - if: '$CI_COMMIT_BRANCH == "develop"'
       variables:
-        IMAGE_TAG: 'dev'
-        REMOTE_URL: '168.119.189.177'
-        API_URL: 'https://ccd-api.initdevelopment.com'
+        IMAGE_TAG: "dev"
+        REMOTE_URL: "168.119.189.177"
+        API_URL: "https://ccd-api.initdevelopment.com"
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      variables:
+        IMAGE_TAG: "prod"
+        REMOTE_URL: "49.13.8.195"
+        API_URL: "https://ua-ccd-api.initdevelopment.com"
 
 build-client:
   stage: build
@@ -60,6 +65,7 @@ publish-client:
   stage: publish
   only:
     - develop
+    - main
   services:
     - docker:18.09.7-dind
   before_script:
@@ -79,6 +85,7 @@ publish-server:
   stage: publish
   only:
     - develop
+    - main
   services:
     - docker:18.09.7-dind
   before_script:
@@ -97,6 +104,7 @@ deploy:
   stage: deploy
   only:
     - develop
+    - main
   before_script:
     - apk update
     - apk add openssh rsync bash
