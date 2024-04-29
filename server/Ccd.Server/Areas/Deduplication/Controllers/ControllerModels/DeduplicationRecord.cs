@@ -5,17 +5,17 @@ public class DeduplicationRecord
     public string FirstName { get; set; }
     public string FamilyName { get; set; }
     public string Gender { get; set; }
-    public string DateofBirth { get; set; }
+    public string DateOfBirth { get; set; }
     public string AdminLevel1 { get; set; }
     public string AdminLevel2 { get; set; }
     public string AdminLevel3 { get; set; }
     public string AdminLevel4 { get; set; }
-    public string HHID { get; set; }
-    public string MobilePhoneID { get; set; }
-    public string GovIDType { get; set; }
-    public string GovIDNumber { get; set; }
-    public string OtherIDType { get; set; }
-    public string OtherIDNumber { get; set; }
+    public string HhId { get; set; }
+    public string MobilePhoneId { get; set; }
+    public string GovIdType { get; set; }
+    public string GovIdNumber { get; set; }
+    public string OtherIdType { get; set; }
+    public string OtherIdNumber { get; set; }
     public string AssistanceDetails { get; set; }
     public string Activity { get; set; }
     public string Currency { get; set; }

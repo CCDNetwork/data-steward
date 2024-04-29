@@ -34,7 +34,7 @@ public class Mappings : Profile
         CreateMap<DeduplicationRecord, Beneficionary>()
             .ForMember(
                 dest => dest.DateOfBirth,
-                opt => opt.MapFrom(src => ParseDate(src.DateofBirth))
+                opt => opt.MapFrom(src => ParseDate(src.DateOfBirth))
             ).ForMember(
                 dest => dest.StartDate,
                 opt => opt.MapFrom(src => ParseDate(src.StartDate))
