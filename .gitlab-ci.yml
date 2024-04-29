@@ -17,11 +17,16 @@ workflow:
         IMAGE_TAG: "dev"
         REMOTE_URL: "168.119.189.177"
         API_URL: "https://ccd-api.initdevelopment.com"
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_TAG == "ukraine"'
       variables:
-        IMAGE_TAG: "prod"
+        IMAGE_TAG: "ukraine"
         REMOTE_URL: "49.13.8.195"
         API_URL: "https://ua-ccd-api.initdevelopment.com"
+    - if: '$CI_COMMIT_TAG == "south-sudan"'
+      variables:
+        IMAGE_TAG: "south-sudan"
+        REMOTE_URL: "162.55.47.222"
+        API_URL: "https://ss-ccd-api.initdevelopment.com"
 
 build-client:
   stage: build
@@ -65,7 +70,7 @@ publish-client:
   stage: publish
   only:
     - develop
-    - main
+    - tags
   services:
     - docker:18.09.7-dind
   before_script:
@@ -85,7 +90,7 @@ publish-server:
   stage: publish
   only:
     - develop
-    - main
+    - tags
   services:
     - docker:18.09.7-dind
   before_script:
@@ -104,7 +109,7 @@ deploy:
   stage: deploy
   only:
     - develop
-    - main
+    - tags
   before_script:
     - apk update
     - apk add openssh rsync bash
