@@ -31,17 +31,7 @@ public class Mappings : Profile
 
         // BeneficiaryAttribute mappings
         CreateMap<BeneficiaryAttribute, BeneficiaryAttributeResponse>();
-        CreateMap<DeduplicationRecord, Beneficionary>()
-            .ForMember(
-                dest => dest.DateOfBirth,
-                opt => opt.MapFrom(src => ParseDate(src.DateOfBirth))
-            ).ForMember(
-                dest => dest.StartDate,
-                opt => opt.MapFrom(src => ParseDate(src.StartDate))
-            ).ForMember(
-                dest => dest.EndDate,
-                opt => opt.MapFrom(src => ParseDate(src.EndDate))
-            );
+        CreateMap<DeduplicationRecord, Beneficionary>();
 
         // Referral mappings
         CreateMap<Referral, ReferralResponse>();
