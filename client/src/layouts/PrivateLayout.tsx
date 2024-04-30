@@ -36,7 +36,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <NavLink to={APP_ROUTE.Dashboard} className="flex-shrink-0">
+              <NavLink to="/" className="flex-shrink-0">
                 <img
                   className="h-10 w-fit object-contain grayscale brightness-[20]"
                   src="/ccd_logo.png"
