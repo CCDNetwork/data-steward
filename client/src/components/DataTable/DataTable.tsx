@@ -75,7 +75,7 @@ export function DataTable<TData, TValue>({
 
   useEffect(() => {
     if (currentPage && pagination && pageClicked && pagination?.totalPages < currentPage) {
-      pageClicked(pagination.totalPages);
+      pageClicked(pagination.totalPages || 1);
     }
   }, [currentPage, pageClicked, pagination]);
 
