@@ -37,6 +37,10 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
     cell: ({ row }) => {
       const { organizations } = row.original;
 
+      if (!organizations.length) {
+        return <div>-</div>;
+      }
+
       return <div>{organizations[0].name ?? '-'}</div>;
     },
   },
