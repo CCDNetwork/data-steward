@@ -73,7 +73,7 @@ export const PublicPage = ({
       >
         <div className="flex flex-col space-y-2 text-center">
           <img
-            src="/public/ccd_logo.png"
+            src="/ccd_logo.png"
             alt="company-logo"
             loading="lazy"
             className="mx-auto mb-2 w-fit h-20 object-contain grayscale dark:brightness-[10]"
