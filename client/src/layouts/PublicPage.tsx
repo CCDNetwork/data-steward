@@ -73,10 +73,10 @@ export const PublicPage = ({
       >
         <div className="flex flex-col space-y-2 text-center">
           <img
-            src="https://placehold.co/400"
+            src="/public/ccd_logo.png"
             alt="company-logo"
             loading="lazy"
-            className="mx-auto mb-2 w-14 h-14 object-contain"
+            className="mx-auto mb-2 w-fit h-20 object-contain grayscale dark:brightness-[10]"
           />
           <h1 className={cn('text-2xl font-semibold tracking-tight', titleClassName)}>{title}</h1>
           <p className={cn('text-sm text-muted-foreground whitespace-pre-line', subtitleClassName)}>{subtitle}</p>

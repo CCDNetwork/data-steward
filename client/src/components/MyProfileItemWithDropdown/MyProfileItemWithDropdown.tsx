@@ -28,7 +28,7 @@ export const MyProfileItemWithDropdown = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild className="cursor-pointer">
         <div className="flex justify-center items-center cursor-default text-sm font-semibold leading-6">
           <Tooltip tooltipContent="My profile">
             <Avatar>

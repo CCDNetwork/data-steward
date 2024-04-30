@@ -19,9 +19,9 @@ import { useUserMutation } from '@/services/users/api';
 import { toast } from '@/components/ui/use-toast';
 import { AsyncSelect } from '@/components/AsyncSelect';
 import { useOrganizationsInfinite } from '@/services/organizations/api';
+import { Organization } from '@/services/organizations';
 
 import { AddUserModalForm, AddUserModalFormSchema } from './validation';
-import { Organization } from '@/services/organizations';
 
 export const AddUserModal = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -73,7 +73,7 @@ export const AddUserModal = () => {
           Add new
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] overflow-visible">
         <DialogHeader>
           <DialogTitle>Add a new user</DialogTitle>
           <DialogDescription>Submit user information below.</DialogDescription>

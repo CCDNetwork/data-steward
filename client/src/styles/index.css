@@ -20,7 +20,7 @@
   --tw-ring-shadow: 0 0 #000 !important;
 }
 
-/* BLUE #3B81F6 */
+/* #028493 */
 
 @layer base {
   :root {
@@ -30,7 +30,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 186 97% 29%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -42,32 +42,30 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 186 97% 33.3%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    /* commented line is a lighter shade of blue and the one below is the same as for light theme */
-    /* --primary: 217.2 91.2% 59.8%; */
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 186 63.05% 2.32%;
+    --foreground: 186 9.7% 96.45%;
+    --card: 186 45.6% 3.7%;
+    --card-foreground: 186 9.7% 96.45%;
+    --popover: 186 45.6% 3.7%;
+    --popover-foreground: 186 9.7% 96.45%;
+    --primary: 186 97% 29%;
+    --primary-foreground: 186 9.7% 96.45%;
+    --secondary: 186 48.5% 8.7%;
+    --secondary-foreground: 186 9.7% 96.45%;
+    --muted: 186 48.5% 8.7%;
+    --muted-foreground: 186 9.7% 52.9%;
+    --accent: 186 48.5% 8.7%;
+    --accent-foreground: 186 9.7% 96.45%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --border: 186 48.5% 8.7%;
+    --input: 186 48.5% 8.7%;
+    --ring: 186 97% 33.3%;
   }
 }
 

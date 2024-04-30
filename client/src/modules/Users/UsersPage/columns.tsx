@@ -51,8 +51,8 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
         <Badge
           className={cn(
             'capitalize',
-            { 'bg-blue-600 dark:text-white hover:bg-blue-600': role === UserRole.Admin },
-            { 'bg-green-600 dark:text-white hover:bg-green-600': role === UserRole.User },
+            { 'bg-destructive dark:text-white hover:bg-destructive': role === UserRole.Admin },
+            { 'bg-primary dark:text-white hover:bg-primary': role === UserRole.User },
           )}
         >
           {role}

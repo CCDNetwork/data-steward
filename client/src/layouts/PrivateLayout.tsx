@@ -8,6 +8,7 @@ import { APP_ROUTE, NAVIGATION_ITEMS } from '@/helpers/constants';
 import { MyProfileItemWithDropdown } from '@/components/MyProfileItemWithDropdown';
 import { DynamicMobileHamburger } from '@/components/DynamicMobileHamburger';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { BookOpenTextIcon } from 'lucide-react';
 
 interface Props {
   children?: React.ReactNode;
@@ -35,33 +36,61 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <img className="h-10 w-10 rounded-full" src="https://placehold.co/400" alt="CCD Logo" />
-              </div>
+              <NavLink to={APP_ROUTE.Dashboard} className="flex-shrink-0">
+                <img
+                  className="h-10 w-fit object-contain grayscale brightness-[20]"
+                  src="/public/ccd_logo.png"
+                  alt="CCD Logo"
+                />
+              </NavLink>
               <div className="hidden md:block">
-                <div className="ml-10 flex items-baseline space-x-4">
+                <div className="ml-4 lg:ml-8 flex items-center space-x-2 lg:space-x-4">
                   {navigationItemsFilteredByRole.map((item) => (
                     <NavLink
                       key={item.name}
                       to={item.to}
                       className={cn(
-                        'rounded-md px-3 py-2 text-sm font-medium transition-colors text-white duration-150 ease-linear',
+                        'flex gap-x-3 items-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white duration-150 ease-linear',
                         {
-                          'bg-foreground/20 text-primary-foreground dark:text-white dark:bg-blue-700':
+                          'bg-foreground/20 dark:bg-background/20 text-primary-foreground dark:text-white':
                             pathname.includes(item.to),
                         },
                         {
-                          'hover:bg-secondary-foreground/5 hover:dark:bg-blue-700/40': !pathname.includes(item.to),
+                          'hover:bg-secondary-foreground/5 dark:hover:bg-background/5': !pathname.includes(item.to),
+                        },
+                        {
+                          'text-white/60 hover:bg-transparent dark:hover:bg-transparent pointer-events-none':
+                            item.disabled,
                         },
                       )}
                     >
+                      {item.icon && <item.icon className="h-5 w-5 shrink-0 " aria-hidden="true" />}
                       {item.name}
                     </NavLink>
                   ))}
                 </div>
               </div>
             </div>
-            <div className="hidden md:block">
+            <div className="hidden md:flex">
+              <NavLink
+                to="/"
+                className={cn(
+                  'flex gap-x-3 mr-2 items-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white duration-150 ease-linear',
+                  {
+                    'bg-foreground/20 dark:bg-background/20 text-primary-foreground dark:text-white':
+                      pathname.includes('none'),
+                  },
+                  {
+                    'hover:bg-secondary-foreground/5 dark:hover:bg-background/5': !pathname.includes('none'),
+                  },
+                  {
+                    'text-white/60 hover:bg-transparent dark:hover:bg-transparent pointer-events-none': true,
+                  },
+                )}
+              >
+                <BookOpenTextIcon className="h-5 w-5 shrink-0 " aria-hidden="true" />
+                <p className="hidden lg:block">Handbook</p>
+              </NavLink>
               <MyProfileItemWithDropdown />
             </div>
             <DynamicMobileHamburger isOpen={isMobileNavOpen} setIsOpen={setIsMobileNavOpen} />
@@ -84,17 +113,21 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
                     to={item.to}
                     onClick={() => setIsMobileNavOpen(false)}
                     className={cn(
-                      'rounded-md px-3 py-2 text-base block font-medium transition-colors text-white duration-150 ease-linear',
+                      'rounded-md px-3 py-2 text-base flex gap-x-3 items-center font-medium transition-colors text-white duration-150 ease-linear',
                       {
-                        'bg-foreground/20 text-primary-foreground dark:text-white dark:bg-blue-600': pathname.includes(
-                          item.to,
-                        ),
+                        'bg-foreground/20 dark:bg-background/20 text-primary-foreground dark:text-white':
+                          pathname.includes(item.to),
                       },
                       {
-                        'hover:bg-secondary-foreground/5 hover:dark:bg-blue-600/40': !pathname.includes(item.to),
+                        'hover:bg-secondary-foreground/5 dark:hover:bg-background/5': !pathname.includes(item.to),
+                      },
+                      {
+                        'text-white/60 hover:bg-transparent dark:hover:bg-transparent pointer-events-none':
+                          item.disabled,
                       },
                     )}
                   >
+                    {item.icon && <item.icon className="h-6 w-6 shrink-0 " aria-hidden="true" />}
                     {item.name}
                   </NavLink>
                 ))}
@@ -117,19 +150,35 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
                 </div>
                 <div className="mt-3 space-y-1 px-2">
                   <NavLink
+                    to="/"
+                    className={cn(
+                      'flex gap-x-3 mr-2 items-center rounded-md px-3 py-2 text-base font-medium transition-colors text-white duration-150 ease-linear',
+                      {
+                        'bg-foreground/20 dark:bg-background/20 text-primary-foreground dark:text-white':
+                          pathname.includes('none'),
+                      },
+                      {
+                        'hover:bg-secondary-foreground/5 dark:hover:bg-background/5': !pathname.includes('none'),
+                      },
+                      {
+                        'text-white/60 hover:bg-transparent dark:hover:bg-transparent pointer-events-none': true,
+                      },
+                    )}
+                  >
+                    Handbook
+                  </NavLink>
+                  <NavLink
                     to={APP_ROUTE.MyProfile}
                     onClick={() => setIsMobileNavOpen(false)}
                     className={cn(
                       'rounded-md px-3 block py-2 text-base font-medium transition-colors text-white duration-150 ease-linear',
                       {
-                        'bg-foreground/20 text-primary-foreground dark:text-white dark:bg-blue-600': pathname.includes(
+                        'bg-foreground/20 text-primary-foreground dark:text-white': pathname.includes(
                           APP_ROUTE.MyProfile,
                         ),
                       },
                       {
-                        'hover:bg-secondary-foreground/5 hover:dark:bg-blue-600/40': !pathname.includes(
-                          APP_ROUTE.MyProfile,
-                        ),
+                        'hover:bg-secondary-foreground/5': !pathname.includes(APP_ROUTE.MyProfile),
                       },
                     )}
                   >
@@ -138,7 +187,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
                   <button
                     type="button"
                     onClick={logoutUser}
-                    className="rounded-md w-full text-start px-3 block py-2 text-base font-medium transition-colors text-white duration-150 ease-linear hover:bg-secondary-foreground/5 hover:dark:bg-blue-600/40"
+                    className="rounded-md w-full text-start px-3 block py-2 text-base font-medium transition-colors text-white duration-150 ease-linear hover:bg-secondary-foreground/5"
                   >
                     Sign out
                   </button>
