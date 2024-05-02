@@ -10,6 +10,7 @@ using Ccd.Server.Deduplication;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Referrals;
 using Ccd.Server.Templates;
+using Ccd.Server.Handbooks;
 
 namespace Ccd.Server.Data;
 
@@ -37,6 +38,7 @@ public class CcdContext : DbContext
     public DbSet<List> Lists { get; set; }
     public DbSet<Referral> Referrals { get; set; }
     public DbSet<Template> Templates { get; set; }
+    public DbSet<Handbook> Handbooks { get; set; }
 
     private void seedData(ModelBuilder modelBuilder)
     {

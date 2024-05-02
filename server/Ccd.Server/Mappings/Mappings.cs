@@ -7,7 +7,7 @@ using Ccd.Server.Deduplication;
 using System.Globalization;
 using Ccd.Server.Referrals;
 using Ccd.Server.Templates;
-using Ccd.Server.Helpers;
+using Ccd.Server.Handbooks;
 
 namespace Ccd.Server.Mappings;
 
@@ -43,6 +43,11 @@ public class Mappings : Profile
             dest => dest.OrganizationReferredToId,
             opt => opt.MapFrom(src => src.OrganizationId)
         );
+
+        // Handbook
+        CreateMap<Handbook, HandbookResponse>();
+        CreateMap<HandbookAddRequest, Handbook>();
+        CreateMap<HandbookUpdateRequest, Handbook>();
 
         // Template mappings
         CreateMap<Template, TemplateResponse>();
