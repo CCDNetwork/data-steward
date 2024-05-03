@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FilePlus2Icon } from 'lucide-react';
+import { BookPlusIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -52,7 +52,7 @@ export const CreateHandbookModal = () => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <FilePlus2Icon className="mr-2 w-5 h-5" />
+          <BookPlusIcon className="mr-2 w-5 h-5" />
           Create
         </Button>
       </DialogTrigger>
