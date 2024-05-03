@@ -87,7 +87,13 @@ export const HandbookPage = () => {
             )}
           />
           <div className="pb-10">
-            <MarkdownEditor label="Content" name="content" control={control} height={700} visibleDragbar={false} />
+            <MarkdownEditor
+              label="Content"
+              name="content"
+              control={control}
+              textareaProps={{ className: 'focus:border-0' }}
+              height={700}
+            />
           </div>
         </form>
       </Form>
