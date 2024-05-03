@@ -41,7 +41,7 @@ export const Pagination = ({ pagination, currentPage, pageClicked, pageSizeClick
   }, [currentPage, pageSize, totalRows]);
 
   return (
-    <div className="py-3 flex lg:flex-row items-center lg:justify-between justify-center flex-col-reverse gap-2 px-2">
+    <div className="py-3 flex lg:flex-row items-center lg:justify-between justify-center flex-col gap-2 px-2">
       <div className="flex items-center space-x-4">
         <div className="text-sm">
           Showing <span className="font-bold">{resultsFrom}</span> to

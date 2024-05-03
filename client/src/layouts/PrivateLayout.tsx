@@ -147,6 +147,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
                 <div className="mt-3 space-y-1 px-2">
                   <NavLink
                     to={APP_ROUTE.Handbooks}
+                    onClick={() => setIsMobileNavOpen(false)}
                     className={cn(
                       'flex gap-x-3 mr-2 items-center rounded-md px-3 py-2 text-base font-medium transition-colors text-white duration-150 ease-linear',
                       {

@@ -81,16 +81,16 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex flex-1 pb-4 justify-between items-center">
-        {onSearchChange && (
+      {onSearchChange && (
+        <div className="pb-4">
           <Input
             type="search"
             placeholder="Search..."
-            className="max-w-[250px]"
+            className="sm:max-w-[250px] w-full"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange?.(e.target.value)}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="border rounded-md">
         <Table>

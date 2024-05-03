@@ -15,12 +15,18 @@ import { Input } from '@/components/ui/input';
 import { dataToUserEditFormData } from './form-transformation';
 import { defaultUserEditFormFormValues } from './const';
 import { UserEditFormData, UserEditFormSchema } from './validations';
+import { useLocation } from 'react-router-dom';
 
 export const UserPage = () => {
+  const { pathname } = useLocation();
   const { id: userId } = useIdFromParams();
 
   const { data: userData, isLoading: queryLoading } = useUser({ id: userId, isCreate: false });
   const { patchUser } = useUserMutation();
+
+  const x = pathname.split('/').filter((path) => path);
+
+  console.log(x);
 
   const form = useForm<UserEditFormData>({
     defaultValues: defaultUserEditFormFormValues,

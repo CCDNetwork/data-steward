@@ -1,30 +1,28 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 
-import { GlobalProvider } from '@/providers/GlobalProvider';
-import { PrivateLayout } from '@/layouts/PrivateLayout';
-import { NotFoundPage } from '@/modules/NotFoundPage';
-import { APP_ROUTE } from '@/helpers/constants';
-import { SignInPage } from '@/modules/Public/SignInPage';
-import { DashboardPage } from '@/modules/DashboardPage';
-import { MyProfilePage } from '@/modules/MyProfilePage';
-import { DynamicRoute } from '@/layouts/DynamicRoute';
-import { ForgotPasswordPage } from '@/modules/Public/ForgotPasswordPage';
-import { PasswordResetPage } from '@/modules/Public/PasswordResetPage';
-import { SuccessPage } from '@/modules/Public/SuccessPage/SuccessPage';
-import { PermissionDeniedPage } from '@/modules/Public/PermissionDeniedPage';
-import { ReferralsPage } from '@/modules/ReferralsPage';
-import { DeduplicationPage } from '@/modules/DeduplicationPage';
-import { BeneficiariesPage } from '@/modules/BeneficiariesPage';
-import { ProtectedRoute } from '@/layouts/ProtectedRoute';
-import { UserRole } from '@/services/users';
-import { BeneficiaryAttributesPage } from '@/modules/BeneficiaryAttributesPage';
-import { UsersPage } from '@/modules/Users/UsersPage';
-import { UserPage, UsersProvider } from '@/modules/Users';
-import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from '@/modules/Organizations';
-import { RoleBasedIndexRoute } from '@/layouts/RoleBasedIndexRoute';
-
 import { TemplatePage, TemplatesPage, TemplatesProvider } from './modules/Templates';
 import { HandbookPage, HandbooksPage, HandbooksProvider } from './modules/HandbooksPage';
+import { GlobalProvider } from './providers/GlobalProvider';
+import { PrivateLayout } from './layouts/PrivateLayout';
+import { RoleBasedIndexRoute } from './layouts/RoleBasedIndexRoute';
+import { ProtectedRoute } from './layouts/ProtectedRoute';
+import { UserRole } from './services/users';
+import { DashboardPage } from './modules/DashboardPage';
+import { APP_ROUTE } from './helpers/constants';
+import { BeneficiariesPage } from './modules/BeneficiariesPage';
+import { DeduplicationPage } from './modules/DeduplicationPage';
+import { ReferralsPage } from './modules/ReferralsPage';
+import { BeneficiaryAttributesPage } from './modules/BeneficiaryAttributesPage';
+import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from './modules/Organizations';
+import { DynamicRoute } from './layouts/DynamicRoute';
+import { UserPage, UsersPage, UsersProvider } from './modules/Users';
+import { MyProfilePage } from './modules/MyProfilePage';
+import { PermissionDeniedPage } from './modules/Public/PermissionDeniedPage';
+import { SuccessPage } from './modules/Public/SuccessPage';
+import { SignInPage } from './modules/Public/SignInPage';
+import { ForgotPasswordPage } from './modules/Public/ForgotPasswordPage';
+import { PasswordResetPage } from './modules/Public/PasswordResetPage';
+import { NotFoundPage } from './modules/NotFoundPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
