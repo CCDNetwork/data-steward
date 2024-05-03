@@ -21,6 +21,7 @@ export enum APP_ROUTE {
   Referrals = '/referrals',
   BeneficiaryAttributes = '/beneficiary-attributes',
   Organizations = '/organizations',
+  Handbooks = '/handbooks',
   // PUBLIC
   ForgotPassword = '/forgot-password',
   ResetPassword = '/reset-password',

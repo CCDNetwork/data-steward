@@ -24,6 +24,7 @@ import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from '@/mo
 import { RoleBasedIndexRoute } from '@/layouts/RoleBasedIndexRoute';
 
 import { TemplatePage, TemplatesPage, TemplatesProvider } from './modules/Templates';
+import { HandbookPage, HandbooksPage, HandbooksProvider } from './modules/HandbooksPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -69,6 +70,13 @@ export const router = createBrowserRouter(
           <Route path={APP_ROUTE.Templates} element={<TemplatesProvider />}>
             <Route index element={<TemplatesPage />} />
             <Route path=":id" element={<DynamicRoute component={<TemplatePage />} />} />
+          </Route>
+        </Route>
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
+          <Route path={APP_ROUTE.Handbooks} element={<HandbooksProvider />}>
+            <Route index element={<HandbooksPage />} />
+            <Route path=":id" element={<DynamicRoute component={<HandbookPage />} />} />
           </Route>
         </Route>
 

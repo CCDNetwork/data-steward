@@ -69,23 +69,23 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
             </div>
             <div className="hidden md:flex">
               <NavLink
-                to="/"
+                to={APP_ROUTE.Handbooks}
                 className={cn(
                   'flex gap-x-3 mr-2 items-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white duration-150 ease-linear',
                   {
-                    'bg-foreground/20 dark:bg-background/20 text-primary-foreground dark:text-white':
-                      pathname.includes('none'),
+                    'bg-foreground/20 dark:bg-background/20 text-primary-foreground dark:text-white': pathname.includes(
+                      APP_ROUTE.Handbooks,
+                    ),
                   },
                   {
-                    'hover:bg-secondary-foreground/5 dark:hover:bg-background/5': !pathname.includes('none'),
-                  },
-                  {
-                    'text-white/60 hover:bg-transparent dark:hover:bg-transparent pointer-events-none': true,
+                    'hover:bg-secondary-foreground/5 dark:hover:bg-background/5': !pathname.includes(
+                      APP_ROUTE.Handbooks,
+                    ),
                   },
                 )}
               >
                 <BookOpenTextIcon className="h-5 w-5 shrink-0 " aria-hidden="true" />
-                <p className="hidden lg:block">Handbook</p>
+                <p className="hidden lg:block">Handbooks</p>
               </NavLink>
               <MyProfileItemWithDropdown />
             </div>
@@ -146,22 +146,21 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
                 </div>
                 <div className="mt-3 space-y-1 px-2">
                   <NavLink
-                    to="/"
+                    to={APP_ROUTE.Handbooks}
                     className={cn(
                       'flex gap-x-3 mr-2 items-center rounded-md px-3 py-2 text-base font-medium transition-colors text-white duration-150 ease-linear',
                       {
                         'bg-foreground/20 dark:bg-background/20 text-primary-foreground dark:text-white':
-                          pathname.includes('none'),
+                          pathname.includes(APP_ROUTE.Handbooks),
                       },
                       {
-                        'hover:bg-secondary-foreground/5 dark:hover:bg-background/5': !pathname.includes('none'),
-                      },
-                      {
-                        'text-white/60 hover:bg-transparent dark:hover:bg-transparent pointer-events-none': true,
+                        'hover:bg-secondary-foreground/5 dark:hover:bg-background/5': !pathname.includes(
+                          APP_ROUTE.Handbooks,
+                        ),
                       },
                     )}
                   >
-                    Handbook
+                    Handbooks
                   </NavLink>
                   <NavLink
                     to={APP_ROUTE.MyProfile}

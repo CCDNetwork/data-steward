@@ -28,7 +28,7 @@ export const PageContainer = ({
       <Loader2 className="w-10 h-10 lg:w-20 lg:h-20 animate-spin" />
     </div>
   ) : (
-    <div className={cn('space-y-4 sm:p-4 md:p-6 p-2 items-center justify-center', containerClassName)}>
+    <div className={cn('space-y-4 sm:p-4 md:p-6 p-2 items-center justify-center h-full', containerClassName)}>
       <div className={cn('flex items-center justify-between space-y-2', headerClassName)}>
         <div className="flex">
           {withBackButton && (
