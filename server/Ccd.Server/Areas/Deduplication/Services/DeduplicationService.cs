@@ -239,7 +239,13 @@ public class DeduplicationService
 
             if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) return false;
             if (existingValue == null || newValue == null) return false;
-            if (existingValue != newValue) return false;
+            if (existingValue != newValue)
+            {
+                var firstString = Regex.Replace(existingValue, @"\s+", "").ToLower();
+                var secondString = Regex.Replace(newValue, @"\s+", "").ToLower();
+                var ratio = Fuzz.Ratio(firstString, secondString);
+                if (ratio < 85) return false;
+            };
 
         }
 
