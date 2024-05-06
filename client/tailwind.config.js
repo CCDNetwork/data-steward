@@ -74,6 +74,7 @@ module.exports = {
     require('tailwindcss-animate'),
     require('@tailwindcss/forms'),
     require('@headlessui/tailwindcss'),
+    require('@tailwindcss/typography'),
     require('tailwindcss/plugin')(({ addVariant }) => {
       addVariant('search-cancel', '&::-webkit-search-cancel-button');
     }),

@@ -11,11 +11,11 @@ import { useHandbookMutation, useHandbooks } from '@/services/handbooks/api';
 
 import { columns } from './columns';
 import { CreateHandbookModal } from './components';
-import { useHandbooksProvider } from '../HandbooksProvider';
+import { useHandbookProvider } from '../HandbookProvider';
 
-export const HandbooksPage = () => {
+export const HandbookPage = () => {
   const navigate = useNavigate();
-  const { pagination } = useHandbooksProvider();
+  const { pagination } = useHandbookProvider();
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
 
   const [handbookToDelete, setHandbookToDelete] = useState<Handbook | null>(null);
@@ -43,10 +43,10 @@ export const HandbooksPage = () => {
     setHandbookToDelete(null);
   };
 
-  const onHandbookRowClick = (handbookRow: Handbook) => navigate(`${APP_ROUTE.Handbooks}/${handbookRow.id}`);
+  const onHandbookRowClick = (handbookRow: Handbook) => navigate(`${APP_ROUTE.Handbook}/${handbookRow.id}`);
 
   return (
-    <PageContainer pageTitle="Handbooks" pageSubtitle="List of handbooks" headerNode={<CreateHandbookModal />}>
+    <PageContainer pageTitle="Handbook" pageSubtitle="Handbook List" headerNode={<CreateHandbookModal />}>
       <DataTable
         data={handbooksData?.data ?? []}
         pagination={handbooksData?.meta}

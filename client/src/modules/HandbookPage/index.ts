@@ -1,5 +1,5 @@
+export * from './SingleHandbookPage';
+export * from './HandbookProvider';
 export * from './HandbookPage';
-export * from './HandbooksPage';
-export * from './HandbooksProvider';
 export * from './validation';
 export * from './const';

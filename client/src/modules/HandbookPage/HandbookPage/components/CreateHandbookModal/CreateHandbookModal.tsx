@@ -8,10 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
-import { HandbookForm, HandbookFormSchema } from '@/modules/HandbooksPage/validation';
+import { HandbookForm, HandbookFormSchema } from '@/modules/HandbookPage/validation';
 import { useHandbookMutation } from '@/services/handbooks/api';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
-import { defaultHandbookFormValues } from '@/modules/HandbooksPage/const';
+import { defaultHandbookFormValues } from '@/modules/HandbookPage/const';
 
 export const CreateHandbookModal = () => {
   const [open, setOpen] = useState<boolean>(false);

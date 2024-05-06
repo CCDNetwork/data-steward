@@ -6,10 +6,10 @@ import { useGlobalErrors } from '@/providers/GlobalProvider';
 import { api } from '../api';
 import { Handbook } from './types';
 import { handbookToReq, resToHandbook } from './transformations';
-import { HandbookForm } from '@/modules/HandbooksPage';
+import { HandbookForm } from '@/modules/HandbookPage';
 
 enum QueryKeys {
-  Handbooks = 'handbooks',
+  Handbook = 'handbook',
   SingleHandbook = 'single_handbook',
 }
 
@@ -51,7 +51,7 @@ const deleteHandbook = async (handbookId: string): Promise<Handbook> => {
 //
 
 export const useHandbooks = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
-  return useQuery([QueryKeys.Handbooks, currentPage, pageSize, sortBy, sortDirection, debouncedSearch], () =>
+  return useQuery([QueryKeys.Handbook, currentPage, pageSize, sortBy, sortDirection, debouncedSearch], () =>
     fetchHandbooks({ page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch }),
   );
 };
@@ -74,13 +74,13 @@ export const useHandbookMutation = () => {
 
   return {
     createHandbook: useMutation(postHandbook, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Handbooks]),
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Handbook]),
     }),
     editHandbook: useMutation(putHandbook, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.SingleHandbook]),
     }),
     deleteHandbook: useMutation(deleteHandbook, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Handbooks]),
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Handbook]),
     }),
   };
 };

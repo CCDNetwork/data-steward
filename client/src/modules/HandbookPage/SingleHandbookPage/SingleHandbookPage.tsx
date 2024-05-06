@@ -15,7 +15,7 @@ import { dataToHandbookForm } from './form-transformation';
 import { HandbookForm, HandbookFormSchema } from '../validation';
 import { defaultHandbookFormValues } from '../const';
 
-export const HandbookPage = () => {
+export const SingleHandbookPage = () => {
   const { id: handbookId } = useIdFromParams();
 
   const { data: handbookData, isLoading: queryLoading } = useHandbook({ id: handbookId, isCreate: false });

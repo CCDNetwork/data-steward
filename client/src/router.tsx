@@ -1,7 +1,6 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 
 import { TemplatePage, TemplatesPage, TemplatesProvider } from './modules/Templates';
-import { HandbookPage, HandbooksPage, HandbooksProvider } from './modules/HandbooksPage';
 import { GlobalProvider } from './providers/GlobalProvider';
 import { PrivateLayout } from './layouts/PrivateLayout';
 import { RoleBasedIndexRoute } from './layouts/RoleBasedIndexRoute';
@@ -23,6 +22,8 @@ import { SignInPage } from './modules/Public/SignInPage';
 import { ForgotPasswordPage } from './modules/Public/ForgotPasswordPage';
 import { PasswordResetPage } from './modules/Public/PasswordResetPage';
 import { NotFoundPage } from './modules/NotFoundPage';
+import { HandbookProvider, HandbookPage, SingleHandbookPage } from './modules/HandbookPage';
+import { UserHandbookListPage } from './modules/UserHandbookList';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -71,11 +72,15 @@ export const router = createBrowserRouter(
           </Route>
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
-          <Route path={APP_ROUTE.Handbooks} element={<HandbooksProvider />}>
-            <Route index element={<HandbooksPage />} />
-            <Route path=":id" element={<DynamicRoute component={<HandbookPage />} />} />
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+          <Route path={APP_ROUTE.Handbook} element={<HandbookProvider />}>
+            <Route index element={<HandbookPage />} />
+            <Route path=":id" element={<DynamicRoute component={<SingleHandbookPage />} />} />
           </Route>
+        </Route>
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+          <Route path={APP_ROUTE.UserHandbookList} element={<UserHandbookListPage />} />
         </Route>
 
         <Route path={APP_ROUTE.MyProfile} element={<DynamicRoute component={<MyProfilePage />} />} />
