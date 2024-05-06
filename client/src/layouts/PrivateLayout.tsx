@@ -193,7 +193,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
           </Transition>
         </div>
       </nav>
-      <main>
+      <main className="overflow-x-auto">
         {/* <main className="relative flex flex-1 flex-col h-[100svh] sm:h-screen overflow-x-auto"> */}
         <div className="mx-auto max-w-7xl h-[calc(100svh-64px)]">{children}</div>
       </main>
