@@ -40,7 +40,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
         >
           <HamburgerMenuIcon className="w-5 h-5 text-muted-foreground" />
         </SheetTrigger>
-        <SheetContent className="p-0 w-[300px] z-50" side="left">
+        <SheetContent onOverlayClick={() => setMobileSidebarOpen(false)} className="p-0 w-[300px] z-50" side="left">
           <SidebarContent
             closeSidebar={() => setMobileSidebarOpen(false)}
             navigationItems={roleBasedNavigationItems}
