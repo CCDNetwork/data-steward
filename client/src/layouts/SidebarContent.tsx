@@ -53,7 +53,7 @@ export const SidebarContent = ({
               <div key={`${item.categoryName}-${idx}`} className="pb-6">
                 <p className="font-bold pb-2">{item.categoryName}</p>
                 {item.routes.map((item) => (
-                  <li key={item.name} className="ml-1">
+                  <li key={item.name} className="ml-1 relative">
                     <NavLink
                       to={item.to}
                       className={cn(
@@ -69,17 +69,17 @@ export const SidebarContent = ({
                     >
                       <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
                       {item.name}
-                      {/* {item.count ? (
-                          <span
-                            className={cn(
-                              'ml-auto w-9 min-w-max whitespace-nowrap rounded-full bg-primary px-2.5 py-0.5 text-center text-xs font-medium leading-5 text-primary-foreground',
-                              { 'bg-secondary text-primary': pathname.includes(item.to) },
-                            )}
-                            aria-hidden="true"
-                          >
-                            {item.count}
-                          </span>
-                        ) : null} */}
+                      {item.count ? (
+                        <span
+                          className={cn(
+                            'absolute right-0 w-9 min-w-max transition-colors duration-300 whitespace-nowrap rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium leading-5 text-primary-foreground',
+                            { 'bg-primary/30 text-primary': pathname.includes(item.to) },
+                          )}
+                          aria-hidden="true"
+                        >
+                          {item.count}
+                        </span>
+                      ) : null}
                     </NavLink>
                   </li>
                 ))}
