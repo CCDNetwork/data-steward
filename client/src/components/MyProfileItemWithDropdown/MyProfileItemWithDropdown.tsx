@@ -19,7 +19,7 @@ import { cn } from '@/helpers/utils';
 import { useAuth } from '@/providers/GlobalProvider';
 import { useTheme } from '@/providers/ThemeProvider';
 
-export const MyProfileItemWithDropdown = () => {
+export const MyProfileItemWithDropdown = ({ closeSidebar }: { closeSidebar?: () => void }) => {
   const { user, logoutUser } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -61,7 +61,12 @@ export const MyProfileItemWithDropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 mx-2 my-1">
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => navigate(APP_ROUTE.MyProfile)}>
+          <DropdownMenuItem
+            onClick={() => {
+              closeSidebar?.();
+              navigate(APP_ROUTE.MyProfile);
+            }}
+          >
             <User className="mr-2 h-[1.2rem] w-[1.2rem]" />
             My Profile
           </DropdownMenuItem>

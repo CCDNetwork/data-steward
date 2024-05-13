@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 
@@ -15,6 +15,7 @@ interface Props {
 
 export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
   const { isLoggedIn, user } = useAuth();
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
 
   const roleBasedNavigationItems = useMemo(() => {
     return NAVIGATION_ITEMS.filter((navItem) => navItem.allowedRoles.includes(user.role));
@@ -32,12 +33,19 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
       </div>
 
       {/* MOBILE */}
-      <Sheet>
-        <SheetTrigger className="absolute top-1.5 left-3 bg-muted/50 p-1 rounded-md hover:bg-muted transition-colors duration-300 ease-in-out block md:hidden focus:outline-primary outline-none">
+      <Sheet open={mobileSidebarOpen}>
+        <SheetTrigger
+          onClick={() => setMobileSidebarOpen((old) => !old)}
+          className="absolute top-1.5 left-3 bg-muted/50 p-1 rounded-md hover:bg-muted transition-colors duration-300 ease-in-out block md:hidden focus:outline-primary outline-none"
+        >
           <HamburgerMenuIcon className="w-5 h-5 text-muted-foreground" />
         </SheetTrigger>
         <SheetContent className="p-0 w-[300px] z-50" side="left">
-          <SidebarContent navigationItems={roleBasedNavigationItems} showHandbookRoute={user.role === UserRole.User} />
+          <SidebarContent
+            closeSidebar={() => setMobileSidebarOpen(false)}
+            navigationItems={roleBasedNavigationItems}
+            showHandbookRoute={user.role === UserRole.User}
+          />
         </SheetContent>
       </Sheet>
 
@@ -45,7 +53,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
         {/* <div className="px-4 py-2 sm:px-6 flex items-center justify-center">
           <p className="font-medium tracking-tight text-muted-foreground">Header content here</p>
         </div> */}
-        <div className="px-4 pt-2 pb-4 flex-1 overflow-y-auto md:mt-0 mt-10 border md:border-0">{children}</div>
+        <div className="px-4 pt-2 pb-4 flex-1 overflow-y-auto md:mt-0 mt-10 border-t md:border-t-0">{children}</div>
         <div className="px-4 py-4 sm:px-6 min-h-[69px] flex items-center justify-center">
           <p className="font-medium tracking-tight text-muted-foreground">Footer content here</p>
         </div>
