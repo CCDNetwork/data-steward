@@ -1,10 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { LaptopIcon, LogOut, Moon, Sun, User } from 'lucide-react';
 
-import { APP_ROUTE } from '@/helpers/constants';
-import { useAuth } from '@/providers/GlobalProvider';
-import { useTheme } from '@/providers/ThemeProvider';
-import { Tooltip } from '@/components/Tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -18,30 +14,52 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { APP_ROUTE } from '@/helpers/constants';
+import { cn } from '@/helpers/utils';
+import { useAuth } from '@/providers/GlobalProvider';
+import { useTheme } from '@/providers/ThemeProvider';
 
 export const MyProfileItemWithDropdown = () => {
   const { user, logoutUser } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { setTheme } = useTheme();
 
-  const userInitials = `${user.firstName[0] ?? ''} ${user.lastName[0] ?? ''}`;
+  const userInitials = `${user.firstName[0]} ${user.lastName[0]}`;
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className="cursor-pointer">
-        <div className="flex justify-center items-center cursor-default text-sm font-semibold leading-6">
-          <Tooltip tooltipContent="My profile">
+      <DropdownMenuTrigger asChild className="border-t border-border">
+        <div className="-mx-6 mt-auto">
+          <div
+            className={cn(
+              'flex cursor-pointer hover:bg-muted-foreground/10 justify-start items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary-foreground transition-colors duration-150 ease-linear',
+              {
+                'bg-primary/90 text-gray-50 hover:bg-primary/90': pathname.includes(APP_ROUTE.MyProfile),
+              },
+            )}
+          >
             <Avatar>
               <AvatarImage src="profileimageurlgoeshere" />
-              <AvatarFallback className="bg-foreground/30 text-background -tracking-wider capitalize">
+              <AvatarFallback
+                className={cn('bg-foreground/30 text-gray-50 tracking-tight text-lg uppercase', {
+                  'dark:bg-background/30': pathname.includes(APP_ROUTE.MyProfile),
+                })}
+              >
                 {userInitials}
               </AvatarFallback>
             </Avatar>
-          </Tooltip>
-          <span className="sr-only">My profile</span>
+            <span className="sr-only">Your profile</span>
+            <div className="flex flex-col truncate">
+              <span aria-hidden="true">{`${user.firstName} ${user.lastName}`}</span>
+              <span aria-hidden="true" className="text-sm truncate opacity-80 font-normal">
+                {user.organizations[0].name ?? user.email}
+              </span>
+            </div>
+          </div>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-fit mx-2 my-1">
+      <DropdownMenuContent className="w-56 mx-2 my-1">
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => navigate(APP_ROUTE.MyProfile)}>
             <User className="mr-2 h-[1.2rem] w-[1.2rem]" />

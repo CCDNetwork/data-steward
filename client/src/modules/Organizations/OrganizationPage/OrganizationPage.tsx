@@ -6,13 +6,15 @@ import { PageContainer } from '@/components/PageContainer';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useOrganization, useOrganizationMutation } from '@/services/organizations/api';
+import { Card, CardContent } from '@/components/ui/card';
 
 import { dataToOrganizationEditFormData } from './form-transformation';
 import { OrganizationEditFormSchema, OrganizationEditFormData } from './validations';
 import { defaultOrganizationEditFormFormValues } from './const';
+import { APP_ROUTE } from '@/helpers/constants';
 
 export const OrganizationPage = () => {
   const { id: organizationId } = useIdFromParams();
@@ -54,10 +56,9 @@ export const OrganizationPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Organization Information"
-      pageSubtitle="Details about organization"
+      pageTitle="Organization"
+      pageSubtitle="Organization Details"
       isLoading={queryLoading}
-      withBackButton
       headerNode={
         <Button
           type="submit"
@@ -68,28 +69,32 @@ export const OrganizationPage = () => {
           Save
         </Button>
       }
+      breadcrumbs={[
+        { href: `${APP_ROUTE.Organizations}`, name: 'Organizations' },
+        { name: `${organizationData?.name}` },
+      ]}
     >
       <Form {...form}>
-        <div className="mt-6 border-t border-border/80">
-          <dl className="divide-y divide-border/80">
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
-              <dt className="text-sm font-medium leading-6">Organization Name</dt>
-              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
+        <div className="space-y-8 max-w-2xl">
+          <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
+            <CardContent className="space-y-2 pt-6">
+              <div className="grid sm:grid-cols-2 grid-cols-1">
                 <FormField
                   control={control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel>Organization name</FormLabel>
                       <FormControl>
-                        <Input id="name" className="sm:max-w-sm" placeholder="Organization name" {...field} />
+                        <Input id="name" placeholder="Organization name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </dd>
-            </div>
-          </dl>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </Form>
     </PageContainer>

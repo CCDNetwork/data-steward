@@ -48,7 +48,12 @@ export const OrganizationsPage = () => {
     navigate(`${APP_ROUTE.Organizations}/${organizationRow.id}`);
 
   return (
-    <PageContainer pageTitle="Organizations" headerNode={<AddOrganizationModal />}>
+    <PageContainer
+      pageTitle="Organizations"
+      pageSubtitle="Manage organizations"
+      headerNode={<AddOrganizationModal />}
+      breadcrumbs={[{ href: `${APP_ROUTE.Organizations}`, name: 'Organizations' }]}
+    >
       <DataTable
         data={organizations?.data ?? []}
         pagination={organizations?.meta}

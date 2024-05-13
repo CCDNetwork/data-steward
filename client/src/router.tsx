@@ -6,7 +6,6 @@ import { PrivateLayout } from './layouts/PrivateLayout';
 import { RoleBasedIndexRoute } from './layouts/RoleBasedIndexRoute';
 import { ProtectedRoute } from './layouts/ProtectedRoute';
 import { UserRole } from './services/users';
-import { DashboardPage } from './modules/DashboardPage';
 import { APP_ROUTE } from './helpers/constants';
 import { BeneficiariesPage } from './modules/BeneficiariesPage';
 import { DeduplicationPage } from './modules/DeduplicationPage';
@@ -31,9 +30,9 @@ export const router = createBrowserRouter(
       <Route path="/" element={<PrivateLayout />}>
         <Route index element={<RoleBasedIndexRoute />} />
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+        {/* <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
           <Route path={APP_ROUTE.Dashboard} element={<DashboardPage />} />
-        </Route>
+        </Route> */}
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
           <Route path={APP_ROUTE.Beneficiaries} element={<BeneficiariesPage />} />
@@ -48,7 +47,7 @@ export const router = createBrowserRouter(
         </Route>
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
-          <Route path={APP_ROUTE.BeneficiaryAttributes} element={<BeneficiaryAttributesPage />} />
+          <Route path={APP_ROUTE.Attributes} element={<BeneficiaryAttributesPage />} />
         </Route>
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>

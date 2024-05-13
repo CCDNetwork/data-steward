@@ -8,6 +8,7 @@ import { SortDirection, usePagination } from '@/helpers/pagination';
 
 import { columns } from './columns';
 import { UploadModal } from './components/UploadModal';
+import { APP_ROUTE } from '@/helpers/constants';
 
 export const DeduplicationPage = () => {
   const pagination = usePagination({ initialPagination: { sortBy: 'createdAt', sortDirection: SortDirection.Desc } });
@@ -25,10 +26,10 @@ export const DeduplicationPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Deduplication"
-      pageSubtitle="Deduplication list"
+      pageTitle="Manage cases"
+      pageSubtitle="Manage deduplication cases"
       headerNode={
-        <div className="flex gap-3">
+        <div className="flex sm:flex-row flex-col gap-3">
           <Button type="button" onClick={() => handleDeduplicationButtonClick('single')}>
             Internal deduplication
           </Button>
@@ -37,6 +38,7 @@ export const DeduplicationPage = () => {
           </Button>
         </div>
       }
+      breadcrumbs={[{ href: `${APP_ROUTE.Deduplication}`, name: 'Manage cases' }]}
     >
       <DataTable
         data={listings?.data ?? []}

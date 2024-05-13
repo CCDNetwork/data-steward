@@ -47,7 +47,12 @@ export const UsersPage = () => {
   const onUserTableRowClick = (userRow: User) => navigate(`${APP_ROUTE.Users}/${userRow.id}`);
 
   return (
-    <PageContainer pageTitle="Users" headerNode={<AddUserModal />}>
+    <PageContainer
+      pageTitle="Users"
+      pageSubtitle="Manage users"
+      headerNode={<AddUserModal />}
+      breadcrumbs={[{ href: `${APP_ROUTE.Users}`, name: 'Users' }]}
+    >
       <DataTable
         data={users?.data ?? []}
         pagination={users?.meta}

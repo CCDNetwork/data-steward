@@ -4,6 +4,7 @@ import { useUserMe } from '@/services/users/api';
 import { MyProfileForm, WipeDataDialog } from '@/modules/MyProfilePage/components';
 import { useAuth } from '@/providers/GlobalProvider';
 import { UserRole } from '@/services/users';
+import { APP_ROUTE } from '@/helpers/constants';
 
 export const MyProfilePage = () => {
   const {
@@ -14,13 +15,13 @@ export const MyProfilePage = () => {
   return (
     <PageContainer
       pageTitle="My Profile"
+      pageSubtitle="Manage profile details"
       isLoading={userProfileQueryLoading}
-      containerClassName="sm:p-6 p-0 pt-6"
-      headerClassName="sm:px-0 px-6"
       headerNode={role === UserRole.Admin && <WipeDataDialog />}
+      breadcrumbs={[{ href: `${APP_ROUTE.MyProfile}`, name: 'My Profile' }]}
     >
-      <div className="space-y-8 pb-6 max-w-3xl">
-        <Card className="sm:bg-secondary/20 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
+      <div className="space-y-8 max-w-3xl">
+        <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
           <CardHeader>
             <CardTitle>Account Information</CardTitle>
             <CardDescription>Edit your account information here</CardDescription>

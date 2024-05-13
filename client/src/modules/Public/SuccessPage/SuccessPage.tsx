@@ -5,7 +5,7 @@ export const SuccessPage = () => {
   let successMessage = 'Action successful!';
 
   return (
-    <main className="grid h-[100svh] sm:h-screen place-items-center px-6 py-24 sm:py-32 lg:px-8">
+    <main className="grid animate-appear h-[100svh] sm:h-screen place-items-center px-6 py-24 sm:py-32 lg:px-8">
       <div className="flex items-center justify-center flex-col gap-2">
         <CheckCircleIcon className="w-24 h-24 text-green-500 mb-2" />
         <p className="font-semibold text-green-500">Success</p>

@@ -7,7 +7,7 @@ import { useUser, useUserMutation } from '@/services/users/api';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 // import { AsyncSelect } from '@/components/AsyncSelect';
 // import { useOrganizationsInfinite } from '@/services/organizations/api';
@@ -15,6 +15,8 @@ import { Input } from '@/components/ui/input';
 import { dataToUserEditFormData } from './form-transformation';
 import { defaultUserEditFormFormValues } from './const';
 import { UserEditFormData, UserEditFormSchema } from './validations';
+import { Card, CardContent } from '@/components/ui/card';
+import { APP_ROUTE } from '@/helpers/constants';
 
 export const UserPage = () => {
   const { id: userId } = useIdFromParams();
@@ -55,12 +57,13 @@ export const UserPage = () => {
 
   return (
     <PageContainer
-      pageTitle="User Information"
-      pageSubtitle="Personal details"
-      containerClassName="sm:p-6 p-0 pt-6"
-      headerClassName="sm:px-0 px-6"
+      pageTitle="User"
+      pageSubtitle="User Details"
       isLoading={queryLoading}
-      withBackButton
+      breadcrumbs={[
+        { href: `${APP_ROUTE.Users}`, name: 'Users' },
+        { name: `${userData?.firstName} ${userData?.lastName}` },
+      ]}
       headerNode={
         <Button
           type="submit"
@@ -73,122 +76,102 @@ export const UserPage = () => {
       }
     >
       <Form {...form}>
-        <div className="mt-6 border-t border-border/80">
-          <dl className="divide-y divide-border/80">
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
-              <dt className="text-sm font-medium leading-6">First Name</dt>
-              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
-                <FormField
-                  control={control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input id="firstName" className="sm:max-w-sm" placeholder="First name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </dd>
-            </div>
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
-              <dt className="text-sm font-medium leading-6 ">Last Name</dt>
-              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
-                <FormField
-                  control={control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input id="lastName" className="sm:max-w-sm" placeholder="Last name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </dd>
-            </div>
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
-              <dt className="text-sm font-medium leading-6 ">Email address</dt>
-              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
-                <FormField
-                  control={control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input id="email" className="sm:max-w-sm" disabled placeholder="Email Address" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </dd>
-            </div>
-            {/* <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
-              <dt className="text-sm font-medium leading-6 ">Organization</dt>
-              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
-                <AsyncSelect
-                  name="organization"
-                  control={control}
-                  useInfiniteQueryFunction={useOrganizationsInfinite}
-                  labelKey="name"
-                  valueKey="id"
-                  wrapperClassName="sm:max-w-sm"
-                />
-              </dd>
-            </div> */}
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
-              <dt className="text-sm font-medium leading-6 ">Password</dt>
-              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
-                <FormField
-                  control={control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          id="password"
-                          autoComplete="new-password"
-                          placeholder="Password"
-                          type="password"
-                          className="sm:max-w-sm"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </dd>
-            </div>
-            <div className="py-6 sm:grid sm:grid-cols-3 sm:gap-4 px-6 sm:px-0">
-              <dt className="text-sm font-medium leading-6 ">Confirm password</dt>
-              <dd className="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
-                <FormField
-                  control={control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          id="confirmPassword"
-                          autoComplete="new-password"
-                          placeholder="Confirm password"
-                          className="sm:max-w-sm"
-                          type="password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </dd>
-            </div>
-          </dl>
-        </div>
+        <form onSubmit={onSubmit}>
+          <div className="space-y-8 max-w-2xl">
+            <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
+              <CardContent className="space-y-2 pt-6">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>First name</FormLabel>
+                          <FormControl>
+                            <Input id="firstName" placeholder="First name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last name</FormLabel>
+                          <FormControl>
+                            <Input id="lastName" placeholder="Last name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="email"
+                            disabled
+                            autoComplete="new-password"
+                            placeholder="Email"
+                            type="email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="password"
+                            autoComplete="new-password"
+                            placeholder="Password"
+                            type="password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm password</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="confirmPassword"
+                            autoComplete="new-password"
+                            placeholder="Confirm password"
+                            type="password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </form>
       </Form>
     </PageContainer>
   );

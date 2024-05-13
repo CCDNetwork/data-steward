@@ -46,7 +46,12 @@ export const HandbookPage = () => {
   const onHandbookRowClick = (handbookRow: Handbook) => navigate(`${APP_ROUTE.Handbook}/${handbookRow.id}`);
 
   return (
-    <PageContainer pageTitle="Handbook" pageSubtitle="Handbook List" headerNode={<CreateHandbookModal />}>
+    <PageContainer
+      pageTitle="Handbook"
+      pageSubtitle="Handbook entries"
+      headerNode={<CreateHandbookModal />}
+      breadcrumbs={[{ href: `${APP_ROUTE.Handbook}`, name: 'Handbook entries' }]}
+    >
       <DataTable
         data={handbooksData?.data ?? []}
         pagination={handbooksData?.meta}

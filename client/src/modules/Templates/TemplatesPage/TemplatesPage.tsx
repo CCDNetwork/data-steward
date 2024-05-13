@@ -46,7 +46,12 @@ export const TemplatesPage = () => {
   const onTemplateRowClick = (templateRow: Template) => navigate(`${APP_ROUTE.Templates}/${templateRow.id}`);
 
   return (
-    <PageContainer pageTitle="Templates" pageSubtitle="Deduplication templates" headerNode={<CreateTemplateModal />}>
+    <PageContainer
+      pageTitle="Templates"
+      pageSubtitle="Deduplication templates"
+      headerNode={<CreateTemplateModal />}
+      breadcrumbs={[{ href: `${APP_ROUTE.Templates}`, name: 'Templates' }]}
+    >
       <DataTable
         data={templates?.data ?? []}
         pagination={templates?.meta}

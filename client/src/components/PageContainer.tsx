@@ -1,6 +1,10 @@
-import { cn } from '@/helpers/utils';
-import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+
+import { cn } from '@/helpers/utils';
+import { IBreadCrumb } from '@/helpers/types';
+
+import { BreadCrumb } from './BreadCrumb';
 
 export const PageContainer = ({
   children,
@@ -11,6 +15,7 @@ export const PageContainer = ({
   headerClassName,
   pageSubtitle,
   withBackButton,
+  breadcrumbs,
 }: {
   children: React.ReactNode;
   pageTitle: string;
@@ -20,6 +25,7 @@ export const PageContainer = ({
   headerClassName?: string;
   pageSubtitle?: string;
   withBackButton?: boolean;
+  breadcrumbs?: IBreadCrumb[];
 }) => {
   const navigate = useNavigate();
 
@@ -28,7 +34,12 @@ export const PageContainer = ({
       <Loader2 className="w-10 h-10 lg:w-20 lg:h-20 animate-spin" />
     </div>
   ) : (
-    <div className={cn('space-y-4 sm:p-4 md:p-6 p-2 items-center justify-center h-full', containerClassName)}>
+    <div className={cn('space-y-4', containerClassName)}>
+      {breadcrumbs && (
+        <div className="pt-2">
+          <BreadCrumb breadcrumbs={breadcrumbs} />
+        </div>
+      )}
       <div className={cn('flex items-center justify-between space-y-2', headerClassName)}>
         <div className="flex">
           {withBackButton && (

@@ -15,9 +15,9 @@ export const RoleBasedIndexRoute = () => {
       return <Navigate to={APP_ROUTE.Organizations} replace />;
 
     case UserRole.User:
-      return <Navigate to={APP_ROUTE.Dashboard} replace />;
+      return <Navigate to={APP_ROUTE.UserHandbookList} replace />;
 
     default:
-      return <Navigate to={APP_ROUTE.Dashboard} replace />;
+      return <Navigate to={APP_ROUTE.UserHandbookList} replace />;
   }
 };

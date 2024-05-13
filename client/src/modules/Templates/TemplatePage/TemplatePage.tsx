@@ -14,6 +14,8 @@ import { defaultTemplateFormValues } from './const';
 import { dataToTemplateEditForm } from './form-transformation';
 import { TemplateForm, TemplateFormSchema } from '../validation';
 import { STANDARDIZED_TEMPLATE_FIELDS } from '../const';
+import { Card, CardContent } from '@/components/ui/card';
+import { APP_ROUTE } from '@/helpers/constants';
 
 export const TemplatePage = () => {
   const uniqueId = useId();
@@ -55,12 +57,9 @@ export const TemplatePage = () => {
 
   return (
     <PageContainer
-      pageTitle="Template Edit/Preview"
-      pageSubtitle="Template details"
-      containerClassName="p-6"
-      headerClassName="pb-6"
+      pageTitle="Template"
+      pageSubtitle="Template Details"
       isLoading={queryLoading}
-      withBackButton
       headerNode={
         <Button
           type="submit"
@@ -71,42 +70,53 @@ export const TemplatePage = () => {
           Save
         </Button>
       }
+      breadcrumbs={[{ href: `${APP_ROUTE.Templates}`, name: 'Templates' }, { name: `${templateData?.name}` }]}
     >
       <Form {...form}>
         <form onSubmit={onSubmit}>
-          <FormField
-            control={control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="pb-4 max-w-[400px]">
-                <FormLabel>Template Name</FormLabel>
-                <FormControl>
-                  <Input id="name" placeholder="Template name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="grid grid-cols-1 gap-4">
-            <p className="text-center text-lg font-semibold py-2">Mappings</p>
-            {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(([fieldName, fieldType]) => (
-              <div className="flex justify-between items-center gap-4" key={`${fieldName}-${uniqueId}`}>
-                <span className="capitalize text-sm w-44">{`${fieldName} (${fieldType})`}</span>
-                <p className="text-xl font-light">&rarr;</p>
-                <FormField
-                  control={control}
-                  name={`${fieldName}` as any}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input id={fieldName} placeholder="Column name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            ))}
+          <div className="space-y-8 max-w-4xl">
+            <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
+              <CardContent className="space-y-2 pt-6">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem className="pb-4 max-w-[400px]">
+                          <FormLabel>Template Name</FormLabel>
+                          <FormControl>
+                            <Input id="name" placeholder="Template name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    <p className="text-center text-lg font-semibold py-2">Mappings</p>
+                    {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(([fieldName, fieldType]) => (
+                      <div className="flex justify-between items-center gap-4" key={`${fieldName}-${uniqueId}`}>
+                        <span className="capitalize text-sm w-44">{`${fieldName} (${fieldType})`}</span>
+                        <p className="text-xl font-light">&rarr;</p>
+                        <FormField
+                          control={control}
+                          name={`${fieldName}` as any}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input id={fieldName} placeholder="Column name" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </form>
       </Form>

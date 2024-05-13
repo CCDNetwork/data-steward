@@ -92,7 +92,7 @@ export const AsyncSelect = <T,>({
       {label && (
         <label
           htmlFor={name}
-          className={cn('block text-sm mb-2 font-medium', { 'text-red-500': !!fieldState.error }, labelClassName)}
+          className={cn('block text-sm mb-2 font-medium', { 'text-destructive': !!fieldState.error }, labelClassName)}
         >
           {label}
         </label>
@@ -145,7 +145,9 @@ export const AsyncSelect = <T,>({
           option: (state) => (state.isSelected ? 'text-primary font-bold hover:bg-muted' : 'bg-muted'),
         }}
       />
-      {!!fieldState.error && <p className="text-red-500 text-[0.8rem] mt-2 font-medium">{fieldState.error.message}</p>}
+      {!!fieldState.error && (
+        <p className="text-destructive text-[0.8rem] mt-2 font-medium">{fieldState.error.message}</p>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { User } from '@/services/users/types';
+import { User } from '@/services/users';
 
 import { UserProfileFormData } from './validations';
 

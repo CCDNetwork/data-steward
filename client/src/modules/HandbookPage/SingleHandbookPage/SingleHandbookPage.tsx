@@ -14,6 +14,8 @@ import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { dataToHandbookForm } from './form-transformation';
 import { HandbookForm, HandbookFormSchema } from '../validation';
 import { defaultHandbookFormValues } from '../const';
+import { Card, CardContent } from '@/components/ui/card';
+import { APP_ROUTE } from '@/helpers/constants';
 
 export const SingleHandbookPage = () => {
   const { id: handbookId } = useIdFromParams();
@@ -54,12 +56,9 @@ export const SingleHandbookPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Handbook Edit/Preview"
-      pageSubtitle="Handbook details"
-      containerClassName="p-6"
-      headerClassName="pb-6"
+      pageTitle="Handbook"
+      pageSubtitle="Handbook Details"
       isLoading={queryLoading}
-      withBackButton
       headerNode={
         <Button
           type="submit"
@@ -70,24 +69,31 @@ export const SingleHandbookPage = () => {
           Save
         </Button>
       }
+      breadcrumbs={[{ href: `${APP_ROUTE.Handbook}`, name: 'Handbook entries' }, { name: `${handbookData?.title}` }]}
     >
       <Form {...form}>
         <form onSubmit={onSubmit}>
-          <FormField
-            control={control}
-            name="title"
-            render={({ field }) => (
-              <FormItem className="pb-4 max-w-[400px]">
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input id="title" placeholder="Title" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="pb-10">
-            <MarkdownEditor label="Content" name="content" control={control} height={700} />
+          <div className="space-y-8 max-w-5xl">
+            <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
+              <CardContent className="space-y-4 pt-6">
+                <div className="grid sm:grid-cols-2 grid-cols-1">
+                  <FormField
+                    control={control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Handbook title</FormLabel>
+                        <FormControl>
+                          <Input id="title" placeholder="Handbook title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <MarkdownEditor label="Content" name="content" control={control} height={700} />
+              </CardContent>
+            </Card>
           </div>
         </form>
       </Form>
