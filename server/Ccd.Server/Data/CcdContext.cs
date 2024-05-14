@@ -39,6 +39,8 @@ public class CcdContext : DbContext
     public DbSet<Referral> Referrals { get; set; }
     public DbSet<Template> Templates { get; set; }
     public DbSet<Handbook> Handbooks { get; set; }
+    public DbSet<BeneficiaryAttributeGroup> BeneficiaryAttributeGroups { get; set; }
+    public DbSet<BaBag> BaBags { get; set; }
 
     private void seedData(ModelBuilder modelBuilder)
     {

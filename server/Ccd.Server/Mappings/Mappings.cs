@@ -33,6 +33,10 @@ public class Mappings : Profile
         CreateMap<BeneficiaryAttribute, BeneficiaryAttributeResponse>();
         CreateMap<DeduplicationRecord, Beneficionary>();
 
+        // BeneficiaryGroupAttribute mappings
+        CreateMap<BeneficiaryAttributeGroup, BeneficiaryAttributeGroupResponse>();
+        CreateMap<BeneficiaryAttributeGroupCreateRequest, BeneficiaryAttributeGroup>();
+
         // Referral mappings
         CreateMap<Referral, ReferralResponse>();
         CreateMap<ReferralAddRequest, Referral>().ForMember(

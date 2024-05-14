@@ -14,11 +14,13 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
 {
     private readonly IMapper _mapper;
     private readonly BeneficiaryAttributeService _beneficiaryAttributeService;
+    private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
 
-    public BeneficiaryAttributeController(IMapper mapper, BeneficiaryAttributeService beneficiaryAttributeService)
+    public BeneficiaryAttributeController(IMapper mapper, BeneficiaryAttributeService beneficiaryAttributeService, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService)
     {
         _mapper = mapper;
         _beneficiaryAttributeService = beneficiaryAttributeService;
+        _beneficiaryAttributeGroupService = beneficiaryAttributeGroupService;
     }
 
     [HttpGet]
@@ -37,5 +39,45 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
         var beneficiaryAttribute = await _beneficiaryAttributeService.PatchBeneficiaryAttribute(id, model);
         var response = _mapper.Map<BeneficiaryAttributeResponse>(beneficiaryAttribute);
         return Ok(response);
+    }
+
+    [HttpGet("groups")]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult<PagedApiResponse<BeneficiaryAttributeGroupResponse>>> GetBeneficiaryAttributesGroups([FromQuery] RequestParameters requestParameters)
+    {
+        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(this.OrganizationId, requestParameters);
+        return Ok(beneficiaryAttributes);
+    }
+
+    [HttpGet("groups/{id}")]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult<BeneficiaryAttributeGroupResponse>> GetBeneficiaryAttributesGroup(Guid id, [FromQuery] RequestParameters requestParameters)
+    {
+        var beneficiaryAttribute = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupApi(this.OrganizationId, id);
+        return Ok(beneficiaryAttribute);
+    }
+
+    [HttpPost("groups")]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult<PagedApiResponse<BeneficiaryAttributeGroupResponse>>> CreateBeneficiaryAttributesGroup([FromBody] BeneficiaryAttributeGroupCreateRequest model)
+    {
+        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.CreateBeneficiaryAttributeGroups(this.OrganizationId, model);
+        return Ok(beneficiaryAttributes);
+    }
+
+    [HttpPatch("groups/{id}")]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult<BeneficiaryAttributeGroupResponse>> PatchBeneficiaryAttributesGroup(Guid id, [FromBody] BeneficiaryAttributeGroupPatchRequest model)
+    {
+        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.PatchBeneficiaryAttributeGroups(this.OrganizationId, id, model);
+        return Ok(beneficiaryAttributes);
+    }
+
+    [HttpDelete("groups/{id}")]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult> DeleteBeneficiaryAttributesGroup(Guid id)
+    {
+        await _beneficiaryAttributeGroupService.DeleteBeneficiaryAttributeGroup(this.OrganizationId, id);
+        return NoContent();
     }
 }
