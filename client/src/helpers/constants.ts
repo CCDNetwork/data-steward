@@ -41,18 +41,18 @@ export enum PAGE_TYPE {
 export const NAVIGATION_ITEMS: NavigationItem[] = [
   {
     categoryName: 'Deduplication',
-    allowedRoles: [UserRole.User],
+    allowedRoles: [UserRole.User, UserRole.Admin],
     routes: [
       {
         name: 'Manage cases',
         to: APP_ROUTE.Deduplication,
-        allowedRoles: [UserRole.User],
+        allowedRoles: [UserRole.User, UserRole.Admin],
         icon: BookCopyIcon,
       },
       {
         name: 'Beneficiary List',
         to: APP_ROUTE.Beneficiaries,
-        allowedRoles: [UserRole.User],
+        allowedRoles: [UserRole.User, UserRole.Admin],
         disabled: true,
         icon: BookUserIcon,
       },
@@ -61,12 +61,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     categoryName: 'Referrals',
-    allowedRoles: [UserRole.User],
+    allowedRoles: [UserRole.User, UserRole.Admin],
     routes: [
       {
         name: 'Received',
         to: APP_ROUTE.Referrals,
-        allowedRoles: [UserRole.User],
+        allowedRoles: [UserRole.User, UserRole.Admin],
         count: '+99',
         disabled: true,
         icon: LogInIcon,
@@ -74,7 +74,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
       {
         name: 'Sent',
         to: APP_ROUTE.Referrals,
-        allowedRoles: [UserRole.User],
+        allowedRoles: [UserRole.User, UserRole.Admin],
         count: '+99',
         disabled: true,
         icon: LogOutIcon,
@@ -82,7 +82,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
       {
         name: 'Service List',
         to: APP_ROUTE.Referrals,
-        allowedRoles: [UserRole.User],
+        allowedRoles: [UserRole.User, UserRole.Admin],
         disabled: true,
         icon: HeartHandshakeIcon,
       },

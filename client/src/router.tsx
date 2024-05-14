@@ -34,15 +34,15 @@ export const router = createBrowserRouter(
           <Route path={APP_ROUTE.Dashboard} element={<DashboardPage />} />
         </Route> */}
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
           <Route path={APP_ROUTE.Beneficiaries} element={<BeneficiariesPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
           <Route path={APP_ROUTE.Deduplication} element={<DeduplicationPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
           <Route path={APP_ROUTE.Referrals} element={<ReferralsPage />} />
         </Route>
 
@@ -64,7 +64,7 @@ export const router = createBrowserRouter(
           </Route>
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
           <Route path={APP_ROUTE.Templates} element={<TemplatesProvider />}>
             <Route index element={<TemplatesPage />} />
             <Route path=":id" element={<DynamicRoute component={<TemplatePage />} />} />
@@ -78,7 +78,7 @@ export const router = createBrowserRouter(
           </Route>
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User]} />}>
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
           <Route path={APP_ROUTE.UserHandbookList} element={<UserHandbookListPage />} />
         </Route>
 
