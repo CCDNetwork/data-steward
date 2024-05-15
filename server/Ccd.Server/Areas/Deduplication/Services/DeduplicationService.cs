@@ -20,11 +20,13 @@ public class DeduplicationService
 {
     private readonly CcdContext _context;
     private readonly IMapper _mapper;
+    private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
 
-    public DeduplicationService(CcdContext context, IMapper mapper)
+    public DeduplicationService(CcdContext context, IMapper mapper, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService)
     {
         _context = context;
         _mapper = mapper;
+        _beneficiaryAttributeGroupService = beneficiaryAttributeGroupService;
     }
 
     private readonly string _selectSql =
@@ -66,7 +68,8 @@ public class DeduplicationService
         using var workbook = new XLWorkbook(file.OpenReadStream());
 
         var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
-        var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
+        var beneficiaryAttributesGroupsApi = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(organizationId, new RequestParameters { PageSize = 1000, Page = 1 });
+        var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
 
         var worksheet = workbook.Worksheet(1);
         var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
@@ -105,7 +108,7 @@ public class DeduplicationService
             };
 
             worksheet.Cell(i, lastColumnIndex).Value =
-                deduplicationRecords.Any((e) => AreRecordsEqual(e, record, beneficiaryAttributes)) ? "YES" : "NO";
+                deduplicationRecords.Any((e) => AreRecordsEqual(e, record, beneficiaryAttributesGroups)) ? "YES" : "NO";
 
             deduplicationRecords.Add(record);
         }
@@ -127,7 +130,8 @@ public class DeduplicationService
 
         var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
         var beneficionaries = _context.Beneficionary.Include(e => e.Organization).ToList();
-        var beneficiaryAttributes = _context.BeneficiaryAttributes.Where(e => e.UsedForDeduplication).ToList();
+        var beneficiaryAttributesGroupsApi = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(organizationId, new RequestParameters { PageSize = 1000, Page = 1 });
+        var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
         var totalDuplicates = 0;
 
@@ -179,7 +183,7 @@ public class DeduplicationService
             var duplicates = 0;
             foreach (var e in beneficionaries)
             {
-                var exists = AreRecordsEqual(e, record, beneficiaryAttributes);
+                var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
                 if (exists)
                 {
                     duplicates++;
@@ -229,48 +233,65 @@ public class DeduplicationService
         return 16384;
     }
 
-    private static bool AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
+    private static bool AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
     {
-        foreach (var attribute in beneficiaryAttributes)
+        foreach (var group in beneficiaryAttributesGroups)
         {
-            var attributeName = attribute.AttributeName;
-            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
-            var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
+            var matchedFields = new List<string>();
 
-            if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) return false;
-            if (existingValue == null || newValue == null) return false;
-            if (existingValue != newValue)
+            foreach (var attribute in group.BeneficiaryAttributes)
             {
-                var firstString = Regex.Replace(existingValue, @"\s+", "").ToLower();
-                var secondString = Regex.Replace(newValue, @"\s+", "").ToLower();
-                var ratio = Fuzz.Ratio(firstString, secondString);
-                if (ratio < 85) return false;
-            };
+                var attributeName = attribute.AttributeName;
+                var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
+                var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
 
+                if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) continue;
+                if (group.UseFuzzyMatch)
+                {
+                    var firstString = Regex.Replace(existingValue, @"\s+", "").ToLower();
+                    var secondString = Regex.Replace(newValue, @"\s+", "").ToLower();
+                    var ratio = Fuzz.Ratio(firstString, secondString);
+                    if (ratio < 85) continue;
+                }
+                else if (existingValue != newValue) continue;
+
+                matchedFields.Add(attributeName);
+            }
+
+            return matchedFields.Count >= group.BeneficiaryAttributes.Count;
         }
 
-        return true;
+        return false;
     }
 
-    private static bool AreRecordsEqual(Beneficionary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
+    private static bool AreRecordsEqual(Beneficionary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
     {
-        foreach (var attribute in beneficiaryAttributes)
+        foreach (var group in beneficiaryAttributesGroups)
         {
-            var attributeName = attribute.AttributeName;
-            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
-            var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
+            var matchedFields = new List<string>();
 
-            if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) return false;
-            if (existingValue == null || newValue == null) return false;
-            if (existingValue != newValue)
+            foreach (var attribute in group.BeneficiaryAttributes)
             {
-                var firstString = Regex.Replace(existingValue, @"\s+", "").ToLower();
-                var secondString = Regex.Replace(newValue, @"\s+", "").ToLower();
-                var ratio = Fuzz.Ratio(firstString, secondString);
-                if (ratio < 85) return false;
-            };
+                var attributeName = attribute.AttributeName;
+                var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
+                var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
+
+                if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) continue;
+                if (group.UseFuzzyMatch)
+                {
+                    var firstString = Regex.Replace(existingValue, @"\s+", "").ToLower();
+                    var secondString = Regex.Replace(newValue, @"\s+", "").ToLower();
+                    var ratio = Fuzz.Ratio(firstString, secondString);
+                    if (ratio < 85) continue;
+                }
+                else if (existingValue != newValue) continue;
+
+                matchedFields.Add(attributeName);
+            }
+
+            return matchedFields.Count >= group.BeneficiaryAttributes.Count;
         }
 
-        return true;
+        return false;
     }
 }

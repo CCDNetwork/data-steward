@@ -45,6 +45,7 @@ public class BeneficiaryAttributeGroupService
 
     public async Task<PagedApiResponse<BeneficiaryAttributeGroupResponse>> GetBeneficiaryAttributeGroupsApi(Guid organizationId, RequestParameters requestParameters)
     {
+        requestParameters.SortBy ??= "\"order\"";
         return await PagedApiResponse<BeneficiaryAttributeGroupResponse>.GetFromSql(
             _context,
             _selectSql,
