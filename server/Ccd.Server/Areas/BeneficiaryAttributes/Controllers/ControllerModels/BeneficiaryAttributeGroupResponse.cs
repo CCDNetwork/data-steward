@@ -9,6 +9,7 @@ public class BeneficiaryAttributeGroupResponse
     public string Name { get; set; }
     public int Order { get; set; }
     public bool IsActive { get; set; }
+    public bool UseFuzzyMatch { get; set; }
     public List<BeneficiaryAttributeResponse> BeneficiaryAttributes { get; set; }
     public Guid OrganizationId { get; set; }
     public DateTime CreatedAt { get; set; }

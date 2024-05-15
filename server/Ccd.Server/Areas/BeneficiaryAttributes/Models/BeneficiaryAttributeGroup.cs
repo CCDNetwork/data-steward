@@ -10,6 +10,7 @@ public class BeneficiaryAttributeGroup
     public string Name { get; set; }
     public int Order { get; set; }
     public bool IsActive { get; set; }
+    public bool UseFuzzyMatch { get; set; }
     public Guid OrganizationId { get; set; }
     public Organization Organization { get; set; }
     public DateTime CreatedAt { get; set; }
