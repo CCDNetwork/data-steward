@@ -8,7 +8,6 @@ import {
 import { toast } from '@/components/ui/use-toast';
 
 import { columns } from './columns';
-import { APP_ROUTE } from '@/helpers/constants';
 
 export const BeneficiaryAttributesPage = () => {
   const { data: beneficiaryAttributes, isLoading: beneficiaryAttributesLoading } = useBeneficiaryAttributes({
@@ -38,7 +37,6 @@ export const BeneficiaryAttributesPage = () => {
       pageTitle="Attributes"
       pageSubtitle="Beneficiary attributes"
       isLoading={beneficiaryAttributesLoading}
-      breadcrumbs={[{ href: `${APP_ROUTE.Attributes}`, name: 'Attributes' }]}
     >
       <DataTable
         data={beneficiaryAttributes ?? []}
