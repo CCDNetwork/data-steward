@@ -75,6 +75,12 @@ public class BeneficiaryAttributeGroupService
     {
         var baGroup = _mapper.Map<BeneficiaryAttributeGroup>(model);
         baGroup.OrganizationId = organizationId;
+        baGroup.Order = await _context.BeneficiaryAttributeGroups
+            .Where(bag => bag.OrganizationId == organizationId)
+            .OrderByDescending(bag => bag.Order)
+            .Select(bag => bag.Order)
+            .FirstOrDefaultAsync() + 1;
+
         _context.BeneficiaryAttributeGroups.Add(baGroup);
 
         model.BeneficiaryAttributeIds.ForEach(baId =>
@@ -141,6 +147,17 @@ public class BeneficiaryAttributeGroupService
 
         _context.BaBags.RemoveRange(_context.BaBags.Where(bag => bag.BeneficiaryAttributeGroupId == baGroup.Id));
         _context.BeneficiaryAttributeGroups.Remove(baGroup);
+
+        // Update order of remaining groups
+        var remainingGroups = await _context.BeneficiaryAttributeGroups
+            .Where(bag => bag.OrganizationId == organizationId && bag.Order > baGroup.Order)
+            .ToListAsync();
+
+        foreach (var group in remainingGroups)
+        {
+            group.Order--;
+            _context.BeneficiaryAttributeGroups.Update(group);
+        }
 
         await _context.SaveChangesAsync();
     }
