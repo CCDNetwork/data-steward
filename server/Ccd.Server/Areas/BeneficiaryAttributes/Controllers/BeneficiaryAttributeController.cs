@@ -80,4 +80,12 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
         await _beneficiaryAttributeGroupService.DeleteBeneficiaryAttributeGroup(this.OrganizationId, id);
         return NoContent();
     }
+
+    [HttpPost("groups/reorder")]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult<PagedApiResponse<BeneficiaryAttributeGroupResponse>>> CreateBeneficiaryAttributesGroup([FromBody] BeneficiaryAttributeGroupReorderRequest model)
+    {
+        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.ReorderBeneficiaryAttributeGroups(this.OrganizationId, model);
+        return Ok(beneficiaryAttributes);
+    }
 }

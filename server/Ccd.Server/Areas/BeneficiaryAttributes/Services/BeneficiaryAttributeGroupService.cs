@@ -161,4 +161,22 @@ public class BeneficiaryAttributeGroupService
 
         await _context.SaveChangesAsync();
     }
+
+    public async Task<PagedApiResponse<BeneficiaryAttributeGroupResponse>> ReorderBeneficiaryAttributeGroups(Guid organizationId, BeneficiaryAttributeGroupReorderRequest model)
+    {
+        var baGroups = await _context.BeneficiaryAttributeGroups
+            .Where(bag => bag.OrganizationId == organizationId)
+            .ToListAsync();
+
+        foreach (var pair in model.NewOrderList)
+        {
+            var baGroup = baGroups.FirstOrDefault(bag => bag.Id == pair.Id) ?? throw new NotFoundException("Beneficiary Attribute Group not found.");
+            baGroup.Order = pair.Order;
+            _context.BeneficiaryAttributeGroups.Update(baGroup);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return await GetBeneficiaryAttributeGroupsApi(organizationId, new RequestParameters() { PageSize = 1000 });
+    }
 }
