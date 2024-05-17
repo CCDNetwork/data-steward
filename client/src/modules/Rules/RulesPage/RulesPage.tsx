@@ -97,40 +97,46 @@ export const RulesPage = () => {
       breadcrumbs={[{ href: `${APP_ROUTE.Rules}`, name: 'Rules' }]}
     >
       <RulesInformationBox />
-      <div className="border border-border rounded-md h-[calc(100svh-320px)]">
-        <div className="border-b flex justify-between gap-10 text-sm h-10 px-6 items-center font-medium text-muted-foreground whitespace-nowrap no-scrollbar">
-          <div className="flex gap-4">
-            <span>#</span>
-            <span>Name</span>
-          </div>
-          <span>Status</span>
-          <span>Fuzzy Match</span>
-          <span>Created at</span>
-          <span>Updated at</span>
-          <span className="pr-4">Actions</span>
-        </div>
+      <table className="flex flex-col border border-border overflow-auto rounded-md h-[calc(100svh-370px)] sm:h-[calc(100svh-380px)] md:h-[calc(100svh-360px)] lg:h-[calc(100svh-320px)]">
+        <thead className="min-w-[1000px] overflow-hidden border-b flex justify-between text-sm h-10 px-6 items-center font-medium text-muted-foreground whitespace-nowrap">
+          <tr className="flex justify-between w-full items-center">
+            <th className="flex gap-4">
+              <span>#</span>
+              <span>Name</span>
+            </th>
+            <th>Status</th>
+            <th>Fuzzy Matching</th>
+            <th>Created at</th>
+            <th>Updated at</th>
+            <th className="pr-4">Actions</th>
+          </tr>
+        </thead>
         <DragDropContext onDragEnd={onDragEnd}>
           <StrictModeDroppable droppableId="rules-droppableId">
             {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef} className="flex flex-col p-2 flex-1">
-                {attributeGroupData?.data.map((attributeGroup, index) => (
-                  <div key={attributeGroup.id}>
-                    <Draggable draggableId={attributeGroup.id} index={index}>
+              <tbody
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="min-w-[1000px] h-full overflow-hidden flex flex-col p-2 flex-1"
+              >
+                {attributeGroupData?.data && attributeGroupData.data.length > 0 ? (
+                  attributeGroupData?.data.map((attributeGroup, index) => (
+                    <Draggable draggableId={attributeGroup.id} key={attributeGroup.id} index={index}>
                       {(provided, snapshot) => (
-                        <div
+                        <tr
                           className={cn(
-                            'flex transition-colors whitespace-nowrap duration-500 justify-between items-center gap-10 border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
+                            'flex transition-colors whitespace-nowrap duration-500 justify-between items-center border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
                             { 'bg-muted': snapshot.isDragging },
                           )}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           ref={provided.innerRef}
                         >
-                          <div className="flex gap-4 w-full">
+                          <td className="flex gap-4">
                             <span>{attributeGroup.order}</span>
                             <span>{attributeGroup.name}</span>
-                          </div>
-                          <span className="w-full">
+                          </td>
+                          <td>
                             <Badge
                               className={cn(
                                 'capitalize',
@@ -140,8 +146,8 @@ export const RulesPage = () => {
                             >
                               {attributeGroup.isActive ? 'active' : 'inactive'}
                             </Badge>
-                          </span>
-                          <span className="w-full">
+                          </td>
+                          <td>
                             <Badge
                               className={cn(
                                 'capitalize',
@@ -153,26 +159,30 @@ export const RulesPage = () => {
                             >
                               {attributeGroup.useFuzzyMatch ? 'enabled' : 'disabled'}
                             </Badge>
-                          </span>
-                          <span className="w-full">{format(attributeGroup.createdAt ?? '', 'PPP')}</span>
-                          <span className="w-full">{format(attributeGroup.updatedAt ?? '', 'PPP')}</span>
-                          <span className="flex gap-1">
+                          </td>
+                          <td>{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
+                          <td>{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
+                          <td className="flex gap-1">
                             <RuleModal attributeGroupId={attributeGroup.id} />
                             <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
                               <Trash2Icon className="w-5 h-5 text-destructive" />
                             </Button>
-                          </span>
-                        </div>
+                          </td>
+                        </tr>
                       )}
                     </Draggable>
+                  ))
+                ) : (
+                  <div className="flex justify-center items-center text-center h-full text-muted-foreground">
+                    No results.
                   </div>
-                ))}
+                )}
                 {provided.placeholder}
-              </div>
+              </tbody>
             )}
           </StrictModeDroppable>
         </DragDropContext>
-      </div>
+      </table>
       <ConfirmationDialog
         open={!!ruleToDelete}
         title="Delete Rule"
