@@ -22,7 +22,7 @@ export enum APP_ROUTE {
   Beneficiaries = '/beneficiaries',
   Deduplication = '/deduplication',
   Referrals = '/referrals',
-  Attributes = '/attributes',
+  // Attributes = '/attributes',
   Organizations = '/organizations',
   Handbook = '/handbook',
   UserHandbookList = '/handbook-list',
@@ -93,12 +93,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     routes: [
       { name: 'Organizations', to: APP_ROUTE.Organizations, allowedRoles: [UserRole.Admin], icon: Building2Icon },
       { name: 'Users', to: APP_ROUTE.Users, allowedRoles: [UserRole.Admin], icon: UsersIcon },
-      {
-        name: 'Attributes',
-        to: APP_ROUTE.Attributes,
-        allowedRoles: [UserRole.Admin],
-        icon: TextSelectIcon,
-      },
+      // {
+      //   name: 'Attributes',
+      //   to: APP_ROUTE.Attributes,
+      //   allowedRoles: [UserRole.Admin],
+      //   icon: TextSelectIcon,
+      // },
       {
         name: 'Rules',
         to: APP_ROUTE.Rules,

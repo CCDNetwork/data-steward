@@ -10,7 +10,6 @@ import { APP_ROUTE } from './helpers/constants';
 import { BeneficiariesPage } from './modules/BeneficiariesPage';
 import { DeduplicationPage } from './modules/DeduplicationPage';
 import { ReferralsPage } from './modules/ReferralsPage';
-import { BeneficiaryAttributesPage } from './modules/BeneficiaryAttributesPage';
 import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from './modules/Organizations';
 import { DynamicRoute } from './layouts/DynamicRoute';
 import { UserPage, UsersPage, UsersProvider } from './modules/Users';
@@ -47,9 +46,9 @@ export const router = createBrowserRouter(
           <Route path={APP_ROUTE.Referrals} element={<ReferralsPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+        {/* <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
           <Route path={APP_ROUTE.Attributes} element={<BeneficiaryAttributesPage />} />
-        </Route>
+        </Route> */}
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
           <Route path={APP_ROUTE.Organizations} element={<OrganizationsProvider />}>
