@@ -9,7 +9,6 @@ export interface NavigationItem {
     icon: LucideIcon;
     allowedRoles?: string[];
     disabled?: boolean;
-    count?: string;
   }[];
 }
 

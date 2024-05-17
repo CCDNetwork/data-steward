@@ -23,6 +23,7 @@ import { PasswordResetPage } from './modules/Public/PasswordResetPage';
 import { NotFoundPage } from './modules/NotFoundPage';
 import { HandbookProvider, HandbookPage, SingleHandbookPage } from './modules/HandbookPage';
 import { UserHandbookListPage } from './modules/UserHandbookList';
+import { RulesPage, RulesProvider } from './modules/Rules';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -80,6 +81,12 @@ export const router = createBrowserRouter(
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
           <Route path={APP_ROUTE.UserHandbookList} element={<UserHandbookListPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+          <Route path={APP_ROUTE.Rules} element={<RulesProvider />}>
+            <Route index element={<RulesPage />} />
+          </Route>
         </Route>
 
         <Route path={APP_ROUTE.MyProfile} element={<DynamicRoute component={<MyProfilePage />} />} />

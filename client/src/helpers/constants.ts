@@ -26,6 +26,7 @@ export enum APP_ROUTE {
   Organizations = '/organizations',
   Handbook = '/handbook',
   UserHandbookList = '/handbook-list',
+  Rules = '/rules',
   // PUBLIC
   ForgotPassword = '/forgot-password',
   ResetPassword = '/reset-password',
@@ -67,7 +68,6 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
         name: 'Received',
         to: APP_ROUTE.Referrals,
         allowedRoles: [UserRole.User, UserRole.Admin],
-        count: '+99',
         disabled: true,
         icon: LogInIcon,
       },
@@ -75,7 +75,6 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
         name: 'Sent',
         to: APP_ROUTE.Referrals,
         allowedRoles: [UserRole.User, UserRole.Admin],
-        count: '+99',
         disabled: true,
         icon: LogOutIcon,
       },
@@ -102,7 +101,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
       },
       {
         name: 'Rules',
-        to: APP_ROUTE.Attributes,
+        to: APP_ROUTE.Rules,
         allowedRoles: [UserRole.Admin],
         icon: TextSelectIcon,
       },

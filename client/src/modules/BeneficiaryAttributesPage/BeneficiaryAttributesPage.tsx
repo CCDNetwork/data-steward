@@ -11,7 +11,9 @@ import { columns } from './columns';
 import { APP_ROUTE } from '@/helpers/constants';
 
 export const BeneficiaryAttributesPage = () => {
-  const { data: beneficiaryAttributes, isLoading: beneficiaryAttributesLoading } = useBeneficiaryAttributes();
+  const { data: beneficiaryAttributes, isLoading: beneficiaryAttributesLoading } = useBeneficiaryAttributes({
+    queryEnabled: true,
+  });
   const { toggleDeduplication } = useBeneficiaryAttributesMutation();
 
   const onDeduplicationToggleClick = async ({ id, usedForDeduplication }: BeneficiaryAttribute) => {
