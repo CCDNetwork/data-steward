@@ -22,7 +22,7 @@ export const columns = ({
   {
     accessorKey: '',
     id: 'usedForDeduplication',
-    header: () => <div className="text-right">Used For Deduplication</div>,
+    header: () => <div className="text-right">Enabled</div>,
     cell: ({ row }) => {
       const { id: beneficiaryAttributeId } = row.original;
       const isChecked = ruleBeneficiaryAttributeIds.includes(beneficiaryAttributeId);
