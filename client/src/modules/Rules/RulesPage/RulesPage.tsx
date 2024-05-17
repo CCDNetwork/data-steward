@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Trash2Icon } from 'lucide-react';
+import { Loader2, Trash2Icon } from 'lucide-react';
 import { DragDropContext, Draggable, DropResult } from 'react-beautiful-dnd';
 import { format } from 'date-fns';
 
@@ -24,7 +24,7 @@ export const RulesPage = () => {
 
   const [ruleToDelete, setRuleToDelete] = useState<AttributeGroup | null>(null);
 
-  const { data: attributeGroupData } = useAttributeGroups({ ...pagination, pageSize: 999 });
+  const { data: attributeGroupData, isLoading } = useAttributeGroups({ ...pagination, pageSize: 999 });
   const { removeAttributeGroup, reorderAttributeGroups } = useAttributeGroupsMutation();
 
   const handleRuleDelete = async () => {
@@ -119,64 +119,74 @@ export const RulesPage = () => {
                 ref={provided.innerRef}
                 className="min-w-[1000px] h-full overflow-hidden flex flex-col p-2 flex-1"
               >
-                {attributeGroupData?.data && attributeGroupData.data.length > 0 ? (
-                  attributeGroupData?.data.map((attributeGroup, index) => (
-                    <Draggable draggableId={attributeGroup.id} key={attributeGroup.id} index={index}>
-                      {(provided, snapshot) => (
-                        <tr
-                          className={cn(
-                            'flex transition-colors whitespace-nowrap duration-500 justify-between items-center border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
-                            { 'bg-muted': snapshot.isDragging },
-                          )}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                        >
-                          <td className="flex gap-4">
-                            <span>{attributeGroup.order}</span>
-                            <span>{attributeGroup.name}</span>
-                          </td>
-                          <td>
-                            <Badge
-                              className={cn(
-                                'capitalize',
-                                { 'bg-destructive dark:text-white hover:bg-destructive': !attributeGroup.isActive },
-                                { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.isActive },
-                              )}
-                            >
-                              {attributeGroup.isActive ? 'active' : 'inactive'}
-                            </Badge>
-                          </td>
-                          <td>
-                            <Badge
-                              className={cn(
-                                'capitalize',
-                                {
-                                  'bg-destructive dark:text-white hover:bg-destructive': !attributeGroup.useFuzzyMatch,
-                                },
-                                { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.useFuzzyMatch },
-                              )}
-                            >
-                              {attributeGroup.useFuzzyMatch ? 'enabled' : 'disabled'}
-                            </Badge>
-                          </td>
-                          <td>{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
-                          <td>{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
-                          <td className="flex gap-1">
-                            <RuleModal attributeGroupId={attributeGroup.id} />
-                            <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
-                              <Trash2Icon className="w-5 h-5 text-destructive" />
-                            </Button>
-                          </td>
-                        </tr>
-                      )}
-                    </Draggable>
-                  ))
-                ) : (
-                  <div className="flex justify-center items-center text-center h-full text-muted-foreground">
-                    No results.
+                {isLoading ? (
+                  <div className="flex justify-center items-center text-center h-full">
+                    <Loader2 className="w-14 h-14 animate-spin" />
                   </div>
+                ) : (
+                  <>
+                    {attributeGroupData?.data && attributeGroupData.data.length > 0 ? (
+                      attributeGroupData?.data.map((attributeGroup, index) => (
+                        <Draggable draggableId={attributeGroup.id} key={attributeGroup.id} index={index}>
+                          {(provided, snapshot) => (
+                            <tr
+                              className={cn(
+                                'flex transition-colors whitespace-nowrap duration-500 justify-between items-center border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
+                                { 'bg-muted': snapshot.isDragging },
+                              )}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              ref={provided.innerRef}
+                            >
+                              <td className="flex gap-4">
+                                <span>{attributeGroup.order}</span>
+                                <span>{attributeGroup.name}</span>
+                              </td>
+                              <td>
+                                <Badge
+                                  className={cn(
+                                    'capitalize',
+                                    { 'bg-destructive dark:text-white hover:bg-destructive': !attributeGroup.isActive },
+                                    { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.isActive },
+                                  )}
+                                >
+                                  {attributeGroup.isActive ? 'active' : 'inactive'}
+                                </Badge>
+                              </td>
+                              <td>
+                                <Badge
+                                  className={cn(
+                                    'capitalize',
+                                    {
+                                      'bg-destructive dark:text-white hover:bg-destructive':
+                                        !attributeGroup.useFuzzyMatch,
+                                    },
+                                    { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.useFuzzyMatch },
+                                  )}
+                                >
+                                  {attributeGroup.useFuzzyMatch ? 'enabled' : 'disabled'}
+                                </Badge>
+                              </td>
+                              <td>{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
+                              <td>{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
+                              <td className="flex gap-1">
+                                <RuleModal attributeGroupId={attributeGroup.id} />
+                                <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
+                                  <Trash2Icon className="w-5 h-5 text-destructive" />
+                                </Button>
+                              </td>
+                            </tr>
+                          )}
+                        </Draggable>
+                      ))
+                    ) : (
+                      <div className="flex justify-center items-center text-center h-full text-muted-foreground">
+                        No results.
+                      </div>
+                    )}
+                  </>
                 )}
+
                 {provided.placeholder}
               </tbody>
             )}
