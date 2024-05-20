@@ -99,31 +99,31 @@ export const RulesPage = () => {
       <RulesInformationBox />
       <table className="flex flex-col border border-border overflow-auto rounded-md h-[calc(100svh-370px)] sm:h-[calc(100svh-380px)] md:h-[calc(100svh-360px)] lg:h-[calc(100svh-320px)]">
         <thead className="min-w-[1000px] overflow-hidden border-b flex justify-between text-sm h-10 px-6 items-center font-medium text-muted-foreground whitespace-nowrap">
-          <tr className="flex justify-between w-full items-center">
-            <th className="flex gap-4">
+          <tr className="flex items-center flex-1">
+            <th className="flex gap-4 w-[20%]">
               <span>#</span>
               <span>Name</span>
             </th>
-            <th>Status</th>
-            <th>Fuzzy Matching</th>
-            <th>Created at</th>
-            <th>Updated at</th>
+            <th className="text-start w-[20%]">Status</th>
+            <th className="text-start w-[20%]">Fuzzy Matching</th>
+            <th className="text-start w-[20%]">Created at</th>
+            <th className="text-start w-[20%]">Updated at</th>
             <th className="pr-4">Actions</th>
           </tr>
         </thead>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <StrictModeDroppable droppableId="rules-droppableId">
-            {(provided) => (
-              <tbody
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                className="min-w-[1000px] h-full overflow-hidden flex flex-col p-2 flex-1"
-              >
-                {isLoading ? (
-                  <div className="flex justify-center items-center text-center h-full">
-                    <Loader2 className="w-14 h-14 animate-spin" />
-                  </div>
-                ) : (
+        {isLoading ? (
+          <div className="flex justify-center items-center text-center h-full">
+            <Loader2 className="w-14 h-14 animate-spin" />
+          </div>
+        ) : (
+          <DragDropContext onDragEnd={onDragEnd}>
+            <StrictModeDroppable droppableId="rules-droppableId">
+              {(provided) => (
+                <tbody
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="min-w-[1000px] h-full overflow-hidden flex flex-col p-2 flex-1"
+                >
                   <>
                     {attributeGroupData?.data && attributeGroupData.data.length > 0 ? (
                       attributeGroupData?.data.map((attributeGroup, index) => (
@@ -131,18 +131,18 @@ export const RulesPage = () => {
                           {(provided, snapshot) => (
                             <tr
                               className={cn(
-                                'flex transition-colors whitespace-nowrap duration-500 justify-between items-center border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
+                                'flex transition-colors whitespace-nowrap duration-500 items-center border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
                                 { 'bg-muted': snapshot.isDragging },
                               )}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                               ref={provided.innerRef}
                             >
-                              <td className="flex gap-4">
+                              <td className="flex gap-4 w-[20%]">
                                 <span>{attributeGroup.order}</span>
-                                <span>{attributeGroup.name}</span>
+                                <span className="truncate w-[160px] 2xl:w-fit">{attributeGroup.name}</span>
                               </td>
-                              <td>
+                              <td className="w-[20%]">
                                 <Badge
                                   className={cn(
                                     'capitalize',
@@ -153,7 +153,7 @@ export const RulesPage = () => {
                                   {attributeGroup.isActive ? 'active' : 'inactive'}
                                 </Badge>
                               </td>
-                              <td>
+                              <td className="w-[20%]">
                                 <Badge
                                   className={cn(
                                     'capitalize',
@@ -167,8 +167,8 @@ export const RulesPage = () => {
                                   {attributeGroup.useFuzzyMatch ? 'enabled' : 'disabled'}
                                 </Badge>
                               </td>
-                              <td>{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
-                              <td>{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
+                              <td className="w-[20%]">{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
+                              <td className="w-[20%]">{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
                               <td className="flex gap-1">
                                 <RuleModal attributeGroupId={attributeGroup.id} />
                                 <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
@@ -185,13 +185,13 @@ export const RulesPage = () => {
                       </div>
                     )}
                   </>
-                )}
 
-                {provided.placeholder}
-              </tbody>
-            )}
-          </StrictModeDroppable>
-        </DragDropContext>
+                  {provided.placeholder}
+                </tbody>
+              )}
+            </StrictModeDroppable>
+          </DragDropContext>
+        )}
       </table>
       <ConfirmationDialog
         open={!!ruleToDelete}
