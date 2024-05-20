@@ -33,6 +33,14 @@ public class BeneficionaryController : ControllerBaseExtended
         return Ok(response);
     }
 
+    [HttpPatch("{id}/status")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult<BeneficionaryResponse>> PatchBeneficiaryStatus(Guid id, [FromBody] BeneficionaryStatusPatchRequest model)
+    {
+        var response = await _beneficionaryService.PatchBeneficiaryStatus(this.OrganizationId, id, model);
+        return Ok(response);
+    }
+
     [HttpDelete("{id}")]
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult> DeleteBeneficiary(Guid id)

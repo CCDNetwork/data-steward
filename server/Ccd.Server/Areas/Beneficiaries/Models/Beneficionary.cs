@@ -41,4 +41,9 @@ public class BeneficionaryStatus
     public const string NotDuplicate = "notDuplicate";
     public const string AcceptedDuplicate = "acceptedDuplicate";
     public const string RejectedDuplicate = "rejectedDuplicate";
+
+    public static bool IsValid(string status)
+    {
+        return status == NotDuplicate || status == AcceptedDuplicate || status == RejectedDuplicate;
+    }
 }

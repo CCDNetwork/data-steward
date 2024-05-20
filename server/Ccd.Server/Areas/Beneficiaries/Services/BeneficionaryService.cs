@@ -54,6 +54,16 @@ public class BeneficionaryService
         return await _context.Beneficionary.FirstOrDefaultAsync(b => b.OrganizationId == organizationId && b.Id == id) ?? throw new NotFoundException("Beneficiary not found.");
     }
 
+    public async Task<BeneficionaryResponse> PatchBeneficiaryStatus(Guid organizationId, Guid id, BeneficionaryStatusPatchRequest model)
+    {
+        var beneficiary = await GetBeneficiary(organizationId, id);
+        if (!BeneficionaryStatus.IsValid(model.Status)) throw new BadRequestException("Invalid status.");
+        beneficiary.Status = model.Status;
+        await _context.SaveChangesAsync();
+
+        return await GetBeneficiaryApi(organizationId, id);
+    }
+
     public async Task DeleteBeneficiary(Guid organizationId, Guid id)
     {
         var beneficiary = await GetBeneficiary(organizationId, id);
