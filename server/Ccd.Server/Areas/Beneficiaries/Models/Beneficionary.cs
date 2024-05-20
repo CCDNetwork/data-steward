@@ -1,8 +1,9 @@
 using System;
+using Ccd.Server.Deduplication;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
 
-namespace Ccd.Server.Deduplication;
+namespace Ccd.Server.Beneficiaries;
 
 public class Beneficionary
 {
@@ -25,10 +26,19 @@ public class Beneficionary
     public string StartDate { get; set; }
     public string EndDate { get; set; }
     public string Frequency { get; set; }
+    public bool IsPrimary { get; set; }
+    public string Status { get; set; }
     public Guid OrganizationId { get; set; }
     public Organization Organization { get; set; }
     public Guid ListId { get; set; }
     public List List { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+}
+
+public class BeneficionaryStatus
+{
+    public const string NotDuplicate = "notDuplicate";
+    public const string AcceptedDuplicate = "acceptedDuplicate";
+    public const string RejectedDuplicate = "rejectedDuplicate";
 }

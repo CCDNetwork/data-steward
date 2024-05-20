@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
 using Ccd.Server.Notifications;
@@ -28,6 +27,14 @@ public class DeduplicationController : ControllerBaseExtended
         return Ok(listings);
     }
 
+    [HttpDelete]
+    [PermissionLevel(UserRole.Admin)]
+    public async Task<ActionResult> DeleteListings()
+    {
+        await _deduplicationService.DeleteListings();
+        return NoContent();
+    }
+
     [HttpPost("deduplicate")]
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult> Deduplicate([FromForm] DeduplicationListAddRequest model)
@@ -46,14 +53,5 @@ public class DeduplicationController : ControllerBaseExtended
         }
 
         return File(fileBytes, "application/octet-stream", model.File.FileName);
-    }
-
-    // TODO: Just for demo purposes
-    [HttpDelete]
-    [PermissionLevel(UserRole.Admin)]
-    public async Task<ActionResult> DeleteListings()
-    {
-        await _deduplicationService.DeleteListings();
-        return NoContent();
     }
 }

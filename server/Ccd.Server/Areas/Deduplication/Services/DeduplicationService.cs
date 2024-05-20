@@ -13,6 +13,7 @@ using Ccd.Server.Users;
 using ClosedXML.Excel;
 using FuzzySharp;
 using Microsoft.EntityFrameworkCore;
+using Ccd.Server.Beneficiaries;
 
 namespace Ccd.Server.Deduplication;
 

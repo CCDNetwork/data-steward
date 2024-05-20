@@ -30,6 +30,7 @@ using Ccd.Server.Deduplication;
 using Ccd.Server.Referrals;
 using Ccd.Server.Templates;
 using Ccd.Server.Handbooks;
+using Ccd.Server.Beneficiaries;
 
 namespace Ccd.Server;
 
@@ -160,6 +161,7 @@ public class Startup
         services.AddScoped<DeduplicationService>();
         services.AddScoped<BeneficiaryAttributeService>();
         services.AddScoped<BeneficiaryAttributeGroupService>();
+        services.AddScoped<BeneficionaryService>();
         services.AddScoped<ReferralService>();
         services.AddScoped<TemplateService>();
         services.AddScoped<HandbookService>();

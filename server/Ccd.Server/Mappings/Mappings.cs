@@ -8,6 +8,7 @@ using System.Globalization;
 using Ccd.Server.Referrals;
 using Ccd.Server.Templates;
 using Ccd.Server.Handbooks;
+using Ccd.Server.Beneficiaries;
 
 namespace Ccd.Server.Mappings;
 
@@ -56,6 +57,9 @@ public class Mappings : Profile
         // Template mappings
         CreateMap<Template, TemplateResponse>();
         CreateMap<TemplateAddRequest, Template>();
+
+        // Beneficiary mappings
+        CreateMap<Beneficionary, BeneficionaryResponse>();
     }
 
     private static DateTime? ParseDate(string date)

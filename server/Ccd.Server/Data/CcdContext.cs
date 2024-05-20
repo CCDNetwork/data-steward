@@ -11,6 +11,7 @@ using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Referrals;
 using Ccd.Server.Templates;
 using Ccd.Server.Handbooks;
+using Ccd.Server.Beneficiaries;
 
 namespace Ccd.Server.Data;
 
