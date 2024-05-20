@@ -53,4 +53,11 @@ public class BeneficionaryService
     {
         return await _context.Beneficionary.FirstOrDefaultAsync(b => b.OrganizationId == organizationId && b.Id == id) ?? throw new NotFoundException("Beneficiary not found.");
     }
+
+    public async Task DeleteBeneficiary(Guid organizationId, Guid id)
+    {
+        var beneficiary = await GetBeneficiary(organizationId, id);
+        _context.Beneficionary.Remove(beneficiary);
+        await _context.SaveChangesAsync();
+    }
 }

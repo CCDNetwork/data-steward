@@ -32,4 +32,12 @@ public class BeneficionaryController : ControllerBaseExtended
         var response = await _beneficionaryService.GetBeneficiaryApi(this.OrganizationId, id);
         return Ok(response);
     }
+
+    [HttpDelete("{id}")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult> DeleteBeneficiary(Guid id)
+    {
+        await _beneficionaryService.DeleteBeneficiary(this.OrganizationId, id);
+        return NoContent();
+    }
 }
