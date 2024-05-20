@@ -71,8 +71,6 @@ export const columns = (
     cell: ({ row }) => {
       const { status } = row.original;
 
-      console.log(status);
-
       const statuses: Record<string, string> = {
         notDuplicate: 'Not duplicate',
         acceptedDuplicate: 'Accepted duplicate',
