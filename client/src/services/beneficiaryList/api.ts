@@ -58,6 +58,8 @@ export const useBeneficiariesMutation = () => {
     changeBeneficiaryStatus: useMutation(patchBeneficiaryStatus, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.BeneficiaryList]),
     }),
-    removeBeneficiary: useMutation(deleteBeneficiary),
+    removeBeneficiary: useMutation(deleteBeneficiary, {
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.BeneficiaryList]),
+    }),
   };
 };
