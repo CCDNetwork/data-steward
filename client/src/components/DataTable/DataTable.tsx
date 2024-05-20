@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import { VisibilityState, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 
 import { useSearchParams } from 'react-router-dom';
 
@@ -20,6 +20,7 @@ interface DataTableProps<TData, TValue> {
   pagination?: MetaData;
   columns: TableColumn<TValue>[];
   isQueryLoading: boolean;
+  hiddenColumns?: VisibilityState;
   onRowClick?: (row: TValue) => void;
   pageClicked?: (newPage: number) => void;
   pageSizeClicked?: (newPageSize: number) => void;
@@ -33,6 +34,7 @@ export function DataTable<TData, TValue>({
   currentPage,
   columns,
   isQueryLoading,
+  hiddenColumns,
   onRowClick,
   pageClicked,
   pageSizeClicked,
@@ -64,6 +66,9 @@ export function DataTable<TData, TValue>({
     columns: tableColumns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    state: {
+      columnVisibility: hiddenColumns,
+    },
   });
 
   const onHeaderClicked = (column: any) => {
@@ -74,7 +79,7 @@ export function DataTable<TData, TValue>({
   };
 
   useEffect(() => {
-    if (currentPage && pagination && pageClicked && pagination?.totalPages < currentPage) {
+    if (currentPage && pagination && pagination.totalRows > 1 && pageClicked && pagination?.totalPages < currentPage) {
       pageClicked(pagination.totalPages || 1);
     }
   }, [currentPage, pageClicked, pagination]);

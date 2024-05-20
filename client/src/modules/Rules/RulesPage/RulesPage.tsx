@@ -15,7 +15,7 @@ import { cn } from '@/helpers/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-import { RuleModal, RulesInformationBox } from './components';
+import { RuleModal } from './components';
 import { useRulesProvider } from '../RulesProvider';
 
 export const RulesPage = () => {
@@ -96,7 +96,7 @@ export const RulesPage = () => {
       headerNode={<RuleModal />}
       breadcrumbs={[{ href: `${APP_ROUTE.Rules}`, name: 'Rules' }]}
     >
-      <RulesInformationBox />
+      {/* <RulesInformationBox /> */}
       <table className="flex flex-col border border-border overflow-auto rounded-md h-[calc(100svh-370px)] sm:h-[calc(100svh-380px)] md:h-[calc(100svh-360px)] lg:h-[calc(100svh-320px)]">
         <thead className="min-w-[1000px] overflow-hidden border-b flex justify-between text-sm h-10 px-6 items-center font-medium text-muted-foreground whitespace-nowrap">
           <tr className="flex items-center flex-1">

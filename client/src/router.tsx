@@ -7,7 +7,7 @@ import { RoleBasedIndexRoute } from './layouts/RoleBasedIndexRoute';
 import { ProtectedRoute } from './layouts/ProtectedRoute';
 import { UserRole } from './services/users';
 import { APP_ROUTE } from './helpers/constants';
-import { BeneficiariesPage } from './modules/BeneficiariesPage';
+import { BeneficiaryListPage } from './modules/BeneficiaryListPage';
 import { DeduplicationPage } from './modules/DeduplicationPage';
 import { ReferralsPage } from './modules/ReferralsPage';
 import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from './modules/Organizations';
@@ -35,7 +35,7 @@ export const router = createBrowserRouter(
         </Route> */}
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
-          <Route path={APP_ROUTE.Beneficiaries} element={<BeneficiariesPage />} />
+          <Route path={APP_ROUTE.BeneficiaryList} element={<BeneficiaryListPage />} />
         </Route>
 
         <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>

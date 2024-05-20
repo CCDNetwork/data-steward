@@ -19,7 +19,7 @@ export enum APP_ROUTE {
   Users = '/users',
   MyProfile = '/my-profile',
   SignIn = '/sign-in',
-  Beneficiaries = '/beneficiaries',
+  BeneficiaryList = '/beneficiary-list',
   Deduplication = '/deduplication',
   Referrals = '/referrals',
   // Attributes = '/attributes',
@@ -52,7 +52,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
       },
       {
         name: 'Beneficiary List',
-        to: APP_ROUTE.Beneficiaries,
+        to: APP_ROUTE.BeneficiaryList,
         allowedRoles: [UserRole.User, UserRole.Admin],
         disabled: true,
         icon: BookUserIcon,
