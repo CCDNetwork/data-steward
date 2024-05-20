@@ -182,12 +182,14 @@ public class DeduplicationService
             worksheet.Cell(i, lastColumnIndex + 1).Value = "";
 
             var duplicates = 0;
+            var isPrimary = true;
             foreach (var e in beneficionaries)
             {
                 var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
                 if (exists)
                 {
                     duplicates++;
+                    isPrimary = false;
                     worksheet.Cell(i, lastColumnIndex).Value = "YES";
                     worksheet.Cell(i, lastColumnIndex + 1).Value = e.Organization.Name;
                 }
@@ -196,6 +198,7 @@ public class DeduplicationService
             var beneficionary = _mapper.Map<Beneficionary>(record);
             beneficionary.ListId = list.Id;
             beneficionary.OrganizationId = organizationId;
+            beneficionary.IsPrimary = isPrimary;
             totalDuplicates += duplicates;
 
             newBeneficionaries.Add(beneficionary);
