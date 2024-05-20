@@ -7,12 +7,12 @@ using System;
 namespace Ccd.Server.Beneficiaries;
 
 [ApiController]
-[Route("/api/v1/beneficionary")]
-public class BeneficionaryController : ControllerBaseExtended
+[Route("/api/v1/beneficiaries")]
+public class BeneficiaryController : ControllerBaseExtended
 {
     private readonly BeneficionaryService _beneficionaryService;
 
-    public BeneficionaryController(BeneficionaryService beneficionaryService)
+    public BeneficiaryController(BeneficionaryService beneficionaryService)
     {
         _beneficionaryService = beneficionaryService;
     }
