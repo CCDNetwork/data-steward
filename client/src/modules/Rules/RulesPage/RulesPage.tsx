@@ -117,79 +117,77 @@ export const RulesPage = () => {
           </div>
         ) : (
           <DragDropContext onDragEnd={onDragEnd}>
-            <StrictModeDroppable droppableId="rules-droppableId">
-              {(provided) => (
-                <tbody
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="min-w-[1000px] h-full overflow-hidden flex flex-col p-2 flex-1"
-                >
-                  <>
-                    {attributeGroupData?.data && attributeGroupData.data.length > 0 ? (
-                      attributeGroupData?.data.map((attributeGroup, index) => (
-                        <Draggable draggableId={attributeGroup.id} key={attributeGroup.id} index={index}>
-                          {(provided, snapshot) => (
-                            <tr
-                              className={cn(
-                                'flex transition-colors whitespace-nowrap duration-500 items-center border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
-                                { 'bg-muted': snapshot.isDragging },
-                              )}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
-                            >
-                              <td className="flex gap-4 w-[20%]">
-                                <span>{attributeGroup.order}</span>
-                                <span className="truncate w-[160px] 2xl:w-fit">{attributeGroup.name}</span>
-                              </td>
-                              <td className="w-[20%]">
-                                <Badge
-                                  className={cn(
-                                    'capitalize',
-                                    { 'bg-destructive dark:text-white hover:bg-destructive': !attributeGroup.isActive },
-                                    { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.isActive },
-                                  )}
-                                >
-                                  {attributeGroup.isActive ? 'active' : 'inactive'}
-                                </Badge>
-                              </td>
-                              <td className="w-[20%]">
-                                <Badge
-                                  className={cn(
-                                    'capitalize',
-                                    {
-                                      'bg-destructive dark:text-white hover:bg-destructive':
-                                        !attributeGroup.useFuzzyMatch,
-                                    },
-                                    { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.useFuzzyMatch },
-                                  )}
-                                >
-                                  {attributeGroup.useFuzzyMatch ? 'enabled' : 'disabled'}
-                                </Badge>
-                              </td>
-                              <td className="w-[20%]">{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
-                              <td className="w-[20%]">{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
-                              <td className="flex gap-1">
-                                <RuleModal attributeGroupId={attributeGroup.id} />
-                                <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
-                                  <Trash2Icon className="w-5 h-5 text-destructive" />
-                                </Button>
-                              </td>
-                            </tr>
-                          )}
-                        </Draggable>
-                      ))
-                    ) : (
-                      <div className="flex justify-center items-center text-center h-full text-muted-foreground">
-                        No results.
-                      </div>
-                    )}
-                  </>
+            {attributeGroupData?.data && attributeGroupData.data.length > 0 ? (
+              <StrictModeDroppable droppableId="rules-droppableId">
+                {(provided) => (
+                  <tbody
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="min-w-[1000px] h-full overflow-hidden flex flex-col p-2 flex-1"
+                  >
+                    {attributeGroupData?.data.map((attributeGroup, index) => (
+                      <Draggable draggableId={attributeGroup.id} key={attributeGroup.id} index={index}>
+                        {(provided, snapshot) => (
+                          <tr
+                            className={cn(
+                              'flex transition-colors whitespace-nowrap duration-500 items-center border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
+                              { 'bg-muted': snapshot.isDragging },
+                            )}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                          >
+                            <td className="flex gap-4 w-[20%]">
+                              <span>{attributeGroup.order}</span>
+                              <span className="truncate w-[160px] 2xl:w-fit">{attributeGroup.name}</span>
+                            </td>
+                            <td className="w-[20%]">
+                              <Badge
+                                className={cn(
+                                  'capitalize',
+                                  { 'bg-destructive dark:text-white hover:bg-destructive': !attributeGroup.isActive },
+                                  { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.isActive },
+                                )}
+                              >
+                                {attributeGroup.isActive ? 'active' : 'inactive'}
+                              </Badge>
+                            </td>
+                            <td className="w-[20%]">
+                              <Badge
+                                className={cn(
+                                  'capitalize',
+                                  {
+                                    'bg-destructive dark:text-white hover:bg-destructive':
+                                      !attributeGroup.useFuzzyMatch,
+                                  },
+                                  { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.useFuzzyMatch },
+                                )}
+                              >
+                                {attributeGroup.useFuzzyMatch ? 'enabled' : 'disabled'}
+                              </Badge>
+                            </td>
+                            <td className="w-[20%]">{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
+                            <td className="w-[20%]">{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
+                            <td className="flex gap-1">
+                              <RuleModal attributeGroupId={attributeGroup.id} />
+                              <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
+                                <Trash2Icon className="w-5 h-5 text-destructive" />
+                              </Button>
+                            </td>
+                          </tr>
+                        )}
+                      </Draggable>
+                    ))}
 
-                  {provided.placeholder}
-                </tbody>
-              )}
-            </StrictModeDroppable>
+                    {provided.placeholder}
+                  </tbody>
+                )}
+              </StrictModeDroppable>
+            ) : (
+              <div className="flex justify-center items-center text-center h-full text-muted-foreground">
+                No results.
+              </div>
+            )}
           </DragDropContext>
         )}
       </table>

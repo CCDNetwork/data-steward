@@ -25,7 +25,7 @@ export const MyProfileItemWithDropdown = ({ closeSidebar }: { closeSidebar?: () 
   const { pathname } = useLocation();
   const { setTheme } = useTheme();
 
-  const userInitials = `${user.firstName[0]} ${user.lastName[0]}`;
+  const userInitials = `${user.firstName[0] ?? ''} ${user.lastName[0] ?? ''}`;
 
   return (
     <DropdownMenu>
@@ -53,7 +53,7 @@ export const MyProfileItemWithDropdown = ({ closeSidebar }: { closeSidebar?: () 
             <div className="flex flex-col truncate">
               <span aria-hidden="true">{`${user.firstName} ${user.lastName}`}</span>
               <span aria-hidden="true" className="text-sm truncate opacity-80 font-normal">
-                {user.organizations[0].name ?? user.email}
+                {user.organizations[0].name || user.email}
               </span>
             </div>
           </div>
