@@ -2,7 +2,7 @@ using System;
 
 namespace Ccd.Server.Beneficiaries;
 
-public class BeneficionaryResponse
+public class BeneficaryResponse
 {
     public Guid Id { get; set; }
     public string FirstName { get; set; }

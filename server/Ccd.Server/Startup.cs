@@ -161,7 +161,7 @@ public class Startup
         services.AddScoped<DeduplicationService>();
         services.AddScoped<BeneficiaryAttributeService>();
         services.AddScoped<BeneficiaryAttributeGroupService>();
-        services.AddScoped<BeneficionaryService>();
+        services.AddScoped<BeneficaryService>();
         services.AddScoped<ReferralService>();
         services.AddScoped<TemplateService>();
         services.AddScoped<HandbookService>();

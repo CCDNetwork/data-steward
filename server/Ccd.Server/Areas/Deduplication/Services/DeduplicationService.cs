@@ -130,7 +130,7 @@ public class DeduplicationService
         using var workbook = new XLWorkbook(file.OpenReadStream());
 
         var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
-        var beneficionaries = _context.Beneficionary.Include(e => e.Organization).ToList();
+        var beneficaries = _context.Beneficaries.Include(e => e.Organization).ToList();
         var beneficiaryAttributesGroupsApi = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(organizationId, new RequestParameters { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
@@ -149,7 +149,7 @@ public class DeduplicationService
         worksheet.Cell(1, lastColumnIndex + 1).Style.Font.Bold = true;
         worksheet.Cell(1, lastColumnIndex + 1).Value = "organization";
 
-        var newBeneficionaries = new List<Beneficionary>();
+        var newBeneficaries = new List<Beneficary>();
 
         for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
         {
@@ -183,7 +183,7 @@ public class DeduplicationService
 
             var duplicates = 0;
             var isPrimary = true;
-            foreach (var e in beneficionaries)
+            foreach (var e in beneficaries)
             {
                 var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
                 if (exists)
@@ -195,13 +195,13 @@ public class DeduplicationService
                 }
             }
 
-            var beneficionary = _mapper.Map<Beneficionary>(record);
-            beneficionary.ListId = list.Id;
-            beneficionary.OrganizationId = organizationId;
-            beneficionary.IsPrimary = isPrimary;
+            var beneficary = _mapper.Map<Beneficary>(record);
+            beneficary.ListId = list.Id;
+            beneficary.OrganizationId = organizationId;
+            beneficary.IsPrimary = isPrimary;
             totalDuplicates += duplicates;
 
-            newBeneficionaries.Add(beneficionary);
+            newBeneficaries.Add(beneficary);
         }
 
         using var memoryStream = new MemoryStream();
@@ -210,7 +210,7 @@ public class DeduplicationService
 
         list.Duplicates = totalDuplicates;
 
-        await _context.AddRangeAsync(newBeneficionaries);
+        await _context.AddRangeAsync(newBeneficaries);
         await _context.SaveChangesAsync();
 
         return fileBytes;
@@ -218,7 +218,7 @@ public class DeduplicationService
 
     public async Task DeleteListings()
     {
-        await _context.Database.ExecuteSqlRawAsync("DELETE FROM beneficionary");
+        await _context.Database.ExecuteSqlRawAsync("DELETE FROM beneficary");
         await _context.Database.ExecuteSqlRawAsync("DELETE FROM list");
     }
 
@@ -268,7 +268,7 @@ public class DeduplicationService
         return false;
     }
 
-    private static bool AreRecordsEqual(Beneficionary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
+    private static bool AreRecordsEqual(Beneficary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
     {
         foreach (var group in beneficiaryAttributesGroups)
         {

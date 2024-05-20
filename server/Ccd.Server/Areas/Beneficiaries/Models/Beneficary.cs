@@ -5,7 +5,7 @@ using Ccd.Server.Organizations;
 
 namespace Ccd.Server.Beneficiaries;
 
-public class Beneficionary
+public class Beneficary
 {
     public Guid Id { get; set; } = IdProvider.NewId();
     public string FirstName { get; set; }
@@ -36,7 +36,7 @@ public class Beneficionary
     public DateTime UpdatedAt { get; set; }
 }
 
-public class BeneficionaryStatus
+public class BeneficaryStatus
 {
     public const string NotDuplicate = "notDuplicate";
     public const string AcceptedDuplicate = "acceptedDuplicate";

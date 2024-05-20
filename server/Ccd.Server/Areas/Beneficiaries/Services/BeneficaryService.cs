@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Beneficiaries;
 
-public class BeneficionaryService
+public class BeneficaryService
 {
     private readonly CcdContext _context;
     private readonly IMapper _mapper;
     private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
 
-    public BeneficionaryService(CcdContext context, IMapper mapper, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService)
+    public BeneficaryService(CcdContext context, IMapper mapper, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService)
     {
         _context = context;
         _mapper = mapper;
@@ -24,7 +24,7 @@ public class BeneficionaryService
     $@"SELECT DISTINCT ON (b.id)
                  b.*
             FROM
-                 beneficionary as b
+                 beneficary as b
             WHERE
                 (@organizationId is null OR b.organization_id = @organizationId)";
 
@@ -33,9 +33,9 @@ public class BeneficionaryService
         return new { id, organizationId };
     }
 
-    public async Task<PagedApiResponse<BeneficionaryResponse>> GetBeneficiariesApi(RequestParameters requestParameters, Guid organizationId, Guid? id = null)
+    public async Task<PagedApiResponse<BeneficaryResponse>> GetBeneficiariesApi(RequestParameters requestParameters, Guid organizationId, Guid? id = null)
     {
-        return await PagedApiResponse<BeneficionaryResponse>.GetFromSql(
+        return await PagedApiResponse<BeneficaryResponse>.GetFromSql(
             _context,
             _selectSql,
             getSelectSqlParams(organizationId, id),
@@ -43,21 +43,21 @@ public class BeneficionaryService
         );
     }
 
-    public async Task<BeneficionaryResponse> GetBeneficiaryApi(Guid organizationId, Guid id)
+    public async Task<BeneficaryResponse> GetBeneficiaryApi(Guid organizationId, Guid id)
     {
         var beneficiary = await GetBeneficiary(organizationId, id);
-        return _mapper.Map<BeneficionaryResponse>(beneficiary);
+        return _mapper.Map<BeneficaryResponse>(beneficiary);
     }
 
-    public async Task<Beneficionary> GetBeneficiary(Guid organizationId, Guid id)
+    public async Task<Beneficary> GetBeneficiary(Guid organizationId, Guid id)
     {
-        return await _context.Beneficionary.FirstOrDefaultAsync(b => b.OrganizationId == organizationId && b.Id == id) ?? throw new NotFoundException("Beneficiary not found.");
+        return await _context.Beneficaries.FirstOrDefaultAsync(b => b.OrganizationId == organizationId && b.Id == id) ?? throw new NotFoundException("Beneficiary not found.");
     }
 
-    public async Task<BeneficionaryResponse> PatchBeneficiaryStatus(Guid organizationId, Guid id, BeneficionaryStatusPatchRequest model)
+    public async Task<BeneficaryResponse> PatchBeneficiaryStatus(Guid organizationId, Guid id, BeneficaryStatusPatchRequest model)
     {
         var beneficiary = await GetBeneficiary(organizationId, id);
-        if (!BeneficionaryStatus.IsValid(model.Status)) throw new BadRequestException("Invalid status.");
+        if (!BeneficaryStatus.IsValid(model.Status)) throw new BadRequestException("Invalid status.");
         beneficiary.Status = model.Status;
         await _context.SaveChangesAsync();
 
@@ -67,7 +67,7 @@ public class BeneficionaryService
     public async Task DeleteBeneficiary(Guid organizationId, Guid id)
     {
         var beneficiary = await GetBeneficiary(organizationId, id);
-        _context.Beneficionary.Remove(beneficiary);
+        _context.Beneficaries.Remove(beneficiary);
         await _context.SaveChangesAsync();
     }
 }

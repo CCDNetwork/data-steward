@@ -32,7 +32,7 @@ public class Mappings : Profile
 
         // BeneficiaryAttribute mappings
         CreateMap<BeneficiaryAttribute, BeneficiaryAttributeResponse>();
-        CreateMap<DeduplicationRecord, Beneficionary>();
+        CreateMap<DeduplicationRecord, Beneficary>();
 
         // BeneficiaryGroupAttribute mappings
         CreateMap<BeneficiaryAttributeGroup, BeneficiaryAttributeGroupResponse>();
@@ -59,7 +59,7 @@ public class Mappings : Profile
         CreateMap<TemplateAddRequest, Template>();
 
         // Beneficiary mappings
-        CreateMap<Beneficionary, BeneficionaryResponse>();
+        CreateMap<Beneficary, BeneficaryResponse>();
     }
 
     private static DateTime? ParseDate(string date)
