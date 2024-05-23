@@ -5,9 +5,10 @@ namespace Ccd.Server.Referrals;
 
 public class ReferralPatchRequest : PatchRequest
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
     public string Status { get; set; }
-    public DateTime? DateOfBirth { get; set; }
     public Guid? OrganizationId { get; set; }
+    public Guid? FileId { get; set; }
+    public bool? IsDraft { get; set; }
 }

@@ -62,7 +62,7 @@ public class ReferralController : ControllerBaseExtended
     )
     {
         var referral = await _referralService.GetReferralById(this.OrganizationId, id) ?? throw new NotFoundException("Referral not found.");
-        if (!ReferralStatus.IsValid(model.Status)) throw new BadRequestException("Invalid status.");
+        if (model.Status != null && !ReferralStatus.IsValid(model.Status)) throw new BadRequestException("Invalid status.");
 
         model.Patch(referral);
 

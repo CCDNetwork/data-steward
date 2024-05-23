@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Ccd.Server.Data;
-using Ccd.Server.Email;
 using Ccd.Server.Helpers;
 using Ccd.Server.Users;
-using System.Runtime.CompilerServices;
 using Ccd.Server.Organizations;
 using System.Linq;
+using Ccd.Server.Storage;
 
 namespace Ccd.Server.Referrals;
 
@@ -17,6 +15,7 @@ public class ReferralService
 {
     private readonly IMapper _mapper;
     private readonly CcdContext _context;
+    private readonly IStorageService _storageService;
 
     private readonly string _selectSql =
         $@"
@@ -38,11 +37,13 @@ public class ReferralService
 
     public ReferralService(
         IMapper mapper,
-        CcdContext context
+        CcdContext context,
+        IStorageService storageService
     )
     {
         _mapper = mapper;
         _context = context;
+        _storageService = storageService;
     }
 
     public async Task<PagedApiResponse<ReferralResponse>> GetReferralsApi(Guid organizationId, RequestParameters requestParameters = null, bool received = false)
@@ -82,7 +83,7 @@ public class ReferralService
         var referredOrganization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == model.OrganizationId) ?? throw new NotFoundException("Organization not found.");
         var referral = _mapper.Map<Referral>(model);
         referral.OrganizationCreatedId = organizationId;
-        referral.Status = ReferralStatus.Pending;
+        referral.Status = ReferralStatus.Open;
 
         var newReferral = _context.Referrals.Add(referral).Entity;
         await _context.SaveChangesAsync();
@@ -110,5 +111,11 @@ public class ReferralService
         var userCreated = await _context.Users.FirstOrDefaultAsync(e => e.Id == referral.UserCreatedId);
         referral.OrganizationReferredTo = _mapper.Map<OrganizationResponse>(organizationReffereTo);
         referral.UserCreated = _mapper.Map<UserResponse>(userCreated);
+
+        if (referral.FileId != null)
+        {
+            referral.File = await _storageService.GetFileApiById(referral.FileId);
+        }
+
     }
 }

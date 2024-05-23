@@ -5,12 +5,9 @@ namespace Ccd.Server.Referrals;
 
 public class ReferralAddRequest
 {
-    [Required, MinLength(1)]
-    public string FirstName { get; set; }
-    [Required, MinLength(1)]
-    public string LastName { get; set; }
-    [Required]
-    public DateTime DateOfBirth { get; set; }
-    [Required]
-    public Guid OrganizationId { get; set; }
+    [Required, MinLength(1)] public string Title { get; set; }
+    [Required] public Guid OrganizationId { get; set; }
+    public string Description { get; set; }
+    public Guid? FileId { get; set; }
+    public bool IsDraft { get; set; }
 }
