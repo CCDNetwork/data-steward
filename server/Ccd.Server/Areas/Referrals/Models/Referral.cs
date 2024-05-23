@@ -31,9 +31,11 @@ public class ReferralStatus
     public const string Open = "open";
     public const string Enrolled = "enrolled";
     public const string Accepted = "accepted";
+    public const string Cancelled = "cancelled";
+    public const string Rejected = "rejected";
 
     public static bool IsValid(string status)
     {
-        return status == Open || status == Enrolled || status == Accepted;
+        return status == Open || status == Enrolled || status == Accepted || status == Cancelled || status == Rejected;
     }
 }
