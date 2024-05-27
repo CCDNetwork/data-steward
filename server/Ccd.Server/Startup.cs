@@ -176,6 +176,7 @@ public class Startup
         services.AddSingleton<DateTimeProvider>();
 
         SqlMapper.AddTypeHandler(new DateTimeHandler());
+        SqlMapper.AddTypeHandler<List<Guid>>(new JsonHandler<List<Guid>>());
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

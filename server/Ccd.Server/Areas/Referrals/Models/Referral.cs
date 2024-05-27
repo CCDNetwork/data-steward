@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
-using Ccd.Server.Storage;
 
 namespace Ccd.Server.Referrals;
 
@@ -15,9 +15,7 @@ public class Referral : UserChangeTracked
     public string Title { get; set; }
     public string Description { get; set; }
     public bool IsDraft { get; set; }
-
-    [ForeignKey("File")] public Guid? FileId { get; set; }
-    public File File { get; set; }
+    [Column(TypeName = "jsonb")] public List<Guid> FileIds { get; set; }
 
     [ForeignKey("Organization"), Required] public Guid OrganizationCreatedId { get; set; }
     public Organization OrganizationCreated { get; set; }

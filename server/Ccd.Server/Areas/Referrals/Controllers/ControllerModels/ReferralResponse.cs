@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Ccd.Server.Organizations;
 using Ccd.Server.Storage;
@@ -19,8 +20,8 @@ public class ReferralResponse
     public UserResponse UserCreated { get; set; }
     public string Status { get; set; }
     public bool IsDraft { get; set; }
-    [JsonIgnore] public Guid? FileId { get; set; }
-    public FileShortResponse File { get; set; }
+    [JsonIgnore] public List<Guid> FileIds { get; set; }
+    public List<FileShortResponse> Files { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

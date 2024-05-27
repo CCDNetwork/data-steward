@@ -8,6 +8,7 @@ using Ccd.Server.Users;
 using Ccd.Server.Organizations;
 using System.Linq;
 using Ccd.Server.Storage;
+using System.Collections.Generic;
 
 namespace Ccd.Server.Referrals;
 
@@ -112,9 +113,9 @@ public class ReferralService
         referral.OrganizationReferredTo = _mapper.Map<OrganizationResponse>(organizationReffereTo);
         referral.UserCreated = _mapper.Map<UserResponse>(userCreated);
 
-        if (referral.FileId != null)
+        if (referral.FileIds != null && referral.FileIds.Count > 0)
         {
-            referral.File = await _storageService.GetFileApiById(referral.FileId);
+            referral.Files = await _storageService.GetFilesApiById(referral.FileIds);
         }
 
     }
