@@ -20,8 +20,7 @@ public class BeneficiaryAttributeGroupService
                 FROM
                     beneficiary_attribute_group as bag
                 WHERE
-                    (@id is null OR bag.id = @id) AND
-                    (@organizationId is null OR bag.organization_id = @organizationId)";
+                    (@id is null OR bag.id = @id)";
 
     public BeneficiaryAttributeGroupService(CcdContext context, IMapper mapper)
     {
@@ -29,9 +28,9 @@ public class BeneficiaryAttributeGroupService
         _mapper = mapper;
     }
 
-    private object getSelectSqlParams(Guid? organizationId = null, Guid? id = null)
+    private object getSelectSqlParams(Guid? id = null)
     {
-        return new { organizationId, id };
+        return new { id };
     }
 
     private async Task resolveDependencies(BeneficiaryAttributeGroupResponse listing)
@@ -43,22 +42,22 @@ public class BeneficiaryAttributeGroupService
             .ToListAsync();
     }
 
-    public async Task<PagedApiResponse<BeneficiaryAttributeGroupResponse>> GetBeneficiaryAttributeGroupsApi(Guid organizationId, RequestParameters requestParameters)
+    public async Task<PagedApiResponse<BeneficiaryAttributeGroupResponse>> GetBeneficiaryAttributeGroupsApi(RequestParameters requestParameters)
     {
         requestParameters.SortBy ??= "\"order\"";
         return await PagedApiResponse<BeneficiaryAttributeGroupResponse>.GetFromSql(
             _context,
             _selectSql,
-            getSelectSqlParams(organizationId),
+            getSelectSqlParams(),
             requestParameters,
             resolveDependencies
         );
     }
 
-    public async Task<BeneficiaryAttributeGroupResponse> GetBeneficiaryAttributeGroupApi(Guid organizationId, Guid baGroupId)
+    public async Task<BeneficiaryAttributeGroupResponse> GetBeneficiaryAttributeGroupApi(Guid baGroupId)
     {
         var baGroup = await _context.BeneficiaryAttributeGroups
-             .Where(bag => bag.OrganizationId == organizationId && bag.Id == baGroupId)
+             .Where(bag => bag.Id == baGroupId)
              .FirstOrDefaultAsync() ?? throw new NotFoundException("Beneficiary Attribute Group not found.");
 
         var response = _mapper.Map<BeneficiaryAttributeGroupResponse>(baGroup);
@@ -71,12 +70,10 @@ public class BeneficiaryAttributeGroupService
         return response;
     }
 
-    public async Task<BeneficiaryAttributeGroupResponse> CreateBeneficiaryAttributeGroups(Guid organizationId, BeneficiaryAttributeGroupCreateRequest model)
+    public async Task<BeneficiaryAttributeGroupResponse> CreateBeneficiaryAttributeGroups(BeneficiaryAttributeGroupCreateRequest model)
     {
         var baGroup = _mapper.Map<BeneficiaryAttributeGroup>(model);
-        baGroup.OrganizationId = organizationId;
         baGroup.Order = await _context.BeneficiaryAttributeGroups
-            .Where(bag => bag.OrganizationId == organizationId)
             .OrderByDescending(bag => bag.Order)
             .Select(bag => bag.Order)
             .FirstOrDefaultAsync() + 1;
@@ -89,7 +86,6 @@ public class BeneficiaryAttributeGroupService
             {
                 BeneficiaryAttributeId = baId,
                 BeneficiaryAttributeGroupId = baGroup.Id,
-                OrganizationId = organizationId,
             };
 
             _context.BaBags.Add(baBag);
@@ -97,13 +93,13 @@ public class BeneficiaryAttributeGroupService
 
         await _context.SaveChangesAsync();
 
-        return await GetBeneficiaryAttributeGroupApi(organizationId, baGroup.Id);
+        return await GetBeneficiaryAttributeGroupApi(baGroup.Id);
     }
 
-    public async Task<BeneficiaryAttributeGroupResponse> PatchBeneficiaryAttributeGroups(Guid organizationId, Guid baGroupId, BeneficiaryAttributeGroupPatchRequest model)
+    public async Task<BeneficiaryAttributeGroupResponse> PatchBeneficiaryAttributeGroups(Guid baGroupId, BeneficiaryAttributeGroupPatchRequest model)
     {
         var baGroup = await _context.BeneficiaryAttributeGroups
-            .Where(bag => bag.OrganizationId == organizationId && bag.Id == baGroupId)
+            .Where(bag => bag.Id == baGroupId)
             .FirstOrDefaultAsync() ?? throw new NotFoundException("Beneficiary Attribute Group not found.");
 
         model.Patch(baGroup);
@@ -125,7 +121,6 @@ public class BeneficiaryAttributeGroupService
                 {
                     BeneficiaryAttributeId = baId,
                     BeneficiaryAttributeGroupId = baGroup.Id,
-                    OrganizationId = organizationId,
                 };
 
                 _context.BaBags.Add(baBag);
@@ -136,13 +131,13 @@ public class BeneficiaryAttributeGroupService
 
         await _context.SaveChangesAsync();
 
-        return await GetBeneficiaryAttributeGroupApi(organizationId, baGroup.Id);
+        return await GetBeneficiaryAttributeGroupApi(baGroup.Id);
     }
 
-    public async Task DeleteBeneficiaryAttributeGroup(Guid organizationId, Guid baGroupId)
+    public async Task DeleteBeneficiaryAttributeGroup(Guid baGroupId)
     {
         var baGroup = await _context.BeneficiaryAttributeGroups
-            .Where(bag => bag.OrganizationId == organizationId && bag.Id == baGroupId)
+            .Where(bag => bag.Id == baGroupId)
             .FirstOrDefaultAsync() ?? throw new NotFoundException("Beneficiary Attribute Group not found.");
 
         _context.BaBags.RemoveRange(_context.BaBags.Where(bag => bag.BeneficiaryAttributeGroupId == baGroup.Id));
@@ -150,7 +145,7 @@ public class BeneficiaryAttributeGroupService
 
         // Update order of remaining groups
         var remainingGroups = await _context.BeneficiaryAttributeGroups
-            .Where(bag => bag.OrganizationId == organizationId && bag.Order > baGroup.Order)
+            .Where(bag => bag.Order > baGroup.Order)
             .ToListAsync();
 
         foreach (var group in remainingGroups)
@@ -162,10 +157,9 @@ public class BeneficiaryAttributeGroupService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<PagedApiResponse<BeneficiaryAttributeGroupResponse>> ReorderBeneficiaryAttributeGroups(Guid organizationId, BeneficiaryAttributeGroupReorderRequest model)
+    public async Task<PagedApiResponse<BeneficiaryAttributeGroupResponse>> ReorderBeneficiaryAttributeGroups(BeneficiaryAttributeGroupReorderRequest model)
     {
         var baGroups = await _context.BeneficiaryAttributeGroups
-            .Where(bag => bag.OrganizationId == organizationId)
             .ToListAsync();
 
         foreach (var pair in model.NewOrderList)
@@ -177,6 +171,6 @@ public class BeneficiaryAttributeGroupService
 
         await _context.SaveChangesAsync();
 
-        return await GetBeneficiaryAttributeGroupsApi(organizationId, new RequestParameters() { PageSize = 1000 });
+        return await GetBeneficiaryAttributeGroupsApi(new RequestParameters() { PageSize = 1000 });
     }
 }

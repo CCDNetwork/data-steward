@@ -45,7 +45,7 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<PagedApiResponse<BeneficiaryAttributeGroupResponse>>> GetBeneficiaryAttributesGroups([FromQuery] RequestParameters requestParameters)
     {
-        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(this.OrganizationId, requestParameters);
+        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(requestParameters);
         return Ok(beneficiaryAttributes);
     }
 
@@ -53,7 +53,7 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<BeneficiaryAttributeGroupResponse>> GetBeneficiaryAttributesGroup(Guid id, [FromQuery] RequestParameters requestParameters)
     {
-        var beneficiaryAttribute = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupApi(this.OrganizationId, id);
+        var beneficiaryAttribute = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupApi(id);
         return Ok(beneficiaryAttribute);
     }
 
@@ -61,7 +61,7 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<PagedApiResponse<BeneficiaryAttributeGroupResponse>>> CreateBeneficiaryAttributesGroup([FromBody] BeneficiaryAttributeGroupCreateRequest model)
     {
-        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.CreateBeneficiaryAttributeGroups(this.OrganizationId, model);
+        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.CreateBeneficiaryAttributeGroups(model);
         return Ok(beneficiaryAttributes);
     }
 
@@ -69,7 +69,7 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<BeneficiaryAttributeGroupResponse>> PatchBeneficiaryAttributesGroup(Guid id, [FromBody] BeneficiaryAttributeGroupPatchRequest model)
     {
-        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.PatchBeneficiaryAttributeGroups(this.OrganizationId, id, model);
+        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.PatchBeneficiaryAttributeGroups(id, model);
         return Ok(beneficiaryAttributes);
     }
 
@@ -77,7 +77,7 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult> DeleteBeneficiaryAttributesGroup(Guid id)
     {
-        await _beneficiaryAttributeGroupService.DeleteBeneficiaryAttributeGroup(this.OrganizationId, id);
+        await _beneficiaryAttributeGroupService.DeleteBeneficiaryAttributeGroup(id);
         return NoContent();
     }
 
@@ -85,7 +85,7 @@ public class BeneficiaryAttributeController : ControllerBaseExtended
     [PermissionLevel(UserRole.Admin)]
     public async Task<ActionResult<PagedApiResponse<BeneficiaryAttributeGroupResponse>>> CreateBeneficiaryAttributesGroup([FromBody] BeneficiaryAttributeGroupReorderRequest model)
     {
-        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.ReorderBeneficiaryAttributeGroups(this.OrganizationId, model);
+        var beneficiaryAttributes = await _beneficiaryAttributeGroupService.ReorderBeneficiaryAttributeGroups(model);
         return Ok(beneficiaryAttributes);
     }
 }

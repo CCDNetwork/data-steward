@@ -1,6 +1,5 @@
 using System;
 using Ccd.Server.Helpers;
-using Ccd.Server.Organizations;
 
 namespace Ccd.Server.BeneficiaryAttributes;
 
@@ -11,8 +10,6 @@ public class BeneficiaryAttributeGroup
     public int Order { get; set; }
     public bool IsActive { get; set; }
     public bool UseFuzzyMatch { get; set; }
-    public Guid OrganizationId { get; set; }
-    public Organization Organization { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

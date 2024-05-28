@@ -11,7 +11,6 @@ public class BeneficiaryAttributeGroupResponse
     public bool IsActive { get; set; }
     public bool UseFuzzyMatch { get; set; }
     public List<BeneficiaryAttributeResponse> BeneficiaryAttributes { get; set; }
-    public Guid OrganizationId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
