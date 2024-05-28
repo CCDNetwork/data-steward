@@ -11,13 +11,11 @@ namespace Ccd.Server.Referrals;
 [Route("/api/v1/referrals")]
 public class ReferralController : ControllerBaseExtended
 {
-    private readonly IMapper _mapper;
     private readonly ReferralService _referralService;
 
     public ReferralController(ReferralService referralService, IMapper mapper)
     {
         _referralService = referralService;
-        _mapper = mapper;
     }
 
     [HttpGet]
