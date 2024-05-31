@@ -118,14 +118,19 @@ export const SentReferralPage = () => {
         <form onSubmit={handleSubmit((values) => onSubmit({ values }))}>
           <div className="space-y-8 max-w-2xl">
             <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
-              {!isCreate && (
-                <>
-                  <div className="px-6 pt-2 pb-6 flex items-center justify-center">
-                    <StatusTimeline currentStatus={sentReferralData?.status ?? 'open'} />
+              {!isCreate &&
+                (sentReferralData?.isDraft ? (
+                  <div className="w-full text-center bg-primary text-white rounded-tl-lg rounded-tr-lg text-xs leading-6 font-semibold">
+                    Draft Referral
                   </div>
-                  <Separator />
-                </>
-              )}
+                ) : (
+                  <>
+                    <div className="px-6 pt-2 pb-6 flex items-center justify-center">
+                      <StatusTimeline currentStatus={sentReferralData?.status ?? 'open'} />
+                    </div>
+                    <Separator />
+                  </>
+                ))}
               <CardHeader>
                 <CardTitle>Receiving Organization Details</CardTitle>
                 <CardDescription>Information about the receiving organization</CardDescription>
