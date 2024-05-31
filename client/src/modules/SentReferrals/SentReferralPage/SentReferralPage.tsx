@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router-dom';
 
 import { PageContainer } from '@/components/PageContainer';
 import { shortenId, useIdFromParams } from '@/helpers/common';
@@ -12,19 +13,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { APP_ROUTE } from '@/helpers/constants';
 import { useReferral, useReferralMutation } from '@/services/referrals/api';
 import { Separator } from '@/components/ui/separator';
-import { useNavigate } from 'react-router-dom';
 import { AsyncSelect } from '@/components/AsyncSelect';
 import { useOrganizationsInfinite } from '@/services/organizations/api';
 import { Textarea } from '@/components/ui/textarea';
-import { CancelReferralModal } from './components/CancelReferralModal';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { FilesDropzone } from '@/components/FilesDropzone';
+import { StatusTimeline } from '@/components/StatusTimeline';
 
+import { CancelReferralModal } from './components/CancelReferralModal';
 import { dataToSentReferralFormData } from './form-transformation';
 import { SentReferralFormData, SentReferralFormSchema } from './validations';
 import { defaultSentReferralFormFormValues } from './const';
-import { StatusTimeline } from '@/components/StatusTimeline';
-import { FilesDropzone } from '@/components/FilesDropzone';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
@@ -70,6 +70,7 @@ export const SentReferralPage = () => {
 
     try {
       await patchReferral.mutateAsync({ data: { ...values, isDraft }, referralId: sentReferralId });
+
       toast({
         title: 'Success!',
         variant: 'default',

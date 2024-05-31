@@ -1,6 +1,7 @@
 import { Organization } from '@/services/organizations';
-import { SentReferralFormData } from './validations';
 import { Referral } from '@/services/referrals';
+
+import { SentReferralFormData } from './validations';
 
 export const dataToSentReferralFormData = (data: Referral): SentReferralFormData => {
   return {

@@ -56,7 +56,7 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     contactDetails: data.contactDetails,
     note: data.note,
     organizationId: data.organizationReferredTo?.id,
-    fileIds: data.files?.map((i: any) => i.id) || [],
+    fileIds: data.files?.map((i: any) => i.id),
     isDraft: data.isDraft,
     status: data.status,
   };
