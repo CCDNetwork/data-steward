@@ -74,7 +74,7 @@ export const TemplatePage = () => {
     >
       <Form {...form}>
         <form onSubmit={onSubmit}>
-          <div className="space-y-8 max-w-4xl">
+          <div className="space-y-8 max-w-2xl">
             <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
               <CardContent className="space-y-2 pt-6">
                 <div className="grid grid-cols-1 gap-4">

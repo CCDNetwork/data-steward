@@ -97,7 +97,7 @@ export const RulesPage = () => {
       breadcrumbs={[{ href: `${APP_ROUTE.Rules}`, name: 'Rules' }]}
     >
       {/* <RulesInformationBox /> */}
-      <table className="flex flex-col border border-border overflow-auto rounded-md h-[calc(100svh-370px)] sm:h-[calc(100svh-380px)] md:h-[calc(100svh-360px)] lg:h-[calc(100svh-320px)]">
+      <table className="flex flex-col border border-border overflow-auto rounded-md">
         <thead className="min-w-[1000px] overflow-hidden border-b flex justify-between text-sm h-10 px-6 items-center font-medium text-muted-foreground whitespace-nowrap">
           <tr className="flex items-center flex-1">
             <th className="flex gap-4 w-[20%]">

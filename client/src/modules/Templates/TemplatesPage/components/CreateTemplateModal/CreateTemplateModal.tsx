@@ -63,7 +63,7 @@ export const CreateTemplateModal = () => {
           Create
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Create new template</DialogTitle>
           <DialogDescription>Accordingly map your data fields to the standardized format below.</DialogDescription>

@@ -35,12 +35,15 @@ export const capitalizeFirstLetter = (str: string): string => {
   return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
 };
 
-export const createDownloadLink = (data: BlobPart, fileName: string, extension = 'csv') => {
-  const url = window.URL.createObjectURL(new Blob([data]));
+export const createDownloadLink = (url: string, fileName: string) => {
   const link = document.createElement('a');
   link.href = url;
-  link.setAttribute('download', `${fileName}.${extension}`);
+  link.setAttribute('download', fileName);
   document.body.appendChild(link);
   link.click();
   link.remove();
+};
+
+export const shortenId = (id: string | undefined) => {
+  return id ? id.substring(id.length - 6) : '';
 };

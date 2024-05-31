@@ -5,7 +5,7 @@ const OrganizationSchema = z.object(
     id: z.string().min(1, { message: 'Organization Id is required' }),
     name: z.string().min(1, { message: 'Organization name is required' }),
   },
-  { invalid_type_error: 'Organization is required' },
+  { invalid_type_error: 'Organization is required', required_error: 'Organization is required' },
 );
 
 export const AddUserModalFormSchema = z

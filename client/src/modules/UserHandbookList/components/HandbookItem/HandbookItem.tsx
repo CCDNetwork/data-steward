@@ -37,8 +37,8 @@ export const HandbookItem = ({ content, createdAt, updatedAt, title }: Handbook)
           </span>
         </div>
       </div>
-      <div data-color-mode={theme}>
-        <MDEditor.Markdown className="rounded-md py-4 px-6" source={content} />
+      <div data-color-mode={theme} className="flex justify-center">
+        <MDEditor.Markdown className="rounded-md py-4 px-6 prose dark:prose-invert" source={content} />
       </div>
     </div>
   );

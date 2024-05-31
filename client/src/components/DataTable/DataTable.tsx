@@ -21,6 +21,7 @@ interface DataTableProps<TData, TValue> {
   columns: TableColumn<TValue>[];
   isQueryLoading: boolean;
   hiddenColumns?: VisibilityState;
+  tableFilterNodes?: React.ReactNode;
   onRowClick?: (row: TValue) => void;
   pageClicked?: (newPage: number) => void;
   pageSizeClicked?: (newPageSize: number) => void;
@@ -35,6 +36,7 @@ export function DataTable<TData, TValue>({
   columns,
   isQueryLoading,
   hiddenColumns,
+  tableFilterNodes,
   onRowClick,
   pageClicked,
   pageSizeClicked,
@@ -87,13 +89,14 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       {onSearchChange && (
-        <div className="pb-4">
+        <div className="pb-4 flex flex-wrap gap-4">
           <Input
             type="search"
             placeholder="Search..."
             className="sm:max-w-[250px] w-full"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange?.(e.target.value)}
           />
+          {tableFilterNodes}
         </div>
       )}
 

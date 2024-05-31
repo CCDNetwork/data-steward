@@ -20,13 +20,22 @@ export const MarkdownEditor: React.FC<Props> = ({ name, control, className, labe
       {label && (
         <label
           htmlFor={name}
-          className={cn('block text-sm mb-2 font-medium', { 'text-red-500': !!fieldState.error }, labelClassName)}
+          className={cn('block text-sm mb-2 font-medium', { 'text-destructive': !!fieldState.error }, labelClassName)}
         >
           {label}
         </label>
       )}
-      <MDEditor value={field.value} onChange={field.onChange} className={className} {...props} />
-      {!!fieldState.error && <p className="text-red-500 text-[0.8rem] mt-2 font-medium">{fieldState.error.message}</p>}
+      <MDEditor
+        value={field.value}
+        style={{ width: '100%' }}
+        onChange={field.onChange}
+        previewOptions={{ className: 'prose dark:prose-invert' }}
+        className={className}
+        {...props}
+      />
+      {!!fieldState.error && (
+        <p className="text-destructive text-[0.8rem] mt-2 font-medium">{fieldState.error.message}</p>
+      )}
     </div>
   );
 };

@@ -19,20 +19,19 @@ import { useUserMutation } from '@/services/users/api';
 import { toast } from '@/components/ui/use-toast';
 import { AsyncSelect } from '@/components/AsyncSelect';
 import { useOrganizationsInfinite } from '@/services/organizations/api';
-import { Organization } from '@/services/organizations';
 
 import { AddUserModalForm, AddUserModalFormSchema } from './validation';
 
 export const AddUserModal = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const form = useForm<Omit<AddUserModalForm, 'organization'> & { organization: Organization | null }>({
+  const form = useForm<AddUserModalForm>({
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
-      organization: null,
+      organization: undefined,
     },
     mode: 'onSubmit',
     resolver: zodResolver(AddUserModalFormSchema),

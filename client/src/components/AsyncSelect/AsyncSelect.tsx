@@ -88,7 +88,7 @@ export const AsyncSelect = <T,>({
   };
 
   return (
-    <div className={cn('relative rounded-md w-full react-select-container', wrapperClassName)}>
+    <div className={cn('relative w-full react-select-container', wrapperClassName)}>
       {label && (
         <label
           htmlFor={name}
@@ -139,6 +139,7 @@ export const AsyncSelect = <T,>({
             state.isFocused ? 'border border-primary outline-none ring-1 ring-ring' : 'border-border',
           input: () => 'text-sm',
           indicatorSeparator: () => 'bg-muted-foreground',
+          dropdownIndicator: (state) => (state.selectProps.menuIsOpen ? 'rotate-180' : ''),
           singleValue: () => 'text-sm',
           placeholder: () => 'text-sm text-muted-foreground',
           menu: () => 'text-sm bg-background border border-border',

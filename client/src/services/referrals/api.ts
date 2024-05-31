@@ -6,6 +6,7 @@ import { useGlobalErrors } from '@/providers/GlobalProvider';
 import { referralPatchToReq, referralPostToReq, resToReferral } from './transformations';
 import { Referral } from './types';
 import { api } from '../api';
+import { SentReferralFormData } from '@/modules/SentReferrals/SentReferralPage/validations';
 
 enum QueryKeys {
   Referrals = 'referrals',
@@ -17,14 +18,13 @@ enum QueryKeys {
 //
 export const fetchReferrals = async ({
   pagination,
-  accepted,
+  received = false,
 }: {
   pagination: PaginationRequest;
-  accepted: boolean;
+  received?: boolean;
 }): Promise<DataWithMeta<Referral>> => {
   const url = paginationRequestToUrl('referrals', pagination);
-
-  const resp = await api.get(url + `&${accepted}`);
+  const resp = await api.get(url + `&received=${received}`);
 
   return {
     meta: resp.data.meta,
@@ -37,14 +37,18 @@ const fetchReferral = async (id: string): Promise<Referral> => {
   return resToReferral(resp.data);
 };
 
-// TODO: Add zod inferred type for data
-const postReferral = async (data: any): Promise<Referral> => {
+const postReferral = async (data: SentReferralFormData): Promise<Referral> => {
   const resp = await api.post(`/referrals`, referralPostToReq(data));
   return resToReferral(resp.data);
 };
 
-// TODO: Add zod inferred type for data
-const patchReferral = async ({ referralId, data }: { referralId: string; data: any }): Promise<Referral> => {
+const patchReferral = async ({
+  referralId,
+  data,
+}: {
+  referralId: string;
+  data: Partial<SentReferralFormData>;
+}): Promise<Referral> => {
   const resp = await api.patch(`/referrals/${referralId}`, referralPatchToReq(data));
   return resToReferral(resp.data);
 };
@@ -58,12 +62,22 @@ const deleteReferral = async (referralId: string): Promise<Referral> => {
 // GET hooks
 //
 
-export const useReferrals = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch, accepted }: any) => {
-  return useQuery([QueryKeys.Referrals, currentPage, pageSize, sortBy, sortDirection, debouncedSearch], () =>
-    fetchReferrals({
-      pagination: { page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch },
-      accepted,
-    }),
+export const useReferrals = ({
+  currentPage,
+  pageSize,
+  sortBy,
+  sortDirection,
+  debouncedSearch,
+  filters,
+  received,
+}: any) => {
+  return useQuery(
+    [QueryKeys.Referrals, currentPage, pageSize, sortBy, sortDirection, debouncedSearch, filters, received],
+    () =>
+      fetchReferrals({
+        pagination: { page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch, filters },
+        received,
+      }),
   );
 };
 
@@ -88,7 +102,10 @@ export const useReferralMutation = () => {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Referrals]),
     }),
     patchReferral: useMutation(patchReferral, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Referrals]),
+      onSuccess: () => {
+        queryClient.invalidateQueries([QueryKeys.Referrals]);
+        queryClient.invalidateQueries([QueryKeys.SingleReferral]);
+      },
     }),
     removeReferral: useMutation(deleteReferral, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Referrals]),

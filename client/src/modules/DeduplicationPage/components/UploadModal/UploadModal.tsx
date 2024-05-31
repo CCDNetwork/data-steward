@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useTemplatesInfinite } from '@/services/templates/api';
 import { Form } from '@/components/ui/form';
 import { AsyncSelect } from '@/components/AsyncSelect';
-import { Template } from '@/services/templates';
 import { useAuth } from '@/providers/GlobalProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -30,9 +29,9 @@ export const UploadModal = ({ isOpen, deduplicationType, setIsOpen }: Props) => 
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const form = useForm<Omit<DeduplicationUploadForm, 'template'> & { template: Template | null }>({
+  const form = useForm<DeduplicationUploadForm>({
     defaultValues: {
-      template: null,
+      template: undefined,
     },
     mode: 'onChange',
     resolver: zodResolver(DeduplicationUploadFormSchema),
