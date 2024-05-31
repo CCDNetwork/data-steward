@@ -13,11 +13,11 @@ interface TimelineProps {
 export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus }) => {
   const referralStatusesList = [...Object.keys(ReferralStatus)].filter((i) => {
     if (currentStatus === 'cancelled') {
-      return i !== 'rejected' && i !== 'accepted';
+      return i !== 'rejected' && i !== 'enrolled';
     }
 
     if (currentStatus === 'rejected') {
-      return i !== 'cancelled' && i !== 'accepted';
+      return i !== 'cancelled' && i !== 'enrolled';
     }
 
     return i !== 'rejected' && i !== 'cancelled';
