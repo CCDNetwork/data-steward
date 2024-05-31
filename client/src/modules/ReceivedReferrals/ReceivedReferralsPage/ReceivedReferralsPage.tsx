@@ -22,7 +22,9 @@ export const ReceivedReferralsPage = () => {
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
 
   const [receivedReferralToDelete, setReceivedReferralToDelete] = useState<Referral | null>(null);
-  const [receivedReferralsFilters, setReceivedReferralsFilters] = useState<Record<string, string>>({});
+  const [receivedReferralsFilters, setReceivedReferralsFilters] = useState<Record<string, string>>({
+    isDraft: 'false',
+  });
 
   const { data: receivedReferralsData, isLoading: queryLoading } = useReferrals({
     ...pagination,
