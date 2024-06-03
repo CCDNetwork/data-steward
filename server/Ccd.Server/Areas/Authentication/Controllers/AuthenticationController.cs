@@ -21,11 +21,11 @@ public class OrganizationController : ControllerBaseExtended
         _mapper = mapper;
     }
 
-    [HttpPost("registration")]
-    public async Task<ActionResult<UserAuthenticationResponse>> Register([FromBody] UserRegistrationRequest model)
-    {
-        return Created("", await _authenticationService.Register(model));
-    }
+    // [HttpPost("registration")]
+    // public async Task<ActionResult<UserAuthenticationResponse>> Register([FromBody] UserRegistrationRequest model)
+    // {
+    //     return Created("", await _authenticationService.Register(model));
+    // }
 
     [HttpPost("login")]
     public async Task<ActionResult<UserAuthenticationResponse>> Authenticate([FromBody] UserLoginRequest model)

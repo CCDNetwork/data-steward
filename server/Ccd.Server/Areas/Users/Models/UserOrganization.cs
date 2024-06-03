@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Ccd.Server.Organizations;
 
 namespace Ccd.Server.Users;
@@ -22,4 +25,7 @@ public class UserOrganization
 
     [Required]
     public string Role { get; set; }
+
+    [Required, Column(TypeName = "jsonb")]
+    public List<string> Permissions { get; set; }
 }

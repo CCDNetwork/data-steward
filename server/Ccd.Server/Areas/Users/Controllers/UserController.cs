@@ -5,6 +5,7 @@ using Ccd.Server.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Data;
 using Ccd.Server.Areas.Users.Controllers.ControllerModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Users;
 
@@ -67,7 +68,7 @@ public class UserController : ControllerBaseExtended
         user.ActivatedAt = _dateTimeProvider.UtcNow;
 
         user = await _userService.AddUser(user);
-        await _userService.SetOrganizationRole(user.Id, model.OrganizationId, UserRole.User);
+        await _userService.SetOrganizationRole(user.Id, model.OrganizationId, UserRole.User, model.Permissions);
 
         var result = await _userService.GetUserApi(model.OrganizationId, user.Id);
 
@@ -82,6 +83,10 @@ public class UserController : ControllerBaseExtended
     )
     {
         var user = await _userService.GetUserById(id) ?? throw new NotFoundException();
+        var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(
+            e => e.UserId == user.Id && e.OrganizationId == this.OrganizationId
+        ) ?? throw new NotFoundException();
+        userOrganization.Permissions = model.Permissions;
 
         _mapper.Map(model, user);
 

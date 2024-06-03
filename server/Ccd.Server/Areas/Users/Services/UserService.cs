@@ -23,7 +23,8 @@ public class UserService
         $@"
              SELECT DISTINCT ON (u.id)
                  u.*,
-                 uo.role
+                 uo.role,
+                 uo.permissions
              FROM
                  ""user"" u
              LEFT JOIN
@@ -101,7 +102,7 @@ public class UserService
         await _context.SaveChangesAsync();
     }
 
-    public async Task SetOrganizationRole(Guid userId, Guid organizationId, string role)
+    public async Task SetOrganizationRole(Guid userId, Guid organizationId, string role, List<string> permissions)
     {
         var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(
             e => e.UserId == userId && e.OrganizationId == organizationId
@@ -113,7 +114,8 @@ public class UserService
             {
                 UserId = userId,
                 OrganizationId = organizationId,
-                Role = role
+                Role = role,
+                Permissions = permissions
             };
 
             _context.UserOrganizations.Add(userOrganization);
@@ -121,6 +123,7 @@ public class UserService
         else
         {
             userOrganization.Role = role;
+            userOrganization.Permissions = permissions;
             _context.UserOrganizations.Update(userOrganization);
         }
 

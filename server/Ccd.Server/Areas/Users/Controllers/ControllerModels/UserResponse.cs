@@ -17,5 +17,6 @@ public class UserResponse
     public string Role { get; set; }
     public string Language { get; set; } = "en";
     public List<OrganizationResponse> Organizations { get; set; }
-    
+    public List<string> Permissions { get; set; }
+
 }

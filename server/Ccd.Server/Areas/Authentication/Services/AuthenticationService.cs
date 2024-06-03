@@ -93,7 +93,7 @@ public class AuthenticationService
 
         await _userService.AddUser(user);
 
-        await _userService.SetOrganizationRole(user.Id, organization.Id, model.Role);
+        await _userService.SetOrganizationRole(user.Id, organization.Id, model.Role, []);
 
         return await generateAuthenticationResponse(user);
     }

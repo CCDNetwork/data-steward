@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ccd.Server.Users;
 
@@ -11,6 +12,8 @@ public class UserUpdateRequest
     [Required] public string LastName { get; set; }
 
     public string Role { get; set; }
-    
+
+    [Required] public List<string> Permissions { get; set; }
+
     [Required] public string Language { get; set; } = "en";
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Ccd.Server.Users;
@@ -20,4 +21,6 @@ public class UserAddRequest
 
     [Required]
     public Guid OrganizationId { get; set; }
+
+    public List<string> Permissions { get; set; }
 }
