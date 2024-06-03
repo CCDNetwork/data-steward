@@ -109,6 +109,15 @@ public class UserController : ControllerBaseExtended
         var user = await _userService.GetUserById(id) ?? throw new NotFoundException();
         model.Patch(user);
 
+        if (model.Permissions != null)
+        {
+            var userTenant = await _context.UserOrganizations.FirstOrDefaultAsync(
+                e => e.UserId == user.Id && e.OrganizationId == this.OrganizationId
+            ) ?? throw new NotFoundException();
+            userTenant.Permissions = model.Permissions;
+            _context.UserOrganizations.Update(userTenant);
+        }
+
         if (model.Password != null)
         {
             user.Password = AuthenticationHelper.HashPassword(user, model.Password);
