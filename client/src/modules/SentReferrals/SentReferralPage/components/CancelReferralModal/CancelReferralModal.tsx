@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useIdFromParams } from '@/helpers/common';
 import { useReferralMutation } from '@/services/referrals/api';
+import { ReferralStatus } from '@/services/referrals/const';
 
 export const CancelReferralModal = () => {
   const { id: referralId } = useIdFromParams();
@@ -20,7 +21,7 @@ export const CancelReferralModal = () => {
 
   const onConfirm = async () => {
     try {
-      await patchReferral.mutateAsync({ referralId, data: { status: 'cancelled' } });
+      await patchReferral.mutateAsync({ referralId, data: { status: ReferralStatus.Cancelled } });
       toast({
         title: 'Success!',
         variant: 'default',

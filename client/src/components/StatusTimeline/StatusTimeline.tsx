@@ -11,16 +11,16 @@ interface TimelineProps {
 }
 
 export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus }) => {
-  const referralStatusesList = [...Object.keys(ReferralStatus)].filter((i) => {
-    if (currentStatus === 'cancelled') {
-      return i !== 'rejected' && i !== 'enrolled';
+  const referralStatusesList = [...Object.values(ReferralStatus)].filter((i) => {
+    if (currentStatus === ReferralStatus.Cancelled) {
+      return i !== ReferralStatus.Rejected && i !== ReferralStatus.Enrolled;
     }
 
-    if (currentStatus === 'rejected') {
-      return i !== 'cancelled' && i !== 'enrolled';
+    if (currentStatus === ReferralStatus.Rejected) {
+      return i !== ReferralStatus.Cancelled && i !== ReferralStatus.Enrolled;
     }
 
-    return i !== 'rejected' && i !== 'cancelled';
+    return i !== ReferralStatus.Rejected && i !== ReferralStatus.Cancelled;
   });
 
   const currentStatusIndex = referralStatusesList.indexOf(currentStatus);
@@ -33,14 +33,14 @@ export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus }) => {
             <div
               className={`w-8 h-8 rounded-full ${
                 index <= currentStatusIndex
-                  ? status === 'cancelled' || status === 'rejected'
+                  ? status === ReferralStatus.Cancelled || status === ReferralStatus.Rejected
                     ? 'bg-red-600'
                     : 'bg-green-600'
                   : 'bg-muted-foreground'
               } flex relative items-center justify-center`}
             >
               {index <= currentStatusIndex ? (
-                status === 'cancelled' || status === 'rejected' ? (
+                status === ReferralStatus.Cancelled || status === ReferralStatus.Rejected ? (
                   <XCircleIcon className="text-white/80" />
                 ) : (
                   <CheckCircle2 className="text-white/80" />
@@ -51,8 +51,17 @@ export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus }) => {
               <p
                 className={cn(
                   'absolute uppercase text-[10px] top-9 font-medium tracking-tighter text-muted-foreground',
-                  { 'text-green-600': index <= currentStatusIndex && status !== 'cancelled' && status !== 'rejected' },
-                  { 'text-red-600': (status == 'cancelled' || status === 'rejected') && currentStatusIndex === index },
+                  {
+                    'text-green-600':
+                      index <= currentStatusIndex &&
+                      status !== ReferralStatus.Cancelled &&
+                      status !== ReferralStatus.Rejected,
+                  },
+                  {
+                    'text-red-600':
+                      (status == ReferralStatus.Cancelled || status === ReferralStatus.Rejected) &&
+                      currentStatusIndex === index,
+                  },
                 )}
               >
                 {status}
@@ -61,7 +70,7 @@ export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus }) => {
           </div>
           {index < referralStatusesList.length - 1 && (
             <Separator
-              className={cn('w-10 border-green-600/80 rounded-xl border', {
+              className={cn('w-10 border-muted-foreground/60 rounded-xl border', {
                 'border-border': index >= currentStatusIndex,
               })}
             />

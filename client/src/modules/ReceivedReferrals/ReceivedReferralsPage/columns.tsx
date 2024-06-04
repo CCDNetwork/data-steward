@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Referral } from '@/services/referrals';
 import { shortenId } from '@/helpers/common';
 import { cn } from '@/helpers/utils';
+import { ReferralStatus } from '@/services/referrals/const';
 
 export const columns = (
   setReceivedReferralToDelete: React.Dispatch<React.SetStateAction<Referral | null>>,
@@ -49,10 +50,10 @@ export const columns = (
       return (
         <Badge
           className={cn('bg-primary capitalize', {
-            'bg-yellow-500 hover:bg-yellow-500': status === 'enrolled',
-            'bg-green-600 hover:bg-green-600': status === 'accepted',
-            'bg-orange-500 hover:bg-orange-500': status === 'cancelled',
-            'bg-red-600 hover:bg-red-600': status === 'rejected',
+            'bg-yellow-500 hover:bg-yellow-500': status === ReferralStatus.Enrolled,
+            'bg-green-600 hover:bg-green-600': status === ReferralStatus.Accepted,
+            'bg-orange-500 hover:bg-orange-500': status === ReferralStatus.Cancelled,
+            'bg-red-600 hover:bg-red-600': status === ReferralStatus.Rejected,
           })}
         >
           {status}

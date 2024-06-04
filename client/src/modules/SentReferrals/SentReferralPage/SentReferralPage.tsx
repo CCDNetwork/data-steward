@@ -25,6 +25,7 @@ import { CancelReferralModal } from './components/CancelReferralModal';
 import { dataToSentReferralFormData } from './form-transformation';
 import { SentReferralFormData, SentReferralFormSchema } from './validations';
 import { defaultSentReferralFormFormValues } from './const';
+import { ReferralStatus } from '@/services/referrals/const';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
@@ -109,7 +110,7 @@ export const SentReferralPage = () => {
             >
               Edit case
             </Button>
-            {sentReferralData?.status !== 'cancelled' && <CancelReferralModal />}
+            {sentReferralData?.status !== ReferralStatus.Cancelled && <CancelReferralModal />}
           </div>
         )
       }
@@ -126,7 +127,7 @@ export const SentReferralPage = () => {
                 ) : (
                   <>
                     <div className="px-6 pt-2 pb-6 flex items-center justify-center">
-                      <StatusTimeline currentStatus={sentReferralData?.status ?? 'open'} />
+                      <StatusTimeline currentStatus={sentReferralData?.status ?? ReferralStatus.Open} />
                     </div>
                     <Separator />
                   </>

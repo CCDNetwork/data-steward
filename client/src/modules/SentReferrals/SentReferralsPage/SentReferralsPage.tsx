@@ -119,7 +119,7 @@ export const SentReferralsPage = () => {
               filterName="status[in]"
               setCurrentFilters={setSentReferralsFilters}
               title="Status"
-              options={Object.entries(ReferralStatus).map(([value, label]) => ({ label, value }))}
+              options={Object.entries(ReferralStatus).map(([label, value]) => ({ value, label }))}
             />
             <FilterDropdown
               currentFilters={sentReferralsFilters}

@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/helpers/utils';
 import { toast } from '@/components/ui/use-toast';
+import { ReferralStatus } from '@/services/referrals/const';
 
 export const ReceivedReferralPage = () => {
   const { id: receivedReferralId } = useIdFromParams();
@@ -54,7 +55,7 @@ export const ReceivedReferralPage = () => {
       preferredMethodOfContact: receivedReferralData?.methodOfContact || 'N/A',
       beneficiaryConsent: receivedReferralData?.consent || false,
       contactDetails: receivedReferralData?.contactDetails || 'N/A',
-      status: receivedReferralData?.status || 'open',
+      status: receivedReferralData?.status || ReferralStatus.Open,
       files: receivedReferralData?.files || [],
     }),
     [receivedReferralData],
