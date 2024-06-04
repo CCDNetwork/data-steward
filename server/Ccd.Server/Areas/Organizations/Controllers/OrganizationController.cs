@@ -21,7 +21,7 @@ public class OrganizationController : ControllerBaseExtended
     }
 
     [HttpGet]
-    [PermissionLevel(UserRole.Admin)]
+    [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<PagedApiResponse<OrganizationResponse>>> GetAll(
         [FromQuery] RequestParameters requestParams
     )
