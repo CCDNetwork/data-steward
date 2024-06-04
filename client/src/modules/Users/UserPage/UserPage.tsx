@@ -7,16 +7,18 @@ import { useUser, useUserMutation } from '@/services/users/api';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { APP_ROUTE } from '@/helpers/constants';
+import { Checkbox } from '@/components/ui/checkbox';
+import { UserRole } from '@/services/users';
 // import { AsyncSelect } from '@/components/AsyncSelect';
 // import { useOrganizationsInfinite } from '@/services/organizations/api';
 
 import { dataToUserEditFormData } from './form-transformation';
 import { defaultUserEditFormFormValues } from './const';
 import { UserEditFormData, UserEditFormSchema } from './validations';
-import { Card, CardContent } from '@/components/ui/card';
-import { APP_ROUTE } from '@/helpers/constants';
 
 export const UserPage = () => {
   const { id: userId } = useIdFromParams();
@@ -29,7 +31,9 @@ export const UserPage = () => {
     resolver: zodResolver(UserEditFormSchema),
   });
 
-  const { control, formState, handleSubmit, reset } = form;
+  const { control, formState, handleSubmit, reset, watch, setValue } = form;
+
+  const currentFormPermissions = watch('permissions');
 
   useEffect(() => {
     if (userData) {
@@ -55,6 +59,16 @@ export const UserPage = () => {
     }
   });
 
+  const onPermissionClick = (permission: string) => {
+    if (currentFormPermissions?.includes(permission)) {
+      const filteredFormPermissions = currentFormPermissions?.filter((i) => i !== permission);
+      setValue('permissions', filteredFormPermissions);
+      return;
+    }
+
+    setValue('permissions', [...currentFormPermissions, permission]);
+  };
+
   return (
     <PageContainer
       pageTitle="User"
@@ -69,7 +83,7 @@ export const UserPage = () => {
           type="submit"
           onClick={onSubmit}
           isLoading={patchUser.isLoading}
-          disabled={formState.isSubmitting || patchUser.isLoading || !formState.isDirty}
+          disabled={formState.isSubmitting || patchUser.isLoading}
         >
           Save
         </Button>
@@ -129,6 +143,33 @@ export const UserPage = () => {
                       </FormItem>
                     )}
                   />
+                  {userData?.role === UserRole.User && (
+                    <div className="flex flex-col gap-3">
+                      <div className="text-sm font-medium leading-none">Permissions</div>
+                      <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <Checkbox
+                          className="shadow-none"
+                          checked={currentFormPermissions?.includes('deduplication')}
+                          onCheckedChange={() => onPermissionClick('deduplication')}
+                        />
+                        <div className="space-y-1 leading-3">
+                          <FormLabel>Deduplication</FormLabel>
+                          <FormDescription>User can use deduplication.</FormDescription>
+                        </div>
+                      </div>
+                      <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <Checkbox
+                          className="shadow-none"
+                          checked={currentFormPermissions?.includes('referral')}
+                          onCheckedChange={() => onPermissionClick('referral')}
+                        />
+                        <div className="space-y-1 leading-3">
+                          <FormLabel>Referrals</FormLabel>
+                          <FormDescription>User can use referrals.</FormDescription>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <FormField
                     control={control}
                     name="password"

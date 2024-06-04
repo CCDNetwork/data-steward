@@ -8,5 +8,6 @@ export const dataToUserEditFormData = (data: User): UserEditFormData => {
     firstName: data.firstName,
     lastName: data.lastName,
     organization: data.organizations[0],
+    permissions: data.permissions,
   };
 };

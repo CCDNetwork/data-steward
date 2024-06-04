@@ -1,5 +1,5 @@
 import { NavigationItem } from '@/helpers/types';
-import { UserRole } from '@/services/users';
+import { UserPermission } from '@/services/users';
 import {
   BookCopyIcon,
   BookOpenTextIcon,
@@ -44,73 +44,66 @@ export enum PAGE_TYPE {
 export const NAVIGATION_ITEMS: NavigationItem[] = [
   {
     categoryName: 'Deduplication',
-    allowedRoles: [UserRole.User, UserRole.Admin],
+    userPermissions: [UserPermission.Deduplication],
     routes: [
       {
         name: 'Manage cases',
         to: APP_ROUTE.Deduplication,
-        allowedRoles: [UserRole.User, UserRole.Admin],
+        userPermissions: [UserPermission.Deduplication],
         icon: BookCopyIcon,
       },
       {
         name: 'Beneficiary List',
         to: APP_ROUTE.BeneficiaryList,
-        allowedRoles: [UserRole.User, UserRole.Admin],
-        disabled: true,
         icon: BookUserIcon,
+        userPermissions: [UserPermission.Deduplication],
       },
-      { name: 'Templates', to: APP_ROUTE.Templates, allowedRoles: [UserRole.User], icon: FilesIcon },
+      {
+        name: 'Templates',
+        to: APP_ROUTE.Templates,
+        icon: FilesIcon,
+        userPermissions: [UserPermission.Deduplication],
+      },
     ],
   },
   {
     categoryName: 'Referrals',
-    allowedRoles: [UserRole.User, UserRole.Admin],
+    userPermissions: [UserPermission.Referrals],
     routes: [
       {
         name: 'Received',
         to: APP_ROUTE.ReceivedReferrals,
-        allowedRoles: [UserRole.User, UserRole.Admin],
-        disabled: true,
         icon: LogInIcon,
+        userPermissions: [UserPermission.Referrals],
       },
       {
         name: 'Sent',
         to: APP_ROUTE.SentReferrals,
-        allowedRoles: [UserRole.User, UserRole.Admin],
-        disabled: true,
         icon: LogOutIcon,
+        userPermissions: [UserPermission.Referrals],
       },
       {
         name: 'Service List',
         to: APP_ROUTE.ServiceList,
-        allowedRoles: [UserRole.User, UserRole.Admin],
-        disabled: true,
         icon: HeartHandshakeIcon,
+        userPermissions: [UserPermission.Referrals],
       },
     ],
   },
   {
     categoryName: 'Admin',
-    allowedRoles: [UserRole.Admin],
     routes: [
-      { name: 'Organizations', to: APP_ROUTE.Organizations, allowedRoles: [UserRole.Admin], icon: Building2Icon },
-      { name: 'Users', to: APP_ROUTE.Users, allowedRoles: [UserRole.Admin], icon: UsersIcon },
-      // {
-      //   name: 'Attributes',
-      //   to: APP_ROUTE.Attributes,
-      //   allowedRoles: [UserRole.Admin],
-      //   icon: TextSelectIcon,
-      // },
+      { name: 'Organizations', to: APP_ROUTE.Organizations, icon: Building2Icon },
+      { name: 'Users', to: APP_ROUTE.Users, icon: UsersIcon },
       {
         name: 'Rules',
         to: APP_ROUTE.Rules,
-        allowedRoles: [UserRole.Admin],
+
         icon: TextSelectIcon,
       },
       {
         name: 'Handbook entries',
         to: APP_ROUTE.Handbook,
-        allowedRoles: [UserRole.Admin],
         icon: BookOpenTextIcon,
       },
     ],

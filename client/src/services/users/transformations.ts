@@ -12,6 +12,7 @@ export const resToUser = (res: any): User => {
     role: res.role ?? '',
     language: res.language ?? '',
     organizations: res.organizations ? res.organizations.map(resToOrganization) : [],
+    permissions: res.permissions ?? [],
   };
 };
 
@@ -21,6 +22,7 @@ export const userToReq = (data: any): Omit<User, 'id'> => {
     firstName: data.firstName,
     lastName: data.lastName,
     organizationId: data.organization?.id,
+    permissions: data.permissions,
   };
 
   if (data.password) {

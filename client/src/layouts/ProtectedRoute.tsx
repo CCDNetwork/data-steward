@@ -1,13 +1,13 @@
 import { ReactNode } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
+import { UserPermission, UserRole } from '@/services/users';
 import { useAuth } from '@/providers/GlobalProvider';
-import { UserRole } from '@/services/users';
 
-export const ProtectedRoute = ({ children = <Outlet />, rolesAllowed }: Props) => {
+export const ProtectedRoute = ({ children = <Outlet />, userPermissions }: Props) => {
   const { user } = useAuth();
 
-  if (!(rolesAllowed.length === 0 || rolesAllowed.includes(user?.role as UserRole))) {
+  if (user.role === UserRole.User && !user.permissions.some((p) => userPermissions?.includes(p as UserPermission))) {
     return <Navigate to="/permission-denied" replace />;
   }
 
@@ -16,5 +16,5 @@ export const ProtectedRoute = ({ children = <Outlet />, rolesAllowed }: Props) =
 
 type Props = {
   children?: ReactNode;
-  rolesAllowed: UserRole[];
+  userPermissions?: UserPermission[];
 };

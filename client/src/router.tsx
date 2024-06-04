@@ -5,7 +5,7 @@ import { GlobalProvider } from './providers/GlobalProvider';
 import { PrivateLayout } from './layouts/PrivateLayout';
 import { RoleBasedIndexRoute } from './layouts/RoleBasedIndexRoute';
 import { ProtectedRoute } from './layouts/ProtectedRoute';
-import { UserRole } from './services/users';
+import { UserPermission } from './services/users';
 import { APP_ROUTE } from './helpers/constants';
 import { BeneficiaryListPage } from './modules/BeneficiaryListPage';
 import { DeduplicationPage } from './modules/DeduplicationPage';
@@ -31,15 +31,33 @@ export const router = createBrowserRouter(
       <Route path="/" element={<PrivateLayout />}>
         <Route index element={<RoleBasedIndexRoute />} />
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
-          <Route path={APP_ROUTE.BeneficiaryList} element={<BeneficiaryListPage />} />
-        </Route>
+        {/* DEDUPLICATION */}
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
+        <Route element={<ProtectedRoute userPermissions={[UserPermission.Deduplication]} />}>
           <Route path={APP_ROUTE.Deduplication} element={<DeduplicationPage />} />
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
+        <Route element={<ProtectedRoute userPermissions={[UserPermission.Deduplication]} />}>
+          <Route path={APP_ROUTE.BeneficiaryList} element={<BeneficiaryListPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute userPermissions={[UserPermission.Deduplication]} />}>
+          <Route path={APP_ROUTE.Templates} element={<TemplatesProvider />}>
+            <Route index element={<TemplatesPage />} />
+            <Route path=":id" element={<DynamicRoute component={<TemplatePage />} />} />
+          </Route>
+        </Route>
+
+        {/* REFERRALS */}
+
+        <Route element={<ProtectedRoute userPermissions={[UserPermission.Referrals]} />}>
+          <Route path={APP_ROUTE.ReceivedReferrals} element={<ReceivedReferralsProvider />}>
+            <Route index element={<ReceivedReferralsPage />} />
+            <Route path=":id" element={<DynamicRoute component={<ReceivedReferralPage />} />} />
+          </Route>
+        </Route>
+
+        <Route element={<ProtectedRoute userPermissions={[UserPermission.Referrals]} />}>
           <Route path={APP_ROUTE.SentReferrals} element={<SentReferralsProvider />}>
             <Route index element={<SentReferralsPage />} />
             <Route path=":id" element={<DynamicRoute component={<SentReferralPage />} />} />
@@ -47,51 +65,38 @@ export const router = createBrowserRouter(
           </Route>
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
-          <Route path={APP_ROUTE.ReceivedReferrals} element={<ReceivedReferralsProvider />}>
-            <Route index element={<ReceivedReferralsPage />} />
-            <Route path=":id" element={<DynamicRoute component={<ReceivedReferralPage />} />} />
-          </Route>
-        </Route>
+        {/* ADMIN */}
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+        <Route element={<ProtectedRoute />}>
           <Route path={APP_ROUTE.Organizations} element={<OrganizationsProvider />}>
             <Route index element={<OrganizationsPage />} />
             <Route path=":id" element={<DynamicRoute component={<OrganizationPage />} />} />
           </Route>
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+        <Route element={<ProtectedRoute />}>
           <Route path={APP_ROUTE.Users} element={<UsersProvider />}>
             <Route index element={<UsersPage />} />
             <Route path=":id" element={<DynamicRoute component={<UserPage />} />} />
           </Route>
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
-          <Route path={APP_ROUTE.Templates} element={<TemplatesProvider />}>
-            <Route index element={<TemplatesPage />} />
-            <Route path=":id" element={<DynamicRoute component={<TemplatePage />} />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path={APP_ROUTE.Rules} element={<RulesProvider />}>
+            <Route index element={<RulesPage />} />
           </Route>
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
+        <Route element={<ProtectedRoute />}>
           <Route path={APP_ROUTE.Handbook} element={<HandbookProvider />}>
             <Route index element={<HandbookPage />} />
             <Route path=":id" element={<DynamicRoute component={<SingleHandbookPage />} />} />
           </Route>
         </Route>
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.User, UserRole.Admin]} />}>
-          <Route path={APP_ROUTE.UserHandbookList} element={<UserHandbookListPage />} />
-        </Route>
+        {/* OTHER */}
 
-        <Route element={<ProtectedRoute rolesAllowed={[UserRole.Admin]} />}>
-          <Route path={APP_ROUTE.Rules} element={<RulesProvider />}>
-            <Route index element={<RulesPage />} />
-          </Route>
-        </Route>
-
+        <Route path={APP_ROUTE.UserHandbookList} element={<UserHandbookListPage />} />
         <Route path={APP_ROUTE.MyProfile} element={<DynamicRoute component={<MyProfilePage />} />} />
       </Route>
 

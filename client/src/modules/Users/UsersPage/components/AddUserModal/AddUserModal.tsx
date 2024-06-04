@@ -14,13 +14,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useUserMutation } from '@/services/users/api';
 import { toast } from '@/components/ui/use-toast';
 import { AsyncSelect } from '@/components/AsyncSelect';
 import { useOrganizationsInfinite } from '@/services/organizations/api';
 
 import { AddUserModalForm, AddUserModalFormSchema } from './validation';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export const AddUserModal = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -32,12 +33,15 @@ export const AddUserModal = () => {
       password: '',
       confirmPassword: '',
       organization: undefined,
+      permissions: ['deduplication', 'referral'],
     },
     mode: 'onSubmit',
     resolver: zodResolver(AddUserModalFormSchema),
   });
 
-  const { control, handleSubmit, reset } = form;
+  const { control, handleSubmit, reset, watch, setValue } = form;
+
+  const currentFormPermissions = watch('permissions');
 
   const { addUser } = useUserMutation();
 
@@ -58,6 +62,16 @@ export const AddUserModal = () => {
       });
     }
   });
+
+  const onPermissionClick = (permission: string) => {
+    if (currentFormPermissions?.includes(permission)) {
+      const filteredFormPermissions = currentFormPermissions?.filter((i) => i !== permission);
+      setValue('permissions', filteredFormPermissions);
+      return;
+    }
+
+    setValue('permissions', [...currentFormPermissions, permission]);
+  };
 
   const onOpenChange = () => {
     setOpen((old) => !old);
@@ -121,6 +135,31 @@ export const AddUserModal = () => {
                   </FormItem>
                 )}
               />
+              <div className="flex flex-col gap-3">
+                <div className="text-sm font-medium leading-none">Permissions</div>
+                <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <Checkbox
+                    className="shadow-none"
+                    checked={currentFormPermissions?.includes('deduplication')}
+                    onCheckedChange={() => onPermissionClick('deduplication')}
+                  />
+                  <div className="space-y-1 leading-3">
+                    <FormLabel>Deduplication</FormLabel>
+                    <FormDescription>User can use deduplication.</FormDescription>
+                  </div>
+                </div>
+                <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <Checkbox
+                    className="shadow-none"
+                    checked={currentFormPermissions?.includes('referral')}
+                    onCheckedChange={() => onPermissionClick('referral')}
+                  />
+                  <div className="space-y-1 leading-3">
+                    <FormLabel>Referrals</FormLabel>
+                    <FormDescription>User can use referrals.</FormDescription>
+                  </div>
+                </div>
+              </div>
               <AsyncSelect
                 label="Organization"
                 name="organization"

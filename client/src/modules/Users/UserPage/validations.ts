@@ -27,6 +27,7 @@ export const UserEditFormSchema = z
       ),
     confirmPassword: z.string().optional(),
     organization: OrganizationSchema,
+    permissions: z.array(z.string()).default([]),
   })
   .refine(
     (data) => {

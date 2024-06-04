@@ -18,8 +18,14 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
 
   const roleBasedNavigationItems = useMemo(() => {
-    return NAVIGATION_ITEMS.filter((navItem) => navItem.allowedRoles.includes(user.role));
-  }, [user.role]);
+    if (user.role === UserRole.User) {
+      return NAVIGATION_ITEMS.filter((permissions) =>
+        permissions?.userPermissions?.some((p) => user.permissions.includes(p)),
+      );
+    }
+
+    return NAVIGATION_ITEMS;
+  }, [user.permissions, user.role]);
 
   if (!user.id || !isLoggedIn) {
     return <Navigate to={APP_ROUTE.SignIn} />;

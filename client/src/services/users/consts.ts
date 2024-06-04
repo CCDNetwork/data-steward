@@ -1,9 +1,13 @@
 import { User } from '@/services/users';
 
 export enum UserRole {
-  Owner = 'owner',
   User = 'user',
   Admin = 'admin',
+}
+
+export enum UserPermission {
+  Deduplication = 'deduplication',
+  Referrals = 'referral',
 }
 
 export const initialUser: User = {
@@ -16,4 +20,5 @@ export const initialUser: User = {
   role: '',
   language: '',
   organizations: [],
+  permissions: [],
 };

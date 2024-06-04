@@ -5,4 +5,5 @@ export const defaultUserEditFormFormValues = {
   password: '',
   confirmPassword: '',
   // organization: null,
+  permissions: [],
 };

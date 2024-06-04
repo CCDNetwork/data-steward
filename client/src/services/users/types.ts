@@ -10,6 +10,7 @@ export interface User {
   role: string;
   language: string;
   organizations: Organization[];
+  permissions: string[];
 }
 
 export interface UserProfileRequestPayload {
