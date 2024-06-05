@@ -7,7 +7,7 @@ import { resToStorageFile } from '../storage';
 export const resToReferral = (res: any): Referral => {
   return {
     id: res.id,
-    focalPoint: res.focalPoint ?? '',
+    focalPoint: res.focalPoint ? resToUser(res.focalPoint) : null,
     consent: res.consent ?? false,
     familyName: res.familyName ?? '',
     firstName: res.firstName ?? '',
@@ -30,7 +30,7 @@ export const resToReferral = (res: any): Referral => {
 
 export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
   const req: any = {
-    focalPoint: data.focalPoint,
+    focalPointId: data.focalPoint?.id ?? undefined,
     consent: data.consent,
     familyName: data.familyName,
     firstName: data.firstName,
@@ -48,7 +48,7 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
 
 export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
   const req: any = {
-    focalPoint: data.focalPoint,
+    focalPointId: data.focalPoint?.id,
     consent: data.consent,
     familyName: data.familyName,
     firstName: data.firstName,

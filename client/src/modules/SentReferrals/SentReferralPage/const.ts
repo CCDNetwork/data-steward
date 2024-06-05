@@ -1,5 +1,5 @@
 export const defaultSentReferralFormFormValues = {
-  focalPoint: '',
+  focalPoint: undefined,
   consent: false,
   familyName: '',
   firstName: '',

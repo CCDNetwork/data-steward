@@ -20,12 +20,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { FilesDropzone } from '@/components/FilesDropzone';
 import { StatusTimeline } from '@/components/StatusTimeline';
+import { ReferralStatus } from '@/services/referrals/const';
 
 import { CancelReferralModal } from './components/CancelReferralModal';
 import { dataToSentReferralFormData } from './form-transformation';
 import { SentReferralFormData, SentReferralFormSchema } from './validations';
 import { defaultSentReferralFormFormValues } from './const';
-import { ReferralStatus } from '@/services/referrals/const';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
@@ -40,7 +40,9 @@ export const SentReferralPage = () => {
     resolver: zodResolver(SentReferralFormSchema),
   });
 
-  const { control, formState, handleSubmit, reset } = form;
+  const { control, formState, handleSubmit, reset, watch } = form;
+
+  const referralAssignedFocalPoint = watch('focalPoint');
 
   useEffect(() => {
     if (sentReferralData) {
@@ -110,7 +112,7 @@ export const SentReferralPage = () => {
             >
               Edit case
             </Button>
-            {sentReferralData?.status !== ReferralStatus.Cancelled && <CancelReferralModal />}
+            {sentReferralData?.status !== ReferralStatus.Withdrawn && <CancelReferralModal />}
           </div>
         )
       }
@@ -138,19 +140,18 @@ export const SentReferralPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-4">
-                  <FormField
-                    control={control}
-                    name="focalPoint"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Focal point</FormLabel>
-                        <FormControl>
-                          <Input id="focalPoint" placeholder="Focal point" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {!isCreate && (
+                    <div className="sm:col-span-1">
+                      <dt className="text-sm font-medium leading-6">Focal point</dt>
+                      <dd className="mt-1 text-sm leading sm:mt-2">
+                        {referralAssignedFocalPoint ? (
+                          `${referralAssignedFocalPoint?.firstName ?? ''} ${referralAssignedFocalPoint.lastName ?? ''}`
+                        ) : (
+                          <p className="italic text-primary/80">Unassigned</p>
+                        )}
+                      </dd>
+                    </div>
+                  )}
                   <AsyncSelect
                     label="Receiving organization"
                     name="organizationReferredTo"

@@ -21,7 +21,7 @@ export const CancelReferralModal = () => {
 
   const onConfirm = async () => {
     try {
-      await patchReferral.mutateAsync({ referralId, data: { status: ReferralStatus.Cancelled } });
+      await patchReferral.mutateAsync({ referralId, data: { status: ReferralStatus.Withdrawn } });
       toast({
         title: 'Success!',
         variant: 'default',

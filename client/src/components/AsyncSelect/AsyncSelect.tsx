@@ -18,13 +18,14 @@ export const AsyncSelect = <T,>({
   labelKey,
   required,
   disabled,
+  queryFilters,
   getOptionLabel = (option) => option[labelKey] as string,
   useInfiniteQueryFunction,
   onChange,
   initialPagination,
   useValue = false,
   defaultValue = null,
-}: Select2Props<T>) => {
+}: AsyncSelectProps<T>) => {
   const [wasOpened, setWasOpened] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -37,6 +38,7 @@ export const AsyncSelect = <T,>({
       pageSize: 25,
       page: 1,
       search: debouncedSearch,
+      queryFilters,
     },
     wasOpened,
   );
@@ -153,7 +155,7 @@ export const AsyncSelect = <T,>({
   );
 };
 
-export type Select2Props<T> = {
+export type AsyncSelectProps<T> = {
   control: Control<any, any>;
   name: string;
   multiple?: boolean;
@@ -174,4 +176,5 @@ export type Select2Props<T> = {
   initialPagination?: Partial<PaginationRequest>;
   useValue?: boolean;
   defaultValue?: any;
+  queryFilters?: Record<string, string>;
 };

@@ -82,7 +82,10 @@ export const ReceivedReferralsPage = () => {
               filterName="status[in]"
               setCurrentFilters={setReceivedReferralsFilters}
               title="Status"
-              options={Object.entries(ReferralStatus).map(([label, value]) => ({ value, label }))}
+              options={Object.entries(ReferralStatus).map(([label, value]) => ({
+                value,
+                label: label === 'InEvaluation' ? 'In Evaluation' : label,
+              }))}
             />
             <FilterDropdown
               currentFilters={receivedReferralsFilters}

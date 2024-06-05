@@ -5,7 +5,7 @@ import { StorageFile } from '../storage';
 
 export interface Referral {
   id: string;
-  focalPoint: string;
+  focalPoint: User | null;
   consent: boolean;
   familyName: string;
   firstName: string;

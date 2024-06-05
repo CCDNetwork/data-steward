@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { PaperclipIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 
+import { useUsersInfinite } from '@/services/users/api';
 import { PageContainer } from '@/components/PageContainer';
 import { createDownloadLink, shortenId, useIdFromParams } from '@/helpers/common';
 import { Button } from '@/components/ui/button';
@@ -13,14 +15,25 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/helpers/utils';
 import { toast } from '@/components/ui/use-toast';
 import { ReferralStatus } from '@/services/referrals/const';
+import { AsyncSelect } from '@/components/AsyncSelect';
+import { useAuth } from '@/providers/GlobalProvider';
+import { User } from '@/services/users';
 
 export const ReceivedReferralPage = () => {
+  const { organization } = useAuth();
   const { id: receivedReferralId } = useIdFromParams();
-  const [referralAction, setReferralAction] = useState<'rejected' | 'accepted' | undefined>(undefined);
+  const [referralAction, setReferralAction] = useState<'rejected' | 'enrolled' | undefined>(undefined);
+  const [isUserAssigning, setIsUserAssigning] = useState<boolean>(false);
 
   const { data: receivedReferralData, isLoading: queryLoading } = useReferral({
     id: receivedReferralId,
     isCreate: false,
+  });
+
+  const { control, handleSubmit } = useForm<{ focalPoint: User | null }>({
+    defaultValues: {
+      focalPoint: null,
+    },
   });
 
   const { patchReferral } = useReferralMutation();
@@ -46,9 +59,35 @@ export const ReceivedReferralPage = () => {
     setReferralAction(undefined);
   };
 
+  const onAssignFocalPointClick = handleSubmit(async ({ focalPoint }) => {
+    if (!focalPoint) {
+      return;
+    }
+
+    setIsUserAssigning(true);
+    try {
+      await patchReferral.mutateAsync({
+        data: { focalPoint, status: ReferralStatus.InEvaluation },
+        referralId: receivedReferralId,
+      });
+      toast({
+        title: 'Success!',
+        variant: 'default',
+        description: `${focalPoint.firstName ?? ''} ${focalPoint?.lastName ?? ''} successfully assigned as focal point.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong!',
+        variant: 'destructive',
+        description: error.response?.data?.errorMessage || `An error has occured while assigning focal point.`,
+      });
+    }
+    setIsUserAssigning(false);
+  });
+
   const receivingReferral = useMemo(
     () => ({
-      focalPoint: receivedReferralData?.focalPoint || 'N/A',
+      focalPoint: receivedReferralData?.focalPoint || null,
       sendingOrganizationName: receivedReferralData?.organizationReferredTo?.name || 'N/A',
       beneficiaryFirstName: receivedReferralData?.firstName || 'N/A',
       beneficiaryFamilyName: receivedReferralData?.familyName || 'N/A',
@@ -76,9 +115,9 @@ export const ReceivedReferralPage = () => {
         <div className="flex sm:flex-row flex-col sm:gap-4 gap-2">
           <Button
             type="button"
-            onClick={() => onReferralActionClick({ action: 'accepted' })}
-            isLoading={patchReferral.isLoading && referralAction === 'accepted'}
-            disabled={patchReferral.isLoading && referralAction === 'accepted'}
+            onClick={() => onReferralActionClick({ action: 'enrolled' })}
+            isLoading={patchReferral.isLoading && referralAction === 'enrolled'}
+            disabled={patchReferral.isLoading && referralAction === 'enrolled'}
           >
             Accept
           </Button>
@@ -101,15 +140,48 @@ export const ReceivedReferralPage = () => {
           </div>
           <Separator />
           <CardHeader>
+            <CardTitle>Focal Point</CardTitle>
+            <CardDescription>Focal point details</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {receivingReferral.focalPoint ? (
+              <div className="sm:col-span-1">
+                <dt className="text-sm font-medium leading-6">Full name</dt>
+                <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                  {`${receivingReferral.focalPoint.firstName} ${receivedReferralData?.focalPoint?.lastName}`}
+                </dd>
+              </div>
+            ) : (
+              <dl className="sm:w-[80%] w-full">
+                <div className="flex items-end gap-4">
+                  <AsyncSelect
+                    name="focalPoint"
+                    control={control}
+                    useInfiniteQueryFunction={useUsersInfinite}
+                    queryFilters={{ organizationId: organization?.id ?? '' }}
+                    labelKey="firstName"
+                    getOptionLabel={(o) => `${o.firstName} ${o.lastName}`}
+                    valueKey="id"
+                  />
+                  <Button
+                    variant="outline"
+                    isLoading={isUserAssigning}
+                    disabled={isUserAssigning}
+                    onClick={onAssignFocalPointClick}
+                  >
+                    Assign
+                  </Button>
+                </div>
+              </dl>
+            )}
+          </CardContent>
+          <Separator />
+          <CardHeader>
             <CardTitle>Sending Organization Details</CardTitle>
             <CardDescription>Information about the sending organization</CardDescription>
           </CardHeader>
           <CardContent>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium leading-6">Focal point</dt>
-                <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.focalPoint}</dd>
-              </div>
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium leading-6">Sending organization</dt>
                 <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.sendingOrganizationName}</dd>

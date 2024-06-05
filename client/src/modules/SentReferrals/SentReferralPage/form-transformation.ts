@@ -2,10 +2,11 @@ import { Organization } from '@/services/organizations';
 import { Referral } from '@/services/referrals';
 
 import { SentReferralFormData } from './validations';
+import { User } from '@/services/users';
 
 export const dataToSentReferralFormData = (data: Referral): SentReferralFormData => {
   return {
-    focalPoint: data.focalPoint,
+    focalPoint: data.focalPoint as User,
     consent: data.consent,
     familyName: data.familyName,
     firstName: data.firstName,

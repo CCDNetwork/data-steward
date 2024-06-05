@@ -50,13 +50,13 @@ export const columns = (
       return (
         <Badge
           className={cn('bg-primary capitalize', {
-            'bg-yellow-500 hover:bg-yellow-500': status === ReferralStatus.Enrolled,
-            'bg-green-600 hover:bg-green-600': status === ReferralStatus.Accepted,
-            'bg-orange-500 hover:bg-orange-500': status === ReferralStatus.Cancelled,
+            'bg-green-600 hover:bg-green-600': status === ReferralStatus.Enrolled,
+            'bg-yellow-500 hover:bg-yellow-500': status === ReferralStatus.InEvaluation,
+            'bg-orange-500 hover:bg-orange-500': status === ReferralStatus.Withdrawn,
             'bg-red-600 hover:bg-red-600': status === ReferralStatus.Rejected,
           })}
         >
-          {status}
+          {status === ReferralStatus.InEvaluation ? 'In Evaluation' : status}
         </Badge>
       );
     },

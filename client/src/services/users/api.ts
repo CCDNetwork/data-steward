@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
 import { useGlobalErrors } from '@/providers/GlobalProvider';
@@ -86,6 +86,26 @@ export const useUser = ({ id, isCreate }: { id: string; isCreate: boolean }) => 
     enabled: !isCreate,
     onError: () => onSetCollectionNotFound(true),
   });
+};
+
+export const useUsersInfinite = (pagination: PaginationRequest, enabled: boolean) => {
+  return useInfiniteQuery(
+    [QueryKeys.Users, 'infinite', pagination],
+    ({ pageParam = 1 }) => {
+      return fetchUsers({ ...pagination, page: pageParam });
+    },
+    {
+      getNextPageParam: (data) => {
+        if (data.meta.page === data.meta.totalPages) {
+          return undefined;
+        }
+        const nextPage = data.meta.page + 1;
+        return nextPage;
+      },
+      enabled,
+      cacheTime: 20000,
+    },
+  );
 };
 
 //

@@ -1,7 +1,7 @@
 export const ReferralStatus = {
   Open: 'open',
-  Cancelled: 'cancelled',
-  Accepted: 'accepted',
+  Withdrawn: 'withdrawn',
+  InEvaluation: 'inEvaluation',
   Rejected: 'rejected',
   Enrolled: 'enrolled',
 };
