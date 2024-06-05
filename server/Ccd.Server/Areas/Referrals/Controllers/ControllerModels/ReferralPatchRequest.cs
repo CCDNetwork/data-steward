@@ -7,7 +7,7 @@ namespace Ccd.Server.Referrals;
 public class ReferralPatchRequest : PatchRequest
 {
 
-    public string FocalPoint { get; set; }
+    public Guid? FocalPointId { get; set; }
     public bool Consent { get; set; }
     public string FamilyName { get; set; }
     public string FirstName { get; set; }

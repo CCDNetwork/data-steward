@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
+using Ccd.Server.Users;
 
 namespace Ccd.Server.Referrals;
 
@@ -13,7 +14,9 @@ public class Referral : UserChangeTracked
     public Guid Id { get; set; } = IdProvider.NewId();
 
     // FROM EXCEL
-    public string FocalPoint { get; set; }
+    [ForeignKey("User")]
+    public Guid? FocalPointId { get; set; }
+    public User FocalPoint { get; set; }
     public bool Consent { get; set; }
     public string FamilyName { get; set; }
     public string FirstName { get; set; }

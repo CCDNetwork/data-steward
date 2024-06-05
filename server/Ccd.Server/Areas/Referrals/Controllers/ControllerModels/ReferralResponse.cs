@@ -11,7 +11,9 @@ public class ReferralResponse
 {
     public Guid Id { get; set; }
 
-    public string FocalPoint { get; set; }
+    [JsonIgnore]
+    public Guid? FocalPointId { get; set; }
+    public UserResponse FocalPoint { get; set; }
     public bool Consent { get; set; }
     public string FamilyName { get; set; }
     public string FirstName { get; set; }

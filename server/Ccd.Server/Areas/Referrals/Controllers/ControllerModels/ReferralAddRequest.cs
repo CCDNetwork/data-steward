@@ -6,7 +6,7 @@ namespace Ccd.Server.Referrals;
 
 public class ReferralAddRequest
 {
-    [Required, MinLength(1)] public string FocalPoint { get; set; }
+    public Guid? FocalPointId { get; set; }
     [Required] public bool Consent { get; set; }
     [Required, MinLength(1)] public string FamilyName { get; set; }
     [Required, MinLength(1)] public string FirstName { get; set; }

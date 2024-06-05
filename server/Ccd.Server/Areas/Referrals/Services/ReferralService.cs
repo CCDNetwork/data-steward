@@ -113,6 +113,12 @@ public class ReferralService
         referral.OrganizationReferredTo = _mapper.Map<OrganizationResponse>(organizationReffereTo);
         referral.UserCreated = _mapper.Map<UserResponse>(userCreated);
 
+        if (referral.FocalPointId != null)
+        {
+            var userFocalPoint = await _context.Users.FirstOrDefaultAsync(e => e.Id == referral.FocalPointId);
+            referral.FocalPoint = _mapper.Map<UserResponse>(userFocalPoint);
+        }
+
         if (referral.FileIds != null && referral.FileIds.Count > 0)
         {
             referral.Files = await _storageService.GetFilesApiById(referral.FileIds);
