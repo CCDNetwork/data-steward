@@ -39,12 +39,12 @@ public class ReferralStatus
 {
     public const string Open = "open";
     public const string Enrolled = "enrolled";
-    public const string Accepted = "accepted";
-    public const string Cancelled = "cancelled";
+    public const string InEvaluation = "inEvaluation";
+    public const string Withdrawn = "withdrawn";
     public const string Rejected = "rejected";
 
     public static bool IsValid(string status)
     {
-        return status == Open || status == Enrolled || status == Accepted || status == Cancelled || status == Rejected;
+        return status == Open || status == Enrolled || status == InEvaluation || status == Withdrawn || status == Rejected;
     }
 }
