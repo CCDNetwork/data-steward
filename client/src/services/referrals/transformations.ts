@@ -48,7 +48,7 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
 
 export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
   const req: any = {
-    focalPointId: data.focalPoint?.id,
+    focalPointId: data.focalPoint?.id ?? undefined,
     consent: data.consent,
     familyName: data.familyName,
     firstName: data.firstName,

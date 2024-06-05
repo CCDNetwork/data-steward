@@ -73,7 +73,6 @@ export const SentReferralPage = () => {
 
     try {
       await patchReferral.mutateAsync({ data: { ...values, isDraft }, referralId: sentReferralId });
-
       toast({
         title: 'Success!',
         variant: 'default',
@@ -140,7 +139,7 @@ export const SentReferralPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-4">
-                  {!isCreate && (
+                  {!isCreate && !sentReferralData?.isDraft && (
                     <div className="sm:col-span-1">
                       <dt className="text-sm font-medium leading-6">Focal point</dt>
                       <dd className="mt-1 text-sm leading sm:mt-2">

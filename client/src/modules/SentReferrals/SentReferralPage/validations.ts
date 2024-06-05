@@ -15,9 +15,10 @@ const FocalPointSchema = z
       firstName: z.string().min(1, { message: 'Focal Point first name is required' }),
       lastName: z.string().min(1, { message: 'Focal Point last name is required' }),
     },
-    { invalid_type_error: 'Organization is required', required_error: 'Organization is required' },
+    { invalid_type_error: 'Focal point is required', required_error: 'Focal point is required' },
   )
-  .optional();
+  .nullable();
+
 export const SentReferralFormSchema = z.object({
   focalPoint: FocalPointSchema,
   consent: z.boolean(),
