@@ -31,7 +31,7 @@ workflow:
       variables:
         IMAGE_TAG: "pentest"
         REMOTE_URL: "159.69.123.93"
-        API_URL: "https://ss-ccd-pentest-api.initdevelopment.com"
+        API_URL: "https://pentest-ccd-api.initdevelopment.com"
 
 build-client:
   stage: build
