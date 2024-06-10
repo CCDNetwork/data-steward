@@ -50,7 +50,7 @@ export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus }) => {
               )}
               <p
                 className={cn(
-                  'absolute uppercase text-[11px] top-9 font-medium tracking-tighter text-muted-foreground text-nowrap',
+                  'absolute uppercase text-[11px] top-9 font-medium tracking-tighter text-muted-foreground whitespace-nowrap',
                   { 'text-black': status === currentStatus },
                 )}
               >
