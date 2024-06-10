@@ -42,6 +42,8 @@ export const SentReferralPage = () => {
 
   const { control, formState, handleSubmit, reset, watch } = form;
 
+  console.log(formState.errors);
+
   const referralAssignedFocalPoint = watch('focalPoint');
 
   useEffect(() => {

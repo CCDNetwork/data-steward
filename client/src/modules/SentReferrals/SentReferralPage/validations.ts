@@ -17,7 +17,8 @@ const FocalPointSchema = z
     },
     { invalid_type_error: 'Focal point is required', required_error: 'Focal point is required' },
   )
-  .nullable();
+  .nullable()
+  .optional();
 
 export const SentReferralFormSchema = z.object({
   focalPoint: FocalPointSchema,
