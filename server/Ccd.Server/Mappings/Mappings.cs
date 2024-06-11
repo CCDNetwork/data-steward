@@ -40,14 +40,8 @@ public class Mappings : Profile
 
         // Referral mappings
         CreateMap<Referral, ReferralResponse>();
-        CreateMap<ReferralAddRequest, Referral>().ForMember(
-            dest => dest.OrganizationReferredToId,
-            opt => opt.MapFrom(src => src.OrganizationId)
-        );
-        CreateMap<ReferralPatchRequest, Referral>().ForMember(
-            dest => dest.OrganizationReferredToId,
-            opt => opt.MapFrom(src => src.OrganizationId)
-        );
+        CreateMap<ReferralAddRequest, Referral>();
+        CreateMap<ReferralPatchRequest, Referral>();
 
         // Handbook
         CreateMap<Handbook, HandbookResponse>();

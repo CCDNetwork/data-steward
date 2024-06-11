@@ -6,18 +6,63 @@ namespace Ccd.Server.Referrals;
 
 public class ReferralAddRequest
 {
-    public Guid? FocalPointId { get; set; }
-    [Required] public bool Consent { get; set; }
-    [Required, MinLength(1)] public string FamilyName { get; set; }
-    [Required, MinLength(1)] public string FirstName { get; set; }
-    [Required, MinLength(1)] public string MethodOfContact { get; set; }
-    [Required, MinLength(1)] public string ContactDetails { get; set; }
+    // Priority
+    [Required] public bool IsUrgent { get; set; }
+
+    // Receiving organization details
+    [Required] public Guid OrganizationReferredToId { get; set; }
+    public string ServiceCategory { get; set; }
+    public List<Guid> Subactivities { get; set; }
+
+    // MPCA info
+    [Required] public string DisplacementStatus { get; set; }
+    [Required] public string HouseholdSize { get; set; }
+    [Required] public string HouseholdMonthlyIncome { get; set; }
+    public List<string> HouseholdsVulnerabilityCriteria { get; set; }
+
+    // Beneficiary general data
+    [Required] public string FirstName { get; set; }
+    [Required] public string PatronymicName { get; set; }
+    [Required] public string Surname { get; set; }
+    public DateTime? DateOfBirth { get; set; }
+    [Required] public string Gender { get; set; }
+    public string TaxId { get; set; }
+    public string Address { get; set; }
     public string Oblast { get; set; }
-    public string Raion { get; set; }
+    public string Ryon { get; set; }
     public string Hromada { get; set; }
-    [Required, MinLength(1)] public string Settlement { get; set; }
-    public string Note { get; set; }
-    [Required] public Guid OrganizationId { get; set; }
+    public string Settlement { get; set; }
+    public string Email { get; set; }
+    public string Phone { get; set; }
+    public string ContactPreference { get; set; }
+    public string Restrictions { get; set; }
+    public bool Consent { get; set; }
+
+    // Reason for refferal
+    [Required] public string Required { get; set; }
+    public string NeedForService { get; set; }
     public List<Guid> FileIds { get; set; }
+
+    // Child under 18 years old
+    public bool? IsSeparated { get; set; }
+    public string Caregiver { get; set; }
+    public string RelationshipToChild { get; set; }
+    public string CaregiverEmail { get; set; }
+    public string CaregiverPhone { get; set; }
+    public string CaregiverContactPreference { get; set; }
+    public bool? IsCaregiverInformed { get; set; }
+    public string CaregiverExplanation { get; set; }
+    public string CaregiverNote { get; set; }
+
+    // Internal
     public bool IsDraft { get; set; }
+    public Guid? FocalPointId { get; set; }
 }
+
+
+
+
+
+
+
+

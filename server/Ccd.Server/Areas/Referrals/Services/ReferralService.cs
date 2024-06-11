@@ -81,7 +81,7 @@ public class ReferralService
 
     public async Task<Referral> AddReferral(Guid organizationId, ReferralAddRequest model)
     {
-        var referredOrganization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == model.OrganizationId) ?? throw new NotFoundException("Organization not found.");
+        var referredOrganization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == model.OrganizationReferredToId) ?? throw new NotFoundException("Organization not found.");
         var referral = _mapper.Map<Referral>(model);
         referral.OrganizationCreatedId = organizationId;
         referral.Status = ReferralStatus.Open;
@@ -109,8 +109,10 @@ public class ReferralService
     private async Task resolveDependencies(ReferralResponse referral)
     {
         var organizationReffereTo = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referral.OrganizationReferredToId);
+        var organizationCreated = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referral.OrganizationCreatedId);
         var userCreated = await _context.Users.FirstOrDefaultAsync(e => e.Id == referral.UserCreatedId);
         referral.OrganizationReferredTo = _mapper.Map<OrganizationResponse>(organizationReffereTo);
+        referral.OrganizationCreated = _mapper.Map<OrganizationResponse>(organizationCreated);
         referral.UserCreated = _mapper.Map<UserResponse>(userCreated);
 
         if (referral.FocalPointId != null)

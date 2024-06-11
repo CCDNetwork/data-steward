@@ -63,7 +63,6 @@ public class ReferralController : ControllerBaseExtended
         if (model.Status != null && !ReferralStatus.IsValid(model.Status)) throw new BadRequestException("Invalid status.");
 
         model.Patch(referral);
-        if (model.OrganizationId != null) referral.OrganizationReferredToId = model.OrganizationId.Value;
 
         await _referralService.UpdateReferral(referral);
 
