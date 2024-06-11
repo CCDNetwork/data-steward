@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
 using Ccd.Server.Users;
+using System.Collections.Generic;
 
 namespace Ccd.Server.Organizations;
 
@@ -48,10 +49,26 @@ public class OrganizationController : ControllerBaseExtended
     public async Task<ActionResult<OrganizationResponse>> Add([FromBody] OrganizationAddRequest model)
     {
         var organization = _mapper.Map<Organization>(model);
-
         var newOrganizaiton = await _organizationService.AddOrganization(organization);
-        var result = await _organizationService.GetOrganizationApi(newOrganizaiton.Id);
 
+        var activities = new List<Activity>();
+        foreach (var activity in model.Activities)
+        {
+            var isValid = ServiceType.IsValid(activity.ServiceType);
+            if (isValid)
+            {
+                var act = new Activity
+                {
+                    Title = activity.Title,
+                    ServiceType = activity.ServiceType,
+                    OrganizationId = newOrganizaiton.Id
+                };
+                activities.Add(act);
+            }
+        }
+        await _organizationService.AddActivities(activities);
+
+        var result = await _organizationService.GetOrganizationApi(newOrganizaiton.Id);
         return Ok(result);
     }
 
@@ -70,6 +87,43 @@ public class OrganizationController : ControllerBaseExtended
         _mapper.Map(model, organization);
 
         await _organizationService.UpdateOrganization(organization);
+
+        var activitiesToUpdate = new List<Activity>();
+        var activitiesToAdd = new List<Activity>();
+
+        foreach (var activity in model.Activities)
+        {
+            var isValid = ServiceType.IsValid(activity.ServiceType);
+            if (isValid)
+            {
+                if (activity.Id != null)
+                {
+                    var act = new Activity
+                    {
+                        Id = (Guid)activity.Id,
+                        Title = activity.Title,
+                        ServiceType = activity.ServiceType,
+                        OrganizationId = organization.Id
+                    };
+                    activitiesToUpdate.Add(act);
+                }
+                else
+                {
+                    var act = new Activity
+                    {
+                        Title = activity.Title,
+                        ServiceType = activity.ServiceType,
+                        OrganizationId = organization.Id
+                    };
+                    activitiesToAdd.Add(act);
+                }
+            }
+        }
+        var activitiesToDelete = await _organizationService.GetActivitiesToDelete(organization.Id, activitiesToUpdate);
+        await _organizationService.DeleteActivities(activitiesToDelete);
+        await _organizationService.UpdateActivities(activitiesToUpdate);
+        await _organizationService.AddActivities(activitiesToAdd);
+
 
         var result = await _organizationService.GetOrganizationApi(id);
 

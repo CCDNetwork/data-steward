@@ -33,6 +33,7 @@ public class CcdContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<File> Files { get; set; }
     public DbSet<Organization> Organizations { get; set; }
+    public DbSet<Activity> Activities { get; set; }
     public DbSet<UserOrganization> UserOrganizations { get; set; }
     public DbSet<Beneficary> Beneficaries { get; set; }
     public DbSet<BeneficiaryAttribute> BeneficiaryAttributes { get; set; }

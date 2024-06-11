@@ -6,6 +6,8 @@ using Ccd.Server.Data;
 using Ccd.Server.Email;
 using Ccd.Server.Helpers;
 using System.Linq;
+using System.Collections.Generic;
+using AutoMapper;
 
 namespace Ccd.Server.Organizations;
 
@@ -14,6 +16,7 @@ public class OrganizationService
     private readonly CcdContext _context;
     private readonly DateTimeProvider _dateTimeProvider;
     private readonly EmailManagerService _emailManagerService;
+    private readonly IMapper _mapper;
 
     private readonly string _selectSql =
         $@"
@@ -31,6 +34,7 @@ public class OrganizationService
 
     public OrganizationService(
         CcdContext context,
+        IMapper mapper,
         DateTimeProvider dateTimeProvider,
         EmailManagerService emailManagerService
     )
@@ -38,6 +42,7 @@ public class OrganizationService
         _context = context;
         _dateTimeProvider = dateTimeProvider;
         _emailManagerService = emailManagerService;
+        _mapper = mapper;
     }
 
     public async Task<Organization> GetOrganizationById(Guid id)
@@ -70,6 +75,7 @@ public class OrganizationService
     {
         await DeleteUsersFromOrganization(organization);
         await DeleteReferralsFromOrganization(organization);
+        await DeleteActivitiesFromOrganization(organization);
 
         _context.Organizations.Remove(organization);
         await _context.SaveChangesAsync();
@@ -77,11 +83,13 @@ public class OrganizationService
 
     public async Task<OrganizationResponse> GetOrganizationApi(Guid id)
     {
-        var organization = await _context.Database
-            .GetDbConnection()
-            .QueryFirstOrDefaultAsync<OrganizationResponse>(_selectSql, getSelectSqlParams(id));
+        var organization = await GetOrganizationById(id);
+        var organizationResponse = _mapper.Map<OrganizationResponse>(organization);
 
-        return organization;
+        if (organizationResponse != null)
+            await resolveDependencies(organizationResponse);
+
+        return organizationResponse;
     }
 
     public async Task<PagedApiResponse<OrganizationResponse>> GetOrganizationsApi(
@@ -92,8 +100,43 @@ public class OrganizationService
             _context,
             _selectSql,
             getSelectSqlParams(),
-            requestParameters
+            requestParameters,
+            resolveDependencies
         );
+    }
+
+    public async Task AddActivities(List<Activity> activities)
+    {
+        await _context.Activities.AddRangeAsync(activities);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateActivities(List<Activity> activities)
+    {
+        _context.Activities.UpdateRange(activities);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteActivities(List<Activity> activities)
+    {
+        _context.Activities.RemoveRange(activities);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<Activity>> GetActivitiesToDelete(Guid organizationId, List<Activity> activitiesToUpdate)
+    {
+        var activitiesToDelete = await _context.Activities
+            .Where(e => e.OrganizationId == organizationId && !activitiesToUpdate.Select(a => a.Id).Contains(e.Id))
+            .ToListAsync();
+
+        return activitiesToDelete;
+    }
+
+    private async Task resolveDependencies(OrganizationResponse response)
+    {
+        response.Activities = await _context.Activities
+            .Where(e => e.OrganizationId == response.Id)
+            .ToListAsync();
     }
 
     private async Task DeleteUsersFromOrganization(Organization organization)
@@ -120,5 +163,11 @@ public class OrganizationService
             (e.OrganizationCreatedId == organization.Id) ||
             (e.OrganizationReferredToId == organization.Id)).ToListAsync();
         _context.Referrals.RemoveRange(refferals);
+    }
+
+    private async Task DeleteActivitiesFromOrganization(Organization organization)
+    {
+        var activities = await _context.Activities.Where(e => e.OrganizationId == organization.Id).ToListAsync();
+        _context.Activities.RemoveRange(activities);
     }
 }
