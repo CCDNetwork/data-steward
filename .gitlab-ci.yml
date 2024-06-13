@@ -77,7 +77,7 @@ publish-client:
     - develop
     - tags
   services:
-    - docker:18.09.7-dind
+    - docker:26.1.4-dind
   before_script:
     - apk update
     - apk add docker
@@ -97,7 +97,7 @@ publish-server:
     - develop
     - tags
   services:
-    - docker:18.09.7-dind
+    - docker:26.1.4-dind
   before_script:
     - apk update
     - apk add docker
