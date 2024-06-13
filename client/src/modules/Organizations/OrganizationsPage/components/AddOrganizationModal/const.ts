@@ -1,4 +1,4 @@
-export const defaultOrganizationEditFormFormValues = {
+export const defaultNewOrganizationFormFormValues = {
   name: '',
   isMpcaActive: false,
   isWashActive: false,

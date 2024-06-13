@@ -1,20 +1,24 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { PageContainer } from '@/components/PageContainer';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useOrganization, useOrganizationMutation } from '@/services/organizations/api';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { APP_ROUTE } from '@/helpers/constants';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 
 import { dataToOrganizationEditFormData } from './form-transformation';
 import { OrganizationEditFormSchema, OrganizationEditFormData } from './validations';
 import { defaultOrganizationEditFormFormValues } from './const';
-import { APP_ROUTE } from '@/helpers/constants';
+
+import { ServiceActivities } from '../components';
 
 export const OrganizationPage = () => {
   const { id: organizationId } = useIdFromParams();
@@ -28,7 +32,11 @@ export const OrganizationPage = () => {
     resolver: zodResolver(OrganizationEditFormSchema),
   });
 
-  const { control, formState, handleSubmit, reset } = form;
+  const { control, formState, handleSubmit, reset, watch } = form;
+
+  const [isMPCAChecked, isWashChecked, isShelterChecked] = watch(['isMpcaActive', 'isWashActive', 'isShelterActive']);
+
+  const { fields, append, remove } = useFieldArray({ control, name: 'activities' });
 
   useEffect(() => {
     if (organizationData) {
@@ -77,7 +85,7 @@ export const OrganizationPage = () => {
       <Form {...form}>
         <div className="space-y-8 max-w-2xl">
           <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
-            <CardContent className="space-y-2 pt-6">
+            <CardContent className="pt-6">
               <div className="grid sm:grid-cols-2 grid-cols-1">
                 <FormField
                   control={control}
@@ -92,6 +100,94 @@ export const OrganizationPage = () => {
                     </FormItem>
                   )}
                 />
+              </div>
+            </CardContent>
+
+            <Separator />
+
+            <CardHeader>
+              <CardTitle>Services</CardTitle>
+              <CardDescription>Pick the services and add activities</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-6">
+                <div>
+                  <FormField
+                    control={control}
+                    name="isMpcaActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>MPCA</FormLabel>
+                          <FormDescription>Information about what MPCA is here.</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isMPCAChecked && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType="mpca"
+                    />
+                  )}
+                </div>
+                <Separator />
+                <div>
+                  <FormField
+                    control={control}
+                    name="isWashActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>WASH</FormLabel>
+                          <FormDescription>Information about what WASH is here.</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isWashChecked && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType="wash"
+                    />
+                  )}
+                </div>
+                <Separator />
+                <div>
+                  <FormField
+                    control={control}
+                    name="isShelterActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>Shelter</FormLabel>
+                          <FormDescription>Information about what Shelter is here.</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isShelterChecked && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType="shelter"
+                    />
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>

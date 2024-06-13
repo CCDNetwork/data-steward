@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Building2, SendHorizonal } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
@@ -14,23 +14,30 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useOrganizationMutation } from '@/services/organizations/api';
 import { toast } from '@/components/ui/use-toast';
 
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { ServiceActivities } from '@/modules/Organizations/components';
+
 import { AddOrganizationModalFormSchema, AddOrganizationModalForm } from './validation';
+import { defaultNewOrganizationFormFormValues } from './const';
 
 export const AddOrganizationModal = () => {
   const [open, setOpen] = useState<boolean>(false);
   const form = useForm<AddOrganizationModalForm>({
-    defaultValues: {
-      name: '',
-    },
+    defaultValues: defaultNewOrganizationFormFormValues,
     mode: 'onSubmit',
     resolver: zodResolver(AddOrganizationModalFormSchema),
   });
 
-  const { control, handleSubmit, reset } = form;
+  const { control, handleSubmit, reset, watch } = form;
+
+  const [isMPCAChecked, isWashChecked, isShelterChecked] = watch(['isMpcaActive', 'isWashActive', 'isShelterActive']);
+
+  const { fields, append, remove } = useFieldArray({ control, name: 'activities' });
 
   const { addOrganization } = useOrganizationMutation();
 
@@ -65,7 +72,7 @@ export const AddOrganizationModal = () => {
           Add new
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Add a new organization</DialogTitle>
           <DialogDescription>Submit organization information below.</DialogDescription>
@@ -86,6 +93,86 @@ export const AddOrganizationModal = () => {
                   </FormItem>
                 )}
               />
+              <Separator />
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <FormField
+                    control={control}
+                    name="isMpcaActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>MPCA</FormLabel>
+                          <FormDescription>Information about what MPCA is here.</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isMPCAChecked && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType="mpca"
+                    />
+                  )}
+                </div>
+                <Separator />
+                <div>
+                  <FormField
+                    control={control}
+                    name="isWashActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>WASH</FormLabel>
+                          <FormDescription>Information about what WASH is here.</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isWashChecked && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType="wash"
+                    />
+                  )}
+                </div>
+                <Separator />
+                <div>
+                  <FormField
+                    control={control}
+                    name="isShelterActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>Shelter</FormLabel>
+                          <FormDescription>Information about what Shelter is here.</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isShelterChecked && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType="shelter"
+                    />
+                  )}
+                </div>
+              </div>
 
               <DialogFooter>
                 <div className="w-full">
