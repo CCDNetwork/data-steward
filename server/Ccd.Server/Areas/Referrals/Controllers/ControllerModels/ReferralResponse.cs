@@ -70,4 +70,6 @@ public class ReferralResponse
     [JsonIgnore] public Guid UserCreatedId { get; set; }
     public UserResponse UserCreated { get; set; }
     public List<FileShortResponse> Files { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
