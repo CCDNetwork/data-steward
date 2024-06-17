@@ -39,6 +39,7 @@ public class CcdContext : DbContext
     public DbSet<BeneficiaryAttribute> BeneficiaryAttributes { get; set; }
     public DbSet<List> Lists { get; set; }
     public DbSet<Referral> Referrals { get; set; }
+    public DbSet<Discussion> Discussions { get; set; }
     public DbSet<Template> Templates { get; set; }
     public DbSet<Handbook> Handbooks { get; set; }
     public DbSet<BeneficiaryAttributeGroup> BeneficiaryAttributeGroups { get; set; }

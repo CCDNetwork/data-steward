@@ -17,6 +17,7 @@ public class ReferralService
     private readonly IMapper _mapper;
     private readonly CcdContext _context;
     private readonly IStorageService _storageService;
+    private readonly UserService _userService;
 
     private readonly string _selectSql =
         $@"
@@ -39,12 +40,14 @@ public class ReferralService
     public ReferralService(
         IMapper mapper,
         CcdContext context,
-        IStorageService storageService
+        IStorageService storageService,
+        UserService userService
     )
     {
         _mapper = mapper;
         _context = context;
         _storageService = storageService;
+        _userService = userService;
     }
 
     public async Task<PagedApiResponse<ReferralResponse>> GetReferralsApi(Guid organizationId, RequestParameters requestParameters = null, bool received = false)
@@ -104,6 +107,57 @@ public class ReferralService
     {
         _context.Referrals.Remove(referral);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<Discussion> AddDiscussion(Guid referralId, DiscussionAddRequest model)
+    {
+        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ?? throw new NotFoundException("Referral not found.");
+        var discussion = _mapper.Map<Discussion>(model);
+        discussion.ReferralId = referralId;
+
+        var newDiscussion = _context.Discussions.Add(discussion).Entity;
+        await _context.SaveChangesAsync();
+
+        return newDiscussion;
+    }
+
+    public async Task<Discussion> AddDiscussionBot(Guid referralId, DiscussionAddRequest model)
+    {
+        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ?? throw new NotFoundException("Referral not found.");
+        var discussion = _mapper.Map<Discussion>(model);
+        discussion.ReferralId = referralId;
+        discussion.IsBot = true;
+
+        var newDiscussion = _context.Discussions.Add(discussion).Entity;
+        await _context.SaveChangesAsync();
+
+        return newDiscussion;
+    }
+
+    public async Task<DiscussionResponse> GetDiscussionApi(Guid id)
+    {
+        var discussion = await _context.Discussions.FirstOrDefaultAsync(e => e.Id == id) ?? throw new NotFoundException("Discussion not found.");
+        var discussionResponse = _mapper.Map<DiscussionResponse>(discussion);
+        var userResponse = await _userService.GetUserApi(id: discussion.UserCreatedId);
+        userResponse.Permissions = null;
+        discussionResponse.UserCreated = userResponse;
+
+        return discussionResponse;
+    }
+
+    public async Task<List<DiscussionResponse>> GetDiscussionsApi(Guid referralId)
+    {
+        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ?? throw new NotFoundException("Referral not found.");
+        var discussions = await _context.Discussions.Where(e => e.ReferralId == referralId).ToListAsync();
+        var discussionsResponse = _mapper.Map<List<DiscussionResponse>>(discussions);
+        for (int i = 0; i < discussionsResponse.Count; i++)
+        {
+            var userResponse = await _userService.GetUserApi(id: discussions[i].UserCreatedId);
+            userResponse.Permissions = null;
+            discussionsResponse[i].UserCreated = userResponse;
+        }
+
+        return discussionsResponse;
     }
 
     private async Task resolveDependencies(ReferralResponse referral)

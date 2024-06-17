@@ -12,10 +12,12 @@ namespace Ccd.Server.Referrals;
 public class ReferralController : ControllerBaseExtended
 {
     private readonly ReferralService _referralService;
+    private readonly UserService _userService;
 
-    public ReferralController(ReferralService referralService, IMapper mapper)
+    public ReferralController(ReferralService referralService, UserService userService, IMapper mapper)
     {
         _referralService = referralService;
+        _userService = userService;
     }
 
     [HttpGet]
@@ -68,6 +70,12 @@ public class ReferralController : ControllerBaseExtended
 
         var result = await _referralService.GetReferralApi(this.OrganizationId, id);
 
+        var userUpdated = await _userService.GetUserById(this.UserId);
+        await _referralService.AddDiscussionBot(id, new DiscussionAddRequest
+        {
+            Text = $"Referral has been updated by {userUpdated.FirstName} {userUpdated.LastName}.",
+        });
+
         return Ok(result);
     }
 
@@ -80,6 +88,24 @@ public class ReferralController : ControllerBaseExtended
         var result = await _referralService.GetReferralApi(this.OrganizationId, referral.Id);
 
         await _referralService.DeleteReferral(referral);
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id}/discussions")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult<DiscussionResponse>> GetDiscussions(Guid id)
+    {
+        var result = await _referralService.GetDiscussionsApi(id);
+        return Ok(result);
+    }
+
+    [HttpPost("{id}/discussions")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult<DiscussionResponse>> AddDiscussion(Guid id, [FromBody] DiscussionAddRequest model)
+    {
+        var newDiscussion = await _referralService.AddDiscussion(id, model);
+        var result = await _referralService.GetDiscussionApi(newDiscussion.Id);
 
         return Ok(result);
     }
