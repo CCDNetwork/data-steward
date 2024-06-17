@@ -43,6 +43,13 @@ public class ReferralController : ControllerBaseExtended
         return Ok(referral);
     }
 
+    [HttpGet("{caseNumber}/case-number")]
+    public async Task<ActionResult<ReferralResponse>> GetReferralByCaseNumber(string caseNumber)
+    {
+        var result = await _referralService.GetReferralByCaseNumberApi(caseNumber);
+        return Ok(result);
+    }
+
 
     [HttpPost]
     [PermissionLevel(UserRole.User)]

@@ -40,6 +40,7 @@ public class Mappings : Profile
 
         // Referral mappings
         CreateMap<Referral, ReferralResponse>();
+        CreateMap<Referral, ReferralCaseNumberResponse>();
         CreateMap<ReferralAddRequest, Referral>();
         CreateMap<ReferralPatchRequest, Referral>();
         CreateMap<Discussion, DiscussionResponse>();

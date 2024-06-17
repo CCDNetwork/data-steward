@@ -70,6 +70,7 @@ public class Referral : UserChangeTracked
     [Column(TypeName = "jsonb")] public List<Guid> FileIds { get; set; }
     [ForeignKey("Organization"), Required] public Guid OrganizationCreatedId { get; set; }
     public Organization OrganizationCreated { get; set; }
+    public string CaseNumber { get; set; }
 }
 
 public class ReferralStatus

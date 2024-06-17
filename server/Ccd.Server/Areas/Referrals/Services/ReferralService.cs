@@ -82,11 +82,24 @@ public class ReferralService
             (e.OrganizationReferredToId == organizationId)).FirstOrDefaultAsync(e => e.Id == id);
     }
 
+    public async Task<ReferralCaseNumberResponse> GetReferralByCaseNumberApi(string caseNumber)
+    {
+        var refferal = await _context.Referrals.FirstOrDefaultAsync(e => e.CaseNumber == caseNumber) ?? throw new NotFoundException("Referral not found.");
+        var referralResponse = _mapper.Map<ReferralCaseNumberResponse>(refferal);
+        var organizationReffereTo = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referralResponse.OrganizationReferredToId);
+        var organizationCreated = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referralResponse.OrganizationCreatedId);
+        referralResponse.OrganizationReferredTo = _mapper.Map<OrganizationResponse>(organizationReffereTo);
+        referralResponse.OrganizationCreated = _mapper.Map<OrganizationResponse>(organizationCreated);
+
+        return referralResponse;
+    }
+
     public async Task<Referral> AddReferral(Guid organizationId, ReferralAddRequest model)
     {
         var referredOrganization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == model.OrganizationReferredToId) ?? throw new NotFoundException("Organization not found.");
         var referral = _mapper.Map<Referral>(model);
         referral.OrganizationCreatedId = organizationId;
+        referral.CaseNumber = GuidHelper.ToShortString(Guid.NewGuid());
         referral.Status = ReferralStatus.Open;
 
         var newReferral = _context.Referrals.Add(referral).Entity;
