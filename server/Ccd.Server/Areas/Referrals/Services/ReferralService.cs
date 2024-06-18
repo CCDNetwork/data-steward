@@ -118,6 +118,7 @@ public class ReferralService
 
     public async Task DeleteReferral(Referral referral)
     {
+        _context.Discussions.RemoveRange(_context.Discussions.Where(e => e.ReferralId == referral.Id));
         _context.Referrals.Remove(referral);
         await _context.SaveChangesAsync();
     }
