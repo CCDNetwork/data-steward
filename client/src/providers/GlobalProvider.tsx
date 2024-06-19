@@ -19,6 +19,7 @@ import { LocalStorage } from '@/helpers/localStorage';
 import { Organization } from '@/services/organizations';
 import { useOrganizationMe } from '@/services/organizations/api';
 import { useUserMe } from '@/services/users/api';
+import { useHdxHapiGenerateAppIdentifier } from '@/services/integrations';
 
 const GlobalContext = createContext<{
   isLoggedIn: boolean;
@@ -27,6 +28,7 @@ const GlobalContext = createContext<{
   collectionNotFound: boolean;
   token: string | null;
   isOrganizationQueryLoading: boolean;
+  hdxHapiAppIdentifier: string;
   loginUser: (authData: AuthData) => void;
   logoutUser: () => void;
   updateUser: (user: User) => void;
@@ -39,6 +41,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
   const queryClient = useQueryClient();
   const [isLoggedIn, setIsLoggedIn] = useState(!!LocalStorage.getToken());
   const [user, setUser] = useState<User>(LocalStorage.getUser());
+  const [hdxHapiAppIdentifier, setHdxHapiAppIdentifier] = useState<string>('');
   const [organization, setOrganization] = useState<Organization | null>(LocalStorage.getOrganization());
   const [token, setToken] = useState<string | null>(LocalStorage.getToken());
   const [collectionNotFound, setCollectionNotFound] = useState(false);
@@ -49,6 +52,11 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     data: loggedInOrganization,
     isLoading: isOrganizationQueryLoading,
   } = useOrganizationMe({ queryEnabled: false });
+
+  const { data: hdxApiData } = useHdxHapiGenerateAppIdentifier({
+    application: 'CCD_DATA_PORTAL',
+    email: 'ivan.zivkovic@init.hr',
+  });
 
   const logoutUser = useCallback(() => {
     api.defaults.headers.common.Authorization = '';
@@ -118,7 +126,9 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     if (loggedInUser) {
       LocalStorage.setUser(loggedInUser);
       setUser(loggedInUser);
+      setHdxHapiAppIdentifier(hdxApiData?.encoded_app_identifier ?? '');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUser]);
 
   useEffect(() => {
@@ -137,6 +147,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
       token,
       organization,
       isOrganizationQueryLoading,
+      hdxHapiAppIdentifier,
       loginUser,
       logoutUser,
       updateUser,
@@ -151,6 +162,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
       collectionNotFound,
       token,
       isOrganizationQueryLoading,
+      hdxHapiAppIdentifier,
       loginUser,
       logoutUser,
       updateUser,
@@ -166,13 +178,24 @@ export const useGlobalProvider = () => {
 };
 
 export const useAuth = () => {
-  const { isLoggedIn, organization, user, token, updateOrganization, loginUser, logoutUser, updateUser, setUser } =
-    useGlobalProvider();
+  const {
+    isLoggedIn,
+    organization,
+    user,
+    token,
+    hdxHapiAppIdentifier,
+    updateOrganization,
+    loginUser,
+    logoutUser,
+    updateUser,
+    setUser,
+  } = useGlobalProvider();
   return {
     isLoggedIn,
     user,
     token,
     organization,
+    hdxHapiAppIdentifier,
     loginUser,
     logoutUser,
     updateUser,

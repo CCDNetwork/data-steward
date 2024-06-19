@@ -101,7 +101,7 @@ export const ReceivedReferralsPage = () => {
       <ConfirmationDialog
         open={!!receivedReferralToDelete}
         title="Delete Referral"
-        body={`Are you sure you want to delete the referral for "${receivedReferralToDelete?.firstName} ${receivedReferralToDelete?.familyName}"?`}
+        body={`Are you sure you want to delete the referral for "${receivedReferralToDelete?.firstName} ${receivedReferralToDelete?.surname}"?`}
         onAction={handleDeleteReferral}
         confirmButtonLoading={removeReferral.isLoading}
         actionButtonVariant="destructive"

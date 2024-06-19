@@ -24,6 +24,7 @@ import { ServiceActivities } from '@/modules/Organizations/components';
 
 import { AddOrganizationModalFormSchema, AddOrganizationModalForm } from './validation';
 import { defaultNewOrganizationFormFormValues } from './const';
+import { OrgActivity } from '@/services/organizations';
 
 export const AddOrganizationModal = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -116,7 +117,7 @@ export const AddOrganizationModal = () => {
                       activities={fields}
                       addActivity={append}
                       removeActivity={remove}
-                      serviceType="mpca"
+                      serviceType={OrgActivity.Mpca}
                     />
                   )}
                 </div>
@@ -142,7 +143,7 @@ export const AddOrganizationModal = () => {
                       activities={fields}
                       addActivity={append}
                       removeActivity={remove}
-                      serviceType="wash"
+                      serviceType={OrgActivity.Wash}
                     />
                   )}
                 </div>
@@ -168,7 +169,7 @@ export const AddOrganizationModal = () => {
                       activities={fields}
                       addActivity={append}
                       removeActivity={remove}
-                      serviceType="shelter"
+                      serviceType={OrgActivity.Shelter}
                     />
                   )}
                 </div>

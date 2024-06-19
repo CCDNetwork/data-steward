@@ -104,7 +104,7 @@ export const FilesDropzone = ({ name, control, maxFiles }: Props) => {
       <div
         {...getRootProps()}
         className={cn(
-          'border-2 border-dashed bg-muted/50 rounded-xl flex items-center justify-center p-6 text-center transition-colors duration-300 hover:border-primary hover:cursor-pointer',
+          'border-2 border-dashed bg-muted/20 rounded-xl flex items-center justify-center p-6 text-center transition-colors duration-300 hover:border-primary hover:cursor-pointer',
           { 'bg-primary/5': isDragActive },
         )}
       >
@@ -112,7 +112,7 @@ export const FilesDropzone = ({ name, control, maxFiles }: Props) => {
         {!addStorageFile.isLoading &&
           (!field.value.length ? (
             <div className="flex items-center gap-1 flex-col text-xs">
-              <UploadCloudIcon className="w-10 h-10 text-muted-foreground" />
+              <UploadCloudIcon className="w-12 h-12 stroke-1 text-muted-foreground" />
               <div className="inline-flex gap-1">
                 <p className="font-medium underline">Click to choose a file</p>
                 <p>or</p>

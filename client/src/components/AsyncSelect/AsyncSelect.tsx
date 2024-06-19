@@ -23,6 +23,7 @@ export const AsyncSelect = <T,>({
   useInfiniteQueryFunction,
   onChange,
   initialPagination,
+  requiredField,
   useValue = false,
   defaultValue = null,
 }: AsyncSelectProps<T>) => {
@@ -94,7 +95,11 @@ export const AsyncSelect = <T,>({
       {label && (
         <label
           htmlFor={name}
-          className={cn('block text-sm mb-2 font-medium', { 'text-destructive': !!fieldState.error }, labelClassName)}
+          className={cn(
+            'block text-sm mb-2 font-medium',
+            { 'after:content-["_*"] after:text-red-500': requiredField },
+            labelClassName,
+          )}
         >
           {label}
         </label>
@@ -177,4 +182,5 @@ export type AsyncSelectProps<T> = {
   useValue?: boolean;
   defaultValue?: any;
   queryFilters?: Record<string, string>;
+  requiredField?: boolean;
 };

@@ -11,16 +11,21 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 export interface DatePickerProps extends React.AllHTMLAttributes<HTMLDivElement> {
   fromDate?: Date;
   field: ControllerRenderProps<any, any>;
+  btnclass?: string;
 }
 
-const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(({ field, ...props }, ref) => {
+const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(({ field, btnclass, ...props }, ref) => {
   return (
     <div ref={ref} {...props}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant={'outline'}
-            className={cn('w-[240px] justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
+            className={cn(
+              'w-[240px] justify-start text-left font-normal',
+              !field.value && 'text-muted-foreground',
+              btnclass,
+            )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}

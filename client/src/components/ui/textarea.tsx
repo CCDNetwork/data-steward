@@ -7,7 +7,7 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, maxLength, limitCounterEnabled, ...props }, ref) => {
+  ({ className, maxLength, limitCounterEnabled, disabled, ...props }, ref) => {
     const [characterCount, setCharacterCount] = React.useState<number>(0);
 
     React.useEffect(() => {
@@ -25,6 +25,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             className,
           )}
           maxLength={maxLength}
+          disabled={disabled}
           ref={ref}
           {...props}
         />
@@ -32,6 +33,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           <p
             className={cn('text-right -mt-2 text-xs text-muted-foreground', {
               'font-semibold text-destructive': characterCount === maxLength,
+              'text-muted-foreground/70': disabled,
             })}
           >{`${characterCount} / ${maxLength}`}</p>
         )}

@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { APP_ROUTE } from '@/helpers/constants';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
+import { OrgActivity } from '@/services/organizations';
 
 import { dataToOrganizationEditFormData } from './form-transformation';
 import { OrganizationEditFormSchema, OrganizationEditFormData } from './validations';
@@ -132,7 +133,7 @@ export const OrganizationPage = () => {
                       activities={fields}
                       addActivity={append}
                       removeActivity={remove}
-                      serviceType="mpca"
+                      serviceType={OrgActivity.Mpca}
                     />
                   )}
                 </div>
@@ -158,7 +159,7 @@ export const OrganizationPage = () => {
                       activities={fields}
                       addActivity={append}
                       removeActivity={remove}
-                      serviceType="wash"
+                      serviceType={OrgActivity.Wash}
                     />
                   )}
                 </div>
@@ -184,7 +185,7 @@ export const OrganizationPage = () => {
                       activities={fields}
                       addActivity={append}
                       removeActivity={remove}
-                      serviceType="shelter"
+                      serviceType={OrgActivity.Shelter}
                     />
                   )}
                 </div>
