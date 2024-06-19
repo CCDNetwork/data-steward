@@ -54,6 +54,6 @@ export interface Referral {
   // methodOfContact: string;
   // contactDetails: string;
   // note: string;
-  // createdAt: Date | null;
-  // updatedAt: Date | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
 }

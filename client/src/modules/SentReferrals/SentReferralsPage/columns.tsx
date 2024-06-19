@@ -1,4 +1,5 @@
 import { MoreHorizontal } from 'lucide-react';
+import { formatDate } from 'date-fns';
 
 import { TableColumn } from '@/components/DataTable/types';
 import {
@@ -60,30 +61,30 @@ export const columns = (
       );
     },
   },
-  // {
-  //   accessorKey: 'createdAt',
-  //   id: 'createdAt',
-  //   header: 'Created At',
-  //   cell: ({ getValue }) => {
-  //     return (
-  //       <div className="flex flex-col">
-  //         <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm')}</span>
-  //       </div>
-  //     );
-  //   },
-  // },
-  // {
-  //   accessorKey: 'updatedAt',
-  //   id: 'updatedAt',
-  //   header: 'Updated At',
-  //   cell: ({ getValue }) => {
-  //     return (
-  //       <div className="flex flex-col">
-  //         <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm')}</span>
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    accessorKey: 'createdAt',
+    id: 'createdAt',
+    header: 'Created At',
+    cell: ({ getValue }) => {
+      return (
+        <div className="flex flex-col">
+          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm')}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    id: 'updatedAt',
+    header: 'Updated At',
+    cell: ({ getValue }) => {
+      return (
+        <div className="flex flex-col">
+          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm')}</span>
+        </div>
+      );
+    },
+  },
   {
     id: 'actions',
     cell: ({ row }) => {

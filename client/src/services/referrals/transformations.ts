@@ -56,8 +56,8 @@ export const resToReferral = (res: any): Referral => {
     // methodOfContact: res.methodOfContact ?? '',
     // contactDetails: res.contactDetails ?? '',
     // note: res.note ?? '',
-    // createdAt: res.createdAt ? new Date(res.createdAt) : null,
-    // updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
+    createdAt: res.createdAt ? new Date(res.createdAt) : null,
+    updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
   };
 };
 
