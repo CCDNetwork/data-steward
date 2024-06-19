@@ -15,9 +15,9 @@ public class ReferralAddRequest
     public List<Guid> Subactivities { get; set; }
 
     // MPCA info
-    [Required] public string DisplacementStatus { get; set; }
-    [Required] public string HouseholdSize { get; set; }
-    [Required] public string HouseholdMonthlyIncome { get; set; }
+    public string DisplacementStatus { get; set; }
+    public string HouseholdSize { get; set; }
+    public string HouseholdMonthlyIncome { get; set; }
     public List<string> HouseholdsVulnerabilityCriteria { get; set; }
 
     // Beneficiary general data
