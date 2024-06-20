@@ -12,9 +12,10 @@ import { SentReferralFormData } from '../../validations';
 interface Props {
   control: Control<SentReferralFormData, any>;
   isCaregiverInformed: string;
+  currentFormCaregiverContactPreference: string;
 }
 
-export const MinorForm = ({ control, isCaregiverInformed }: Props) => {
+export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverContactPreference }: Props) => {
   return (
     <>
       <CardDescription>
@@ -72,7 +73,7 @@ export const MinorForm = ({ control, isCaregiverInformed }: Props) => {
           name="caregiverEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel requiredField>Email</FormLabel>
+              <FormLabel requiredField={currentFormCaregiverContactPreference === 'email'}>Email</FormLabel>
               <FormControl>
                 <Input id="caregiverEmail" placeholder="email@example.com" type="email" {...field} />
               </FormControl>
@@ -85,7 +86,7 @@ export const MinorForm = ({ control, isCaregiverInformed }: Props) => {
           name="caregiverPhone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone</FormLabel>
+              <FormLabel requiredField={currentFormCaregiverContactPreference === 'phone'}>Phone</FormLabel>
               <FormControl>
                 <Input id="caregiverPhone" placeholder="Phone" type="tel" {...field} />
               </FormControl>

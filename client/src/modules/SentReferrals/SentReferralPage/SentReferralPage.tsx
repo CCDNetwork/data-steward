@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { FilesDropzone } from '@/components/FilesDropzone';
 import { StatusTimeline } from '@/components/StatusTimeline';
-import { ReferralStatus } from '@/services/referrals/const';
+import { ReferralStatus, ReferralTab } from '@/services/referrals/const';
 import { DatePicker } from '@/components/DatePicker';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -31,10 +31,14 @@ import { SentReferralFormData, SentReferralSchema } from './validations';
 import { defaultSentReferralFormFormValues } from './const';
 import { MinorForm } from './components/MinorForm';
 import { MpcaSpecificForm } from './components/MpcaSpecificForm';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ReferralDiscussions } from '@/components/ReferralDiscussions';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
   const { id: sentReferralId, isCreate } = useIdFromParams();
+
+  const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
 
   const { data: sentReferralData, isLoading: queryLoading } = useReferral({ id: sentReferralId, isCreate });
 
@@ -54,6 +58,8 @@ export const SentReferralPage = () => {
   const currentFormIsCaregiverInformed = watch('isCaregiverInformed');
   const currentFormNoTaxId = watch('noTaxId');
   const currentFormTaxId = watch('taxId');
+  const currentFormContactPreference = watch('contactPreference');
+  const currentFormCaregiverContactPreference = watch('caregiverContactPreference');
 
   useEffect(() => {
     if (sentReferralData) {
@@ -173,34 +179,490 @@ export const SentReferralPage = () => {
         )
       }
     >
-      <Form {...form}>
-        <form onSubmit={handleSubmit((values) => onSubmit({ values }))}>
-          <div className="space-y-8 max-w-2xl">
-            <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
-              {!isCreate &&
-                (sentReferralData?.isDraft ? (
-                  <div className="w-full text-center bg-primary text-white rounded-tl-lg rounded-tr-lg text-xs leading-6 font-semibold">
-                    Draft Referral
-                  </div>
-                ) : (
-                  <>
-                    <div className="px-6 pt-2 pb-6 flex items-center justify-center">
-                      <StatusTimeline currentStatus={sentReferralData?.status ?? ReferralStatus.Open} />
-                    </div>
-                    <Separator />
-                  </>
-                ))}
+      {!isCreate && (
+        <Tabs defaultValue="referral">
+          <TabsList>
+            <TabsTrigger value="referral" onClick={() => setActiveTab(ReferralTab.Referral)}>
+              Referral
+            </TabsTrigger>
+            <TabsTrigger
+              value="discussion"
+              onClick={() => {
+                setActiveTab(ReferralTab.Discussion);
+              }}
+            >
+              Discussion
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      )}
 
-              <CardContent className="mt-6">
-                <div className="grid grid-cols-1 gap-4">
+      {activeTab === ReferralTab.Referral ? (
+        <Form {...form}>
+          <form onSubmit={handleSubmit((values) => onSubmit({ values }))}>
+            <div className="space-y-8 max-w-2xl">
+              <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
+                {!isCreate &&
+                  (sentReferralData?.isDraft ? (
+                    <div className="w-full text-center bg-primary text-white rounded-tl-lg rounded-tr-lg text-xs leading-6 font-semibold">
+                      Draft Referral
+                    </div>
+                  ) : (
+                    <>
+                      <div className="px-6 pt-2 pb-6 flex items-center justify-center">
+                        <StatusTimeline currentStatus={sentReferralData?.status ?? ReferralStatus.Open} />
+                      </div>
+                      <Separator />
+                    </>
+                  ))}
+
+                <CardContent className="mt-6">
+                  <div className="grid grid-cols-1 gap-4">
+                    <FormField
+                      control={control}
+                      name="isUrgent"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                          <div className="space-y-0.5">
+                            <FormLabel>Urgent Referral</FormLabel>
+                            <FormDescription>Mark referral as urgent (within 24 hours)</FormDescription>
+                          </div>
+                          <FormControl>
+                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+
+                <Separator />
+
+                <CardHeader>
+                  <CardTitle>Receiving Organization Details</CardTitle>
+                  <CardDescription>Information about the receiving organization</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-4">
+                    {!isCreate && !sentReferralData?.isDraft && (
+                      <div className="sm:col-span-1">
+                        <dt className="text-sm font-medium leading-6">Focal point</dt>
+                        <dd className="mt-1 text-sm leading sm:mt-2">
+                          {currentFormAssignedFocalPoint ? (
+                            `${currentFormAssignedFocalPoint?.firstName ?? ''} ${currentFormAssignedFocalPoint.lastName ?? ''}`
+                          ) : (
+                            <p className="italic text-primary/80">Unassigned</p>
+                          )}
+                        </dd>
+                      </div>
+                    )}
+                    <AsyncSelect
+                      requiredField
+                      label="Receiving organization"
+                      name="organizationReferredTo"
+                      control={control}
+                      useInfiniteQueryFunction={useOrganizationsInfinite}
+                      labelKey="name"
+                      valueKey="id"
+                    />
+                    {currentFormSelectedOrganization &&
+                      (currentFormSelectedOrganization.isMpcaActive ||
+                        currentFormSelectedOrganization.isShelterActive ||
+                        currentFormSelectedOrganization.isWashActive) && (
+                        <FormField
+                          control={control}
+                          name="serviceCategory"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Service category</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select service category" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {resolvedServiceCategories &&
+                                    resolvedServiceCategories.length > 0 &&
+                                    resolvedServiceCategories.map((i) => (
+                                      <SelectItem key={i.id} value={i.id}>
+                                        {i.label}
+                                      </SelectItem>
+                                    ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    {resolvedCurrentOrgSubactivities && resolvedCurrentOrgSubactivities.length > 0 && (
+                      <FormField
+                        control={control}
+                        name="subactivities"
+                        render={() => (
+                          <FormItem>
+                            <div className="mb-4">
+                              <FormLabel>List of (sub)activities</FormLabel>
+                            </div>
+                            {resolvedCurrentOrgSubactivities.map((item) => (
+                              <FormField
+                                key={item.id}
+                                control={control}
+                                name="subactivities"
+                                render={({ field }) => {
+                                  return (
+                                    <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
+                                      <FormControl>
+                                        <Checkbox
+                                          checked={field.value?.includes(item.id)}
+                                          onCheckedChange={(checked) => {
+                                            return checked
+                                              ? field.onChange([...field.value, item.id])
+                                              : field.onChange(field.value?.filter((value: any) => value !== item.id));
+                                          }}
+                                        />
+                                      </FormControl>
+                                      <FormLabel className="text-sm font-normal">{item.title}</FormLabel>
+                                    </FormItem>
+                                  );
+                                }}
+                              />
+                            ))}
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </div>
+                  {currentFormServiceCategory === 'mpca' && (
+                    <div>
+                      <Separator className="my-4" />
+                      <MpcaSpecificForm control={control} />
+                    </div>
+                  )}
+                </CardContent>
+                <Separator />
+                <CardHeader>
+                  <CardTitle>Beneficiary Details</CardTitle>
+                  <CardDescription>Information about the beneficiary that is being referred</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField>First name</FormLabel>
+                          <FormControl>
+                            <Input id="firstName" required className="" placeholder="First name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="surname"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField>Surname</FormLabel>
+                          <FormControl>
+                            <Input id="surname" placeholder="Surname" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="patronymicName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField>Patronymic name</FormLabel>
+                          <FormControl>
+                            <Input id="patronymicName" placeholder="Patronymic name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField>Gender</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select gender" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="male">Male</SelectItem>
+                              <SelectItem value="female">Female</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                              <SelectItem value="nonDisclosed">Prefer not to say</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={control}
+                      name="dateOfBirth"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField>Date of birth</FormLabel>
+                          <FormControl>
+                            <DatePicker field={field} btnclass="w-full" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-full">
+                      <FormField
+                        control={control}
+                        name="taxId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel requiredField={!currentFormNoTaxId}>Tax ID</FormLabel>
+                            <FormControl>
+                              <Input disabled={currentFormNoTaxId} id="taxId" placeholder="Tax ID" {...field} />
+                            </FormControl>
+                            <FormDescription className="line-clamp-1 overflow-visible">
+                              Note: It is not possible to do MPCA referrals without Tax ID
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="noTaxId"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                          <FormControl>
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                          <FormLabel className="font-normal text-sm whitespace-nowrap">No Tax ID</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <Separator />
+
                   <FormField
                     control={control}
-                    name="isUrgent"
+                    name="address"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <FormItem>
+                        <FormLabel>Address</FormLabel>
+                        <FormControl>
+                          <Input id="address" placeholder="Address" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={control}
+                      name="oblast"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Oblast</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select oblast" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="oblast#1">Oblast#1</SelectItem>
+                              <SelectItem value="oblast#2">Oblast#2</SelectItem>
+                              <SelectItem value="oblast#3">Oblast#3</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="ryon"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Raion</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select Raion" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="raion#1">Raion#1</SelectItem>
+                              <SelectItem value="raion#2">Raion#2</SelectItem>
+                              <SelectItem value="raion#3">Raion#3</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="hromada"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Hromada</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select Hromada" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="hromada#1">Hromada#1</SelectItem>
+                              <SelectItem value="hromada#2">Hromada#2</SelectItem>
+                              <SelectItem value="hromada#3">Hromada#3</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={control}
+                      name="settlement"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Settlement</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select Settlement" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="settlement#1">Settlement#1</SelectItem>
+                              <SelectItem value="settlement#2">Settlement#2</SelectItem>
+                              <SelectItem value="settlement#3">Settlement#3</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField={currentFormContactPreference === 'email'}>Email</FormLabel>
+                          <FormControl>
+                            <Input id="email" placeholder="email@example.com" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField={currentFormContactPreference === 'phone'}>Phone</FormLabel>
+                          <FormControl>
+                            <Input id="phone" placeholder="Phone" type="tel" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="contactPreference"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Contact preference</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue="email"
+                            value={field.value}
+                            className="flex flex-col space-y-1"
+                          >
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="email" />
+                              </FormControl>
+                              <FormLabel className="font-normal">Email</FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="phone" />
+                              </FormControl>
+                              <FormLabel className="font-normal">Phone</FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="visit" />
+                              </FormControl>
+                              <FormLabel className="font-normal">Visit</FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={control}
+                    name="restrictions"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Are there any contact or referral restrictions to be aware of?</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id="restrictions"
+                            placeholder="Restrictions"
+                            maxLength={300}
+                            limitCounterEnabled
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <Separator />
+
+                  <FormField
+                    control={control}
+                    name="isMinor"
+                    render={({ field }) => (
+                      <FormItem className="flex border-orange-200 bg-orange-50 flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
-                          <FormLabel>Urgent Referral</FormLabel>
-                          <FormDescription>Mark referral as urgent (within 24 hours)</FormDescription>
+                          <FormLabel>Child under 18 years old?</FormLabel>
+                          <FormDescription>Enable if minor and fill out necessary information</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -208,556 +670,128 @@ export const SentReferralPage = () => {
                       </FormItem>
                     )}
                   />
-                </div>
-              </CardContent>
 
-              <Separator />
-
-              <CardHeader>
-                <CardTitle>Receiving Organization Details</CardTitle>
-                <CardDescription>Information about the receiving organization</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-4">
-                  {!isCreate && !sentReferralData?.isDraft && (
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium leading-6">Focal point</dt>
-                      <dd className="mt-1 text-sm leading sm:mt-2">
-                        {currentFormAssignedFocalPoint ? (
-                          `${currentFormAssignedFocalPoint?.firstName ?? ''} ${currentFormAssignedFocalPoint.lastName ?? ''}`
-                        ) : (
-                          <p className="italic text-primary/80">Unassigned</p>
-                        )}
-                      </dd>
-                    </div>
-                  )}
-                  <AsyncSelect
-                    requiredField
-                    label="Receiving organization"
-                    name="organizationReferredTo"
-                    control={control}
-                    useInfiniteQueryFunction={useOrganizationsInfinite}
-                    labelKey="name"
-                    valueKey="id"
-                  />
-                  {currentFormSelectedOrganization &&
-                    (currentFormSelectedOrganization.isMpcaActive ||
-                      currentFormSelectedOrganization.isShelterActive ||
-                      currentFormSelectedOrganization.isWashActive) && (
-                      <FormField
-                        control={control}
-                        name="serviceCategory"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Service category</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select service category" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {resolvedServiceCategories &&
-                                  resolvedServiceCategories.length > 0 &&
-                                  resolvedServiceCategories.map((i) => (
-                                    <SelectItem key={i.id} value={i.id}>
-                                      {i.label}
-                                    </SelectItem>
-                                  ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-                  {resolvedCurrentOrgSubactivities && resolvedCurrentOrgSubactivities.length > 0 && (
-                    <FormField
+                  {currentFormIsMinor && (
+                    <MinorForm
                       control={control}
-                      name="subactivities"
-                      render={() => (
-                        <FormItem>
-                          <div className="mb-4">
-                            <FormLabel>List of (sub)activities</FormLabel>
-                          </div>
-                          {resolvedCurrentOrgSubactivities.map((item) => (
-                            <FormField
-                              key={item.id}
-                              control={control}
-                              name="subactivities"
-                              render={({ field }) => {
-                                return (
-                                  <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
-                                    <FormControl>
-                                      <Checkbox
-                                        checked={field.value?.includes(item.id)}
-                                        onCheckedChange={(checked) => {
-                                          return checked
-                                            ? field.onChange([...field.value, item.id])
-                                            : field.onChange(field.value?.filter((value: any) => value !== item.id));
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <FormLabel className="text-sm font-normal">{item.title}</FormLabel>
-                                  </FormItem>
-                                );
-                              }}
-                            />
-                          ))}
-                        </FormItem>
-                      )}
+                      currentFormCaregiverContactPreference={currentFormCaregiverContactPreference}
+                      isCaregiverInformed={currentFormIsCaregiverInformed}
                     />
                   )}
-                </div>
-                {currentFormServiceCategory === 'mpca' && (
-                  <div>
-                    <Separator className="my-4" />
-                    <MpcaSpecificForm control={control} />
-                  </div>
-                )}
-              </CardContent>
-              <Separator />
-              <CardHeader>
-                <CardTitle>Beneficiary Details</CardTitle>
-                <CardDescription>Information about the beneficiary that is being referred</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel requiredField>First name</FormLabel>
-                        <FormControl>
-                          <Input id="firstName" required className="" placeholder="First name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name="surname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel requiredField>Surname</FormLabel>
-                        <FormControl>
-                          <Input id="surname" placeholder="Surname" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name="patronymicName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel requiredField>Patronymic name</FormLabel>
-                        <FormControl>
-                          <Input id="patronymicName" placeholder="Patronymic name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name="gender"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel requiredField>Gender</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select gender" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="male">Male</SelectItem>
-                            <SelectItem value="female">Female</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={control}
-                    name="dateOfBirth"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel requiredField>Date of birth</FormLabel>
-                        <FormControl>
-                          <DatePicker field={field} btnclass="w-full" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-full">
+                  {/* end with the new */}
+                </CardContent>
+                <Separator />
+                <CardHeader>
+                  <CardDescription>
+                    Describe the minimum information required by the receiving agency to be able to respond to the
+                    referral. This can include problem description, whether they receive other assistance, number in the
+                    household, etc. For referrals to GBV, CP and Protection case management, do not provide details of
+                    the case or incident.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-4">
                     <FormField
                       control={control}
-                      name="taxId"
+                      name="required"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel requiredField={!currentFormNoTaxId}>Tax ID</FormLabel>
+                          <FormLabel requiredField>Reason</FormLabel>
                           <FormControl>
-                            <Input disabled={currentFormNoTaxId} id="taxId" placeholder="Tax ID" {...field} />
+                            <Textarea
+                              id="required"
+                              placeholder="Enter reason"
+                              maxLength={300}
+                              limitCounterEnabled
+                              {...field}
+                            />
                           </FormControl>
-                          <FormDescription className="line-clamp-1 overflow-visible">
-                            Note: It is not possible to do MPCA referrals without Tax ID
-                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="noTaxId"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                        <FormControl>
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                        <FormLabel className="font-normal text-sm whitespace-nowrap">No Tax ID</FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                </div>
 
-                <Separator />
-
-                <FormField
-                  control={control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Input id="address" placeholder="Address" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={control}
-                    name="oblast"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Oblast</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                    <FormField
+                      control={control}
+                      name="needForService"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Service explanation</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select oblast" />
-                            </SelectTrigger>
+                            <Textarea
+                              id="required"
+                              placeholder="Please explain any need for service, and any already provided"
+                              maxLength={300}
+                              limitCounterEnabled
+                              {...field}
+                            />
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="oblast#1">Oblast#1</SelectItem>
-                            <SelectItem value="oblast#2">Oblast#2</SelectItem>
-                            <SelectItem value="oblast#3">Oblast#3</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name="ryon"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Raion</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select Raion" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="raion#1">Raion#1</SelectItem>
-                            <SelectItem value="raion#2">Raion#2</SelectItem>
-                            <SelectItem value="raion#3">Raion#3</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name="hromada"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Hromada</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select Hromada" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="hromada#1">Hromada#1</SelectItem>
-                            <SelectItem value="hromada#2">Hromada#2</SelectItem>
-                            <SelectItem value="hromada#3">Hromada#3</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name="settlement"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Settlement</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select Settlement" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="settlement#1">Settlement#1</SelectItem>
-                            <SelectItem value="settlement#2">Settlement#2</SelectItem>
-                            <SelectItem value="settlement#3">Settlement#3</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel requiredField>Email</FormLabel>
-                        <FormControl>
-                          <Input id="email" placeholder="email@example.com" type="email" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel requiredField>Phone</FormLabel>
-                        <FormControl>
-                          <Input id="phone" placeholder="Phone" type="tel" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="contactPreference"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Contact preference</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue="email"
-                          value={field.value}
-                          className="flex flex-col space-y-1"
-                        >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="email" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Email</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="phone" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Phone</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="visit" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Visit</FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={control}
-                  name="restrictions"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Are there any contact or referral restrictions to be aware of?</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="restrictions"
-                          placeholder="Restrictions"
-                          maxLength={300}
-                          limitCounterEnabled
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <Separator />
-
-                <FormField
-                  control={control}
-                  name="isMinor"
-                  render={({ field }) => (
-                    <FormItem className="flex border-orange-200 bg-orange-50 flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel>Child under 18 years old?</FormLabel>
-                        <FormDescription>Enable if minor and fill out necessary information</FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                {currentFormIsMinor && (
-                  <MinorForm control={control} isCaregiverInformed={currentFormIsCaregiverInformed} />
-                )}
-
-                {/* end with the new */}
-              </CardContent>
-              <Separator />
-              <CardHeader>
-                <CardDescription>
-                  Describe the minimum information required by the receiving agency to be able to respond to the
-                  referral. This can include problem description, whether they receive other assistance, number in the
-                  household, etc. For referrals to GBV, CP and Protection case management, do not provide details of the
-                  case or incident.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-4">
-                  <FormField
-                    control={control}
-                    name="required"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel requiredField>Reason</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            id="required"
-                            placeholder="Enter reason"
-                            maxLength={300}
-                            limitCounterEnabled
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={control}
-                    name="needForService"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Service explanation</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            id="required"
-                            placeholder="Please explain any need for service, and any already provided"
-                            maxLength={300}
-                            limitCounterEnabled
-                            {...field}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex flex-col gap-3">
-                    <FormLabel>Upload accompanying information</FormLabel>
-                    <FilesDropzone control={control} name="files" />
-                  </div>
-                </div>
-              </CardContent>
-
-              <Separator />
-
-              <CardContent className="pt-6">
-                <FormField
-                  control={control}
-                  name="consent"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel>Consent</FormLabel>
-                        <FormDescription>Beneficiary has given their consent.</FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-              {(isCreate || sentReferralData?.isDraft) && (
-                <>
-                  <Separator className="mb-6" />
-                  <CardFooter className="gap-4 justify-between p-0 sm:px-6 sm:pb-6">
-                    <div className="flex gap-4">
-                      <Button
-                        type="button"
-                        variant="default"
-                        onClick={handleSubmit((values) => onSubmit({ values, isDraft: true }))}
-                        disabled={createReferral.isLoading}
-                      >
-                        Save as draft
-                      </Button>
-                      <Button
-                        type="submit"
-                        variant="default"
-                        onClick={handleSubmit((values) => onSubmit({ values }))}
-                        disabled={createReferral.isLoading}
-                      >
-                        Save and Submit
-                      </Button>
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex flex-col gap-3">
+                      <FormLabel>Upload accompanying information</FormLabel>
+                      <FilesDropzone control={control} name="files" />
                     </div>
-                    <Button type="button" variant="outline" onClick={() => navigate(APP_ROUTE.SentReferrals)}>
-                      Cancel
-                    </Button>
-                  </CardFooter>
-                </>
-              )}
-            </Card>
-          </div>
-        </form>
-      </Form>
+                  </div>
+                </CardContent>
+
+                <Separator />
+
+                <CardContent className="pt-6">
+                  <FormField
+                    control={control}
+                    name="consent"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>Consent</FormLabel>
+                          <FormDescription>Beneficiary has given their consent.</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                {(isCreate || sentReferralData?.isDraft) && (
+                  <>
+                    <Separator className="mb-6" />
+                    <CardFooter className="gap-4 justify-between p-0 sm:px-6 sm:pb-6">
+                      <div className="flex gap-4">
+                        <Button
+                          type="button"
+                          variant="default"
+                          onClick={handleSubmit((values) => onSubmit({ values, isDraft: true }))}
+                          disabled={createReferral.isLoading}
+                        >
+                          Save as draft
+                        </Button>
+                        <Button
+                          type="submit"
+                          variant="default"
+                          onClick={handleSubmit((values) => onSubmit({ values }))}
+                          disabled={createReferral.isLoading}
+                        >
+                          Save and Submit
+                        </Button>
+                      </div>
+                      <Button type="button" variant="outline" onClick={() => navigate(APP_ROUTE.SentReferrals)}>
+                        Cancel
+                      </Button>
+                    </CardFooter>
+                  </>
+                )}
+              </Card>
+            </div>
+          </form>
+        </Form>
+      ) : (
+        <ReferralDiscussions referralId={sentReferralId} />
+      )}
     </PageContainer>
   );
 };

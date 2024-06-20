@@ -33,7 +33,7 @@ const FocalPointSchema = z
 export const SentReferralSchema = z
   .object({
     isUrgent: z.boolean(),
-    serviceCategory: z.string(),
+    serviceCategory: z.string().min(1, { message: 'Service category required' }),
     subactivities: z.array(z.string()),
     organizationReferredTo: OrganizationSchema,
     displacementStatus: z.string().optional(),
@@ -88,11 +88,19 @@ export const SentReferralSchema = z
         });
       }
 
-      if (!data.caregiverEmail) {
+      if (data.caregiverContactPreference && data.caregiverContactPreference === 'email' && !data.caregiverEmail) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Caregiver email required',
           path: ['caregiverEmail'],
+        });
+      }
+
+      if (data.caregiverContactPreference && data.caregiverContactPreference === 'phone' && !data.caregiverPhone) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Caregiver phone required',
+          path: ['caregiverPhone'],
         });
       }
 
@@ -141,7 +149,7 @@ export const SentReferralSchema = z
       }
     }
 
-    if (!data.noTaxId && !data.dateOfBirth) {
+    if (!data.noTaxId) {
       if (!data.taxId) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -151,42 +159,22 @@ export const SentReferralSchema = z
       }
     }
 
-    if (!data.taxId) {
-      if (!data.dateOfBirth) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Date of birth required',
-          path: ['dateOfBirth'],
-        });
-      }
-    }
-
-    if (!data.dateOfBirth) {
-      if (!data.taxId) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Tax ID required',
-          path: ['taxId'],
-        });
-      }
-    }
-
-    if (!data.phone) {
-      if (!data.email) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Email required',
-          path: ['email'],
-        });
-      }
-    }
-
-    if (!data.email) {
+    if (data.contactPreference && data.contactPreference === 'phone') {
       if (!data.phone) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Phone required',
           path: ['phone'],
+        });
+      }
+    }
+
+    if (data.contactPreference && data.contactPreference === 'email') {
+      if (!data.email) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Email required',
+          path: ['email'],
         });
       }
     }

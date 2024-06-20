@@ -47,7 +47,7 @@ export const columns = (
     cell: ({ getValue }) => {
       return (
         <div className="flex flex-col">
-          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm')}</span>
+          <span>{formatDate(getValue() as Date, 'dd/MM/yyyy HH:mm')}</span>
         </div>
       );
     },
@@ -59,7 +59,7 @@ export const columns = (
     cell: ({ getValue }) => {
       return (
         <div className="flex flex-col">
-          <span>{formatDate(getValue() as Date, 'MM/dd/yyyy HH:mm')}</span>
+          <span>{formatDate(getValue() as Date, 'dd/MM/yyyyHH:mm')}</span>
         </div>
       );
     },

@@ -55,7 +55,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
 
   const { data: hdxApiData } = useHdxHapiGenerateAppIdentifier({
     application: 'CCD_DATA_PORTAL',
-    email: 'ivan.zivkovic@init.hr',
+    email: 'me@tin.fyi',
   });
 
   const logoutUser = useCallback(() => {
