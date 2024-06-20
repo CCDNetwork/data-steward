@@ -40,7 +40,7 @@ export const resToReferral = (res: any): Referral => {
     caregiverEmail: res.caregiverEmail ?? '',
     caregiverPhone: res.caregiverPhone ?? '',
     caregiverContactPreference: res.caregiverContactPreference ?? '',
-    isCaregiverInformed: res.isCaregiverInformed.toString() ?? 'false',
+    isCaregiverInformed: res.isCaregiverInformed ? res.isCaregiverInformed.toString() : 'false',
     caregiverExplanation: res.caregiverExplanation ?? '',
     caregiverNote: res.caregiverPhone ?? '',
     focalPointId: res.focalPointId ?? '',
