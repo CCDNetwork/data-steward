@@ -18,7 +18,7 @@ public class Referral : UserChangeTracked
 
     // Receiving organization details
     public string ServiceCategory { get; set; }
-    [Column(TypeName = "jsonb")] public List<Guid> Subactivities { get; set; }
+    [Column(TypeName = "jsonb")] public List<Guid> SubactivitiesIds { get; set; }
     [ForeignKey("Organization"), Required] public Guid OrganizationReferredToId { get; set; }
     public Organization OrganizationReferredTo { get; set; }
 

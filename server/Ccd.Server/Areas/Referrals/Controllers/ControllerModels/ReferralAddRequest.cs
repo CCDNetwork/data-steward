@@ -12,7 +12,7 @@ public class ReferralAddRequest
     // Receiving organization details
     [Required] public Guid OrganizationReferredToId { get; set; }
     public string ServiceCategory { get; set; }
-    public List<Guid> Subactivities { get; set; }
+    public List<Guid> SubactivitiesIds { get; set; }
 
     // MPCA info
     public string DisplacementStatus { get; set; }

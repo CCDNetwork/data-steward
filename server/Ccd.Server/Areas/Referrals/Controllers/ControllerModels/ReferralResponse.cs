@@ -16,7 +16,8 @@ public class ReferralResponse
 
     // Receiving organization details
     public string ServiceCategory { get; set; }
-    public List<Guid> Subactivities { get; set; }
+    [JsonIgnore] public List<Guid> SubactivitiesIds { get; set; }
+    public List<Activity> Subactivities { get; set; }
     public Guid OrganizationReferredToId { get; set; }
     public OrganizationResponse OrganizationReferredTo { get; set; }
 

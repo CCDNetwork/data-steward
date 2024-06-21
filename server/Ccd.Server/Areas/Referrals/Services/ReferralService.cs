@@ -183,6 +183,12 @@ public class ReferralService
         referral.OrganizationCreated = _mapper.Map<OrganizationResponse>(organizationCreated);
         referral.UserCreated = _mapper.Map<UserResponse>(userCreated);
 
+        if (referral.SubactivitiesIds != null && referral.SubactivitiesIds.Count > 0)
+        {
+            var activities = await _context.Activities.Where(e => referral.SubactivitiesIds.Contains(e.Id)).ToListAsync();
+            referral.Subactivities = _mapper.Map<List<Activity>>(activities);
+        }
+
         if (referral.FocalPointId != null)
         {
             var userFocalPoint = await _context.Users.FirstOrDefaultAsync(e => e.Id == referral.FocalPointId);
