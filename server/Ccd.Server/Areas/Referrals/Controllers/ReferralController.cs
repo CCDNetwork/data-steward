@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
 using Ccd.Server.Users;
+using System.Collections.Generic;
 
 namespace Ccd.Server.Referrals;
 
@@ -101,7 +102,7 @@ public class ReferralController : ControllerBaseExtended
 
     [HttpGet("{id}/discussions")]
     [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult<DiscussionResponse>> GetDiscussions(Guid id)
+    public async Task<ActionResult<List<DiscussionResponse>>> GetDiscussions(Guid id)
     {
         var result = await _referralService.GetDiscussionsApi(id);
         return Ok(result);
