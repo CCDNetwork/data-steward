@@ -18,6 +18,7 @@ public class ReferralService
     private readonly CcdContext _context;
     private readonly IStorageService _storageService;
     private readonly UserService _userService;
+    private readonly OrganizationService _organizationService;
 
     private readonly string _selectSql =
         $@"
@@ -41,13 +42,15 @@ public class ReferralService
         IMapper mapper,
         CcdContext context,
         IStorageService storageService,
-        UserService userService
+        UserService userService,
+        OrganizationService organizationService
     )
     {
         _mapper = mapper;
         _context = context;
         _storageService = storageService;
         _userService = userService;
+        _organizationService = organizationService;
     }
 
     public async Task<PagedApiResponse<ReferralResponse>> GetReferralsApi(Guid organizationId, RequestParameters requestParameters = null, bool received = false)
@@ -176,10 +179,10 @@ public class ReferralService
 
     private async Task resolveDependencies(ReferralResponse referral)
     {
-        var organizationReffereTo = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referral.OrganizationReferredToId);
+        var organizationRefferedTo = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referral.OrganizationReferredToId);
         var organizationCreated = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referral.OrganizationCreatedId);
         var userCreated = await _context.Users.FirstOrDefaultAsync(e => e.Id == referral.UserCreatedId);
-        referral.OrganizationReferredTo = _mapper.Map<OrganizationResponse>(organizationReffereTo);
+        referral.OrganizationReferredTo = await _organizationService.GetOrganizationApi(organizationRefferedTo.Id);
         referral.OrganizationCreated = _mapper.Map<OrganizationResponse>(organizationCreated);
         referral.UserCreated = _mapper.Map<UserResponse>(userCreated);
 
