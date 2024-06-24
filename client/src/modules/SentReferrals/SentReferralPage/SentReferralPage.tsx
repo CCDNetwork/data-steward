@@ -252,6 +252,7 @@ export const SentReferralPage = () => {
                       useInfiniteQueryFunction={useOrganizationsInfinite}
                       labelKey="name"
                       valueKey="id"
+                      required
                     />
                     {currentFormSelectedOrganization &&
                       (currentFormSelectedOrganization.isMpcaActive ||
@@ -266,10 +267,12 @@ export const SentReferralPage = () => {
                               <Select
                                 onValueChange={(value) => {
                                   setValue('subactivities', []);
+                                  setValue('subactivitiesIds', []);
                                   setValue('displacementStatus', '');
                                   setValue('householdSize', '');
                                   setValue('householdMonthlyIncome', '');
                                   setValue('householdsVulnerabilityCriteria', []);
+                                  setValue('noTaxId', false);
                                   field.onChange(value);
                                 }}
                                 value={field.value}
@@ -502,50 +505,54 @@ export const SentReferralPage = () => {
                           .map((i) => ({ value: i.name, label: i.name }))}
                       />
                     )}
-                    <FormField
-                      control={control}
-                      name="hromada"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Hromada</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select Hromada" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="hromada#1">Hromada#1</SelectItem>
-                              <SelectItem value="hromada#2">Hromada#2</SelectItem>
-                              <SelectItem value="hromada#3">Hromada#3</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={control}
-                      name="settlement"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Settlement</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select Settlement" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="settlement#1">Settlement#1</SelectItem>
-                              <SelectItem value="settlement#2">Settlement#2</SelectItem>
-                              <SelectItem value="settlement#3">Settlement#3</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {watch('ryon') && (
+                      <FormField
+                        control={control}
+                        name="hromada"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Hromada</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select Hromada" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="hromada#1">Hromada#1</SelectItem>
+                                <SelectItem value="hromada#2">Hromada#2</SelectItem>
+                                <SelectItem value="hromada#3">Hromada#3</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                    {watch('hromada') && (
+                      <FormField
+                        control={control}
+                        name="settlement"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Settlement</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select Settlement" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="settlement#1">Settlement#1</SelectItem>
+                                <SelectItem value="settlement#2">Settlement#2</SelectItem>
+                                <SelectItem value="settlement#3">Settlement#3</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField
@@ -646,7 +653,18 @@ export const SentReferralPage = () => {
                           <FormDescription>Enable if minor and fill out necessary information</FormDescription>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={(value) => {
+                              setValue('isSeparated', false);
+                              setValue('caregiver', '');
+                              setValue('relationshipToChild', '');
+                              setValue('caregiverEmail', '');
+                              setValue('caregiverPhone', '');
+                              setValue('needForService', '');
+                              field.onChange(value);
+                            }}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
