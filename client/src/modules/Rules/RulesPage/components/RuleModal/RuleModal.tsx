@@ -125,7 +125,7 @@ export const RuleModal = ({ attributeGroupId }: { attributeGroupId?: string }) =
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Rule name</FormLabel>
+                    <FormLabel requiredField>Rule name</FormLabel>
                     <FormControl>
                       <Input id="name" placeholder="Enter name..." {...field} />
                     </FormControl>

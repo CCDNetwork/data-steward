@@ -93,7 +93,7 @@ export const OrganizationPage = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Organization name</FormLabel>
+                      <FormLabel requiredField>Organization name</FormLabel>
                       <FormControl>
                         <Input id="name" placeholder="Organization name" {...field} />
                       </FormControl>

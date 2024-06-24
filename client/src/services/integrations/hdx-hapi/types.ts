@@ -1,25 +1,20 @@
-export interface Beneficiary {
-  id: string;
-  firstName: string;
-  familyName: string;
-  gender: string;
-  dateOfBirth: string;
-  communityId: string;
-  hhId: string;
-  mobilePhoneId: string;
-  govIdType: string;
-  govIdNumber: string;
-  otherIdType: string;
-  otherIdNumber: string;
-  assistanceDetails: string;
-  activity: string;
-  currency: string;
-  currencyAmount: string;
-  startDate: string;
-  endDate: string;
-  frequency: string;
-  isPrimary: boolean;
-  status: string;
-  createdAt: Date | null;
-  updatedAt: Date | null;
+export interface AdminLevel1 {
+  id: number;
+  locationRef: number;
+  code: string;
+  name: string;
+  locationCode: string;
+  locationName: string;
+}
+
+export interface AdminLevel2 {
+  id: number;
+  locationRef: number;
+  code: string;
+  name: string;
+  locationCode: string;
+  locationName: string;
+  admin1Ref: number;
+  admin1Code: string;
+  admin1Name: string;
 }

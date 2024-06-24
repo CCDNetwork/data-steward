@@ -33,10 +33,13 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(({ field,
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
+            initialFocus
             mode="single"
+            captionLayout="dropdown-buttons"
+            fromYear={1920}
+            toYear={new Date().getFullYear()}
             selected={field.value}
             onSelect={field.onChange}
-            initialFocus
             fromDate={props.fromDate}
           />
         </PopoverContent>

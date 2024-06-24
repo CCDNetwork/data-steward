@@ -24,6 +24,7 @@ import { UserHandbookListPage } from './modules/UserHandbookList';
 import { RulesPage, RulesProvider } from './modules/Rules';
 import { SentReferralsPage, SentReferralsProvider, SentReferralPage } from './modules/SentReferrals';
 import { ReceivedReferralPage, ReceivedReferralsPage, ReceivedReferralsProvider } from './modules/ReceivedReferrals';
+import { BeneficiaryReferralDataPage } from './modules/Public/BeneficiaryReferralDataPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -101,6 +102,7 @@ export const router = createBrowserRouter(
       </Route>
 
       {/* Public Pages */}
+      <Route path={APP_ROUTE.ReferralData} element={<BeneficiaryReferralDataPage />} />
       <Route path={APP_ROUTE.PermissionDenied} element={<PermissionDeniedPage />} />
       <Route path={APP_ROUTE.SuccessPage} element={<SuccessPage />} />
       <Route path={APP_ROUTE.SignIn} element={<SignInPage />} />

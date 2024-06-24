@@ -84,7 +84,7 @@ export const TemplatePage = () => {
                       name="name"
                       render={({ field }) => (
                         <FormItem className="pb-4 max-w-[400px]">
-                          <FormLabel>Template Name</FormLabel>
+                          <FormLabel requiredField>Template name</FormLabel>
                           <FormControl>
                             <Input id="name" placeholder="Template name" {...field} />
                           </FormControl>

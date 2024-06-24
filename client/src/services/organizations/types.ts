@@ -1,4 +1,4 @@
-export interface OrganizationActivities {
+export interface OrganizationActivity {
   id: string;
   title: string;
   serviceType: string;
@@ -10,7 +10,7 @@ export interface Organization {
   isMpcaActive: boolean;
   isWashActive: boolean;
   isShelterActive: boolean;
-  activities: OrganizationActivities[];
+  activities: OrganizationActivity[];
   createdAt: Date | null;
   updatedAt: Date | null;
 }

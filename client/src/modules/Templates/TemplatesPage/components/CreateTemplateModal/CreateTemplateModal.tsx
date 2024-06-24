@@ -75,7 +75,7 @@ export const CreateTemplateModal = () => {
               name="name"
               render={({ field }) => (
                 <FormItem className="pb-4">
-                  <FormLabel>Template Name</FormLabel>
+                  <FormLabel requiredField>Template Name</FormLabel>
                   <FormControl>
                     <Input id="name" placeholder="Template name" {...field} />
                   </FormControl>

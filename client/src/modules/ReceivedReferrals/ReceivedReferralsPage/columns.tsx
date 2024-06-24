@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Referral } from '@/services/referrals';
-import { shortenId } from '@/helpers/common';
 import { cn } from '@/helpers/utils';
 import { ReferralStatus } from '@/services/referrals/const';
 
@@ -21,13 +20,11 @@ export const columns = (
   setReceivedReferralToDelete: React.Dispatch<React.SetStateAction<Referral | null>>,
 ): TableColumn<Referral>[] => [
   {
-    accessorKey: 'id',
-    id: 'id',
+    accessorKey: 'caseNumber',
+    id: 'caseNumber',
     header: 'Case number',
-    cell: ({ row }) => {
-      const { id } = row.original;
-
-      return shortenId(id) ?? '-';
+    cell: ({ getValue }) => {
+      return getValue() ?? '-';
     },
   },
   {

@@ -68,7 +68,7 @@ export const CreateHandbookModal = () => {
                 name="title"
                 render={({ field }) => (
                   <FormItem className="pb-4">
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel requiredField>Title</FormLabel>
                     <FormControl>
                       <Input id="title" placeholder="Title" {...field} />
                     </FormControl>

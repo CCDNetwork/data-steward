@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 
 import { useUsersInfinite } from '@/services/users/api';
 import { PageContainer } from '@/components/PageContainer';
-import { createDownloadLink, shortenId, useIdFromParams } from '@/helpers/common';
+import { createDownloadLink, useIdFromParams } from '@/helpers/common';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { APP_ROUTE } from '@/helpers/constants';
@@ -91,6 +91,7 @@ export const ReceivedReferralPage = () => {
 
   const receivingReferral = useMemo(
     () => ({
+      caseNumber: receivedReferralData?.caseNumber ?? 'N/A',
       isUrgent: receivedReferralData?.isUrgent || false,
       serviceCategory: receivedReferralData?.serviceCategory || 'N/A',
       subactivities: receivedReferralData?.subactivities || [],
@@ -139,16 +140,14 @@ export const ReceivedReferralPage = () => {
     [receivedReferralData],
   );
 
-  const referralCaseNumberFromId = shortenId(receivedReferralData?.id);
-
   return (
     <PageContainer
-      pageTitle={`Case #${referralCaseNumberFromId}`}
+      pageTitle={`Case ${receivingReferral.caseNumber}`}
       pageSubtitle="Manage received case"
       isLoading={queryLoading}
       breadcrumbs={[
         { href: `${APP_ROUTE.ReceivedReferrals}`, name: 'Received Referrals' },
-        { name: `Case #${referralCaseNumberFromId}` },
+        { name: `Case ${receivingReferral.caseNumber}` },
       ]}
       headerNode={
         <div className="flex sm:flex-row flex-col sm:gap-4 gap-2">
@@ -196,7 +195,7 @@ export const ReceivedReferralPage = () => {
               </div>
             )}
             <div
-              className={cn('px-6 pt-2 pb-6 flex items-center justify-center', {
+              className={cn('px-6 pb-6 flex items-center justify-center', {
                 'mt-5': receivingReferral?.isUrgent,
               })}
             >
@@ -260,7 +259,7 @@ export const ReceivedReferralPage = () => {
                   <div className="col-span-1">
                     <dt className="text-sm font-medium leading-6">Subactivites</dt>
                     <dd className="mt-1 text-sm leading-6 capitalize sm:mt-2">
-                      {receivingReferral.subactivities.join(', ')}
+                      {receivingReferral.subactivities.map((i) => i.title).join(', ')}
                     </dd>
                   </div>
                 )}

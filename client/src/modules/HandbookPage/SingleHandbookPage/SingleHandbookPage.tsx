@@ -82,7 +82,7 @@ export const SingleHandbookPage = () => {
                     name="title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Handbook title</FormLabel>
+                        <FormLabel requiredField>Handbook title</FormLabel>
                         <FormControl>
                           <Input id="title" placeholder="Handbook title" {...field} />
                         </FormControl>

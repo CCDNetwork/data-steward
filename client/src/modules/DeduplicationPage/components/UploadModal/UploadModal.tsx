@@ -127,6 +127,7 @@ export const UploadModal = ({ isOpen, deduplicationType, setIsOpen }: Props) => 
               <AsyncSelect
                 label="Template"
                 name="template"
+                requiredField
                 control={control}
                 useInfiniteQueryFunction={useTemplatesInfinite}
                 labelKey="name"

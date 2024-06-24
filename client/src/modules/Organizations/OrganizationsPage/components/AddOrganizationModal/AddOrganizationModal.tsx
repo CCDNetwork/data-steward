@@ -86,7 +86,7 @@ export const AddOrganizationModal = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Organization name</FormLabel>
+                    <FormLabel requiredField>Organization name</FormLabel>
                     <FormControl>
                       <Input id="name" placeholder="Organization name" type="text" {...field} />
                     </FormControl>

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 
 import { PageContainer } from '@/components/PageContainer';
-import { shortenId, useIdFromParams } from '@/helpers/common';
+import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -24,6 +24,11 @@ import { ReferralStatus, ReferralTab } from '@/services/referrals/const';
 import { DatePicker } from '@/components/DatePicker';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ReferralDiscussions } from '@/components/ReferralDiscussions';
+import { Combobox } from '@/components/Combobox';
+import { useUkraineAdminLevel1Data, useUkraineAdminLevel2Data } from '@/services/integrations';
+import { useAuth } from '@/providers/GlobalProvider';
 
 import { CancelReferralModal } from './components/CancelReferralModal';
 import { dataToSentReferralFormData } from './form-transformation';
@@ -31,16 +36,23 @@ import { SentReferralFormData, SentReferralSchema } from './validations';
 import { defaultSentReferralFormFormValues } from './const';
 import { MinorForm } from './components/MinorForm';
 import { MpcaSpecificForm } from './components/MpcaSpecificForm';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ReferralDiscussions } from '@/components/ReferralDiscussions';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
+  const { hdxHapiAppIdentifier } = useAuth();
   const { id: sentReferralId, isCreate } = useIdFromParams();
 
   const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
 
   const { data: sentReferralData, isLoading: queryLoading } = useReferral({ id: sentReferralId, isCreate });
+
+  const { data: uaAdminLvl1Data, isFetched } = useUkraineAdminLevel1Data({
+    APP_IDENTIFIER: hdxHapiAppIdentifier,
+  });
+
+  const { data: uaAdminLvl2Data, isFetched: adminLvl2Fetched } = useUkraineAdminLevel2Data({
+    APP_IDENTIFIER: hdxHapiAppIdentifier,
+  });
 
   const { createReferral, patchReferral } = useReferralMutation();
 
@@ -57,7 +69,6 @@ export const SentReferralPage = () => {
   const currentFormServiceCategory = watch('serviceCategory');
   const currentFormIsCaregiverInformed = watch('isCaregiverInformed');
   const currentFormNoTaxId = watch('noTaxId');
-  const currentFormTaxId = watch('taxId');
   const currentFormContactPreference = watch('contactPreference');
   const currentFormCaregiverContactPreference = watch('caregiverContactPreference');
 
@@ -68,26 +79,30 @@ export const SentReferralPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sentReferralData]);
 
-  useEffect(() => {
-    if (currentFormServiceCategory) {
-      setValue('subactivities', []);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFormServiceCategory]);
+  const resolvedServiceCategories = useMemo(() => {
+    if (!currentFormSelectedOrganization) return;
 
-  useEffect(() => {
-    if (!currentFormTaxId && currentFormServiceCategory === 'mpca') {
-      setValue('serviceCategory', '');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFormTaxId]);
+    const categoryMappings: { key: 'isMpcaActive' | 'isWashActive' | 'isShelterActive'; id: string; label: string }[] =
+      [
+        { key: 'isMpcaActive', id: 'mpca', label: 'MPCA' },
+        { key: 'isWashActive', id: 'wash', label: 'WASH' },
+        { key: 'isShelterActive', id: 'shelter', label: 'Shelter' },
+      ];
 
-  useEffect(() => {
-    if (currentFormNoTaxId) {
-      setValue('taxId', '');
+    return (
+      categoryMappings
+        .filter((mapping) => currentFormSelectedOrganization[mapping.key])
+        .map((mapping) => ({ id: mapping.id, label: mapping.label })) || []
+    );
+  }, [currentFormSelectedOrganization]);
+
+  const resolvedCurrentOrgSubactivities = useMemo(() => {
+    if (!currentFormServiceCategory && !currentFormSelectedOrganization) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFormNoTaxId]);
+
+    return currentFormSelectedOrganization.activities.filter((i) => i.serviceType === currentFormServiceCategory);
+  }, [currentFormServiceCategory, currentFormSelectedOrganization]);
 
   const onSubmit = async ({ values, isDraft = false }: { values: SentReferralFormData; isDraft?: boolean }) => {
     if (isCreate) {
@@ -126,41 +141,14 @@ export const SentReferralPage = () => {
     }
   };
 
-  const referralCaseNumberFromId = shortenId(sentReferralData?.id);
-
-  const resolvedServiceCategories = useMemo(() => {
-    if (!currentFormSelectedOrganization) return;
-
-    const categoryMappings: { key: 'isMpcaActive' | 'isWashActive' | 'isShelterActive'; id: string; label: string }[] =
-      [
-        { key: 'isMpcaActive', id: 'mpca', label: 'MPCA' },
-        { key: 'isWashActive', id: 'wash', label: 'WASH' },
-        { key: 'isShelterActive', id: 'shelter', label: 'Shelter' },
-      ];
-
-    return (
-      categoryMappings
-        .filter((mapping) => currentFormSelectedOrganization[mapping.key])
-        .map((mapping) => ({ id: mapping.id, label: mapping.label })) || []
-    );
-  }, [currentFormSelectedOrganization]);
-
-  const resolvedCurrentOrgSubactivities = useMemo(() => {
-    if (!currentFormServiceCategory && !currentFormSelectedOrganization) {
-      return;
-    }
-
-    return currentFormSelectedOrganization.activities.filter((i) => i.serviceType === currentFormServiceCategory);
-  }, [currentFormServiceCategory, currentFormSelectedOrganization]);
-
   return (
     <PageContainer
-      pageTitle={isCreate ? 'New case' : `Case  #${referralCaseNumberFromId}`}
+      pageTitle={isCreate ? 'New case' : `Case  ${sentReferralData?.caseNumber ?? '-'}`}
       pageSubtitle={isCreate ? 'Create a new case' : 'Manage case'}
-      isLoading={queryLoading && !isCreate}
+      isLoading={(queryLoading || !adminLvl2Fetched || !isFetched) && !isCreate}
       breadcrumbs={[
         { href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' },
-        { name: isCreate ? 'New case' : `Case #${referralCaseNumberFromId}` },
+        { name: isCreate ? 'New case' : `Case ${sentReferralData?.caseNumber ?? '-'}` },
       ]}
       headerNode={
         !isCreate &&
@@ -274,8 +262,18 @@ export const SentReferralPage = () => {
                           name="serviceCategory"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Service category</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value}>
+                              <FormLabel requiredField>Service category</FormLabel>
+                              <Select
+                                onValueChange={(value) => {
+                                  setValue('subactivities', []);
+                                  setValue('displacementStatus', '');
+                                  setValue('householdSize', '');
+                                  setValue('householdMonthlyIncome', '');
+                                  setValue('householdsVulnerabilityCriteria', []);
+                                  field.onChange(value);
+                                }}
+                                value={field.value}
+                              >
                                 <FormControl>
                                   <SelectTrigger>
                                     <SelectValue placeholder="Select service category" />
@@ -312,14 +310,14 @@ export const SentReferralPage = () => {
                                 name="subactivities"
                                 render={({ field }) => {
                                   return (
-                                    <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
+                                    <FormItem key={item.id} className="flex flex-row items-center space-x-3 space-y-0">
                                       <FormControl>
                                         <Checkbox
-                                          checked={field.value?.includes(item.id)}
+                                          checked={!!field.value?.find((i) => i.id === item.id)}
                                           onCheckedChange={(checked) => {
                                             return checked
-                                              ? field.onChange([...field.value, item.id])
-                                              : field.onChange(field.value?.filter((value: any) => value !== item.id));
+                                              ? field.onChange([...field.value, item])
+                                              : field.onChange(field.value?.filter((value: any) => value !== item));
                                           }}
                                         />
                                       </FormControl>
@@ -452,7 +450,16 @@ export const SentReferralPage = () => {
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                           <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={(value) => {
+                                if (value) {
+                                  setValue('taxId', '');
+                                  setValue('serviceCategory', '');
+                                }
+                                field.onChange(value);
+                              }}
+                            />
                           </FormControl>
                           <FormLabel className="font-normal text-sm whitespace-nowrap">No Tax ID</FormLabel>
                         </FormItem>
@@ -477,50 +484,24 @@ export const SentReferralPage = () => {
                   />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={control}
-                      name="oblast"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Oblast</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select oblast" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="oblast#1">Oblast#1</SelectItem>
-                              <SelectItem value="oblast#2">Oblast#2</SelectItem>
-                              <SelectItem value="oblast#3">Oblast#3</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={control}
-                      name="ryon"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Raion</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select Raion" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="raion#1">Raion#1</SelectItem>
-                              <SelectItem value="raion#2">Raion#2</SelectItem>
-                              <SelectItem value="raion#3">Raion#3</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {isFetched && (
+                      <Combobox
+                        label="Oblast"
+                        name="oblast"
+                        control={control}
+                        options={uaAdminLvl1Data!.map((i) => ({ value: i.name, label: i.name }))}
+                      />
+                    )}
+                    {adminLvl2Fetched && watch('oblast') && (
+                      <Combobox
+                        label="Raion"
+                        name="ryon"
+                        control={control}
+                        options={uaAdminLvl2Data!
+                          .filter((i) => i.admin1Name === watch('oblast'))
+                          .map((i) => ({ value: i.name, label: i.name }))}
+                      />
+                    )}
                     <FormField
                       control={control}
                       name="hromada"
@@ -678,8 +659,6 @@ export const SentReferralPage = () => {
                       isCaregiverInformed={currentFormIsCaregiverInformed}
                     />
                   )}
-
-                  {/* end with the new */}
                 </CardContent>
                 <Separator />
                 <CardHeader>

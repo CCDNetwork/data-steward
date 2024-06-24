@@ -35,6 +35,7 @@ export enum APP_ROUTE {
   SuccessPage = '/success',
   PermissionDenied = '/permission-denied',
   Templates = '/templates',
+  ReferralData = '/referral-data',
 }
 
 export enum PAGE_TYPE {

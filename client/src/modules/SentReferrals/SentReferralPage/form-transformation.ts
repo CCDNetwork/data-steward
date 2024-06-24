@@ -11,6 +11,7 @@ export const dataToSentReferralFormData = (
     isUrgent: data.isUrgent,
     serviceCategory: data.serviceCategory,
     subactivities: data.subactivities,
+    subactivitiesIds: data.subactivitiesIds,
     organizationReferredTo: data.organizationReferredTo as Organization,
     displacementStatus: data.displacementStatus,
     householdSize: data.householdSize,

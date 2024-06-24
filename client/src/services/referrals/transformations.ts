@@ -1,4 +1,4 @@
-import { resToOrganization } from '@/services/organizations';
+import { OrganizationActivity, resToActivities, resToOrganization } from '@/services/organizations';
 
 import { Referral } from './types';
 import { resToUser } from '../users';
@@ -6,10 +6,12 @@ import { resToStorageFile } from '../storage';
 
 export const resToReferral = (res: any): Referral => {
   return {
+    caseNumber: res.caseNumber ?? '',
     id: res.id,
     isUrgent: res.isUrgent ?? false,
+    subactivitiesIds: res.subactivitiesIds ?? [],
     serviceCategory: res.serviceCategory ?? '',
-    subactivities: res.subactivities ?? [],
+    subactivities: res.subactivities ? res.subactivities.map(resToActivities) : [],
     organizationReferredToId: res.organizationReferredToId ?? '',
     organizationReferredTo: res.organizationReferredTo ? resToOrganization(res.organizationReferredTo) : null,
     displacementStatus: res.displacementStatus ?? '',
@@ -51,11 +53,6 @@ export const resToReferral = (res: any): Referral => {
     organizationCreated: res.organizationCreated ? resToOrganization(res.organizationCreated) : null,
     userCreated: res.userCreated ? resToUser(res.userCreated) : null,
     files: res.files ? res.files.map(resToStorageFile) : [],
-
-    // familyName: string;
-    // methodOfContact: res.methodOfContact ?? '',
-    // contactDetails: res.contactDetails ?? '',
-    // note: res.note ?? '',
     createdAt: res.createdAt ? new Date(res.createdAt) : null,
     updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
   };
@@ -66,13 +63,13 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
     isUrgent: data.isUrgent,
     organizationReferredToId: data.organizationReferredTo?.id,
     serviceCategory: data.serviceCategory,
-    subactivities: data.subactivities,
     displacementStatus: data.displacementStatus,
     householdSize: data.householdSize,
     householdMonthlyIncome: data.householdMonthlyIncome,
     householdsVulnerabilityCriteria: data.householdsVulnerabilityCriteria,
     firstName: data.firstName,
     patronymicName: data.patronymicName,
+    subactivitiesIds: data.subactivities.length ? data.subactivities.map((i: OrganizationActivity) => i.id) : [],
     surname: data.surname,
     dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : null,
     gender: data.gender,
@@ -107,9 +104,6 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
     status: data.status,
   };
 
-  // contactDetails: data.contactDetails,
-  // familyName: data.familyName,
-
   return req;
 };
 
@@ -118,7 +112,6 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     isUrgent: data.isUrgent,
     organizationReferredToId: data.organizationReferredTo?.id,
     serviceCategory: data.serviceCategory,
-    subactivities: data.subactivities,
     displacementStatus: data.displacementStatus,
     householdSize: data.householdSize,
     householdMonthlyIncome: data.householdMonthlyIncome,
@@ -127,6 +120,7 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     patronymicName: data.patronymicName,
     surname: data.surname,
     dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : null,
+    subactivitiesIds: data.subactivities.length ? data.subactivities.map((i: OrganizationActivity) => i.id) : [],
     gender: data.gender,
     taxId: data.taxId,
     address: data.address,
@@ -154,12 +148,6 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     focalPointId: data.focalPoint?.id ?? undefined,
     status: data.status,
     isDraft: data.isDraft,
-
-    // familyName: data.familyName,
-    // methodOfContact: data.methodOfContact,
-    // contactDetails: data.contactDetails,
-    // note: data.note,
-    // organizationId: data.organizationReferredTo?.id,
   };
 
   return req;

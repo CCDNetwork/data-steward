@@ -2,6 +2,7 @@ export const defaultSentReferralFormFormValues = {
   isUrgent: false,
   serviceCategory: '',
   subactivities: [],
+  subactivitiesIds: [],
   organizationReferredTo: undefined,
   displacementStatus: '',
   householdSize: '',

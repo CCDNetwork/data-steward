@@ -1,6 +1,6 @@
-import { Organization, OrganizationActivities } from '@/services/organizations';
+import { Organization, OrganizationActivity } from '@/services/organizations';
 
-const resToActivities = (res: any): OrganizationActivities => {
+export const resToActivities = (res: any): OrganizationActivity => {
   return {
     id: res.id ?? null,
     title: res.title ?? '',

@@ -100,7 +100,7 @@ export const AddUserModal = () => {
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First name</FormLabel>
+                      <FormLabel requiredField>First name</FormLabel>
                       <FormControl>
                         <Input id="firstName" placeholder="John" type="text" {...field} />
                       </FormControl>
@@ -113,7 +113,7 @@ export const AddUserModal = () => {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last name</FormLabel>
+                      <FormLabel requiredField>Last name</FormLabel>
                       <FormControl>
                         <Input id="lastName" placeholder="Doe" type="text" {...field} />
                       </FormControl>
@@ -127,7 +127,7 @@ export const AddUserModal = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel requiredField>Email</FormLabel>
                     <FormControl>
                       <Input id="username" placeholder="email@example.com" type="email" {...field} />
                     </FormControl>
@@ -163,6 +163,7 @@ export const AddUserModal = () => {
               <AsyncSelect
                 label="Organization"
                 name="organization"
+                requiredField
                 control={control}
                 useInfiniteQueryFunction={useOrganizationsInfinite}
                 labelKey="name"
@@ -174,7 +175,7 @@ export const AddUserModal = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel requiredField>Password</FormLabel>
                       <FormControl>
                         <Input
                           id="password"
@@ -193,7 +194,7 @@ export const AddUserModal = () => {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm password</FormLabel>
+                      <FormLabel requiredField>Confirm password</FormLabel>
                       <FormControl>
                         <Input
                           id="confirmPassword"

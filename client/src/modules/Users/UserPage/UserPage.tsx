@@ -101,7 +101,7 @@ export const UserPage = () => {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>First name</FormLabel>
+                          <FormLabel requiredField>First name</FormLabel>
                           <FormControl>
                             <Input id="firstName" placeholder="First name" {...field} />
                           </FormControl>
@@ -114,7 +114,7 @@ export const UserPage = () => {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Last name</FormLabel>
+                          <FormLabel requiredField>Last name</FormLabel>
                           <FormControl>
                             <Input id="lastName" placeholder="Last name" {...field} />
                           </FormControl>

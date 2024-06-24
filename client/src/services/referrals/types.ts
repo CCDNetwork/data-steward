@@ -1,13 +1,15 @@
-import { Organization } from '@/services/organizations';
+import { Organization, OrganizationActivity } from '@/services/organizations';
 
 import { User } from '../users';
 import { StorageFile } from '../storage';
 
 export interface Referral {
+  caseNumber: string;
   id: string;
   isUrgent: boolean;
   serviceCategory: string;
-  subactivities: string[];
+  subactivities: OrganizationActivity[];
+  subactivitiesIds: string[];
   organizationReferredToId: string;
   organizationReferredTo: Organization | null;
   displacementStatus: string;
@@ -49,11 +51,6 @@ export interface Referral {
   organizationCreated: Organization | null;
   userCreated: User | null;
   files: StorageFile[];
-
-  // familyName: string;
-  // methodOfContact: string;
-  // contactDetails: string;
-  // note: string;
   createdAt: Date | null;
   updatedAt: Date | null;
 }

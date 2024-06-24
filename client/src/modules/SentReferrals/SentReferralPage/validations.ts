@@ -34,7 +34,13 @@ export const SentReferralSchema = z
   .object({
     isUrgent: z.boolean(),
     serviceCategory: z.string().min(1, { message: 'Service category required' }),
-    subactivities: z.array(z.string()),
+    subactivities: z.array(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+        serviceType: z.string(),
+      }),
+    ),
     organizationReferredTo: OrganizationSchema,
     displacementStatus: z.string().optional(),
     householdSize: z.string().optional(),
@@ -77,6 +83,7 @@ export const SentReferralSchema = z
     focalPointId: z.string(),
     isMinor: z.boolean(),
     noTaxId: z.boolean(),
+    subactivitiesIds: z.array(z.string()),
   })
   .superRefine((data, ctx) => {
     if (data.isMinor) {
