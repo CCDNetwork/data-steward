@@ -44,7 +44,7 @@ export const resToReferral = (res: any): Referral => {
     caregiverContactPreference: res.caregiverContactPreference ?? '',
     isCaregiverInformed: res.isCaregiverInformed ? res.isCaregiverInformed.toString() : 'false',
     caregiverExplanation: res.caregiverExplanation ?? '',
-    caregiverNote: res.caregiverPhone ?? '',
+    caregiverNote: res.caregiverNote ?? '',
     focalPointId: res.focalPointId ?? '',
     focalPoint: res.focalPoint ? resToUser(res.focalPoint) : null,
     status: res.status ?? '',
@@ -69,7 +69,10 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
     householdsVulnerabilityCriteria: data.householdsVulnerabilityCriteria,
     firstName: data.firstName,
     patronymicName: data.patronymicName,
-    subactivitiesIds: data.subactivities.length ? data.subactivities.map((i: OrganizationActivity) => i.id) : [],
+    subactivitiesIds:
+      data.subactivities && data.subactivities.length > 0
+        ? data.subactivities.map((i: OrganizationActivity) => i.id)
+        : [],
     surname: data.surname,
     dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : null,
     gender: data.gender,
@@ -120,7 +123,10 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     patronymicName: data.patronymicName,
     surname: data.surname,
     dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : null,
-    subactivitiesIds: data.subactivities.length ? data.subactivities.map((i: OrganizationActivity) => i.id) : [],
+    subactivitiesIds:
+      data.subactivities && data.subactivities.length > 0
+        ? data.subactivities.map((i: OrganizationActivity) => i.id)
+        : [],
     gender: data.gender,
     taxId: data.taxId,
     address: data.address,
