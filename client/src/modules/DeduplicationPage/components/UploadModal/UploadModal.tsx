@@ -116,7 +116,7 @@ export const UploadModal = ({ isOpen, deduplicationType, setIsOpen }: Props) => 
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] overflow-visible">
+      <DialogContent className="sm:max-w-[400px] !overflow-visible">
         <DialogHeader>
           <DialogTitle>{modalTitle}</DialogTitle>
           <DialogDescription>Choose a template and upload your dataset</DialogDescription>
