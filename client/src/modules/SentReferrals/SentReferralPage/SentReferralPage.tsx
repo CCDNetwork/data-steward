@@ -244,59 +244,62 @@ export const SentReferralPage = () => {
                         </dd>
                       </div>
                     )}
-                    <AsyncSelect
-                      requiredField
-                      label="Receiving organization"
-                      name="organizationReferredTo"
-                      control={control}
-                      useInfiniteQueryFunction={useOrganizationsInfinite}
-                      labelKey="name"
-                      valueKey="id"
-                      required
-                    />
-                    {currentFormSelectedOrganization &&
-                      (currentFormSelectedOrganization.isMpcaActive ||
-                        currentFormSelectedOrganization.isShelterActive ||
-                        currentFormSelectedOrganization.isWashActive) && (
-                        <FormField
-                          control={control}
-                          name="serviceCategory"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel requiredField>Service category</FormLabel>
-                              <Select
-                                onValueChange={(value) => {
-                                  setValue('subactivities', []);
-                                  setValue('subactivitiesIds', []);
-                                  setValue('displacementStatus', '');
-                                  setValue('householdSize', '');
-                                  setValue('householdMonthlyIncome', '');
-                                  setValue('householdsVulnerabilityCriteria', []);
-                                  setValue('noTaxId', false);
-                                  field.onChange(value);
-                                }}
-                                value={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select service category" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {resolvedServiceCategories &&
-                                    resolvedServiceCategories.length > 0 &&
-                                    resolvedServiceCategories.map((i) => (
-                                      <SelectItem key={i.id} value={i.id}>
-                                        {i.label}
-                                      </SelectItem>
-                                    ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <AsyncSelect
+                        requiredField
+                        label="Receiving organization"
+                        name="organizationReferredTo"
+                        control={control}
+                        useInfiniteQueryFunction={useOrganizationsInfinite}
+                        labelKey="name"
+                        valueKey="id"
+                        required
+                      />
+                      {currentFormSelectedOrganization &&
+                        (currentFormSelectedOrganization.isMpcaActive ||
+                          currentFormSelectedOrganization.isShelterActive ||
+                          currentFormSelectedOrganization.isWashActive) && (
+                          <FormField
+                            control={control}
+                            name="serviceCategory"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel requiredField>Service category</FormLabel>
+                                <Select
+                                  onValueChange={(value) => {
+                                    setValue('subactivities', []);
+                                    setValue('subactivitiesIds', []);
+                                    setValue('displacementStatus', '');
+                                    setValue('householdSize', '');
+                                    setValue('householdMonthlyIncome', '');
+                                    setValue('householdsVulnerabilityCriteria', []);
+                                    setValue('noTaxId', false);
+                                    field.onChange(value);
+                                  }}
+                                  value={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select service category" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {resolvedServiceCategories &&
+                                      resolvedServiceCategories.length > 0 &&
+                                      resolvedServiceCategories.map((i) => (
+                                        <SelectItem key={i.id} value={i.id}>
+                                          {i.label}
+                                        </SelectItem>
+                                      ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
+                    </div>
+
                     {resolvedCurrentOrgSubactivities && resolvedCurrentOrgSubactivities.length > 0 && (
                       <FormField
                         control={control}
@@ -554,35 +557,6 @@ export const SentReferralPage = () => {
                       />
                     )}
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel requiredField={currentFormContactPreference === 'email'}>Email</FormLabel>
-                          <FormControl>
-                            <Input id="email" placeholder="email@example.com" type="email" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel requiredField={currentFormContactPreference === 'phone'}>Phone</FormLabel>
-                          <FormControl>
-                            <Input id="phone" placeholder="Phone" type="tel" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
 
                   <FormField
                     control={form.control}
@@ -621,6 +595,35 @@ export const SentReferralPage = () => {
                       </FormItem>
                     )}
                   />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField={currentFormContactPreference === 'email'}>Email</FormLabel>
+                          <FormControl>
+                            <Input id="email" placeholder="email@example.com" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel requiredField={currentFormContactPreference === 'phone'}>Phone</FormLabel>
+                          <FormControl>
+                            <Input id="phone" placeholder="Phone" type="tel" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <FormField
                     control={control}
@@ -647,7 +650,7 @@ export const SentReferralPage = () => {
                     control={control}
                     name="isMinor"
                     render={({ field }) => (
-                      <FormItem className="flex border-orange-200 bg-orange-50 flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <FormItem className="flex dark:border-orange-400 dark:bg-card border-orange-200 bg-orange-50 flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>Child under 18 years old?</FormLabel>
                           <FormDescription>Enable if minor and fill out necessary information</FormDescription>

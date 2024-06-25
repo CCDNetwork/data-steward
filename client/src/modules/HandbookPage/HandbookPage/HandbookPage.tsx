@@ -8,9 +8,9 @@ import { toast } from '@/components/ui/use-toast';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { Handbook } from '@/services/handbooks';
 import { useHandbookMutation, useHandbooks } from '@/services/handbooks/api';
+import { Button } from '@/components/ui/button';
 
 import { columns } from './columns';
-import { CreateHandbookModal } from './components';
 import { useHandbookProvider } from '../HandbookProvider';
 
 export const HandbookPage = () => {
@@ -49,7 +49,11 @@ export const HandbookPage = () => {
     <PageContainer
       pageTitle="Handbook"
       pageSubtitle="Handbook entries"
-      headerNode={<CreateHandbookModal />}
+      headerNode={
+        <Button type="button" onClick={() => navigate(`${APP_ROUTE.Handbook}/new`)}>
+          Create
+        </Button>
+      }
       breadcrumbs={[{ href: `${APP_ROUTE.Handbook}`, name: 'Handbook entries' }]}
     >
       <DataTable

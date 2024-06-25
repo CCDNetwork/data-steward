@@ -113,7 +113,6 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
 export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
   const req: any = {
     isUrgent: data.isUrgent,
-    organizationReferredToId: data.organizationReferredTo?.id,
     serviceCategory: data.serviceCategory,
     displacementStatus: data.displacementStatus,
     householdSize: data.householdSize,
@@ -122,11 +121,6 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     firstName: data.firstName,
     patronymicName: data.patronymicName,
     surname: data.surname,
-    dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : null,
-    subactivitiesIds:
-      data.subactivities && data.subactivities.length > 0
-        ? data.subactivities.map((i: OrganizationActivity) => i.id)
-        : [],
     gender: data.gender,
     taxId: data.taxId,
     address: data.address,
@@ -141,20 +135,41 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     consent: data.consent,
     required: data.required,
     needForService: data.needForService,
-    fileIds: data.files?.map((i: any) => i.id) || [],
     isSeparated: data.isSeparated,
     caregiver: data.caregiver,
     relationshipToChild: data.relationshipToChild,
     caregiverEmail: data.caregiverEmail,
     caregiverPhone: data.caregiverPhone,
     caregiverContactPreference: data.caregiverContactPreference,
-    isCaregiverInformed: data.isCaregiverInformed === 'true',
     caregiverExplanation: data.caregiverExplanation,
     caregiverNote: data.caregiverNote,
-    focalPointId: data.focalPoint?.id ?? undefined,
     status: data.status,
     isDraft: data.isDraft,
   };
+
+  if (data.organizationReferredTo.id) {
+    req.organizationReferredToId = data.organizationReferredTo.id;
+  }
+
+  if (data.subactivities && data.subactivities.length > 0) {
+    req.subactivitiesIds = data.subactivities.map((i: OrganizationActivity) => i.id);
+  }
+
+  if (data.dateOfBirth) {
+    req.dateOfBirth = data.dateOfBirth.toISOString();
+  }
+
+  if (data.files && data.files.length > 0) {
+    req.fileIds = data.files.map((i: any) => i.id);
+  }
+
+  if (data.isCaregiverInformed) {
+    req.isCaregiverInformed = data.isCaregiverInformed === 'true';
+  }
+
+  if (data.focalPoint && data.focalPoint.id) {
+    req.focalPointId = data.focalPoint.id;
+  }
 
   return req;
 };

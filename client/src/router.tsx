@@ -92,6 +92,7 @@ export const router = createBrowserRouter(
           <Route path={APP_ROUTE.Handbook} element={<HandbookProvider />}>
             <Route index element={<HandbookPage />} />
             <Route path=":id" element={<DynamicRoute component={<SingleHandbookPage />} />} />
+            <Route path="new" element={<DynamicRoute component={<SingleHandbookPage />} />} />
           </Route>
         </Route>
 

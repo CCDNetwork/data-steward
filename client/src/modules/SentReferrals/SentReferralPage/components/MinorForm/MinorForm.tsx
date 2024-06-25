@@ -67,34 +67,6 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
           )}
         />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="caregiverEmail"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel requiredField={currentFormCaregiverContactPreference === 'email'}>Email</FormLabel>
-              <FormControl>
-                <Input id="caregiverEmail" placeholder="email@example.com" type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
-          name="caregiverPhone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel requiredField={currentFormCaregiverContactPreference === 'phone'}>Phone</FormLabel>
-              <FormControl>
-                <Input id="caregiverPhone" placeholder="Phone" type="tel" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
       <FormField
         control={control}
         name="caregiverContactPreference"
@@ -132,6 +104,35 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
           </FormItem>
         )}
       />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="caregiverEmail"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel requiredField={currentFormCaregiverContactPreference === 'email'}>Email</FormLabel>
+              <FormControl>
+                <Input id="caregiverEmail" placeholder="email@example.com" type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="caregiverPhone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel requiredField={currentFormCaregiverContactPreference === 'phone'}>Phone</FormLabel>
+              <FormControl>
+                <Input id="caregiverPhone" placeholder="Phone" type="tel" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
       <FormField
         control={control}
         name="isCaregiverInformed"

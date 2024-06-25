@@ -22,7 +22,7 @@ export const UserHandbookListPage = () => {
       pageSubtitle="Handbook List"
       breadcrumbs={[{ href: `${APP_ROUTE.UserHandbookList}`, name: 'Handbook' }]}
     >
-      <div className="flex flex-col gap-4 pb-8">
+      <div className="flex flex-col gap-4 pb-8 max-w-[700px]">
         {handbooksData?.data.map((handbook) => <HandbookItem key={handbook.id} {...handbook} />)}
       </div>
     </PageContainer>

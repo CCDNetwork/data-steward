@@ -18,10 +18,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { APP_ROUTE } from '@/helpers/constants';
 
 export const SingleHandbookPage = () => {
-  const { id: handbookId } = useIdFromParams();
+  const { id: handbookId, isCreate } = useIdFromParams();
 
-  const { data: handbookData, isLoading: queryLoading } = useHandbook({ id: handbookId, isCreate: false });
-  const { editHandbook } = useHandbookMutation();
+  const { data: handbookData, isLoading: queryLoading } = useHandbook({ id: handbookId, isCreate });
+  const { editHandbook, createHandbook } = useHandbookMutation();
 
   const form = useForm<HandbookForm>({
     defaultValues: defaultHandbookFormValues,
@@ -38,6 +38,24 @@ export const SingleHandbookPage = () => {
   }, [handbookData]);
 
   const onSubmit = handleSubmit(async (values) => {
+    if (isCreate) {
+      try {
+        await createHandbook.mutateAsync(values);
+        toast({
+          title: 'Success!',
+          variant: 'default',
+          description: 'Handbook successfully created.',
+        });
+      } catch (error: any) {
+        toast({
+          title: 'Something went wrong!',
+          variant: 'destructive',
+          description: error.response?.data?.errorMessage || 'An error occured while creating handbook.',
+        });
+      }
+      return;
+    }
+
     try {
       await editHandbook.mutateAsync({ data: values, handbookId });
       toast({
@@ -58,7 +76,7 @@ export const SingleHandbookPage = () => {
     <PageContainer
       pageTitle="Handbook"
       pageSubtitle="Handbook Details"
-      isLoading={queryLoading}
+      isLoading={queryLoading && !isCreate}
       headerNode={
         <Button
           type="submit"
@@ -91,7 +109,7 @@ export const SingleHandbookPage = () => {
                     )}
                   />
                 </div>
-                <MarkdownEditor label="Content" name="content" control={control} height={700} />
+                <MarkdownEditor label="Content" name="content" control={control} height={0} />
               </CardContent>
             </Card>
           </div>
