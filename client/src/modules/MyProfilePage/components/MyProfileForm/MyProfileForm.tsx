@@ -90,6 +90,19 @@ export const MyProfileForm = ({ userProfileData, userProfileQueryLoading }: MyPr
         </div>
         <FormField
           control={control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input id="email" disabled placeholder="Password" type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
           name="password"
           render={({ field }) => (
             <FormItem>

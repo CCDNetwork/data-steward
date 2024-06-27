@@ -7,7 +7,6 @@ import { RoleBasedIndexRoute } from './layouts/RoleBasedIndexRoute';
 import { ProtectedRoute } from './layouts/ProtectedRoute';
 import { UserPermission } from './services/users';
 import { APP_ROUTE } from './helpers/constants';
-import { BeneficiaryListPage } from './modules/BeneficiaryListPage';
 import { DeduplicationPage } from './modules/DeduplicationPage';
 import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from './modules/Organizations';
 import { DynamicRoute } from './layouts/DynamicRoute';
@@ -25,6 +24,7 @@ import { RulesPage, RulesProvider } from './modules/Rules';
 import { SentReferralsPage, SentReferralsProvider, SentReferralPage } from './modules/SentReferrals';
 import { ReceivedReferralPage, ReceivedReferralsPage, ReceivedReferralsProvider } from './modules/ReceivedReferrals';
 import { BeneficiaryReferralDataPage } from './modules/Public/BeneficiaryReferralDataPage';
+import { BeneficiaryListPage, SingleBeneficiaryPage } from './modules/BeneficiaryList';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,7 +39,10 @@ export const router = createBrowserRouter(
         </Route>
 
         <Route element={<ProtectedRoute userPermissions={[UserPermission.Deduplication]} />}>
-          <Route path={APP_ROUTE.BeneficiaryList} element={<BeneficiaryListPage />} />
+          <Route path={APP_ROUTE.BeneficiaryList}>
+            <Route index element={<BeneficiaryListPage />} />
+            <Route path=":id" element={<DynamicRoute component={<SingleBeneficiaryPage />} />} />
+          </Route>
         </Route>
 
         <Route element={<ProtectedRoute userPermissions={[UserPermission.Deduplication]} />}>

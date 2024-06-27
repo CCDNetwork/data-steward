@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { VisibilityState } from '@tanstack/react-table';
 
 import { DataTable } from '@/components/DataTable';
@@ -13,6 +14,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { columns } from './columns';
 
 export const BeneficiaryListPage = () => {
+  const navigate = useNavigate();
   const pagination = usePagination();
   const { currentPage, onPageChange, onSortChange, onPageSizeChange } = pagination;
 
@@ -70,6 +72,9 @@ export const BeneficiaryListPage = () => {
     setBeneficiaryToDelete(null);
   };
 
+  const onBeneficiaryRowClick = (beneficiaryRow: Beneficiary) =>
+    navigate(`${APP_ROUTE.BeneficiaryList}/${beneficiaryRow.id}`);
+
   return (
     <PageContainer
       pageTitle="Beneficiary List"
@@ -112,6 +117,7 @@ export const BeneficiaryListPage = () => {
         pageClicked={onPageChange}
         pageSizeClicked={onPageSizeChange}
         headerClicked={onSortChange}
+        onRowClick={onBeneficiaryRowClick}
         columns={columns(handleStatusChange, setBeneficiaryToDelete)}
         hiddenColumns={hiddenColumns}
       />

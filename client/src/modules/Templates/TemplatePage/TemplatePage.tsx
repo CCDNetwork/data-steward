@@ -74,25 +74,23 @@ export const TemplatePage = () => {
     >
       <Form {...form}>
         <form onSubmit={onSubmit}>
-          <div className="space-y-8 max-w-2xl">
+          <div className="space-y-8 max-w-xl">
             <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
               <CardContent className="space-y-2 pt-6">
                 <div className="grid grid-cols-1 gap-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem className="pb-4 max-w-[400px]">
-                          <FormLabel requiredField>Template name</FormLabel>
-                          <FormControl>
-                            <Input id="name" placeholder="Template name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className="pb-4">
+                        <FormLabel requiredField>Template name</FormLabel>
+                        <FormControl>
+                          <Input id="name" placeholder="Template name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <div className="grid grid-cols-1 gap-4">
                     <p className="text-center text-lg font-semibold py-2">Mappings</p>
                     {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(([fieldName, fieldType]) => (

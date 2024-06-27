@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { useGlobalErrors } from '@/providers/GlobalProvider';
 import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
 import { api } from '@/services';
 
@@ -18,6 +19,12 @@ export const fetchBeneficiaryList = async (pagination: PaginationRequest): Promi
     meta: resp.data.meta,
     data: resp.data.data?.map(resToBeneficiary) ?? [],
   };
+};
+
+const fetchBeneficiary = async (id: string): Promise<Beneficiary> => {
+  const resp = await api.get(`/beneficiaries/${id}`);
+
+  return resToBeneficiary(resp.data);
 };
 
 const patchBeneficiaryStatus = async ({
@@ -50,6 +57,14 @@ export const useBeneficiaryList = ({ currentPage, pageSize, sortBy, sortDirectio
         filters,
       }),
   );
+};
+
+export const useBeneficiary = ({ id }: { id: string }) => {
+  const { onSetCollectionNotFound } = useGlobalErrors();
+
+  return useQuery([QueryKeys.BeneficiaryList, id], () => fetchBeneficiary(id), {
+    onError: () => onSetCollectionNotFound(true),
+  });
 };
 
 export const useBeneficiariesMutation = () => {
