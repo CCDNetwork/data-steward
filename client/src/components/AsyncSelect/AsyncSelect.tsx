@@ -96,7 +96,7 @@ export const AsyncSelect = <T,>({
         <label
           htmlFor={name}
           className={cn(
-            'block text-sm mb-2 font-medium',
+            'block text-sm pb-3 font-medium',
             { 'after:content-["_*"] after:text-red-500': requiredField },
             labelClassName,
           )}

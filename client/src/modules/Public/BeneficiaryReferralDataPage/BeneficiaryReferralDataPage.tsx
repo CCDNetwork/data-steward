@@ -41,19 +41,20 @@ export const BeneficiaryReferralDataPage = () => {
         <div className="flex flex-col gap-10 items-center mx-auto justify-center h-full max-w-[500px]">
           <div className="flex flex-col gap-6">
             <div className="flex gap-2 flex-col items-center">
-              <span className="text-sm text-muted-foreground">Organization created</span>
+              <span className="text-sm text-muted-foreground">Your case was registered by</span>
               <p className="text-xl font-medium">{referralData.organizationCreated?.name || ''}</p>
             </div>
             <div className="flex gap-2 flex-col items-center">
-              <span className="text-sm text-muted-foreground">Organization referred to</span>
+              <span className="text-sm text-muted-foreground">It has been referred to</span>
               <p className="text-xl font-medium">{referralData.organizationReferredTo?.name || ''}</p>
             </div>
             <div className="flex gap-2 flex-col items-center">
-              <span className="text-sm text-muted-foreground">Status</span>
+              <span className="text-sm text-muted-foreground">The status of your case is</span>
               <p className="text-md font-semibold uppercase px-3 py-1 rounded-lg text-white bg-primary">
                 {referralData.status || ''}
               </p>
             </div>
+            <div className="text-center whitespace-pre-line">{`If you have any questions, please contact a representative of \n ${referralData.organizationReferredTo?.name}`}</div>
           </div>
           <Button type="button" variant="link" onClick={() => setReferralData(null)}>
             &larr; Go Back

@@ -29,16 +29,19 @@ export const columns = (
     accessorKey: 'firstName',
     id: 'firstName',
     header: 'First Name',
+    cell: ({ getValue }) => getValue() || 'N/A',
   },
   {
     accessorKey: 'familyName',
     id: 'familyName',
     header: 'Family name',
+    cell: ({ getValue }) => getValue() || 'N/A',
   },
   {
     accessorKey: 'dateOfBirth',
     id: 'dateOfBirth',
     header: 'Date of birth',
+    cell: ({ getValue }) => getValue() || 'N/A',
   },
   {
     accessorKey: 'createdAt',
