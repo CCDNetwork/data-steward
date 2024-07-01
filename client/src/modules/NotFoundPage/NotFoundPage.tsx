@@ -7,7 +7,7 @@ export const NotFoundPage = () => {
   const navigate = useNavigate();
   return (
     <main className="grid h-[100svh] sm:h-screen place-items-center px-6 py-24 sm:py-32 lg:px-8">
-      <div className="text-center">
+      <div className="text-center animate-appear">
         <p className="font-semibold text-primary">404</p>
         <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-5xl">Page not found</h1>
         <p className="mt-6 text-base leading-7 text-muted-foreground">

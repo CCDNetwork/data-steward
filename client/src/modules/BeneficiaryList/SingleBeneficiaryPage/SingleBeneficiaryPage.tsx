@@ -1,10 +1,11 @@
+import { useMemo } from 'react';
+
 import { PageContainer } from '@/components/PageContainer';
 import { APP_ROUTE } from '@/helpers/constants';
 import { useBeneficiary } from '@/services/beneficiaryList';
 import { useIdFromParams } from '@/helpers/common';
 
 import { dataToDuplicateBeneficiaryValues } from './transformations';
-import { useMemo } from 'react';
 
 export const SingleBeneficiaryPage = () => {
   const { id: beneficiaryId } = useIdFromParams();

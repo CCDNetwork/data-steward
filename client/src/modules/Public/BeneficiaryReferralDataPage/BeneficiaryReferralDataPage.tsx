@@ -7,6 +7,7 @@ import { toast } from '@/components/ui/use-toast';
 import { Referral } from '@/services/referrals';
 
 import { fetchPendingReferral } from './api';
+import { formatDate } from 'date-fns';
 
 export const BeneficiaryReferralDataPage = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -40,6 +41,21 @@ export const BeneficiaryReferralDataPage = () => {
       <div className="w-screen h-[100svh]">
         <div className="flex flex-col gap-10 items-center mx-auto justify-center h-full max-w-[500px]">
           <div className="flex flex-col gap-6">
+            <div className="flex gap-2  items-center justify-evenly">
+              {referralData.createdAt && (
+                <div className="text-center">
+                  <span className="text-xs text-muted-foreground uppercase font-medium">Date created</span>
+                  <p className="text-sm font-medium">{formatDate(referralData.createdAt, 'dd/MM/yyyy HH:mm')}</p>
+                </div>
+              )}
+
+              {referralData.updatedAt && (
+                <div className="text-center">
+                  <span className="text-xs font-medium text-muted-foreground uppercase">Last update</span>
+                  <p className="text-sm font-medium">{formatDate(referralData.updatedAt, 'dd/MM/yyyy HH:mm')}</p>
+                </div>
+              )}
+            </div>
             <div className="flex gap-2 flex-col items-center">
               <span className="text-sm text-muted-foreground">Your case was registered by</span>
               <p className="text-xl font-medium">{referralData.organizationCreated?.name || ''}</p>
@@ -54,7 +70,7 @@ export const BeneficiaryReferralDataPage = () => {
                 {referralData.status || ''}
               </p>
             </div>
-            <div className="text-center whitespace-pre-line">{`If you have any questions, please contact a representative of \n ${referralData.organizationReferredTo?.name}`}</div>
+            <div className="text-center whitespace-pre-line text-sm italic text-muted-foreground">{`If you have any questions, please contact a representative of \n ${referralData.organizationReferredTo?.name}`}</div>
           </div>
           <Button type="button" variant="link" onClick={() => setReferralData(null)}>
             &larr; Go Back
