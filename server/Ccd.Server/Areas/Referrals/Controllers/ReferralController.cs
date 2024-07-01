@@ -45,7 +45,7 @@ public class ReferralController : ControllerBaseExtended
     }
 
     [HttpGet("{caseNumber}/case-number")]
-    public async Task<ActionResult<ReferralResponse>> GetReferralByCaseNumber(string caseNumber)
+    public async Task<ActionResult<ReferralCaseNumberResponse>> GetReferralByCaseNumber(string caseNumber)
     {
         var result = await _referralService.GetReferralByCaseNumberApi(caseNumber);
         return Ok(result);

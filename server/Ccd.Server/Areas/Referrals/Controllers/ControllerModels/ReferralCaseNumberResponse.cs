@@ -11,5 +11,7 @@ public class ReferralCaseNumberResponse
     public OrganizationResponse OrganizationReferredTo { get; set; }
     [JsonIgnore] public Guid OrganizationCreatedId { get; set; }
     public OrganizationResponse OrganizationCreated { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }
 
