@@ -54,4 +54,14 @@ public class DeduplicationController : ControllerBaseExtended
 
         return File(fileBytes, "application/octet-stream", model.File.FileName);
     }
+
+    [HttpPost("dataset")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult> DatasetDeduplicate([FromForm] DatasetDeduplicationRequest model)
+    {
+        if (model.TemplateId == Guid.Empty) throw new BadRequestException("Template ID is required.");
+
+        var response = await _deduplicationService.DatasetDeduplication(this.OrganizationId, this.UserId, model);
+        return Ok(response);
+    }
 }

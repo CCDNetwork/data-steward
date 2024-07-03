@@ -14,6 +14,7 @@ using ClosedXML.Excel;
 using FuzzySharp;
 using Microsoft.EntityFrameworkCore;
 using Ccd.Server.Beneficiaries;
+using Ccd.Server.Storage;
 
 namespace Ccd.Server.Deduplication;
 
@@ -23,11 +24,14 @@ public class DeduplicationService
     private readonly IMapper _mapper;
     private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
 
-    public DeduplicationService(CcdContext context, IMapper mapper, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService)
+    private readonly IStorageService _storageService;
+
+    public DeduplicationService(CcdContext context, IMapper mapper, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService, IStorageService storageService)
     {
         _context = context;
         _mapper = mapper;
         _beneficiaryAttributeGroupService = beneficiaryAttributeGroupService;
+        _storageService = storageService;
     }
 
     private readonly string _selectSql =
@@ -122,6 +126,79 @@ public class DeduplicationService
         var fileBytes = memoryStream.ToArray();
 
         return fileBytes;
+    }
+
+    public async Task<DatasetDeduplicationResponse> DatasetDeduplication(Guid organizationId, Guid userId, DatasetDeduplicationRequest model)
+    {
+        var file = model.File ?? throw new BadRequestException("File is required");
+        using var workbook = new XLWorkbook(file.OpenReadStream());
+
+        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
+        var beneficiaryAttributesGroupsApi = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters { PageSize = 1000, Page = 1 });
+        var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
+
+        var worksheet = workbook.Worksheet(1);
+        var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
+
+        worksheet.Cell(1, lastColumnIndex).Style.Fill.BackgroundColor = XLColor.Gainsboro;
+        worksheet.Cell(1, lastColumnIndex).Style.Font.Bold = true;
+        worksheet.Cell(1, lastColumnIndex).Value = "duplicate";
+
+        var deduplicationRecords = new List<DeduplicationRecord>();
+        var hasDuplicates = false;
+
+        for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
+        {
+            var record = new DeduplicationRecord
+            {
+                FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
+                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
+                Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
+                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
+                AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
+                AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
+                AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
+                AdminLevel4 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel4, worksheet)).Value.ToString(),
+                HhId = worksheet.Cell(i, GetHeaderIndex(template.HHID, worksheet)).Value.ToString(),
+                MobilePhoneId = worksheet.Cell(i, GetHeaderIndex(template.MobilePhoneID, worksheet)).Value.ToString(),
+                GovIdType = worksheet.Cell(i, GetHeaderIndex(template.GovIDType, worksheet)).Value.ToString(),
+                GovIdNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIDNumber, worksheet)).Value.ToString(),
+                OtherIdType = worksheet.Cell(i, GetHeaderIndex(template.OtherIDType, worksheet)).Value.ToString(),
+                OtherIdNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIDNumber, worksheet)).Value.ToString(),
+                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
+                Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
+                Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
+                CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
+                StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
+                EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
+                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
+            };
+
+            worksheet.Cell(i, lastColumnIndex).Value =
+                deduplicationRecords.Any((e) =>
+                {
+                    var equal = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
+                    if (equal) hasDuplicates = true;
+                    return equal;
+                }) ? "YES" : "NO";
+
+            deduplicationRecords.Add(record);
+        }
+
+        await _context.SaveChangesAsync();
+
+        using var memoryStream = new MemoryStream();
+        workbook.SaveAs(memoryStream);
+
+        var savedFile = await _storageService.SaveFile(StorageType.GetById(StorageType.Assets.Id), memoryStream, userId, model.File.FileName);
+        var fileResponse = await _storageService.GetFileApiById(savedFile.Id);
+
+        return new DatasetDeduplicationResponse
+        {
+            File = fileResponse,
+            TemplateId = model.TemplateId,
+            HasDuplicates = hasDuplicates
+        };
     }
 
     public async Task<byte[]> RegistryDeduplication(Guid organizationId, Guid userId, DeduplicationListAddRequest model)
