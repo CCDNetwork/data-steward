@@ -4,7 +4,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react';
 import { cn } from '@/helpers/utils';
 import { IBreadcrumb } from '@/helpers/types';
 
-import { Breadcrumb } from './Breadcrumb';
+import { Breadcrumb } from './BreadCrumb';
 
 export const PageContainer = ({
   children,
