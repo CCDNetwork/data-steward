@@ -104,7 +104,6 @@ export const AddOrganizationModal = () => {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>MPCA</FormLabel>
-                          <FormDescription>Information about what MPCA is here.</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -130,7 +129,6 @@ export const AddOrganizationModal = () => {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>WASH</FormLabel>
-                          <FormDescription>Information about what WASH is here.</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -156,7 +154,6 @@ export const AddOrganizationModal = () => {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>Shelter</FormLabel>
-                          <FormDescription>Information about what Shelter is here.</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />
