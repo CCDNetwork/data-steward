@@ -15,11 +15,6 @@ export const columns = ({
     header: 'Name',
   },
   {
-    accessorKey: 'type',
-    id: 'type',
-    header: 'Type',
-  },
-  {
     accessorKey: '',
     id: 'usedForDeduplication',
     header: () => <div className="text-right">Enabled</div>,

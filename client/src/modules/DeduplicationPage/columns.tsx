@@ -35,7 +35,7 @@ export const columns: TableColumn<DeduplicationListing>[] = [
     accessorKey: 'createdAt',
     isSortable: true,
     id: 'createdAt',
-    header: 'Created At',
+    header: 'Created On',
     cell: ({ getValue }) => {
       return (
         <div className="flex flex-col">
@@ -48,7 +48,7 @@ export const columns: TableColumn<DeduplicationListing>[] = [
     accessorKey: 'updatedAt',
     id: 'updatedAt',
     isSortable: true,
-    header: 'Updated At',
+    header: 'Updated On',
     cell: ({ getValue }) => {
       return (
         <div className="flex flex-col">

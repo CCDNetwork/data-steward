@@ -24,7 +24,7 @@ export const columns = (
   {
     accessorKey: 'createdAt',
     id: 'createdAt',
-    header: 'Created At',
+    header: 'Created On',
     isSortable: true,
     cell: ({ getValue }) => {
       return (
@@ -37,7 +37,7 @@ export const columns = (
   {
     accessorKey: 'updatedAt',
     id: 'updatedAt',
-    header: 'Updated At',
+    header: 'Updated On',
     isSortable: true,
     cell: ({ getValue }) => {
       return (

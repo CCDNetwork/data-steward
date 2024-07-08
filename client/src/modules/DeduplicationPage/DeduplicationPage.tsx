@@ -25,8 +25,7 @@ export const DeduplicationPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Manage cases"
-      pageSubtitle="Manage deduplication cases"
+      pageTitle="Deduplication Log"
       headerNode={
         <Button type="button" onClick={handleDeduplicationWizardOpen}>
           <Wand2Icon className="mr-2 w-4 h-4" />

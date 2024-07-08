@@ -58,7 +58,6 @@ export const TemplatePage = () => {
   return (
     <PageContainer
       pageTitle="Template"
-      pageSubtitle="Template Details"
       isLoading={queryLoading}
       headerNode={
         <Button
@@ -82,7 +81,7 @@ export const TemplatePage = () => {
                     control={control}
                     name="name"
                     render={({ field }) => (
-                      <FormItem className="pb-4">
+                      <FormItem className="pb-2">
                         <FormLabel requiredField>Template name</FormLabel>
                         <FormControl>
                           <Input id="name" placeholder="Template name" {...field} />
@@ -91,8 +90,11 @@ export const TemplatePage = () => {
                       </FormItem>
                     )}
                   />
-                  <div className="grid grid-cols-1 gap-4">
-                    <p className="text-center text-lg font-semibold py-2">Mappings</p>
+                  <div className="grid grid-cols-1 gap-4 border-t pt-4">
+                    <div className="flex justify-between text-sm font-medium">
+                      <p className="w-full">Standard Field</p>
+                      <p className="pl-28 w-full">Your Label</p>
+                    </div>
                     {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(([fieldName, fieldType]) => (
                       <div className="flex justify-between items-center gap-4" key={`${fieldName}-${uniqueId}`}>
                         <span className="capitalize text-sm w-44">{`${fieldName} (${fieldType})`}</span>
@@ -103,7 +105,7 @@ export const TemplatePage = () => {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input id={fieldName} placeholder="Column name" {...field} />
+                                <Input id={fieldName} placeholder="Column label" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>

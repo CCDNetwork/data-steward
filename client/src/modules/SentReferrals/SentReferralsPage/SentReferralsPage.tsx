@@ -69,8 +69,7 @@ export const SentReferralsPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Sent Referrals"
-      pageSubtitle="Manage sent referrals"
+      pageTitle="Manage Sent Referrals"
       headerNode={<Button onClick={onNewCaseClick}>New Case</Button>}
       breadcrumbs={[{ href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' }]}
     >
@@ -118,7 +117,7 @@ export const SentReferralsPage = () => {
               currentFilters={sentReferralsFilters}
               filterName="status[in]"
               setCurrentFilters={setSentReferralsFilters}
-              title="Status"
+              title="Filter by Status"
               options={Object.entries(ReferralStatus).map(([label, value]) => ({
                 value,
                 label: label === 'InEvaluation' ? 'In Evaluation' : label,
@@ -128,12 +127,12 @@ export const SentReferralsPage = () => {
               currentFilters={sentReferralsFilters}
               filterName="organizationReferredToId[in]"
               setCurrentFilters={setSentReferralsFilters}
-              title="Referred to"
+              title="Filter by Recipient"
               options={
                 isOrganizationsFetched ? organizations!.data.map((org) => ({ label: org.name, value: org.id })) : []
               }
             />
-            <DateRangePickerFilter setCurrentFilters={setSentReferralsFilters} placeholder="Filter by date" />
+            <DateRangePickerFilter setCurrentFilters={setSentReferralsFilters} placeholder="Filter by Date" />
           </div>
         }
       />

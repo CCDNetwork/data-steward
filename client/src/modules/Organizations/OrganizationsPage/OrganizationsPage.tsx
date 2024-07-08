@@ -32,13 +32,13 @@ export const OrganizationsPage = () => {
       toast({
         title: 'Success!',
         variant: 'default',
-        description: 'Organization successfully deleted!',
+        description: 'Organisation successfully deleted!',
       });
     } catch (error: any) {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Failed to delete organization.',
+        description: error.response?.data?.errorMessage || 'Failed to delete organisation.',
       });
     }
     setOrganizationToDelete(null);
@@ -49,10 +49,10 @@ export const OrganizationsPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Organizations"
-      pageSubtitle="Manage organizations"
+      pageTitle="Organisations"
+      pageSubtitle="Manage organisations"
       headerNode={<AddOrganizationModal />}
-      breadcrumbs={[{ href: `${APP_ROUTE.Organizations}`, name: 'Organizations' }]}
+      breadcrumbs={[{ href: `${APP_ROUTE.Organizations}`, name: 'Organisations' }]}
     >
       <DataTable
         data={organizations?.data ?? []}
@@ -68,8 +68,8 @@ export const OrganizationsPage = () => {
       />
       <ConfirmationDialog
         open={!!organizationToDelete}
-        title="Delete Organization"
-        body={`Are you sure you want to delete "${organizationToDelete?.name}" organization?`}
+        title="Delete Organisation"
+        body={`Are you sure you want to delete organisation "${organizationToDelete?.name}"?`}
         onAction={handleDeleteOrganization}
         confirmButtonLoading={deleteOrganization.isLoading}
         actionButtonVariant="destructive"

@@ -77,8 +77,7 @@ export const BeneficiaryListPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Beneficiary List"
-      pageSubtitle="Manage beneficiaries"
+      pageTitle="Manage Duplicates"
       breadcrumbs={[{ href: `${APP_ROUTE.BeneficiaryList}`, name: 'Beneficiary List' }]}
     >
       <Tabs defaultValue="unresolved">

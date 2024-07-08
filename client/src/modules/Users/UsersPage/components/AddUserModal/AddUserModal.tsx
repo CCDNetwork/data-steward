@@ -4,17 +4,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useUserMutation } from '@/services/users/api';
 import { toast } from '@/components/ui/use-toast';
 import { AsyncSelect } from '@/components/AsyncSelect';
@@ -89,7 +81,6 @@ export const AddUserModal = () => {
       <DialogContent className="sm:max-w-[500px] overflow-visible">
         <DialogHeader>
           <DialogTitle>Add a new user</DialogTitle>
-          <DialogDescription>Submit user information below.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={onSubmit}>
@@ -144,8 +135,7 @@ export const AddUserModal = () => {
                     onCheckedChange={() => onPermissionClick('deduplication')}
                   />
                   <div className="space-y-1 leading-3">
-                    <FormLabel>Deduplication</FormLabel>
-                    <FormDescription>User can use deduplication.</FormDescription>
+                    <FormLabel>Deduplicate Data</FormLabel>
                   </div>
                 </div>
                 <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -155,14 +145,13 @@ export const AddUserModal = () => {
                     onCheckedChange={() => onPermissionClick('referral')}
                   />
                   <div className="space-y-1 leading-3">
-                    <FormLabel>Referrals</FormLabel>
-                    <FormDescription>User can use referrals.</FormDescription>
+                    <FormLabel>Make Referrals</FormLabel>
                   </div>
                 </div>
               </div>
               <AsyncSelect
-                label="Organization"
-                name="organization"
+                label="Organisation"
+                name="organisation"
                 requiredField
                 control={control}
                 useInfiniteQueryFunction={useOrganizationsInfinite}
@@ -221,7 +210,7 @@ export const AddUserModal = () => {
                     className="w-full mt-2"
                   >
                     <SendHorizonal className="w-5 h-5 mr-2" />
-                    Submit
+                    Create User
                   </Button>
                 </div>
               </DialogFooter>

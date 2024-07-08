@@ -48,8 +48,7 @@ export const UsersPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Users"
-      pageSubtitle="Manage users"
+      pageTitle="Manage Users"
       headerNode={<AddUserModal />}
       breadcrumbs={[{ href: `${APP_ROUTE.Users}`, name: 'Users' }]}
     >
@@ -68,7 +67,7 @@ export const UsersPage = () => {
       <ConfirmationDialog
         open={!!userToDelete}
         title="Delete User"
-        body={`Are you sure you want to delete "${userToDelete?.firstName} ${userToDelete?.lastName}" user?`}
+        body={`Are you sure you want to delete user "${userToDelete?.firstName} ${userToDelete?.lastName}"?`}
         onAction={handleDeleteUser}
         confirmButtonLoading={deleteUser.isLoading}
         actionButtonVariant="destructive"

@@ -60,13 +60,13 @@ export const CreateTemplateModal = () => {
       <DialogTrigger asChild>
         <Button variant="outline">
           <FilePlus2Icon className="mr-2 w-5 h-5" />
-          Create
+          Create Template
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Create new template</DialogTitle>
-          <DialogDescription>Accordingly map your data fields to the standardized format below.</DialogDescription>
+          <DialogDescription>Map the column labels from your data to the standard fields.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={onSubmit}>
@@ -83,8 +83,11 @@ export const CreateTemplateModal = () => {
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-1 gap-4">
-              <p className="text-center text-lg font-semibold py-2">Mappings</p>
+            <div className="grid grid-cols-1 gap-4 border-t pt-4">
+              <div className="flex justify-between text-sm font-medium -mb-2">
+                <p className="w-full">Standard Field</p>
+                <p className="pl-14 w-full">Your Label</p>
+              </div>
               {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(([fieldName, fieldType]) => (
                 <div className="flex justify-between items-center gap-4" key={`${fieldName}-${uniqueId}`}>
                   <span className="capitalize text-sm w-44">{`${fieldName} (${fieldType})`}</span>
@@ -95,7 +98,7 @@ export const CreateTemplateModal = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input id={fieldName} placeholder="Column name" {...field} />
+                          <Input id={fieldName} placeholder="Column label" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

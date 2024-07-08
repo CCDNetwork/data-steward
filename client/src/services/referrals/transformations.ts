@@ -147,7 +147,7 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     isDraft: data.isDraft,
   };
 
-  if (data.organizationReferredTo.id) {
+  if (data.organizationReferredTo && data.organizationReferredTo.id) {
     req.organizationReferredToId = data.organizationReferredTo.id;
   }
 

@@ -24,7 +24,7 @@ export const columns = (
   {
     accessorKey: 'createdAt',
     id: 'createdAt',
-    header: 'Created At',
+    header: 'Created On',
     isSortable: true,
     cell: ({ getValue }) => {
       return (
@@ -38,7 +38,7 @@ export const columns = (
     accessorKey: 'updatedAt',
     id: 'updatedAt',
     isSortable: true,
-    header: 'Updated At',
+    header: 'Updated On',
     cell: ({ getValue }) => {
       return (
         <div className="flex flex-col">

@@ -13,8 +13,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { APP_ROUTE } from '@/helpers/constants';
 import { Checkbox } from '@/components/ui/checkbox';
 import { UserRole } from '@/services/users';
-// import { AsyncSelect } from '@/components/AsyncSelect';
-// import { useOrganizationsInfinite } from '@/services/organizations/api';
 
 import { dataToUserEditFormData } from './form-transformation';
 import { defaultUserEditFormFormValues } from './const';
@@ -71,8 +69,7 @@ export const UserPage = () => {
 
   return (
     <PageContainer
-      pageTitle="User"
-      pageSubtitle="User Details"
+      pageTitle="User Details"
       isLoading={queryLoading}
       breadcrumbs={[
         { href: `${APP_ROUTE.Users}`, name: 'Users' },

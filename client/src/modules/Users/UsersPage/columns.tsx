@@ -1,3 +1,4 @@
+import { formatDate } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
 
 import { TableColumn } from '@/components/DataTable/types';
@@ -9,11 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, UserRole } from '@/services/users';
+import { User } from '@/services/users';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/helpers/utils';
-import { formatDate } from 'date-fns';
 
 export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<User | null>>): TableColumn<User>[] => [
   {
@@ -34,7 +32,7 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
   {
     accessorKey: 'organizations',
     id: 'organizations',
-    header: 'Organization',
+    header: 'Organisation',
     cell: ({ row }) => {
       const { organizations } = row.original;
 
@@ -52,23 +50,13 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
     cell: ({ row }) => {
       const { role } = row.original;
 
-      return (
-        <Badge
-          className={cn(
-            'capitalize',
-            { 'bg-destructive dark:text-white hover:bg-destructive': role === UserRole.Admin },
-            { 'bg-primary dark:text-white hover:bg-primary': role === UserRole.User },
-          )}
-        >
-          {role}
-        </Badge>
-      );
+      return <div className="capitalize">{role}</div>;
     },
   },
   {
     accessorKey: 'createdAt',
     id: 'createdAt',
-    header: 'Created At',
+    header: 'Created On',
     isSortable: true,
     cell: ({ getValue }) => {
       return (

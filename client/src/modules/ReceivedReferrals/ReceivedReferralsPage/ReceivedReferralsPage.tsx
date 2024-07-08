@@ -60,8 +60,7 @@ export const ReceivedReferralsPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Received Referrals"
-      pageSubtitle="Manage received referrals"
+      pageTitle="Manage Received Referrals"
       breadcrumbs={[{ href: `${APP_ROUTE.ReceivedReferrals}`, name: 'Received Referrals' }]}
     >
       <DataTable
@@ -81,7 +80,7 @@ export const ReceivedReferralsPage = () => {
               currentFilters={receivedReferralsFilters}
               filterName="status[in]"
               setCurrentFilters={setReceivedReferralsFilters}
-              title="Status"
+              title="Filter by Status"
               options={Object.entries(ReferralStatus).map(([label, value]) => ({
                 value,
                 label: label === 'InEvaluation' ? 'In Evaluation' : label,
@@ -91,10 +90,10 @@ export const ReceivedReferralsPage = () => {
               currentFilters={receivedReferralsFilters}
               filterName="organizationReferredToId[in]"
               setCurrentFilters={setReceivedReferralsFilters}
-              title="Received from"
+              title="Filter by Sender"
               options={isFetched ? organizations!.data.map((org) => ({ label: org.name, value: org.id })) : []}
             />
-            <DateRangePickerFilter setCurrentFilters={setReceivedReferralsFilters} placeholder="Filter by date" />
+            <DateRangePickerFilter setCurrentFilters={setReceivedReferralsFilters} placeholder="Filter by Date" />
           </div>
         }
       />

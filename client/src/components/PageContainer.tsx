@@ -1,5 +1,4 @@
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 import { cn } from '@/helpers/utils';
 import { IBreadcrumb } from '@/helpers/types';
@@ -14,7 +13,6 @@ export const PageContainer = ({
   containerClassName,
   headerClassName,
   pageSubtitle,
-  withBackButton,
   breadcrumbs,
 }: {
   children: React.ReactNode;
@@ -24,11 +22,8 @@ export const PageContainer = ({
   containerClassName?: string;
   headerClassName?: string;
   pageSubtitle?: string;
-  withBackButton?: boolean;
   breadcrumbs?: IBreadcrumb[];
 }) => {
-  const navigate = useNavigate();
-
   return isLoading ? (
     <div className="flex h-full justify-center items-center">
       <Loader2 className="w-10 h-10 lg:w-20 lg:h-20 animate-spin" />
@@ -42,9 +37,6 @@ export const PageContainer = ({
       )}
       <div className={cn('flex items-start justify-between space-y-2', headerClassName)}>
         <div className="flex">
-          {withBackButton && (
-            <ArrowLeft className="w-7 h-7 mr-2 mt-0.5 p-1 hover:bg-muted rounded-full" onClick={() => navigate(-1)} />
-          )}
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl sm:text-2xl font-bold tracking-tight">{pageTitle}</h2>
             {pageSubtitle && <h2 className="max-w-2xl leading-6 text-muted-foreground">{pageSubtitle}</h2>}

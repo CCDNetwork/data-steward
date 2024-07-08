@@ -104,7 +104,7 @@ export const RuleModal = ({ attributeGroupId }: { attributeGroupId?: string }) =
           <Button variant="outline">
             <>
               <PlusSquareIcon className="mr-2 w-5 h-5" />
-              Create new
+              Create Rule
             </>
           </Button>
         ) : (
@@ -115,7 +115,7 @@ export const RuleModal = ({ attributeGroupId }: { attributeGroupId?: string }) =
       </DialogTrigger>
       <DialogContent className="sm:max-w-[512px]">
         <DialogHeader>
-          <DialogTitle>{`${!attributeGroupId ? 'Create a new rule' : 'Edit rule'}`}</DialogTitle>
+          <DialogTitle>{`${!attributeGroupId ? 'Create New Rule' : 'Edit rule'}`}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={onSubmit}>
@@ -139,8 +139,8 @@ export const RuleModal = ({ attributeGroupId }: { attributeGroupId?: string }) =
                 render={({ field }) => (
                   <FormItem>
                     <div className="space-y-0.5">
-                      <FormLabel>Rule attributes</FormLabel>
-                      <FormDescription>Pick the attributes for this rule</FormDescription>
+                      <FormLabel>Select Attributes</FormLabel>
+                      <FormDescription>Which fields do you want to use for deduplication?</FormDescription>
                     </div>
                     <FormControl>
                       <DataTable
@@ -158,12 +158,11 @@ export const RuleModal = ({ attributeGroupId }: { attributeGroupId?: string }) =
               />
               <FormField
                 control={control}
-                name="isActive"
+                name="useFuzzyMatch"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                     <div className="space-y-0.5">
-                      <FormLabel>Active?</FormLabel>
-                      <FormDescription>Enable to activate this rule to be used for deduplication</FormDescription>
+                      <FormLabel>Enable Fuzzy Matching?</FormLabel>
                     </div>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -173,12 +172,11 @@ export const RuleModal = ({ attributeGroupId }: { attributeGroupId?: string }) =
               />
               <FormField
                 control={control}
-                name="useFuzzyMatch"
+                name="isActive"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                     <div className="space-y-0.5">
-                      <FormLabel>Fuzzy matching?</FormLabel>
-                      <FormDescription>Enable to set this rule to be used with fuzzy matching</FormDescription>
+                      <FormLabel>Activate this rule for deduplication?</FormLabel>
                     </div>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />

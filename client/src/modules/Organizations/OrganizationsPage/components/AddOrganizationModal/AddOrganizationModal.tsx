@@ -48,14 +48,14 @@ export const AddOrganizationModal = () => {
       toast({
         title: 'Success!',
         variant: 'default',
-        description: 'Organization successfully created.',
+        description: 'Organisation successfully created.',
       });
       setOpen(false);
     } catch (error: any) {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error creating organization.',
+        description: error.response?.data?.errorMessage || 'Error creating organisation.',
       });
     }
   });
@@ -75,8 +75,8 @@ export const AddOrganizationModal = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add a new organization</DialogTitle>
-          <DialogDescription>Submit organization information below.</DialogDescription>
+          <DialogTitle>Add a new organisation</DialogTitle>
+          <DialogDescription>Submit organisation information below.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={onSubmit}>
@@ -86,9 +86,9 @@ export const AddOrganizationModal = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel requiredField>Organization name</FormLabel>
+                    <FormLabel requiredField>Organisation name</FormLabel>
                     <FormControl>
-                      <Input id="name" placeholder="Organization name" type="text" {...field} />
+                      <Input id="name" placeholder="Organisation name" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

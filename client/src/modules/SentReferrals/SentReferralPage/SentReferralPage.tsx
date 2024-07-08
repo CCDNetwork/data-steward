@@ -151,8 +151,7 @@ export const SentReferralPage = () => {
 
   return (
     <PageContainer
-      pageTitle={isCreate ? 'New case' : `Case  ${sentReferralData?.caseNumber ?? '-'}`}
-      pageSubtitle={isCreate ? 'Create a new case' : 'Manage case'}
+      pageTitle={isCreate ? 'Make Referral' : `Case  ${sentReferralData?.caseNumber ?? '-'}`}
       isLoading={(queryLoading || !adminLvl2Fetched || !isFetched) && !isCreate}
       breadcrumbs={[
         { href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' },
@@ -235,8 +234,7 @@ export const SentReferralPage = () => {
                 <Separator />
 
                 <CardHeader>
-                  <CardTitle>Receiving Organization Details</CardTitle>
-                  <CardDescription>Information about the receiving organization</CardDescription>
+                  <CardTitle>Recipient Organization</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 gap-4">
@@ -255,7 +253,7 @@ export const SentReferralPage = () => {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <AsyncSelect
                         requiredField
-                        label="Receiving organization"
+                        label="Receiving organisation"
                         name="organizationReferredTo"
                         control={control}
                         useInfiniteQueryFunction={useOrganizationsInfinite}
@@ -356,7 +354,6 @@ export const SentReferralPage = () => {
                 <Separator />
                 <CardHeader>
                   <CardTitle>Beneficiary Details</CardTitle>
-                  <CardDescription>Information about the beneficiary that is being referred</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -739,7 +736,7 @@ export const SentReferralPage = () => {
                       )}
                     />
                     <div className="flex flex-col gap-3">
-                      <FormLabel>Upload accompanying information</FormLabel>
+                      <FormLabel>Upload additional information</FormLabel>
                       <FilesDropzone control={control} name="files" />
                     </div>
                   </div>
@@ -755,7 +752,7 @@ export const SentReferralPage = () => {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>Consent</FormLabel>
-                          <FormDescription>Beneficiary has given their consent.</FormDescription>
+                          <FormDescription>Has the Beneficiary given you consent to share their data?</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -776,7 +773,7 @@ export const SentReferralPage = () => {
                           onClick={handleSubmit((values) => onSubmit({ values, isDraft: true }))}
                           disabled={createReferral.isLoading}
                         >
-                          Save as draft
+                          Save draft
                         </Button>
                         <Button
                           type="submit"
@@ -784,7 +781,7 @@ export const SentReferralPage = () => {
                           onClick={handleSubmit((values) => onSubmit({ values }))}
                           disabled={createReferral.isLoading}
                         >
-                          Save and Submit
+                          Send Referral
                         </Button>
                       </div>
                       <Button type="button" variant="outline" onClick={() => navigate(APP_ROUTE.SentReferrals)}>

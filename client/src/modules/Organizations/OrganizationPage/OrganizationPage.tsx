@@ -6,7 +6,7 @@ import { PageContainer } from '@/components/PageContainer';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useOrganization, useOrganizationMutation } from '@/services/organizations/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -58,7 +58,7 @@ export const OrganizationPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error updating organization.',
+        description: error.response?.data?.errorMessage || 'Error updating organisation.',
       });
     }
   });
@@ -79,7 +79,7 @@ export const OrganizationPage = () => {
         </Button>
       }
       breadcrumbs={[
-        { href: `${APP_ROUTE.Organizations}`, name: 'Organizations' },
+        { href: `${APP_ROUTE.Organizations}`, name: 'Organisations' },
         { name: `${organizationData?.name}` },
       ]}
     >
@@ -108,7 +108,7 @@ export const OrganizationPage = () => {
 
             <CardHeader>
               <CardTitle>Services</CardTitle>
-              <CardDescription>Pick the services and add activities</CardDescription>
+              <CardDescription>Which services does this organisation provide?</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-6">
@@ -120,7 +120,6 @@ export const OrganizationPage = () => {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>MPCA</FormLabel>
-                          <FormDescription>Information about what MPCA is here.</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -146,7 +145,6 @@ export const OrganizationPage = () => {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>WASH</FormLabel>
-                          <FormDescription>Information about what WASH is here.</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -172,7 +170,6 @@ export const OrganizationPage = () => {
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>Shelter</FormLabel>
-                          <FormDescription>Information about what Shelter is here.</FormDescription>
                         </div>
                         <FormControl>
                           <Switch checked={field.value} onCheckedChange={field.onChange} />

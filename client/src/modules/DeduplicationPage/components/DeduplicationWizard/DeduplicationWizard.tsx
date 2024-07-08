@@ -250,7 +250,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                               <span className="px-1 border border-border rounded py-0.5 bg-muted font-semibold">
                                 {organization?.name ?? '-'}
                               </span>
-                              , to see if there are “organizational duplicates“.
+                              , to see if there are “organisational duplicates“.
                             </p>
                           </div>
                         ) : (
@@ -303,20 +303,20 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       <div className="flex flex-col items-center justify-center gap-4 max-w-[400px] mx-auto">
                         <Loader2 className="w-16 h-16 animate-spin" />
                         <p className="text-center text-sm">
-                          The platform is checking the uploaded file for organizational duplicates...
+                          The platform is checking the uploaded file for organisational duplicates...
                         </p>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-2 max-w-[500px] mx-auto">
                         <div className="flex flex-col items-center justify-center gap-4 text-sm">
                           <CheckCircleIcon className="w-16 h-16 text-green-600" />
-                          <p className="pb-4">The platform has found no organizational duplicates.</p>
+                          <p className="pb-4">The platform has found no organisational duplicates.</p>
                           <p>Next, we will add your data to the registry and check for potential duplicates</p>
                         </div>
                       </div>
                     )}
                     <p className="text-xs text-muted-foreground max-w-[500px] pt-6">
-                      Organizational duplicates are beneficiary data uploaded by your organization that matches data in
+                      Organisational duplicates are beneficiary data uploaded by your organisation that matches data in
                       your file. We check for that before adding your data to the registry.
                     </p>
                   </AnimationWrapper>

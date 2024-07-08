@@ -21,7 +21,7 @@ export const HandbookItem = ({ content, createdAt, updatedAt, title }: Handbook)
         <div className="flex justify-between w-full gap-2 border-b bg-muted/30">
           <span className="px-4 py-2">
             <label htmlFor="createdAt" className="uppercase text-xs font-medium text-muted-foreground">
-              Created At
+              Created On
             </label>
             <p id="createdAt" className="text-sm">
               {formatDate(createdAt ?? '', 'MMM do, yyyy - HH:mm')}
@@ -29,7 +29,7 @@ export const HandbookItem = ({ content, createdAt, updatedAt, title }: Handbook)
           </span>
           <span className="px-4 py-2">
             <label htmlFor="updatedAt" className="uppercase text-xs font-medium text-muted-foreground">
-              Updated At
+              Updated On
             </label>
             <p id="updatedAt" className="text-sm">
               {formatDate(updatedAt ?? '', 'MMM do, yyyy - HH:mm')}
