@@ -1,7 +1,11 @@
 import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
 import { api } from '@/services';
-import { resToDeduplicationListing } from '@/services/deduplication/transformations';
-import { DeduplicationListing } from '@/services/deduplication/types';
+import {
+  dataToDatasetRequest,
+  resToDatasetResponse,
+  resToDeduplicationListing,
+} from '@/services/deduplication/transformations';
+import { DeduplicationDataset, DeduplicationListing } from '@/services/deduplication/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 enum QueryKeys {
@@ -25,6 +29,14 @@ const deleteDeduplicationData = async (): Promise<object> => {
   return resp.data;
 };
 
+const postDeduplicationDataset = async (data: { file: File; templateId: string }): Promise<DeduplicationDataset> => {
+  const resp = await api.post('/deduplication/dataset', dataToDatasetRequest(data), {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  return resToDatasetResponse(resp.data);
+};
+
 export const useDeduplicationListings = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
   return useQuery(
     [QueryKeys.DeduplicationListings, currentPage, pageSize, sortBy, sortDirection, debouncedSearch],
@@ -35,5 +47,6 @@ export const useDeduplicationListings = ({ currentPage, pageSize, sortBy, sortDi
 export const useDeduplicationMutation = () => {
   return {
     wipeDeduplicationData: useMutation(deleteDeduplicationData),
+    deduplicateFile: useMutation(postDeduplicationDataset),
   };
 };

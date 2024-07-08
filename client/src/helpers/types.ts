@@ -11,7 +11,7 @@ export interface NavigationItem {
   }[];
 }
 
-export interface IBreadCrumb {
+export interface IBreadcrumb {
   href?: string;
   name: string;
 }

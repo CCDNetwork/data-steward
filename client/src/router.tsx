@@ -7,7 +7,7 @@ import { RoleBasedIndexRoute } from './layouts/RoleBasedIndexRoute';
 import { ProtectedRoute } from './layouts/ProtectedRoute';
 import { UserPermission } from './services/users';
 import { APP_ROUTE } from './helpers/constants';
-import { DeduplicationPage } from './modules/DeduplicationPage';
+import { DeduplicationPage, DeduplicationProvider } from './modules/DeduplicationPage';
 import { OrganizationPage, OrganizationsPage, OrganizationsProvider } from './modules/Organizations';
 import { DynamicRoute } from './layouts/DynamicRoute';
 import { UserPage, UsersPage, UsersProvider } from './modules/Users';
@@ -35,7 +35,9 @@ export const router = createBrowserRouter(
         {/* DEDUPLICATION */}
 
         <Route element={<ProtectedRoute userPermissions={[UserPermission.Deduplication]} />}>
-          <Route path={APP_ROUTE.Deduplication} element={<DeduplicationPage />} />
+          <Route path={APP_ROUTE.Deduplication} element={<DeduplicationProvider />}>
+            <Route index element={<DeduplicationPage />} />
+          </Route>
         </Route>
 
         <Route element={<ProtectedRoute userPermissions={[UserPermission.Deduplication]} />}>

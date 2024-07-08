@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
 import { cn } from '@/helpers/utils';
-import { IBreadCrumb } from '@/helpers/types';
+import { IBreadcrumb } from '@/helpers/types';
 
-import { BreadCrumb } from './BreadCrumb';
+import { Breadcrumb } from './Breadcrumb';
 
 export const PageContainer = ({
   children,
@@ -25,7 +25,7 @@ export const PageContainer = ({
   headerClassName?: string;
   pageSubtitle?: string;
   withBackButton?: boolean;
-  breadcrumbs?: IBreadCrumb[];
+  breadcrumbs?: IBreadcrumb[];
 }) => {
   const navigate = useNavigate();
 
@@ -37,10 +37,10 @@ export const PageContainer = ({
     <div className={cn('space-y-4', containerClassName)}>
       {breadcrumbs && (
         <div className="pt-2">
-          <BreadCrumb breadcrumbs={breadcrumbs} />
+          <Breadcrumb breadcrumbs={breadcrumbs} />
         </div>
       )}
-      <div className={cn('flex items-center justify-between space-y-2', headerClassName)}>
+      <div className={cn('flex items-start justify-between space-y-2', headerClassName)}>
         <div className="flex">
           {withBackButton && (
             <ArrowLeft className="w-7 h-7 mr-2 mt-0.5 p-1 hover:bg-muted rounded-full" onClick={() => navigate(-1)} />

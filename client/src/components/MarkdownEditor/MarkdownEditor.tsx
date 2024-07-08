@@ -1,7 +1,8 @@
-import { cn } from '@/helpers/utils';
-import { useTheme } from '@/providers/ThemeProvider';
 import MDEditor, { MDEditorProps } from '@uiw/react-md-editor';
 import { Control, useController } from 'react-hook-form';
+
+import { useTheme } from '@/providers/ThemeProvider';
+import { cn } from '@/helpers/utils';
 
 interface Props extends MDEditorProps {
   label?: string;
@@ -18,10 +19,7 @@ export const MarkdownEditor: React.FC<Props> = ({ name, control, className, labe
   return (
     <div data-color-mode={theme}>
       {label && (
-        <label
-          htmlFor={name}
-          className={cn('block text-sm mb-2 font-medium', { 'text-destructive': !!fieldState.error }, labelClassName)}
-        >
+        <label htmlFor={name} className={cn('block text-sm mb-2 font-medium', labelClassName)}>
           {label}
         </label>
       )}

@@ -1,27 +1,26 @@
 import { useState } from 'react';
+import { Wand2Icon } from 'lucide-react';
 
 import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
 import { Button } from '@/components/ui/button';
 import { useDeduplicationListings } from '@/services/deduplication';
 import { SortDirection, usePagination } from '@/helpers/pagination';
+import { APP_ROUTE } from '@/helpers/constants';
 
 import { columns } from './columns';
-import { UploadModal } from './components/UploadModal';
-import { APP_ROUTE } from '@/helpers/constants';
+import { DeduplicationWizard } from './components';
 
 export const DeduplicationPage = () => {
   const pagination = usePagination({ initialPagination: { sortBy: 'createdAt', sortDirection: SortDirection.Desc } });
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
 
-  const [uploadModalOpen, setUploadModalOpen] = useState<boolean>(false);
-  const [deduplicationType, setDeduplicationType] = useState<'single' | 'multiple'>('single');
+  const [isDeduplicationWizardOpen, setIsDeduplicationWizardOpen] = useState<boolean>(false);
 
   const { data: listings, isLoading: queryLoading } = useDeduplicationListings(pagination);
 
-  const handleDeduplicationButtonClick = (type: 'single' | 'multiple') => {
-    setUploadModalOpen(true);
-    setDeduplicationType(type);
+  const handleDeduplicationWizardOpen = () => {
+    setIsDeduplicationWizardOpen(true);
   };
 
   return (
@@ -29,14 +28,10 @@ export const DeduplicationPage = () => {
       pageTitle="Manage cases"
       pageSubtitle="Manage deduplication cases"
       headerNode={
-        <div className="flex sm:flex-row flex-col gap-3">
-          <Button type="button" onClick={() => handleDeduplicationButtonClick('single')}>
-            Internal deduplication
-          </Button>
-          <Button type="button" onClick={() => handleDeduplicationButtonClick('multiple')}>
-            Registry deduplication
-          </Button>
-        </div>
+        <Button type="button" onClick={handleDeduplicationWizardOpen}>
+          <Wand2Icon className="mr-2 w-4 h-4" />
+          Deduplication Wizard
+        </Button>
       }
       breadcrumbs={[{ href: `${APP_ROUTE.Deduplication}`, name: 'Manage cases' }]}
     >
@@ -52,7 +47,7 @@ export const DeduplicationPage = () => {
         columns={columns}
       />
 
-      <UploadModal isOpen={uploadModalOpen} setIsOpen={setUploadModalOpen} deduplicationType={deduplicationType} />
+      <DeduplicationWizard isOpen={isDeduplicationWizardOpen} setIsOpen={setIsDeduplicationWizardOpen} />
     </PageContainer>
   );
 };

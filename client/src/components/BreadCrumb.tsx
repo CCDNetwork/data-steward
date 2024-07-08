@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { IBreadCrumb } from '@/helpers/types';
+import { IBreadcrumb } from '@/helpers/types';
 
 import {
-  Breadcrumb,
+  Breadcrumb as LibBreadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -13,12 +13,12 @@ import {
 } from './ui/breadcrumb';
 
 interface Props {
-  breadcrumbs: IBreadCrumb[];
+  breadcrumbs: IBreadcrumb[];
 }
 
-export const BreadCrumb = ({ breadcrumbs }: Props) => {
+export const Breadcrumb = ({ breadcrumbs }: Props) => {
   return (
-    <Breadcrumb>
+    <LibBreadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
@@ -26,7 +26,7 @@ export const BreadCrumb = ({ breadcrumbs }: Props) => {
           </BreadcrumbLink>
         </BreadcrumbItem>
         {breadcrumbs.length > 0 && <BreadcrumbSeparator />}
-        {breadcrumbs.map((breadcrumb: IBreadCrumb, index: number) => {
+        {breadcrumbs.map((breadcrumb: IBreadcrumb, index: number) => {
           const isLastPath = breadcrumbs.length === index + 1;
           return (
             <React.Fragment key={index}>
@@ -44,6 +44,6 @@ export const BreadCrumb = ({ breadcrumbs }: Props) => {
           );
         })}
       </BreadcrumbList>
-    </Breadcrumb>
+    </LibBreadcrumb>
   );
 };

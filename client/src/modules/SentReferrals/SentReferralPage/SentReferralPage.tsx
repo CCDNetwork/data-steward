@@ -44,15 +44,23 @@ export const SentReferralPage = () => {
 
   const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
 
+  const {
+    data: uaAdminLvl1Data,
+    isFetched,
+    isLoading: ukraineAdminLevel1DataLoading,
+  } = useUkraineAdminLevel1Data({
+    APP_IDENTIFIER: hdxHapiAppIdentifier,
+  });
+
+  const {
+    data: uaAdminLvl2Data,
+    isFetched: adminLvl2Fetched,
+    isLoading: ukraineAdminLeve2lDataLoading,
+  } = useUkraineAdminLevel2Data({
+    APP_IDENTIFIER: hdxHapiAppIdentifier,
+  });
+
   const { data: sentReferralData, isLoading: queryLoading } = useReferral({ id: sentReferralId, isCreate });
-
-  const { data: uaAdminLvl1Data, isFetched } = useUkraineAdminLevel1Data({
-    APP_IDENTIFIER: hdxHapiAppIdentifier,
-  });
-
-  const { data: uaAdminLvl2Data, isFetched: adminLvl2Fetched } = useUkraineAdminLevel2Data({
-    APP_IDENTIFIER: hdxHapiAppIdentifier,
-  });
 
   const { createReferral, patchReferral } = useReferralMutation();
 
@@ -490,7 +498,7 @@ export const SentReferralPage = () => {
                   />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {isFetched && (
+                    {isFetched && !ukraineAdminLevel1DataLoading && (
                       <Combobox
                         label="Oblast"
                         name="oblast"
@@ -498,7 +506,7 @@ export const SentReferralPage = () => {
                         options={uaAdminLvl1Data!.map((i) => ({ value: i.name, label: i.name }))}
                       />
                     )}
-                    {adminLvl2Fetched && watch('oblast') && (
+                    {adminLvl2Fetched && !ukraineAdminLeve2lDataLoading && watch('oblast') && (
                       <Combobox
                         label="Raion"
                         name="ryon"

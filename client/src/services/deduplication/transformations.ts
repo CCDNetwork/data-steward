@@ -1,6 +1,6 @@
 import { resToOrganization } from '@/services/organizations';
 
-import { DeduplicationListing, UserCreated } from './types';
+import { DeduplicationDataset, DeduplicationListing, UserCreated } from './types';
 
 const resToUserCreated = (res: any): UserCreated => {
   return {
@@ -24,5 +24,20 @@ export const resToDeduplicationListing = (res: any): DeduplicationListing => {
     userCreated: res.userCreated ? resToUserCreated(res.userCreated) : null,
     createdAt: res.createdAt ?? null,
     updatedAt: res.updatedAt ?? null,
+  };
+};
+
+export const dataToDatasetRequest = (data: { file: File; templateId: string }): FormData => {
+  const formData = new FormData();
+  formData.append('file', data.file);
+  formData.append('templateId', data.templateId);
+  return formData;
+};
+
+export const resToDatasetResponse = (res: any): DeduplicationDataset => {
+  return {
+    file: res.file ?? null,
+    templateId: res.templateId ?? '',
+    hasDuplicates: res.hasDuplicates ?? false,
   };
 };

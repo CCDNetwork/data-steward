@@ -53,7 +53,7 @@ export const SidebarContent = ({
         <ul role="list">
           {navigationItems.map((item, idx) => {
             return (
-              <div key={`${item.categoryName}-${idx}`} className="pb-6">
+              <div key={`${item.categoryName}-${idx}`} className="pb-3">
                 <p className="font-bold pb-2">{item.categoryName}</p>
                 {item.routes.map((item) => (
                   <li key={item.name} className="ml-1 relative">

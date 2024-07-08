@@ -47,6 +47,7 @@ export const columns: TableColumn<DeduplicationListing>[] = [
   {
     accessorKey: 'updatedAt',
     id: 'updatedAt',
+    isSortable: true,
     header: 'Updated At',
     cell: ({ getValue }) => {
       return (

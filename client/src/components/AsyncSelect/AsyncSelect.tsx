@@ -118,6 +118,7 @@ export const AsyncSelect = <T,>({
         isDisabled={disabled}
         isLoading={isOpen && query?.isLoading}
         onInputChange={handleInputChange}
+        maxMenuHeight={250}
         theme={(theme) => ({
           ...theme,
           borderRadius: 6,

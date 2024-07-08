@@ -20,3 +20,13 @@ export interface DeduplicationListing {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+
+export interface DeduplicationDataset {
+  file: {
+    id: string;
+    url: string;
+    name: string;
+  };
+  templateId: string;
+  hasDuplicates: boolean;
+}

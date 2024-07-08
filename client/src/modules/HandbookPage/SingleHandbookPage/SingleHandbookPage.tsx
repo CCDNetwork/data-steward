@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { PageContainer } from '@/components/PageContainer';
@@ -10,14 +11,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useHandbook, useHandbookMutation } from '@/services/handbooks/api';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
+import { Card, CardContent } from '@/components/ui/card';
+import { APP_ROUTE } from '@/helpers/constants';
 
 import { dataToHandbookForm } from './form-transformation';
 import { HandbookForm, HandbookFormSchema } from '../validation';
 import { defaultHandbookFormValues } from '../const';
-import { Card, CardContent } from '@/components/ui/card';
-import { APP_ROUTE } from '@/helpers/constants';
 
 export const SingleHandbookPage = () => {
+  const navigate = useNavigate();
   const { id: handbookId, isCreate } = useIdFromParams();
 
   const { data: handbookData, isLoading: queryLoading } = useHandbook({ id: handbookId, isCreate });
@@ -41,6 +43,7 @@ export const SingleHandbookPage = () => {
     if (isCreate) {
       try {
         await createHandbook.mutateAsync(values);
+        navigate(APP_ROUTE.Handbook);
         toast({
           title: 'Success!',
           variant: 'default',

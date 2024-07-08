@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Organization } from '@/services/organizations';
+import { formatDate } from 'date-fns';
 
 export const columns = (
   setOrganizationToDelete: React.Dispatch<React.SetStateAction<Organization | null>>,
@@ -19,6 +20,32 @@ export const columns = (
     accessorKey: 'name',
     id: 'name',
     header: 'Organization Name',
+  },
+  {
+    accessorKey: 'createdAt',
+    id: 'createdAt',
+    header: 'Created At',
+    isSortable: true,
+    cell: ({ getValue }) => {
+      return (
+        <div className="flex flex-col">
+          <span>{formatDate(getValue() as Date, 'dd/MM/yyyy HH:mm')}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    id: 'updatedAt',
+    header: 'Updated At',
+    isSortable: true,
+    cell: ({ getValue }) => {
+      return (
+        <div className="flex flex-col">
+          <span>{formatDate(getValue() as Date, 'dd/MM/yyyy HH:mm')}</span>
+        </div>
+      );
+    },
   },
   {
     id: 'actions',

@@ -13,6 +13,7 @@ import { User, UserRole } from '@/services/users';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/helpers/utils';
+import { formatDate } from 'date-fns';
 
 export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<User | null>>): TableColumn<User>[] => [
   {
@@ -61,6 +62,19 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
         >
           {role}
         </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: 'createdAt',
+    id: 'createdAt',
+    header: 'Created At',
+    isSortable: true,
+    cell: ({ getValue }) => {
+      return (
+        <div className="flex flex-col">
+          <span>{formatDate(getValue() as Date, 'dd/MM/yyyy HH:mm')}</span>
+        </div>
       );
     },
   },

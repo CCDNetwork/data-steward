@@ -96,7 +96,7 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
             )}
           </BottomScrolledContainer>
         </CardContent>
-        <div className="flex gap-2 px-6 pb-6 pt-2">
+        <div className="flex gap-2 sm:px-6 pb-6 pt-2">
           <Input
             value={discussionInputValue}
             onChange={(e) => setDiscussionInputValue(e.target.value)}
