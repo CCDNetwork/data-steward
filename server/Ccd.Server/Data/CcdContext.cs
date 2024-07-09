@@ -36,6 +36,7 @@ public class CcdContext : DbContext
     public DbSet<Activity> Activities { get; set; }
     public DbSet<UserOrganization> UserOrganizations { get; set; }
     public DbSet<Beneficary> Beneficaries { get; set; }
+    public DbSet<BeneficaryDeduplication> BeneficaryDeduplications { get; set; }
     public DbSet<BeneficiaryAttribute> BeneficiaryAttributes { get; set; }
     public DbSet<List> Lists { get; set; }
     public DbSet<Referral> Referrals { get; set; }

@@ -33,6 +33,7 @@ public class Mappings : Profile
         // BeneficiaryAttribute mappings
         CreateMap<BeneficiaryAttribute, BeneficiaryAttributeResponse>();
         CreateMap<DeduplicationRecord, Beneficary>();
+        CreateMap<DeduplicationRecord, BeneficaryDeduplication>();
 
         // BeneficiaryGroupAttribute mappings
         CreateMap<BeneficiaryAttributeGroup, BeneficiaryAttributeGroupResponse>();

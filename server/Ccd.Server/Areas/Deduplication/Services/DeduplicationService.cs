@@ -145,7 +145,7 @@ public class DeduplicationService
         worksheet.Cell(1, lastColumnIndex).Value = "duplicate";
 
         var deduplicationRecords = new List<DeduplicationRecord>();
-        var hasDuplicates = false;
+        var duplicates = 0;
 
         for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
         {
@@ -178,7 +178,7 @@ public class DeduplicationService
                 deduplicationRecords.Any((e) =>
                 {
                     var equal = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
-                    if (equal) hasDuplicates = true;
+                    if (equal) duplicates += 1;
                     return equal;
                 }) ? "YES" : "NO";
 
@@ -197,7 +197,7 @@ public class DeduplicationService
         {
             File = fileResponse,
             TemplateId = model.TemplateId,
-            HasDuplicates = hasDuplicates
+            Duplicates = duplicates
         };
     }
 
@@ -291,6 +291,87 @@ public class DeduplicationService
         await _context.SaveChangesAsync();
 
         return fileBytes;
+    }
+
+    public async Task<SameOrganizationDeduplicationResponse> SameOrganizationDeduplication(Guid organizationId, Guid userId, SameOrganizationDeduplicationRequest model)
+    {
+        var file = await _storageService.GetFileById(model.FileId);
+        using var workbook = new XLWorkbook(_storageService.GetFileStream(file));
+
+        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
+        var beneficaries = _context.Beneficaries.Include(e => e.Organization).Where(e => e.OrganizationId == organizationId).ToList();
+        var beneficiaryAttributesGroupsApi = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters { PageSize = 1000, Page = 1 });
+        var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
+        var totalDuplicates = 0;
+
+        var worksheet = workbook.Worksheet(1);
+        var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
+
+        var newBeneficaries = new List<BeneficaryDeduplication>();
+
+        for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
+        {
+            var record = new DeduplicationRecord
+            {
+                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
+                FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
+                Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
+                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
+                AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
+                AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
+                AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
+                AdminLevel4 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel4, worksheet)).Value.ToString(),
+                HhId = worksheet.Cell(i, GetHeaderIndex(template.HHID, worksheet)).Value.ToString(),
+                MobilePhoneId = worksheet.Cell(i, GetHeaderIndex(template.MobilePhoneID, worksheet)).Value.ToString(),
+                GovIdType = worksheet.Cell(i, GetHeaderIndex(template.GovIDType, worksheet)).Value.ToString(),
+                GovIdNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIDNumber, worksheet)).Value.ToString(),
+                OtherIdType = worksheet.Cell(i, GetHeaderIndex(template.OtherIDType, worksheet)).Value.ToString(),
+                OtherIdNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIDNumber, worksheet)).Value.ToString(),
+                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
+                Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
+                Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
+                CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
+                StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
+                EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
+                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
+            };
+
+            var duplicates = 0;
+            foreach (var e in beneficaries)
+            {
+                var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
+                if (exists)
+                {
+                    duplicates++;
+                }
+            }
+
+            var beneficary = _mapper.Map<BeneficaryDeduplication>(record);
+            beneficary.OrganizationId = organizationId;
+            beneficary.FileId = file.Id;
+            beneficary.IsSameOrganizationDuplicate = duplicates > 0;
+            totalDuplicates += duplicates;
+
+            newBeneficaries.Add(beneficary);
+        }
+
+
+        await _context.AddRangeAsync(newBeneficaries);
+        await _context.SaveChangesAsync();
+
+        using var memoryStream = new MemoryStream();
+        workbook.SaveAs(memoryStream);
+
+        var fileResponse = await _storageService.GetFileApiById(file.Id);
+        var duplicateBeneficiaries = _context.BeneficaryDeduplications.Where(e => e.FileId == file.Id && e.IsSameOrganizationDuplicate).ToList();
+
+        return new SameOrganizationDeduplicationResponse
+        {
+            File = fileResponse,
+            TemplateId = model.TemplateId,
+            Duplicates = totalDuplicates,
+            DuplicateBeneficiaries = duplicateBeneficiaries
+        };
     }
 
     public async Task DeleteListings()

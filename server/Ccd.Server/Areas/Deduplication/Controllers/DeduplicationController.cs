@@ -57,11 +57,21 @@ public class DeduplicationController : ControllerBaseExtended
 
     [HttpPost("dataset")]
     [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult> DatasetDeduplicate([FromForm] DatasetDeduplicationRequest model)
+    public async Task<ActionResult<DatasetDeduplicationResponse>> DatasetDeduplicate([FromForm] DatasetDeduplicationRequest model)
     {
         if (model.TemplateId == Guid.Empty) throw new BadRequestException("Template ID is required.");
 
         var response = await _deduplicationService.DatasetDeduplication(this.OrganizationId, this.UserId, model);
+        return Ok(response);
+    }
+
+    [HttpPost("same-organization")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult> SameOrganizationDeduplication([FromBody] SameOrganizationDeduplicationRequest model)
+    {
+        if (model.TemplateId == Guid.Empty) throw new BadRequestException("Template ID is required.");
+
+        var response = await _deduplicationService.SameOrganizationDeduplication(this.OrganizationId, this.UserId, model);
         return Ok(response);
     }
 }
