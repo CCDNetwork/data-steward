@@ -38,6 +38,6 @@ export const resToDatasetResponse = (res: any): DeduplicationDataset => {
   return {
     file: res.file ?? null,
     templateId: res.templateId ?? '',
-    hasDuplicates: res.hasDuplicates ?? false,
+    duplicates: res.duplicates ?? 0,
   };
 };

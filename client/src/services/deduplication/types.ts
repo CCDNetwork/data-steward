@@ -28,5 +28,5 @@ export interface DeduplicationDataset {
     name: string;
   };
   templateId: string;
-  hasDuplicates: boolean;
+  duplicates: number;
 }

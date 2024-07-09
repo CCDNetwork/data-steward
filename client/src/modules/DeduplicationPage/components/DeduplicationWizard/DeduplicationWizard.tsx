@@ -119,7 +119,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
       return true;
     }
 
-    if (currentStep === WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION && internalFileDedupResponse?.hasDuplicates) {
+    if (currentStep === WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION && internalFileDedupResponse?.duplicates) {
       return true;
     }
 
@@ -242,7 +242,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-2 max-w-[500px] mx-auto">
-                        {internalFileDedupResponse?.hasDuplicates ? (
+                        {!internalFileDedupResponse?.duplicates ? (
                           <div className="flex flex-col items-center justify-center gap-4 text-sm">
                             <CheckCircleIcon className="w-16 h-16 text-green-600" />
                             <p className="pb-4">The platform has found no duplicate records within this file.</p>
@@ -259,7 +259,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                             <AlertTriangle className="w-16 h-16 text-yellow-500" />
                             <p className="text-sm">
                               The platform has found{' '}
-                              <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">X</span>{' '}
+                              <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
+                                {internalFileDedupResponse.duplicates}
+                              </span>{' '}
                               duplicate records within this file. Please make sure there are no duplicate records and
                               start the wizard again.
                             </p>
