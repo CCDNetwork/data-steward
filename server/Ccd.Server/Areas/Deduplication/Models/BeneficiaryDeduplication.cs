@@ -25,8 +25,6 @@ public class BeneficaryDeduplication
     public string StartDate { get; set; }
     public string EndDate { get; set; }
     public string Frequency { get; set; }
-    public bool IsSameOrganizationDuplicate { get; set; }
-    public bool IsSystemWideDuplicate { get; set; }
     public Guid FileId { get; set; }
     public File File { get; set; }
     public Guid OrganizationId { get; set; }

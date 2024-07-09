@@ -74,4 +74,12 @@ public class DeduplicationController : ControllerBaseExtended
         var response = await _deduplicationService.SameOrganizationDeduplication(this.OrganizationId, this.UserId, model);
         return Ok(response);
     }
+
+    [HttpPost("system-organizations")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult> SystemOrganizationsDeduplication([FromBody] SystemOrganizationsDeduplicationRequest model)
+    {
+        var result = await _deduplicationService.SystemOrganizationsDeduplication(this.OrganizationId, this.UserId, model);
+        return Ok(result);
+    }
 }
