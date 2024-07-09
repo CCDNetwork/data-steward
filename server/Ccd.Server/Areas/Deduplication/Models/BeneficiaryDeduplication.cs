@@ -1,4 +1,5 @@
 using System;
+using Ccd.Server.Beneficiaries;
 using Ccd.Server.Deduplication;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
@@ -25,6 +26,9 @@ public class BeneficaryDeduplication
     public string StartDate { get; set; }
     public string EndDate { get; set; }
     public string Frequency { get; set; }
+    public bool IsOrganizationDuplicate { get; set; }
+    public bool IsSystemDuplicate { get; set; }
+    public bool MarkedForImport { get; set; }
     public Guid FileId { get; set; }
     public File File { get; set; }
     public Guid OrganizationId { get; set; }

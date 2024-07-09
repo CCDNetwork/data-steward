@@ -337,18 +337,24 @@ public class DeduplicationService
             };
 
             var duplicates = 0;
+            var newBeneficary = _mapper.Map<BeneficaryDeduplication>(record);
+
+            var markedForImport = true;
             foreach (var e in beneficaries)
             {
                 var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
                 if (exists)
                 {
                     duplicates++;
-                    var beneficaryDuplicate = _mapper.Map<BeneficaryDeduplication>(record);
-                    beneficaryDuplicate.OrganizationId = organizationId;
-                    beneficaryDuplicate.FileId = file.Id;
-                    newBeneficaries.Add(beneficaryDuplicate);
+                    newBeneficary.IsOrganizationDuplicate = true;
+                    markedForImport = false;
                 }
             }
+
+            newBeneficary.OrganizationId = organizationId;
+            newBeneficary.FileId = file.Id;
+            newBeneficary.MarkedForImport = markedForImport;
+            newBeneficaries.Add(newBeneficary);
 
             totalDuplicates += duplicates;
         }
@@ -361,7 +367,7 @@ public class DeduplicationService
         workbook.SaveAs(memoryStream);
 
         var fileResponse = await _storageService.GetFileApiById(file.Id);
-        var duplicateBeneficiaries = _context.BeneficaryDeduplications.Where(e => e.FileId == file.Id).ToList();
+        var duplicateBeneficiaries = _context.BeneficaryDeduplications.Where(e => e.FileId == file.Id && e.IsOrganizationDuplicate).ToList();
 
         return new SameOrganizationDeduplicationResponse
         {
@@ -374,50 +380,22 @@ public class DeduplicationService
 
     public async Task<SameOrganizationDeduplicationResponse> SystemOrganizationsDeduplication(Guid organizationId, Guid userId, SystemOrganizationsDeduplicationRequest model)
     {
-        var deduplicationsToRemove = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id));
-        _context.BeneficaryDeduplications.RemoveRange(deduplicationsToRemove);
-
         var file = await _storageService.GetFileById(model.FileId);
-        using var workbook = new XLWorkbook(_storageService.GetFileStream(file));
 
-        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
+        var beneficaryMarkedForImport = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id)).ToList();
+        beneficaryMarkedForImport.ForEach(e => e.MarkedForImport = true);
+        _context.UpdateRange(beneficaryMarkedForImport);
+        await _context.SaveChangesAsync();
+
+
         var beneficaries = _context.Beneficaries.Include(e => e.Organization).Where(e => e.OrganizationId != organizationId).ToList();
+        var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization).Where(e => e.FileId == model.FileId).ToList();
         var beneficiaryAttributesGroupsApi = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var totalDuplicates = 0;
 
-        var worksheet = workbook.Worksheet(1);
-        var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
-
-        var newBeneficaries = new List<BeneficaryDeduplication>();
-
-        for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
+        foreach (var record in beneficiaryDeduplications)
         {
-            var record = new DeduplicationRecord
-            {
-                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
-                FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
-                Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
-                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
-                AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
-                AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
-                AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
-                AdminLevel4 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel4, worksheet)).Value.ToString(),
-                HhId = worksheet.Cell(i, GetHeaderIndex(template.HHID, worksheet)).Value.ToString(),
-                MobilePhoneId = worksheet.Cell(i, GetHeaderIndex(template.MobilePhoneID, worksheet)).Value.ToString(),
-                GovIdType = worksheet.Cell(i, GetHeaderIndex(template.GovIDType, worksheet)).Value.ToString(),
-                GovIdNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIDNumber, worksheet)).Value.ToString(),
-                OtherIdType = worksheet.Cell(i, GetHeaderIndex(template.OtherIDType, worksheet)).Value.ToString(),
-                OtherIdNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIDNumber, worksheet)).Value.ToString(),
-                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
-                Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
-                Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
-                CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
-                StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
-                EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
-                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
-            };
-
             var duplicates = 0;
             foreach (var e in beneficaries)
             {
@@ -425,22 +403,59 @@ public class DeduplicationService
                 if (exists)
                 {
                     duplicates++;
-                    var beneficary = _mapper.Map<BeneficaryDeduplication>(record);
-                    beneficary.OrganizationId = organizationId;
-                    beneficary.FileId = file.Id;
-                    newBeneficaries.Add(beneficary);
+                    record.IsSystemDuplicate = true;
                 }
             }
 
             totalDuplicates += duplicates;
         }
 
-
-        await _context.AddRangeAsync(newBeneficaries);
+        _context.UpdateRange(beneficiaryDeduplications);
         await _context.SaveChangesAsync();
 
-        using var memoryStream = new MemoryStream();
-        workbook.SaveAs(memoryStream);
+        var fileResponse = await _storageService.GetFileApiById(file.Id);
+        var duplicateBeneficiaries = _context.BeneficaryDeduplications.Where(e => e.FileId == model.FileId && e.IsSystemDuplicate).ToList();
+
+        return new SameOrganizationDeduplicationResponse
+        {
+            File = fileResponse,
+            TemplateId = model.TemplateId,
+            Duplicates = totalDuplicates,
+            DuplicateBeneficiaries = duplicateBeneficiaries
+        };
+    }
+
+    public async Task<SameOrganizationDeduplicationResponse> FinishDeduplication(Guid organizationId, Guid userId, SystemOrganizationsDeduplicationRequest model)
+    {
+        var file = await _storageService.GetFileById(model.FileId);
+
+        var beneficaryMarkedForImport = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id)).ToList();
+        beneficaryMarkedForImport.ForEach(e => e.MarkedForImport = true);
+        _context.UpdateRange(beneficaryMarkedForImport);
+
+        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
+        var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization).Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
+        var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
+
+        var newBeneficaries = new List<Beneficary>();
+        foreach (var record in beneficiaryDeduplications)
+        {
+            var beneficary = _mapper.Map<Beneficary>(record);
+            beneficary.ListId = list.Id;
+            beneficary.OrganizationId = organizationId;
+            beneficary.IsPrimary = !(record.IsSystemDuplicate || record.IsOrganizationDuplicate);
+            newBeneficaries.Add(beneficary);
+        }
+
+        await _context.AddRangeAsync(newBeneficaries);
+
+        var currentBeneficaryDeduplicationsToRemove = _context.BeneficaryDeduplications.Where(e => e.FileId == model.FileId).ToList();
+        _context.RemoveRange(currentBeneficaryDeduplicationsToRemove);
+
+        var oldBeneficaryDeduplicationsToRemove = _context.BeneficaryDeduplications.Where(e => e.CreatedAt.Date < DateTime.UtcNow.Date.AddDays(-3)).ToList();
+        _context.RemoveRange(oldBeneficaryDeduplicationsToRemove);
+
+        await _context.SaveChangesAsync();
 
         var fileResponse = await _storageService.GetFileApiById(file.Id);
 
@@ -448,8 +463,6 @@ public class DeduplicationService
         {
             File = fileResponse,
             TemplateId = model.TemplateId,
-            Duplicates = totalDuplicates,
-            DuplicateBeneficiaries = newBeneficaries
         };
     }
 
@@ -535,4 +548,37 @@ public class DeduplicationService
 
         return false;
     }
+
+    private static bool AreRecordsEqual(Beneficary existingRecord, BeneficaryDeduplication newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
+    {
+        foreach (var group in beneficiaryAttributesGroups)
+        {
+            var matchedFields = new List<string>();
+
+            foreach (var attribute in group.BeneficiaryAttributes)
+            {
+                var attributeName = attribute.AttributeName;
+                var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
+                var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
+
+                if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) continue;
+                if (group.UseFuzzyMatch)
+                {
+                    var firstString = Regex.Replace(existingValue, @"\s+", "").ToLower();
+                    var secondString = Regex.Replace(newValue, @"\s+", "").ToLower();
+                    var ratio = Fuzz.Ratio(firstString, secondString);
+                    if (ratio < 85) continue;
+                }
+                else if (existingValue != newValue) continue;
+
+                matchedFields.Add(attributeName);
+            }
+
+            return matchedFields.Count >= group.BeneficiaryAttributes.Count;
+        }
+
+        return false;
+    }
+
+
 }
