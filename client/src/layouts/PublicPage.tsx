@@ -1,4 +1,4 @@
-import { Link, Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 
 import { useAuth } from '@/providers/GlobalProvider';
@@ -11,9 +11,6 @@ interface Props {
   subtitle: string;
   titleClassName?: string;
   subtitleClassName?: string;
-  showLink?: boolean;
-  linkLabel?: string;
-  linkNavigateTo?: string;
   children?: React.ReactNode;
   boxClassName?: string;
   shouldRedirect?: boolean;
@@ -27,9 +24,6 @@ export const PublicPage = ({
   subtitle,
   titleClassName,
   subtitleClassName,
-  showLink,
-  linkNavigateTo,
-  linkLabel,
   boxClassName,
   shouldRedirect = true,
   isLoading = false,
@@ -82,13 +76,6 @@ export const PublicPage = ({
           <p className={cn('text-sm text-muted-foreground whitespace-pre-line', subtitleClassName)}>{subtitle}</p>
         </div>
         {children}
-        {showLink && (
-          <p className="px-8 text-center text-sm text-muted-foreground">
-            <Link to={linkNavigateTo ?? '/'} className="underline underline-offset-4">
-              {linkLabel}
-            </Link>
-          </p>
-        )}
       </div>
       <div className="absolute top-4 right-4">
         <ModeToggle />

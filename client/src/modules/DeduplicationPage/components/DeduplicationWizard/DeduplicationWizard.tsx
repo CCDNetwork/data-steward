@@ -32,6 +32,7 @@ interface Props {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+// TODO: Ivan -> Clean the wizard-mvp up and separate each step inside their own components
 export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
   const { organization } = useAuth();
   const [currentStep, setCurrentStep] = useState<number>(WIZARD_STEP.FILE_UPLOAD);
@@ -241,7 +242,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-2 max-w-[500px] mx-auto">
-                        {!internalFileDedupResponse?.hasDuplicates ? (
+                        {internalFileDedupResponse?.hasDuplicates ? (
                           <div className="flex flex-col items-center justify-center gap-4 text-sm">
                             <CheckCircleIcon className="w-16 h-16 text-green-600" />
                             <p className="pb-4">The platform has found no duplicate records within this file.</p>
@@ -310,8 +311,13 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       <div className="flex items-center justify-center gap-2 max-w-[500px] mx-auto">
                         <div className="flex flex-col items-center justify-center gap-4 text-sm">
                           <CheckCircleIcon className="w-16 h-16 text-green-600" />
-                          <p className="pb-4">The platform has found no organisational duplicates.</p>
-                          <p>Next, we will add your data to the registry and check for potential duplicates</p>
+                          <p className="pb-4">
+                            The platform has found no duplicates with your organisation’s existing records.
+                          </p>
+                          <p>
+                            Next, we will add your data to the registry and check for potential duplicates with other
+                            organisations’ records.
+                          </p>
                         </div>
                       </div>
                     )}

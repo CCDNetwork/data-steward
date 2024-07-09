@@ -11,7 +11,7 @@ export const ProtectedRoute = ({ children = <Outlet />, userPermissions }: Props
     return <Navigate to="/permission-denied" replace />;
   }
 
-  return <>{children}</>;
+  return children;
 };
 
 type Props = {

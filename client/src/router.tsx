@@ -13,10 +13,7 @@ import { DynamicRoute } from './layouts/DynamicRoute';
 import { UserPage, UsersPage, UsersProvider } from './modules/Users';
 import { MyProfilePage } from './modules/MyProfilePage';
 import { PermissionDeniedPage } from './modules/Public/PermissionDeniedPage';
-import { SuccessPage } from './modules/Public/SuccessPage';
 import { SignInPage } from './modules/Public/SignInPage';
-import { ForgotPasswordPage } from './modules/Public/ForgotPasswordPage';
-import { PasswordResetPage } from './modules/Public/PasswordResetPage';
 import { NotFoundPage } from './modules/NotFoundPage';
 import { HandbookProvider, HandbookPage, SingleHandbookPage } from './modules/HandbookPage';
 import { UserHandbookListPage } from './modules/UserHandbookList';
@@ -110,10 +107,7 @@ export const router = createBrowserRouter(
       {/* Public Pages */}
       <Route path={APP_ROUTE.ReferralData} element={<BeneficiaryReferralDataPage />} />
       <Route path={APP_ROUTE.PermissionDenied} element={<PermissionDeniedPage />} />
-      <Route path={APP_ROUTE.SuccessPage} element={<SuccessPage />} />
       <Route path={APP_ROUTE.SignIn} element={<SignInPage />} />
-      <Route path={APP_ROUTE.ForgotPassword} element={<ForgotPasswordPage />} />
-      <Route path={APP_ROUTE.ResetPassword} element={<PasswordResetPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Route>,
   ),

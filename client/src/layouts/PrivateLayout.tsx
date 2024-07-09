@@ -56,12 +56,9 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
       </Sheet>
 
       <div className="divide-y divide-border flex-1 flex flex-col overflow-hidden">
-        {/* <div className="px-4 py-2 sm:px-6 flex items-center justify-center">
-          <p className="font-medium tracking-tight text-muted-foreground">Header content here</p>
-        </div> */}
         <div className="px-4 pt-2 pb-4 flex-1 overflow-y-auto md:mt-0 mt-10 border-t md:border-t-0">{children}</div>
         <div className="px-4 py-4 sm:px-6 min-h-[69px] flex items-center justify-center">
-          <p className="font-medium tracking-tight text-muted-foreground">Footer content here</p>
+          <p className="font-medium tracking-tight text-muted-foreground">Footer Content</p>
         </div>
       </div>
     </div>

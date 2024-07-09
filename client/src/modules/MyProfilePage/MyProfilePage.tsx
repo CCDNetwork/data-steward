@@ -15,7 +15,7 @@ export const MyProfilePage = () => {
   return (
     <PageContainer
       pageTitle="My Profile"
-      pageSubtitle="Manage profile details"
+      pageSubtitle="Manage your profile"
       isLoading={userProfileQueryLoading}
       headerNode={role === UserRole.Admin && <WipeDataDialog />}
       breadcrumbs={[{ href: `${APP_ROUTE.MyProfile}`, name: 'My Profile' }]}

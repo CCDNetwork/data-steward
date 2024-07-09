@@ -25,6 +25,7 @@ import { ServiceActivities } from '@/modules/Organizations/components';
 import { AddOrganizationModalFormSchema, AddOrganizationModalForm } from './validation';
 import { defaultNewOrganizationFormFormValues } from './const';
 import { OrgActivity } from '@/services/organizations';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const AddOrganizationModal = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -95,83 +96,88 @@ export const AddOrganizationModal = () => {
                 )}
               />
               <Separator />
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <FormField
-                    control={control}
-                    name="isMpcaActive"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <div className="space-y-0.5">
-                          <FormLabel>MPCA</FormLabel>
-                        </div>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  {isMPCAChecked && (
-                    <ServiceActivities
-                      activities={fields}
-                      addActivity={append}
-                      removeActivity={remove}
-                      serviceType={OrgActivity.Mpca}
+              <CardHeader className="!p-0">
+                <CardTitle>Services</CardTitle>
+                <CardDescription>Which services does this organisation provide?</CardDescription>
+              </CardHeader>
+              <CardContent className="!p-0">
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <FormField
+                      control={control}
+                      name="isMpcaActive"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                          <div className="space-y-0.5">
+                            <FormLabel>MPCA</FormLabel>
+                          </div>
+                          <FormControl>
+                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                  )}
-                </div>
-                <Separator />
-                <div>
-                  <FormField
-                    control={control}
-                    name="isWashActive"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <div className="space-y-0.5">
-                          <FormLabel>WASH</FormLabel>
-                        </div>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                      </FormItem>
+                    {isMPCAChecked && (
+                      <ServiceActivities
+                        activities={fields}
+                        addActivity={append}
+                        removeActivity={remove}
+                        serviceType={OrgActivity.Mpca}
+                      />
                     )}
-                  />
-                  {isWashChecked && (
-                    <ServiceActivities
-                      activities={fields}
-                      addActivity={append}
-                      removeActivity={remove}
-                      serviceType={OrgActivity.Wash}
+                  </div>
+                  <Separator />
+                  <div>
+                    <FormField
+                      control={control}
+                      name="isWashActive"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                          <div className="space-y-0.5">
+                            <FormLabel>WASH</FormLabel>
+                          </div>
+                          <FormControl>
+                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                  )}
-                </div>
-                <Separator />
-                <div>
-                  <FormField
-                    control={control}
-                    name="isShelterActive"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <div className="space-y-0.5">
-                          <FormLabel>Shelter</FormLabel>
-                        </div>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                      </FormItem>
+                    {isWashChecked && (
+                      <ServiceActivities
+                        activities={fields}
+                        addActivity={append}
+                        removeActivity={remove}
+                        serviceType={OrgActivity.Wash}
+                      />
                     )}
-                  />
-                  {isShelterChecked && (
-                    <ServiceActivities
-                      activities={fields}
-                      addActivity={append}
-                      removeActivity={remove}
-                      serviceType={OrgActivity.Shelter}
+                  </div>
+                  <Separator />
+                  <div>
+                    <FormField
+                      control={control}
+                      name="isShelterActive"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                          <div className="space-y-0.5">
+                            <FormLabel>Shelter</FormLabel>
+                          </div>
+                          <FormControl>
+                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                  )}
+                    {isShelterChecked && (
+                      <ServiceActivities
+                        activities={fields}
+                        addActivity={append}
+                        removeActivity={remove}
+                        serviceType={OrgActivity.Shelter}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-
+              </CardContent>
               <DialogFooter>
                 <div className="w-full">
                   <Button

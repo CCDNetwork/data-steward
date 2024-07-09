@@ -47,7 +47,6 @@ const deleteUser = async (id: string): Promise<User> => {
   return resToUser(resp.data);
 };
 
-// user-me enpoints
 const fetchUserMe = async (): Promise<User> => {
   const resp = await api.get('/users/me');
   return resToUser(resp.data);

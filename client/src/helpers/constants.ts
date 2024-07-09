@@ -15,7 +15,6 @@ import {
 
 export enum APP_ROUTE {
   // PRIVATE
-  // Dashboard = '/dashboard',
   Users = '/users',
   MyProfile = '/my-profile',
   SignIn = '/sign-in',
@@ -24,17 +23,13 @@ export enum APP_ROUTE {
   SentReferrals = '/sent-referrals',
   ReceivedReferrals = '/received-referrals',
   ServiceList = '/service-list',
-  // Attributes = '/attributes',
   Organizations = '/organizations',
   Handbook = '/handbook',
   UserHandbookList = '/handbook-list',
   Rules = '/rules',
-  // PUBLIC
-  ForgotPassword = '/forgot-password',
-  ResetPassword = '/reset-password',
-  SuccessPage = '/success',
-  PermissionDenied = '/permission-denied',
   Templates = '/templates',
+  // PUBLIC
+  PermissionDenied = '/permission-denied',
   ReferralData = '/referral-data',
 }
 
