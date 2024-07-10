@@ -26,6 +26,8 @@ import { appendStringToFilename, createDownloadLink } from '@/helpers/common';
 import { DeduplicationUploadForm, DeduplicationUploadFormSchema } from './validation';
 import { AnimationWrapper, DeduplicationSteps } from './components';
 import { WIZARD_STEP } from './const';
+import { columns } from './columns';
+import { DataTable } from '@/components/DataTable';
 
 interface Props {
   isOpen: boolean;
@@ -38,8 +40,10 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
   const [currentStep, setCurrentStep] = useState<number>(WIZARD_STEP.FILE_UPLOAD);
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [internalFileDedupResponse, setInternalFileDedupResponse] = useState<DeduplicationDataset | null>(null);
+  const [keepDuplicatesIds, setKeepDuplicatesIds] = useState<string[]>([]);
 
-  const { deduplicateFile } = useDeduplicationMutation();
+  const { deduplicateFile, deduplicateSameOrganization, deduplicateSystemOrganizations, deduplicateFinish } =
+    useDeduplicationMutation();
 
   const form = useForm<DeduplicationUploadForm>({
     defaultValues: {
@@ -101,6 +105,68 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
     }
   };
 
+  const handleSameOrganizationDeduplication = async () => {
+    try {
+      const resp = await deduplicateSameOrganization.mutateAsync({
+        fileId: internalFileDedupResponse?.file.id ?? '',
+        templateId: currentTemplate.id,
+      });
+      setInternalFileDedupResponse(resp);
+    } catch (error: any) {
+      toast({
+        title: 'An error has occured!',
+        variant: 'destructive',
+        description: error.response?.data?.errorMessage || 'Something went wrong, please try again.',
+      });
+    }
+  };
+
+  const handleSystemOrganizationsDeduplication = async () => {
+    try {
+      const resp = await deduplicateSystemOrganizations.mutateAsync({
+        fileId: internalFileDedupResponse?.file.id ?? '',
+        templateId: currentTemplate.id,
+        keepDuplicatesIds,
+      });
+      setKeepDuplicatesIds([]);
+      setInternalFileDedupResponse(resp);
+    } catch (error: any) {
+      toast({
+        title: 'An error has occured!',
+        variant: 'destructive',
+        description: error.response?.data?.errorMessage || 'Something went wrong, please try again.',
+      });
+    }
+  };
+
+  const handleWizardFinish = async () => {
+    try {
+      await deduplicateFinish.mutateAsync({
+        fileId: internalFileDedupResponse?.file.id ?? '',
+        templateId: currentTemplate.id,
+        keepDuplicatesIds,
+      });
+      setKeepDuplicatesIds([]);
+      onOpenChange();
+    } catch (error: any) {
+      toast({
+        title: 'An error has occured!',
+        variant: 'destructive',
+        description: error.response?.data?.errorMessage || 'Something went wrong, please try again.',
+      });
+    }
+  };
+
+  const onTableToggleClick = (duplicateId: string) => {
+    setKeepDuplicatesIds((prev) => {
+      if (prev.includes(duplicateId)) {
+        return prev.filter((id) => id !== duplicateId);
+      }
+
+      return [...prev, duplicateId];
+    });
+  };
+
   const handleContinueClick = async () => {
     setCurrentStep((prev) => ++prev);
 
@@ -108,8 +174,14 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
       case WIZARD_STEP.FILE_UPLOAD:
         await handleInternalFileDeduplication();
         break;
+      case WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION:
+        await handleSameOrganizationDeduplication();
+        break;
+      case WIZARD_STEP.ORGANIZATION_DEDUPLICATION:
+        await handleSystemOrganizationsDeduplication();
+        break;
       case WIZARD_STEP.REGISTRY_DEDUPLICATION:
-        onOpenChange();
+        await handleWizardFinish();
         break;
     }
   };
@@ -311,16 +383,39 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-2 max-w-[500px] mx-auto">
-                        <div className="flex flex-col items-center justify-center gap-4 text-sm">
-                          <CheckCircleIcon className="w-16 h-16 text-green-600" />
-                          <p className="pb-4">
-                            The platform has found no duplicates with your organisation’s existing records.
-                          </p>
-                          <p>
-                            Next, we will add your data to the registry and check for potential duplicates with other
-                            organisations’ records.
-                          </p>
-                        </div>
+                        {!internalFileDedupResponse?.duplicates ? (
+                          <div className="flex flex-col items-center justify-center gap-4 text-sm">
+                            <CheckCircleIcon className="w-16 h-16 text-green-600" />
+                            <p className="pb-4">
+                              The platform has found no duplicates with your organisation’s existing records.
+                            </p>
+                            <p>
+                              Next, we will add your data to the registry and check for potential duplicates with other
+                              organisations’ records.
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center gap-2">
+                            <AlertTriangle className="w-16 h-16 text-yellow-500" />
+                            <p className="text-sm">
+                              The platform has found{' '}
+                              <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
+                                {internalFileDedupResponse.duplicates}
+                              </span>{' '}
+                              duplicate records that your organisation has previously uploaded. Please resolve them.
+                            </p>
+                            <div className="w-full">
+                              <DataTable
+                                data={internalFileDedupResponse.duplicateBeneficiaries ?? []}
+                                isQueryLoading={false}
+                                columns={columns({
+                                  selectedIds: keepDuplicatesIds,
+                                  onTableToggleClick,
+                                })}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                     <p className="text-xs text-muted-foreground max-w-[500px] pt-6">
@@ -340,12 +435,35 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-2 max-w-[500px] mx-auto">
-                        <div className="flex flex-col items-center justify-center gap-4 text-sm">
-                          <CheckCircleIcon className="w-16 h-16 text-green-600" />
-                          <p className="pb-4">The platform has found no duplicates in the registry.</p>
-                          <p>Your beneficiary data has been successfully added to the registry.</p>
-                          <p className="text-muted-foreground">You can now close the wizard.</p>
-                        </div>
+                        {!internalFileDedupResponse?.duplicates ? (
+                          <div className="flex flex-col items-center justify-center gap-4 text-sm">
+                            <CheckCircleIcon className="w-16 h-16 text-green-600" />
+                            <p className="pb-4">The platform has found no duplicates in the registry.</p>
+                            <p>Your beneficiary data has been successfully added to the registry.</p>
+                            <p className="text-muted-foreground">Finish the wizard to import beneficaries.</p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center gap-2">
+                            <AlertTriangle className="w-16 h-16 text-yellow-500" />
+                            <p className="text-sm">
+                              The platform has found{' '}
+                              <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
+                                {internalFileDedupResponse.duplicates}
+                              </span>{' '}
+                              potential duplicates between your upload and the registry. Please resolve them.
+                            </p>
+                            <div className="w-full">
+                              <DataTable
+                                data={internalFileDedupResponse.duplicateBeneficiaries ?? []}
+                                isQueryLoading={false}
+                                columns={columns({
+                                  selectedIds: keepDuplicatesIds,
+                                  onTableToggleClick,
+                                })}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </AnimationWrapper>

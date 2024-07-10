@@ -37,6 +37,35 @@ const postDeduplicationDataset = async (data: { file: File; templateId: string }
   return resToDatasetResponse(resp.data);
 };
 
+const postDeduplicationSameOrganization = async (data: {
+  fileId: string;
+  templateId: string;
+}): Promise<DeduplicationDataset> => {
+  const resp = await api.post('/deduplication/same-organization', data);
+
+  return resToDatasetResponse(resp.data);
+};
+
+const postDeduplicationSystemOrganizations = async (data: {
+  fileId: string;
+  templateId: string;
+  keepDuplicatesIds: string[];
+}): Promise<DeduplicationDataset> => {
+  const resp = await api.post('/deduplication/system-organizations', data);
+
+  return resToDatasetResponse(resp.data);
+};
+
+const postDeduplicationFinish = async (data: {
+  fileId: string;
+  templateId: string;
+  keepDuplicatesIds: string[];
+}): Promise<DeduplicationDataset> => {
+  const resp = await api.post('/deduplication/finish', data);
+
+  return resToDatasetResponse(resp.data);
+};
+
 export const useDeduplicationListings = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
   return useQuery(
     [QueryKeys.DeduplicationListings, currentPage, pageSize, sortBy, sortDirection, debouncedSearch],
@@ -48,5 +77,8 @@ export const useDeduplicationMutation = () => {
   return {
     wipeDeduplicationData: useMutation(deleteDeduplicationData),
     deduplicateFile: useMutation(postDeduplicationDataset),
+    deduplicateSameOrganization: useMutation(postDeduplicationSameOrganization),
+    deduplicateSystemOrganizations: useMutation(postDeduplicationSystemOrganizations),
+    deduplicateFinish: useMutation(postDeduplicationFinish),
   };
 };

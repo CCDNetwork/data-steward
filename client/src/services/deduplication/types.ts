@@ -29,4 +29,5 @@ export interface DeduplicationDataset {
   };
   templateId: string;
   duplicates: number;
+  duplicateBeneficiaries: any[];
 }

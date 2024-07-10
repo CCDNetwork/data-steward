@@ -435,7 +435,7 @@ public class DeduplicationService
 
         var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
         var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization).Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
-        var list = (await _context.Lists.AddAsync(new List { FileName = file.FileName, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
+        var list = (await _context.Lists.AddAsync(new List { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
 
         var newBeneficaries = new List<Beneficary>();
         foreach (var record in beneficiaryDeduplications)
