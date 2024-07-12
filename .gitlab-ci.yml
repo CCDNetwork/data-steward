@@ -32,6 +32,11 @@ workflow:
         IMAGE_TAG: "pentest"
         REMOTE_URL: "159.69.123.93"
         API_URL: "https://pentest-ccd-api.initdevelopment.com"
+    - if: '$CI_COMMIT_TAG == "urc"'
+      variables:
+        IMAGE_TAG: "urc"
+        REMOTE_URL: "4.233.139.197"
+        API_URL: "https://api.urcportal.org"
 
 build-client:
   stage: build
