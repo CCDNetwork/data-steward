@@ -22,4 +22,8 @@ export interface Beneficiary {
   status: string;
   createdAt: Date | null;
   updatedAt: Date | null;
+  adminLevel1: string;
+  adminLevel2: string;
+  adminLevel3: string;
+  adminLevel4: string;
 }

@@ -25,5 +25,9 @@ export const resToBeneficiary = (res: any): Beneficiary => {
     status: res.status ?? '',
     createdAt: res.createdAt ? new Date(res.createdAt) : null,
     updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
+    adminLevel1: res.adminLevel1 ?? '',
+    adminLevel2: res.adminLevel2 ?? '',
+    adminLevel3: res.adminLevel3 ?? '',
+    adminLevel4: res.adminLevel4 ?? '',
   };
 };
