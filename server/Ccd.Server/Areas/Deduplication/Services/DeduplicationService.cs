@@ -443,7 +443,8 @@ public class DeduplicationService
             var beneficary = _mapper.Map<Beneficary>(record);
             beneficary.ListId = list.Id;
             beneficary.OrganizationId = organizationId;
-            beneficary.IsPrimary = !(record.IsSystemDuplicate || record.IsOrganizationDuplicate);
+            beneficary.IsPrimary = false;
+            beneficary.Status = (record.IsSystemDuplicate || record.IsOrganizationDuplicate) ? BeneficaryStatus.AcceptedDuplicate : BeneficaryStatus.NotDuplicate;
             newBeneficaries.Add(beneficary);
         }
 
