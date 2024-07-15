@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 
 import { RuleModal } from './components';
 import { useRulesProvider } from '../RulesProvider';
+import { Tooltip } from '@/components/Tooltip';
 
 export const RulesPage = () => {
   const queryClient = useQueryClient();
@@ -164,10 +165,12 @@ export const RulesPage = () => {
                             <td className="w-[20%]">{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
                             <td className="w-[20%]">{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
                             <td className="flex gap-1">
-                              <RuleModal attributeGroupId={attributeGroup.id} />
-                              <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
-                                <Trash2Icon className="w-5 h-5 text-destructive" />
-                              </Button>
+                              <RuleModal attributeGroupId={attributeGroup.id} showTooltip />
+                              <Tooltip tooltipContent={'Delete'}>
+                                <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
+                                  <Trash2Icon className="w-5 h-5 text-destructive" />
+                                </Button>
+                              </Tooltip>
                             </td>
                           </tr>
                         )}

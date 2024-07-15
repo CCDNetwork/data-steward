@@ -4,6 +4,7 @@ import { FieldArrayWithId, UseFieldArrayAppend, UseFieldArrayRemove } from 'reac
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tooltip } from '@/components/Tooltip';
 
 interface Props {
   activities: FieldArrayWithId<
@@ -70,14 +71,16 @@ export const ServiceActivities = ({ activities, addActivity, removeActivity, ser
             >
               <p className="text-sm line-clamp-2">{activity.title}</p>
               <div>
-                <Button
-                  size="icon"
-                  onClick={() => removeActivity(idx)}
-                  className="h-7 w-7 text-destructive hover:text-red-600"
-                  variant="ghost"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                <Tooltip tooltipContent={'Delete'}>
+                  <Button
+                    size="icon"
+                    onClick={() => removeActivity(idx)}
+                    className="h-7 w-7 text-destructive hover:text-red-600"
+                    variant="ghost"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </Tooltip>
               </div>
             </div>
           ))}

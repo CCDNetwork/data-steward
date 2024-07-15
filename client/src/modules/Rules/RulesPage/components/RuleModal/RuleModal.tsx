@@ -17,8 +17,9 @@ import { DataTable } from '@/components/DataTable';
 
 import { columns } from './columns';
 import { dataToRuleFormValues } from './transformations';
+import { Tooltip } from '@/components/Tooltip';
 
-export const RuleModal = ({ attributeGroupId }: { attributeGroupId?: string }) => {
+export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?: string; showTooltip?: boolean }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const { data: beneficiaryAttributesData, isLoading } = useBeneficiaryAttributes({ queryEnabled: open });
@@ -108,9 +109,11 @@ export const RuleModal = ({ attributeGroupId }: { attributeGroupId?: string }) =
             </>
           </Button>
         ) : (
-          <Button variant="ghost" size="icon">
-            <EditIcon className="w-5 h-5" />
-          </Button>
+          <Tooltip tooltipContent={'Edit'} className={showTooltip ? '' : 'hidden'}>
+            <Button variant="ghost" size="icon" onClick={onOpenChange}>
+              <EditIcon className="w-5 h-5" />
+            </Button>
+          </Tooltip>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[512px]">
