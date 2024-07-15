@@ -44,7 +44,7 @@ export const SentReferralPage = () => {
   const { id: sentReferralId, isCreate } = useIdFromParams();
 
   const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
-  const [areInputsDisabled, setAreInputsDisabled] = useState<boolean>(true);
+  const [areInputsDisabled, setAreInputsDisabled] = useState<boolean>(isCreate ? false : true);
 
   const {
     data: uaAdminLvl1Data,
