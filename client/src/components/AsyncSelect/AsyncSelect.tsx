@@ -96,7 +96,7 @@ export const AsyncSelect = <T,>({
         <label
           htmlFor={name}
           className={cn(
-            'block text-sm pb-3 font-medium',
+            'block text-sm pb-3 font-bold tracking-tight leading-6',
             { 'after:content-["_*"] after:text-red-500': requiredField },
             labelClassName,
           )}
@@ -143,12 +143,18 @@ export const AsyncSelect = <T,>({
           },
         })}
         classNames={{
+          container: () => (disabled ? '!pointer-events-auto' : ''),
           control: (state) =>
-            state.isFocused ? 'border border-primary outline-none ring-1 ring-ring' : 'border-border',
+            state.isFocused
+              ? 'border border-primary outline-none ring-1 ring-ring'
+              : disabled
+                ? '!cursor-not-allowed'
+                : 'border-border',
           input: () => 'text-sm',
           indicatorSeparator: () => 'bg-muted-foreground',
-          dropdownIndicator: (state) => (state.selectProps.menuIsOpen ? 'rotate-180' : ''),
-          singleValue: () => 'text-sm',
+          dropdownIndicator: (state) =>
+            state.selectProps.menuIsOpen ? 'rotate-180' : disabled ? 'text-muted-foreground' : '',
+          singleValue: () => (disabled ? 'text-sm text-muted-foreground' : 'text-sm'),
           placeholder: () => 'text-sm text-muted-foreground',
           menu: () => 'text-sm bg-background border border-border',
           option: (state) => (state.isSelected ? 'text-primary font-bold hover:bg-muted' : 'bg-muted'),

@@ -9,9 +9,10 @@ import { HOUSEHOLDS_VULNERABILITY_CRITERIA } from '@/services/referrals/const';
 
 interface Props {
   control: Control<any, any>;
+  disabled: boolean;
 }
 
-export const MpcaSpecificForm = ({ control }: Props) => {
+export const MpcaSpecificForm = ({ control, disabled }: Props) => {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -21,7 +22,7 @@ export const MpcaSpecificForm = ({ control }: Props) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel requiredField>Displacement status</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value} disabled={disabled}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select displacement status" />
@@ -44,7 +45,7 @@ export const MpcaSpecificForm = ({ control }: Props) => {
             <FormItem>
               <FormLabel requiredField>Household size</FormLabel>
               <FormControl>
-                <Input id="householdSize" placeholder="Number" type="number" {...field} />
+                <Input id="householdSize" placeholder="Number" type="number" {...field} disabled={disabled} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -59,7 +60,7 @@ export const MpcaSpecificForm = ({ control }: Props) => {
             <FormItem>
               <FormLabel requiredField>Household monthly income</FormLabel>
               <FormControl>
-                <Input id="householdMonthlyIncome" placeholder="Number" type="number" {...field} />
+                <Input id="householdMonthlyIncome" placeholder="Number" type="number" {...field} disabled={disabled} />
               </FormControl>
               <FormDescription>Includes income of all household members, inclusive of social benefits</FormDescription>
               <FormMessage />
@@ -87,6 +88,7 @@ export const MpcaSpecificForm = ({ control }: Props) => {
                       <FormItem key={item.id} className="flex flex-row items-center space-x-3 space-y-0">
                         <FormControl>
                           <Checkbox
+                            disabled={disabled}
                             checked={field.value?.includes(item.id)}
                             onCheckedChange={(checked) => {
                               return checked

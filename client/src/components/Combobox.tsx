@@ -14,17 +14,18 @@ type Props = {
   labelClassName?: string;
   requiredField?: boolean;
   options: { value: string; label: string }[];
+  disabled?: boolean;
 };
 
-const Combobox = ({ name, control, label, labelClassName, requiredField, options }: Props) => {
+const Combobox = ({ name, control, label, labelClassName, requiredField, options, disabled }: Props) => {
   const { field } = useController({ name, control });
 
   return (
-    <div className="flex flex-col justify-end">
+    <div className={cn('flex flex-col justify-end', { 'cursor-not-allowed': disabled })}>
       <label
         htmlFor={name}
         className={cn(
-          'block text-sm mb-2 font-medium',
+          'block text-sm mb-2 text-sm font-bold tracking-tight leading-6',
           { 'after:content-["_*"] after:text-red-500': requiredField },
           labelClassName,
         )}
@@ -35,6 +36,7 @@ const Combobox = ({ name, control, label, labelClassName, requiredField, options
         <PopoverTrigger asChild>
           <FormControl>
             <Button
+              disabled={disabled}
               variant="outline"
               role="combobox"
               className={cn('justify-between', !field.value && 'text-muted-foreground')}

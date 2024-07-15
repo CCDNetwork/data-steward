@@ -13,9 +13,10 @@ interface Props {
   control: Control<SentReferralFormData, any>;
   isCaregiverInformed: string;
   currentFormCaregiverContactPreference: string;
+  disabled: boolean;
 }
 
-export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverContactPreference }: Props) => {
+export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverContactPreference, disabled }: Props) => {
   return (
     <>
       <CardDescription>
@@ -33,7 +34,7 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
               <FormDescription>Description text</FormDescription>
             </div>
             <FormControl>
-              <Switch checked={field.value} onCheckedChange={field.onChange} />
+              <Switch checked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
             </FormControl>
           </FormItem>
         )}
@@ -47,7 +48,14 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
             <FormItem>
               <FormLabel requiredField>Name of primary caregiver</FormLabel>
               <FormControl>
-                <Input id="caregiver" required className="" placeholder="Caregiver name" {...field} />
+                <Input
+                  id="caregiver"
+                  required
+                  className=""
+                  placeholder="Caregiver name"
+                  {...field}
+                  disabled={disabled}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -60,7 +68,14 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
             <FormItem>
               <FormLabel requiredField>Relationship to child</FormLabel>
               <FormControl>
-                <Input id="relationshipToChild" required className="" placeholder="Relationship" {...field} />
+                <Input
+                  id="relationshipToChild"
+                  required
+                  className=""
+                  placeholder="Relationship"
+                  {...field}
+                  disabled={disabled}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,6 +94,7 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
                 defaultValue="email"
                 value={field.value}
                 className="flex flex-col space-y-1"
+                disabled={disabled}
               >
                 <FormItem className="flex items-center space-x-3 space-y-0">
                   <FormControl>
@@ -112,7 +128,13 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
             <FormItem>
               <FormLabel requiredField={currentFormCaregiverContactPreference === 'email'}>Email</FormLabel>
               <FormControl>
-                <Input id="caregiverEmail" placeholder="email@example.com" type="email" {...field} />
+                <Input
+                  id="caregiverEmail"
+                  placeholder="email@example.com"
+                  type="email"
+                  {...field}
+                  disabled={disabled}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -125,7 +147,7 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
             <FormItem>
               <FormLabel requiredField={currentFormCaregiverContactPreference === 'phone'}>Phone</FormLabel>
               <FormControl>
-                <Input id="caregiverPhone" placeholder="Phone" type="tel" {...field} />
+                <Input id="caregiverPhone" placeholder="Phone" type="tel" {...field} disabled={disabled} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -140,7 +162,12 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
           <FormItem className="space-y-3">
             <FormLabel>Is caregiver informed of referral?</FormLabel>
             <FormControl>
-              <RadioGroup onValueChange={field.onChange} value={field.value} className="flex flex-col space-y-1">
+              <RadioGroup
+                onValueChange={field.onChange}
+                value={field.value}
+                className="flex flex-col space-y-1"
+                disabled={disabled}
+              >
                 <FormItem className="flex items-center space-x-3 space-y-0">
                   <FormControl>
                     <RadioGroupItem value="true" />
@@ -168,7 +195,7 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
               <Textarea
                 id="caregiverExplanation"
                 placeholder="Explanation..."
-                disabled={isCaregiverInformed === 'true'}
+                disabled={isCaregiverInformed === 'true' || disabled}
                 maxLength={200}
                 limitCounterEnabled
                 {...field}
@@ -185,7 +212,14 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
           <FormItem>
             <FormLabel>Special note or specific need</FormLabel>
             <FormControl>
-              <Textarea id="caregiverNote" placeholder="Enter..." maxLength={200} limitCounterEnabled {...field} />
+              <Textarea
+                id="caregiverNote"
+                placeholder="Enter..."
+                maxLength={200}
+                limitCounterEnabled
+                {...field}
+                disabled={disabled}
+              />
             </FormControl>
           </FormItem>
         )}

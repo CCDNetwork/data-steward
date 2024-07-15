@@ -36,6 +36,7 @@ import { SentReferralFormData, SentReferralSchema } from './validations';
 import { defaultSentReferralFormFormValues } from './const';
 import { MinorForm } from './components/MinorForm';
 import { MpcaSpecificForm } from './components/MpcaSpecificForm';
+import { SentReferralPageViewOnly } from './components/SentReferralPageViewOnly';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ export const SentReferralPage = () => {
   const { id: sentReferralId, isCreate } = useIdFromParams();
 
   const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
+  const [areInputsDisabled, setAreInputsDisabled] = useState<boolean>(true);
 
   const {
     data: uaAdminLvl1Data,
@@ -139,7 +141,7 @@ export const SentReferralPage = () => {
         variant: 'default',
         description: 'Referral successfully edited.',
       });
-      navigate(APP_ROUTE.SentReferrals);
+      window.location.reload();
     } catch (error: any) {
       toast({
         title: 'Something went wrong!',
@@ -163,13 +165,21 @@ export const SentReferralPage = () => {
           <div className="flex sm:flex-row flex-col gap-2 sm:gap-4">
             <Button
               type="submit"
-              onClick={handleSubmit((values) => onSubmit({ values }))}
+              onClick={
+                areInputsDisabled ? () => setAreInputsDisabled(false) : handleSubmit((values) => onSubmit({ values }))
+              }
               isLoading={patchReferral.isLoading}
-              disabled={formState.isSubmitting || patchReferral.isLoading || !formState.isDirty}
+              disabled={!areInputsDisabled && (formState.isSubmitting || patchReferral.isLoading || !formState.isDirty)}
             >
-              Edit case
+              {areInputsDisabled ? 'Edit' : 'Submit'}
             </Button>
-            {sentReferralData?.status !== ReferralStatus.Withdrawn && <CancelReferralModal />}
+
+            {!areInputsDisabled && (
+              <Button variant="destructive" onClick={() => window.location.reload()}>
+                Cancel edits
+              </Button>
+            )}
+            {areInputsDisabled && sentReferralData?.status !== ReferralStatus.Withdrawn && <CancelReferralModal />}
           </div>
         )
       }
@@ -192,7 +202,13 @@ export const SentReferralPage = () => {
         </Tabs>
       )}
 
-      {activeTab === ReferralTab.Referral ? (
+      {activeTab === ReferralTab.Discussion && <ReferralDiscussions referralId={sentReferralId} />}
+
+      {sentReferralData && areInputsDisabled && activeTab === ReferralTab.Referral && (
+        <SentReferralPageViewOnly receivedReferralData={sentReferralData} />
+      )}
+
+      {!areInputsDisabled && activeTab === ReferralTab.Referral && (
         <Form {...form}>
           <form onSubmit={handleSubmit((values) => onSubmit({ values }))}>
             <div className="space-y-8 max-w-2xl">
@@ -223,7 +239,11 @@ export const SentReferralPage = () => {
                             <FormDescription>Mark referral as urgent (within 24 hours)</FormDescription>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              disabled={areInputsDisabled}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -240,7 +260,7 @@ export const SentReferralPage = () => {
                   <div className="grid grid-cols-1 gap-4">
                     {!isCreate && !sentReferralData?.isDraft && (
                       <div className="sm:col-span-1">
-                        <dt className="text-sm font-medium leading-6">Focal point</dt>
+                        <dt className="text-sm font-bold tracking-tight leading-6">Focal point</dt>
                         <dd className="mt-1 text-sm leading sm:mt-2">
                           {currentFormAssignedFocalPoint ? (
                             `${currentFormAssignedFocalPoint?.firstName ?? ''} ${currentFormAssignedFocalPoint.lastName ?? ''}`
@@ -260,6 +280,7 @@ export const SentReferralPage = () => {
                         labelKey="name"
                         valueKey="id"
                         required
+                        disabled={areInputsDisabled}
                       />
                       {currentFormSelectedOrganization &&
                         (currentFormSelectedOrganization.isMpcaActive ||
@@ -285,7 +306,7 @@ export const SentReferralPage = () => {
                                   value={field.value}
                                 >
                                   <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger disabled={areInputsDisabled}>
                                       <SelectValue placeholder="Select service category" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -325,6 +346,7 @@ export const SentReferralPage = () => {
                                     <FormItem key={item.id} className="flex flex-row items-center space-x-3 space-y-0">
                                       <FormControl>
                                         <Checkbox
+                                          disabled={areInputsDisabled}
                                           checked={!!field.value?.find((i) => i.id === item.id)}
                                           onCheckedChange={(checked) => {
                                             return checked
@@ -347,7 +369,7 @@ export const SentReferralPage = () => {
                   {currentFormServiceCategory === 'mpca' && (
                     <div>
                       <Separator className="my-4" />
-                      <MpcaSpecificForm control={control} />
+                      <MpcaSpecificForm control={control} disabled={areInputsDisabled} />
                     </div>
                   )}
                 </CardContent>
@@ -364,7 +386,14 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField>First name</FormLabel>
                           <FormControl>
-                            <Input id="firstName" required className="" placeholder="First name" {...field} />
+                            <Input
+                              id="firstName"
+                              required
+                              className=""
+                              placeholder="First name"
+                              {...field}
+                              disabled={areInputsDisabled}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -377,7 +406,7 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField>Surname</FormLabel>
                           <FormControl>
-                            <Input id="surname" placeholder="Surname" {...field} />
+                            <Input id="surname" placeholder="Surname" {...field} disabled={areInputsDisabled} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -390,7 +419,12 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField>Patronymic name</FormLabel>
                           <FormControl>
-                            <Input id="patronymicName" placeholder="Patronymic name" {...field} />
+                            <Input
+                              id="patronymicName"
+                              placeholder="Patronymic name"
+                              {...field}
+                              disabled={areInputsDisabled}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -402,7 +436,7 @@ export const SentReferralPage = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel requiredField>Gender</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value} disabled={areInputsDisabled}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select gender" />
@@ -429,7 +463,7 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField>Date of birth</FormLabel>
                           <FormControl>
-                            <DatePicker field={field} btnclass="w-full" />
+                            <DatePicker field={field} btnclass="w-full" disabled={areInputsDisabled} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -445,7 +479,12 @@ export const SentReferralPage = () => {
                           <FormItem>
                             <FormLabel requiredField={!currentFormNoTaxId}>Tax ID</FormLabel>
                             <FormControl>
-                              <Input disabled={currentFormNoTaxId} id="taxId" placeholder="Tax ID" {...field} />
+                              <Input
+                                disabled={currentFormNoTaxId || areInputsDisabled}
+                                id="taxId"
+                                placeholder="Tax ID"
+                                {...field}
+                              />
                             </FormControl>
                             <FormDescription className="line-clamp-1 overflow-visible">
                               Note: It is not possible to do MPCA referrals without Tax ID
@@ -462,6 +501,7 @@ export const SentReferralPage = () => {
                         <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                           <FormControl>
                             <Checkbox
+                              disabled={areInputsDisabled}
                               checked={field.value}
                               onCheckedChange={(value) => {
                                 if (value) {
@@ -487,7 +527,7 @@ export const SentReferralPage = () => {
                       <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                          <Input id="address" placeholder="Address" {...field} />
+                          <Input id="address" placeholder="Address" {...field} disabled={areInputsDisabled} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -501,6 +541,7 @@ export const SentReferralPage = () => {
                         name="oblast"
                         control={control}
                         options={uaAdminLvl1Data!.map((i) => ({ value: i.name, label: i.name }))}
+                        disabled={areInputsDisabled}
                       />
                     )}
                     {adminLvl2Fetched && !ukraineAdminLeve2lDataLoading && watch('oblast') && (
@@ -511,6 +552,7 @@ export const SentReferralPage = () => {
                         options={uaAdminLvl2Data!
                           .filter((i) => i.admin1Name === watch('oblast'))
                           .map((i) => ({ value: i.name, label: i.name }))}
+                        disabled={areInputsDisabled}
                       />
                     )}
                     {watch('ryon') && (
@@ -520,7 +562,7 @@ export const SentReferralPage = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Hromada</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value} disabled={areInputsDisabled}>
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select Hromada" />
@@ -544,7 +586,7 @@ export const SentReferralPage = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Settlement</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value} disabled={areInputsDisabled}>
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select Settlement" />
@@ -575,6 +617,7 @@ export const SentReferralPage = () => {
                             defaultValue="email"
                             value={field.value}
                             className="flex flex-col space-y-1"
+                            disabled={areInputsDisabled}
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
@@ -608,7 +651,13 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField={currentFormContactPreference === 'email'}>Email</FormLabel>
                           <FormControl>
-                            <Input id="email" placeholder="email@example.com" type="email" {...field} />
+                            <Input
+                              id="email"
+                              placeholder="email@example.com"
+                              type="email"
+                              {...field}
+                              disabled={areInputsDisabled}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -622,7 +671,7 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField={currentFormContactPreference === 'phone'}>Phone</FormLabel>
                           <FormControl>
-                            <Input id="phone" placeholder="Phone" type="tel" {...field} />
+                            <Input id="phone" placeholder="Phone" type="tel" {...field} disabled={areInputsDisabled} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -643,6 +692,7 @@ export const SentReferralPage = () => {
                             maxLength={300}
                             limitCounterEnabled
                             {...field}
+                            disabled={areInputsDisabled}
                           />
                         </FormControl>
                       </FormItem>
@@ -662,6 +712,7 @@ export const SentReferralPage = () => {
                         </div>
                         <FormControl>
                           <Switch
+                            disabled={areInputsDisabled}
                             checked={field.value}
                             onCheckedChange={(value) => {
                               setValue('isSeparated', false);
@@ -683,6 +734,7 @@ export const SentReferralPage = () => {
                       control={control}
                       currentFormCaregiverContactPreference={currentFormCaregiverContactPreference}
                       isCaregiverInformed={currentFormIsCaregiverInformed}
+                      disabled={areInputsDisabled}
                     />
                   )}
                 </CardContent>
@@ -710,6 +762,7 @@ export const SentReferralPage = () => {
                               maxLength={300}
                               limitCounterEnabled
                               {...field}
+                              disabled={areInputsDisabled}
                             />
                           </FormControl>
                           <FormMessage />
@@ -725,6 +778,7 @@ export const SentReferralPage = () => {
                           <FormLabel>Service explanation</FormLabel>
                           <FormControl>
                             <Textarea
+                              disabled={areInputsDisabled}
                               id="required"
                               placeholder="Please explain any need for service, and any already provided"
                               maxLength={300}
@@ -737,7 +791,7 @@ export const SentReferralPage = () => {
                     />
                     <div className="flex flex-col gap-3">
                       <FormLabel>Upload additional information</FormLabel>
-                      <FilesDropzone control={control} name="files" />
+                      <FilesDropzone control={control} name="files" disabled={areInputsDisabled} />
                     </div>
                   </div>
                 </CardContent>
@@ -755,7 +809,7 @@ export const SentReferralPage = () => {
                           <FormDescription>Has the Beneficiary given you consent to share their data?</FormDescription>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Switch checked={field.value} onCheckedChange={field.onChange} disabled={areInputsDisabled} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -794,8 +848,6 @@ export const SentReferralPage = () => {
             </div>
           </form>
         </Form>
-      ) : (
-        <ReferralDiscussions referralId={sentReferralId} />
       )}
     </PageContainer>
   );
