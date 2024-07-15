@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Ccd.Server.Beneficiaries;
 
@@ -25,6 +26,7 @@ public class BeneficaryResponse
     public string Frequency { get; set; }
     public bool IsPrimary { get; set; }
     public string Status { get; set; }
+    public List<BeneficaryResponse> Duplicates { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

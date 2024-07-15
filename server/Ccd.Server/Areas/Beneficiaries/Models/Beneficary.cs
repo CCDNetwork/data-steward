@@ -28,6 +28,7 @@ public class Beneficary
     public string Frequency { get; set; }
     public bool IsPrimary { get; set; }
     public string Status { get; set; }
+    public Guid? DuplicateOfId { get; set; }
     public Guid OrganizationId { get; set; }
     public Organization Organization { get; set; }
     public Guid ListId { get; set; }

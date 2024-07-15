@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ccd.Server.BeneficiaryAttributes;
@@ -12,7 +13,6 @@ public class BeneficaryService
 {
     private readonly CcdContext _context;
     private readonly IMapper _mapper;
-    private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
 
     public BeneficaryService(CcdContext context, IMapper mapper, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService)
     {
@@ -46,7 +46,11 @@ public class BeneficaryService
     public async Task<BeneficaryResponse> GetBeneficiaryApi(Guid organizationId, Guid id)
     {
         var beneficiary = await GetBeneficiary(organizationId, id);
-        return _mapper.Map<BeneficaryResponse>(beneficiary);
+        var beneficiaryResponse = _mapper.Map<BeneficaryResponse>(beneficiary);
+
+        beneficiaryResponse.Duplicates = await GetDuplicatesRecursive(organizationId, beneficiary.DuplicateOfId);
+
+        return beneficiaryResponse;
     }
 
     public async Task<Beneficary> GetBeneficiary(Guid organizationId, Guid id)
@@ -69,5 +73,26 @@ public class BeneficaryService
         var beneficiary = await GetBeneficiary(organizationId, id);
         _context.Beneficaries.Remove(beneficiary);
         await _context.SaveChangesAsync();
+    }
+
+    private async Task<List<BeneficaryResponse>> GetDuplicatesRecursive(Guid organizationId, Guid? duplicateId)
+    {
+        var duplicates = new List<BeneficaryResponse>();
+
+        while (duplicateId.HasValue)
+        {
+            var duplicate = await GetBeneficiary(organizationId, duplicateId.Value);
+            if (duplicate == null)
+            {
+                break;
+            }
+
+            var duplicateResponse = _mapper.Map<BeneficaryResponse>(duplicate);
+            duplicates.Add(duplicateResponse);
+
+            duplicateId = duplicate.DuplicateOfId;
+        }
+
+        return duplicates;
     }
 }

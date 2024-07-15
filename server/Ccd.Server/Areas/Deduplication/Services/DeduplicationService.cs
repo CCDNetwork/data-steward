@@ -338,8 +338,8 @@ public class DeduplicationService
 
             var duplicates = 0;
             var newBeneficary = _mapper.Map<BeneficaryDeduplication>(record);
-
             var markedForImport = true;
+
             foreach (var e in beneficaries)
             {
                 var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
@@ -348,6 +348,7 @@ public class DeduplicationService
                     duplicates++;
                     newBeneficary.IsOrganizationDuplicate = true;
                     markedForImport = false;
+                    newBeneficary.DuplicateOfId = e.Id;
                 }
             }
 
@@ -404,6 +405,7 @@ public class DeduplicationService
                 {
                     duplicates++;
                     record.IsSystemDuplicate = true;
+                    record.DuplicateOfId = e.Id;
                 }
             }
 
