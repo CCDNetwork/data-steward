@@ -29,6 +29,8 @@ import { ReferralDiscussions } from '@/components/ReferralDiscussions';
 import { Combobox } from '@/components/Combobox';
 import { useUkraineAdminLevel1Data, useUkraineAdminLevel2Data } from '@/services/integrations';
 import { useAuth } from '@/providers/GlobalProvider';
+import admin_3 from '@/local-json/admin_3.json';
+import admin_4 from '@/local-json/admin_4.json';
 
 import { CancelReferralModal } from './components/CancelReferralModal';
 import { dataToSentReferralFormData } from './form-transformation';
@@ -556,51 +558,25 @@ export const SentReferralPage = () => {
                       />
                     )}
                     {watch('ryon') && (
-                      <FormField
-                        control={control}
+                      <Combobox
+                        label="Hromada"
                         name="hromada"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Hromada</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value} disabled={areInputsDisabled}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select Hromada" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="hromada#1">Hromada#1</SelectItem>
-                                <SelectItem value="hromada#2">Hromada#2</SelectItem>
-                                <SelectItem value="hromada#3">Hromada#3</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        control={control}
+                        options={admin_3
+                          .filter((i) => i.admin2_name === watch('ryon'))
+                          .map((i, index) => ({ value: i.name, label: i.name, key: index }))}
+                        disabled={areInputsDisabled}
                       />
                     )}
-                    {watch('hromada') && (
-                      <FormField
-                        control={control}
+                    {watch('hromada') && watch('ryon') && (
+                      <Combobox
+                        label="Settlement"
                         name="settlement"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Settlement</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value} disabled={areInputsDisabled}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select Settlement" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="settlement#1">Settlement#1</SelectItem>
-                                <SelectItem value="settlement#2">Settlement#2</SelectItem>
-                                <SelectItem value="settlement#3">Settlement#3</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        control={control}
+                        options={admin_4
+                          .filter((i) => i.admin3_name === watch('hromada'))
+                          .map((i, index) => ({ value: i.name, label: i.name, key: index }))}
+                        disabled={areInputsDisabled}
                       />
                     )}
                   </div>

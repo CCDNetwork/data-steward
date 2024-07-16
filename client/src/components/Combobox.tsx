@@ -13,12 +13,17 @@ type Props = {
   label: string;
   labelClassName?: string;
   requiredField?: boolean;
-  options: { value: string; label: string }[];
+  options: { value: string; label: string; key?: number }[];
   disabled?: boolean;
 };
 
 const Combobox = ({ name, control, label, labelClassName, requiredField, options, disabled }: Props) => {
   const { field } = useController({ name, control });
+
+  if (field.value && !options.find((option) => option.value === field.value)) {
+    field.onChange('');
+    return;
+  }
 
   return (
     <div className={cn('flex flex-col justify-end', { 'cursor-not-allowed': disabled })}>
@@ -41,7 +46,9 @@ const Combobox = ({ name, control, label, labelClassName, requiredField, options
               role="combobox"
               className={cn('justify-between', !field.value && 'text-muted-foreground')}
             >
-              {field.value ? options.find((option) => option.value === field.value)?.label : 'Select...'}
+              {field.value && options.find((option) => option.value === field.value)
+                ? options.find((option) => option.value === field.value)?.label
+                : 'Select...'}
               <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </FormControl>
@@ -58,7 +65,7 @@ const Combobox = ({ name, control, label, labelClassName, requiredField, options
                 {options.map((option) => (
                   <CommandItem
                     value={option.label}
-                    key={option.value}
+                    key={option.key || option.value}
                     onSelect={() => {
                       field.onChange(option.value);
                     }}
