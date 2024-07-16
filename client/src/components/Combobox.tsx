@@ -6,6 +6,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { FormControl } from '@/components/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/helpers/utils';
+import { useState } from 'react';
 
 type Props = {
   name: string;
@@ -19,6 +20,7 @@ type Props = {
 
 const Combobox = ({ name, control, label, labelClassName, requiredField, options, disabled }: Props) => {
   const { field } = useController({ name, control });
+  const [open, setOpen] = useState(false);
 
   if (field.value && !options.find((option) => option.value === field.value)) {
     field.onChange('');
@@ -37,7 +39,7 @@ const Combobox = ({ name, control, label, labelClassName, requiredField, options
       >
         {label}
       </label>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <FormControl>
             <Button
@@ -68,6 +70,7 @@ const Combobox = ({ name, control, label, labelClassName, requiredField, options
                     key={option.key || option.value}
                     onSelect={() => {
                       field.onChange(option.value);
+                      setOpen(false);
                     }}
                   >
                     {option.label}
