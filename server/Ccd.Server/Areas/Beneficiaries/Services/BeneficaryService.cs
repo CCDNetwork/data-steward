@@ -5,6 +5,7 @@ using AutoMapper;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
+using Ccd.Server.Organizations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Beneficiaries;
@@ -81,13 +82,14 @@ public class BeneficaryService
 
         while (duplicateId.HasValue)
         {
-            var duplicate = await GetBeneficiary(organizationId, duplicateId.Value);
+            var duplicate = await _context.Beneficaries.Include(b => b.Organization).FirstOrDefaultAsync(b => b.Id == duplicateId);
             if (duplicate == null)
             {
                 break;
             }
 
             var duplicateResponse = _mapper.Map<BeneficaryResponse>(duplicate);
+            duplicateResponse.Organization = _mapper.Map<OrganizationResponse>(duplicate.Organization);
             duplicates.Add(duplicateResponse);
 
             duplicateId = duplicate.DuplicateOfId;
