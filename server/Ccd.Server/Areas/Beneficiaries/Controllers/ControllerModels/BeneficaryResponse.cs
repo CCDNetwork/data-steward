@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ccd.Server.Organizations;
+using Ccd.Server.Users;
 
 namespace Ccd.Server.Beneficiaries;
 
@@ -28,6 +29,7 @@ public class BeneficaryResponse
     public bool IsPrimary { get; set; }
     public string Status { get; set; }
     public OrganizationResponse Organization { get; set; }
+    public UserResponse PointOfContact { get; set; }
     public List<BeneficaryResponse> Duplicates { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

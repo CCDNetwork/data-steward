@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
+using Ccd.Server.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Beneficiaries;
@@ -90,8 +92,12 @@ public class BeneficaryService
 
             var duplicateResponse = _mapper.Map<BeneficaryResponse>(duplicate);
             duplicateResponse.Organization = _mapper.Map<OrganizationResponse>(duplicate.Organization);
-            duplicates.Add(duplicateResponse);
 
+            var userOrganizations = await _context.UserOrganizations.Where(o => o.OrganizationId == duplicate.OrganizationId).ToListAsync();
+            var user = await _context.Users.Where(u => userOrganizations.Select(o => o.UserId).Contains(u.Id)).OrderBy(o => o.CreatedAt).FirstOrDefaultAsync();
+            duplicateResponse.PointOfContact = _mapper.Map<UserResponse>(user);
+
+            duplicates.Add(duplicateResponse);
             duplicateId = duplicate.DuplicateOfId;
         }
 
