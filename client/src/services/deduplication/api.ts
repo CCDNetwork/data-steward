@@ -6,7 +6,7 @@ import {
   resToDeduplicationListing,
 } from '@/services/deduplication/transformations';
 import { DeduplicationDataset, DeduplicationListing } from '@/services/deduplication/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 enum QueryKeys {
   DeduplicationListings = 'deduplication-listings',
@@ -74,11 +74,14 @@ export const useDeduplicationListings = ({ currentPage, pageSize, sortBy, sortDi
 };
 
 export const useDeduplicationMutation = () => {
+  const queryClient = useQueryClient();
   return {
     wipeDeduplicationData: useMutation(deleteDeduplicationData),
     deduplicateFile: useMutation(postDeduplicationDataset),
     deduplicateSameOrganization: useMutation(postDeduplicationSameOrganization),
     deduplicateSystemOrganizations: useMutation(postDeduplicationSystemOrganizations),
-    deduplicateFinish: useMutation(postDeduplicationFinish),
+    deduplicateFinish: useMutation(postDeduplicationFinish, {
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.DeduplicationListings]),
+    }),
   };
 };
