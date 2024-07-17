@@ -6,6 +6,7 @@ using Ccd.Server.Deduplication;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
 using Ccd.Server.Storage;
+using Ccd.Server.Users;
 
 public class BeneficaryDeduplication
 {
@@ -32,6 +33,8 @@ public class BeneficaryDeduplication
     public bool IsSystemDuplicate { get; set; }
     [Column(TypeName = "jsonb")] public List<string> MatchedFields { get; set; }
     [Column(TypeName = "jsonb")] public List<Guid> DuplicateOfIds { get; set; }
+    [ForeignKey("User")] public Guid UploadedById { get; set; }
+    public User UploadedBy { get; set; }
     public bool MarkedForImport { get; set; }
     public Guid FileId { get; set; }
     public File File { get; set; }

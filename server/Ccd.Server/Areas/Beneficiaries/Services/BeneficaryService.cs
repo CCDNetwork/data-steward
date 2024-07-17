@@ -50,6 +50,11 @@ public class BeneficaryService
     {
         var beneficiary = await GetBeneficiary(organizationId, id);
         var beneficiaryResponse = _mapper.Map<BeneficaryResponse>(beneficiary);
+        if (beneficiary.UploadedById != null)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == beneficiary.UploadedById);
+            beneficiaryResponse.UploadedBy = _mapper.Map<UserResponse>(user);
+        }
 
         beneficiaryResponse.Duplicates = await GetDuplicates(beneficiaryResponse);
 
@@ -85,7 +90,22 @@ public class BeneficaryService
         foreach (var duplicateId in response.DuplicateOfIds)
         {
             var duplicate = await _context.Beneficaries.FirstOrDefaultAsync(b => b.Id == duplicateId);
-            if (duplicate != null) duplicates.Add(_mapper.Map<BeneficaryResponse>(duplicate));
+            var duplicateResponse = _mapper.Map<BeneficaryResponse>(duplicate);
+
+            var organization = await _context.Organizations.FirstOrDefaultAsync(o => o.Id == duplicate.OrganizationId);
+            duplicateResponse.Organization = _mapper.Map<OrganizationResponse>(organization);
+
+            if (duplicate.UploadedById != null)
+            {
+                var uploadedBy = await _context.Users.FirstOrDefaultAsync(u => u.Id == duplicate.UploadedById);
+                duplicateResponse.UploadedBy = _mapper.Map<UserResponse>(uploadedBy);
+            }
+
+            var userOrganizations = await _context.UserOrganizations.Where(o => o.OrganizationId == duplicate.OrganizationId).ToListAsync();
+            var pointOfContact = await _context.Users.Where(u => userOrganizations.Select(o => o.UserId).Contains(u.Id)).OrderBy(o => o.CreatedAt).FirstOrDefaultAsync();
+            duplicateResponse.PointOfContact = _mapper.Map<UserResponse>(pointOfContact);
+
+            duplicates.Add(duplicateResponse);
         }
 
         return duplicates;

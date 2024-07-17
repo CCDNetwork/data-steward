@@ -356,6 +356,7 @@ public class DeduplicationService
 
             newBeneficary.OrganizationId = organizationId;
             newBeneficary.FileId = file.Id;
+            newBeneficary.UploadedById = userId;
             newBeneficary.MarkedForImport = markedForImport;
             newBeneficary.DuplicateOfIds = duplicateOfIds;
             newDeduplicationBeneficaries.Add(newBeneficary);

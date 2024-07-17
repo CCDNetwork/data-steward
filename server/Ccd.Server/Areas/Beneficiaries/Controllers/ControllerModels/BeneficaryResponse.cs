@@ -34,6 +34,8 @@ public class BeneficaryResponse
     public UserResponse PointOfContact { get; set; }
     [JsonIgnore] public List<Guid> DuplicateOfIds { get; set; }
     public List<BeneficaryResponse> Duplicates { get; set; }
+    [JsonIgnore] public Guid UploadedById { get; set; }
+    public UserResponse UploadedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

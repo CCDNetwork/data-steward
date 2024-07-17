@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Ccd.Server.Deduplication;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
+using Ccd.Server.Users;
 
 namespace Ccd.Server.Beneficiaries;
 
@@ -31,6 +32,8 @@ public class Beneficary
     public bool IsPrimary { get; set; }
     [Column(TypeName = "jsonb")] public List<string> MatchedFields { get; set; }
     [Column(TypeName = "jsonb")] public List<Guid> DuplicateOfIds { get; set; }
+    [ForeignKey("User")] public Guid? UploadedById { get; set; }
+    public User UploadedBy { get; set; }
     public string Status { get; set; }
     public Guid OrganizationId { get; set; }
     public Organization Organization { get; set; }
