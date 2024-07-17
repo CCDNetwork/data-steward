@@ -54,24 +54,3 @@ export enum MATCHED_FIELDS {
   EndDate = 'EndDate',
   Frequency = 'Frequency',
 }
-
-/* export enum MATCHED_FIELDS {
-  Status = 'Status',
-  FirstName = 'First name',
-  FamilyName = 'Family name',
-  Gender = 'Gender',
-  DateOfBirth = 'Date of birth',
-  HhId = 'Household ID',
-  MobilePhoneId = 'Mobile phone ID',
-  GovIdType = 'Gov ID type',
-  GovIdNumber = 'Gov ID number',
-  OtherIdType = 'Other ID type',
-  OtherIdNumber = 'Other ID number',
-  AssistanceDetails = 'Assistance details',
-  Activity = 'Activity',
-  Currency = 'Currency',
-  CurrencyAmount = 'Currency amount',
-  StartDate = 'Start date',
-  EndDate = 'End date',
-  Frequency = 'Frequency',
-} */
