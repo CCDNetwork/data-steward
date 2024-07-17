@@ -51,7 +51,7 @@ public class BeneficaryService
         var beneficiary = await GetBeneficiary(organizationId, id);
         var beneficiaryResponse = _mapper.Map<BeneficaryResponse>(beneficiary);
 
-        beneficiaryResponse.Duplicates = await GetDuplicatesRecursive(organizationId, beneficiary.DuplicateOfId);
+        beneficiaryResponse.Duplicates = await GetDuplicates(beneficiaryResponse);
 
         return beneficiaryResponse;
     }
@@ -78,27 +78,14 @@ public class BeneficaryService
         await _context.SaveChangesAsync();
     }
 
-    private async Task<List<BeneficaryResponse>> GetDuplicatesRecursive(Guid organizationId, Guid? duplicateId)
+    private async Task<List<BeneficaryResponse>> GetDuplicates(BeneficaryResponse response)
     {
         var duplicates = new List<BeneficaryResponse>();
 
-        while (duplicateId.HasValue)
+        foreach (var duplicateId in response.DuplicateOfIds)
         {
-            var duplicate = await _context.Beneficaries.Include(b => b.Organization).FirstOrDefaultAsync(b => b.Id == duplicateId);
-            if (duplicate == null)
-            {
-                break;
-            }
-
-            var duplicateResponse = _mapper.Map<BeneficaryResponse>(duplicate);
-            duplicateResponse.Organization = _mapper.Map<OrganizationResponse>(duplicate.Organization);
-
-            var userOrganizations = await _context.UserOrganizations.Where(o => o.OrganizationId == duplicate.OrganizationId).ToListAsync();
-            var user = await _context.Users.Where(u => userOrganizations.Select(o => o.UserId).Contains(u.Id)).OrderBy(o => o.CreatedAt).FirstOrDefaultAsync();
-            duplicateResponse.PointOfContact = _mapper.Map<UserResponse>(user);
-
-            duplicates.Add(duplicateResponse);
-            duplicateId = duplicate.DuplicateOfId;
+            var duplicate = await _context.Beneficaries.FirstOrDefaultAsync(b => b.Id == duplicateId);
+            if (duplicate != null) duplicates.Add(_mapper.Map<BeneficaryResponse>(duplicate));
         }
 
         return duplicates;

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Ccd.Server.Beneficiaries;
 using Ccd.Server.Deduplication;
 using Ccd.Server.Helpers;
@@ -28,7 +30,8 @@ public class BeneficaryDeduplication
     public string Frequency { get; set; }
     public bool IsOrganizationDuplicate { get; set; }
     public bool IsSystemDuplicate { get; set; }
-    public Guid? DuplicateOfId { get; set; }
+    [Column(TypeName = "jsonb")] public List<string> MatchedFields { get; set; }
+    [Column(TypeName = "jsonb")] public List<Guid> DuplicateOfIds { get; set; }
     public bool MarkedForImport { get; set; }
     public Guid FileId { get; set; }
     public File File { get; set; }

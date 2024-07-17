@@ -189,7 +189,7 @@ public class DeduplicationService
             var isPrimary = true;
             foreach (var e in beneficaries)
             {
-                var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
+                var (exists, matchedFields) = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
                 if (exists)
                 {
                     duplicates++;
@@ -307,7 +307,7 @@ public class DeduplicationService
         var worksheet = workbook.Worksheet(1);
         var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
 
-        var newBeneficaries = new List<BeneficaryDeduplication>();
+        var newDeduplicationBeneficaries = new List<BeneficaryDeduplication>();
 
         for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
         {
@@ -339,29 +339,32 @@ public class DeduplicationService
             var duplicates = 0;
             var newBeneficary = _mapper.Map<BeneficaryDeduplication>(record);
             var markedForImport = true;
+            var duplicateOfIds = new List<Guid>();
 
             foreach (var e in beneficaries)
             {
-                var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
+                var (exists, matchedFields) = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
                 if (exists)
                 {
                     duplicates++;
                     newBeneficary.IsOrganizationDuplicate = true;
                     markedForImport = false;
-                    newBeneficary.DuplicateOfId = e.Id;
+                    duplicateOfIds.Add(e.Id);
+                    newBeneficary.MatchedFields = matchedFields;
                 }
             }
 
             newBeneficary.OrganizationId = organizationId;
             newBeneficary.FileId = file.Id;
             newBeneficary.MarkedForImport = markedForImport;
-            newBeneficaries.Add(newBeneficary);
+            newBeneficary.DuplicateOfIds = duplicateOfIds;
+            newDeduplicationBeneficaries.Add(newBeneficary);
 
             totalDuplicates += duplicates;
         }
 
 
-        await _context.AddRangeAsync(newBeneficaries);
+        await _context.AddRangeAsync(newDeduplicationBeneficaries);
         await _context.SaveChangesAsync();
 
         using var memoryStream = new MemoryStream();
@@ -400,12 +403,13 @@ public class DeduplicationService
             var duplicates = 0;
             foreach (var e in beneficaries)
             {
-                var exists = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
+                var (exists, matchedFields) = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
                 if (exists)
                 {
                     duplicates++;
                     record.IsSystemDuplicate = true;
-                    record.DuplicateOfId = e.Id;
+                    record.DuplicateOfIds.Add(e.Id);
+                    record.MatchedFields = matchedFields;
                 }
             }
 
@@ -521,7 +525,7 @@ public class DeduplicationService
         return false;
     }
 
-    private static bool AreRecordsEqual(Beneficary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
+    private static (bool, List<string>) AreRecordsEqual(Beneficary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
     {
         foreach (var group in beneficiaryAttributesGroups)
         {
@@ -546,13 +550,13 @@ public class DeduplicationService
                 matchedFields.Add(attributeName);
             }
 
-            return matchedFields.Count >= group.BeneficiaryAttributes.Count;
+            return (matchedFields.Count >= group.BeneficiaryAttributes.Count, matchedFields);
         }
 
-        return false;
+        return (false, []);
     }
 
-    private static bool AreRecordsEqual(Beneficary existingRecord, BeneficaryDeduplication newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
+    private static (bool, List<string>) AreRecordsEqual(Beneficary existingRecord, BeneficaryDeduplication newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
     {
         foreach (var group in beneficiaryAttributesGroups)
         {
@@ -577,11 +581,9 @@ public class DeduplicationService
                 matchedFields.Add(attributeName);
             }
 
-            return matchedFields.Count >= group.BeneficiaryAttributes.Count;
+            return (matchedFields.Count >= group.BeneficiaryAttributes.Count, matchedFields);
         }
 
-        return false;
+        return (false, []);
     }
-
-
 }

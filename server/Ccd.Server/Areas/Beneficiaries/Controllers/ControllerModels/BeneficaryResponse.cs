@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Ccd.Server.Organizations;
 using Ccd.Server.Users;
 
@@ -28,8 +29,10 @@ public class BeneficaryResponse
     public string Frequency { get; set; }
     public bool IsPrimary { get; set; }
     public string Status { get; set; }
+    public List<string> MatchedFields { get; set; }
     public OrganizationResponse Organization { get; set; }
     public UserResponse PointOfContact { get; set; }
+    [JsonIgnore] public List<Guid> DuplicateOfIds { get; set; }
     public List<BeneficaryResponse> Duplicates { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

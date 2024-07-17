@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Ccd.Server.Deduplication;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
@@ -27,8 +29,9 @@ public class Beneficary
     public string EndDate { get; set; }
     public string Frequency { get; set; }
     public bool IsPrimary { get; set; }
+    [Column(TypeName = "jsonb")] public List<string> MatchedFields { get; set; }
+    [Column(TypeName = "jsonb")] public List<Guid> DuplicateOfIds { get; set; }
     public string Status { get; set; }
-    public Guid? DuplicateOfId { get; set; }
     public Guid OrganizationId { get; set; }
     public Organization Organization { get; set; }
     public Guid ListId { get; set; }
