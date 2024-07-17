@@ -6,41 +6,16 @@ import { useIdFromParams } from '@/helpers/common';
 import { BeneficiaryStatus } from '@/components/BeneficiaryStatus';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { beneficiaryDataToSingleBeneficiary } from '../helpers';
+import { DuplicateCard } from './DuplicateCard';
 
 export const SingleBeneficiaryPage = () => {
   const { id: beneficiaryId } = useIdFromParams();
   const { data: beneficiaryData, isLoading } = useBeneficiary({ id: beneficiaryId });
 
-  const beneficiary = useMemo(
-    () => ({
-      status: beneficiaryData?.status || '',
-
-      firstName: beneficiaryData?.firstName || 'N/A',
-      surname: beneficiaryData?.familyName || 'N/A',
-      dateOfBirth: beneficiaryData?.dateOfBirth || 'N/A',
-      gender: beneficiaryData?.gender || 'N/A',
-      hhId: beneficiaryData?.hhId || 'N/A',
-      mobilePhoneId: beneficiaryData?.mobilePhoneId || 'N/A',
-      govIdType: beneficiaryData?.govIdType || 'N/A',
-      govIdNumber: beneficiaryData?.govIdNumber || 'N/A',
-      otherIdType: beneficiaryData?.otherIdType || 'N/A',
-      otherIdNumber: beneficiaryData?.otherIdNumber || 'N/A',
-
-      adminLevel1: beneficiaryData?.adminLevel1 || 'N/A',
-      adminLevel2: beneficiaryData?.adminLevel2 || 'N/A',
-      adminLevel3: beneficiaryData?.adminLevel3 || 'N/A',
-      adminLevel4: beneficiaryData?.adminLevel4 || 'N/A',
-
-      assistanceDetails: beneficiaryData?.assistanceDetails || 'N/A',
-      activity: beneficiaryData?.activity || 'N/A',
-      currency: beneficiaryData?.activity || 'N/A',
-      currencyAmount: beneficiaryData?.currencyAmount || 'N/A',
-      startDate: beneficiaryData?.startDate || 'N/A',
-      endDate: beneficiaryData?.endDate || 'N/A',
-      frequency: beneficiaryData?.frequency || 'N/A',
-    }),
-    [beneficiaryData],
-  );
+  const beneficiary = useMemo(() => beneficiaryDataToSingleBeneficiary(beneficiaryData), [beneficiaryData]);
+  const isPrimaryDuplicate = useMemo(() => beneficiary.duplicates.find((el) => el.isPrimary), [beneficiary]);
+  const notPrimaryDuplicates = useMemo(() => beneficiary.duplicates.filter((el) => !el.isPrimary), [beneficiary]);
 
   return (
     <PageContainer
@@ -57,6 +32,45 @@ export const SingleBeneficiaryPage = () => {
           <div className="px-6 pb-6 flex items-center justify-center mt-3">
             <BeneficiaryStatus currentStatus={beneficiary.status} />
           </div>
+          <Separator />
+          {beneficiary.duplicates.length > 0 && (
+            <>
+              <CardHeader>
+                <CardTitle>Duplicates</CardTitle>
+              </CardHeader>
+
+              {isPrimaryDuplicate && (
+                <CardContent className="mt-6">
+                  <div className="mb-4 space-y-1">
+                    <p>Primary record</p>
+                    <p className="text-muted-foreground text-sm">
+                      Primary record is the oldest record in the registry that might be a duplicate of this beneficiary.
+                    </p>
+                  </div>
+                  <DuplicateCard
+                    key={isPrimaryDuplicate.id}
+                    item={isPrimaryDuplicate}
+                    beneficiaryMatchedFields={beneficiary.matchedFields}
+                  />
+                </CardContent>
+              )}
+
+              {notPrimaryDuplicates.length > 0 && (
+                <CardContent className="mt-6">
+                  <div className="mb-4 space-y-1">
+                    <p>Secondary records</p>
+                    <p className="text-muted-foreground text-sm">
+                      Secondary records are other records in the registry that might be a duplicate of this beneficiary.
+                      All secondary records should have resolved their Duplication Status.
+                    </p>
+                  </div>
+                  {notPrimaryDuplicates.map((item, index) => {
+                    return <DuplicateCard key={item.id} item={item} evenItem={index % 2 === 0} />;
+                  })}
+                </CardContent>
+              )}
+            </>
+          )}
           <Separator />
           <CardHeader>
             <CardTitle>Personal Data</CardTitle>

@@ -1,3 +1,5 @@
+import { resToOrganization } from '../organizations';
+import { resToUser } from '../users';
 import { Beneficiary } from './types';
 
 export const resToBeneficiary = (res: any): Beneficiary => {
@@ -29,5 +31,10 @@ export const resToBeneficiary = (res: any): Beneficiary => {
     adminLevel2: res.adminLevel2 ?? '',
     adminLevel3: res.adminLevel3 ?? '',
     adminLevel4: res.adminLevel4 ?? '',
+    matchedFields: res.matchedFields ?? [],
+    pointOfContact: res.pointOfContact ? resToUser(res.pointOfContact) : null,
+    uploadedBy: res.uploadedBy ? resToUser(res.uploadedBy) : null,
+    organization: res.organization ? resToOrganization(res.organization) : null,
+    duplicates: res.duplicates ? res.duplicates.map(resToBeneficiary) : [],
   };
 };

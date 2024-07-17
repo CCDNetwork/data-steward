@@ -1,3 +1,6 @@
+import { Organization } from '../organizations';
+import { User } from '../users';
+
 export interface Beneficiary {
   id: string;
   firstName: string;
@@ -26,4 +29,9 @@ export interface Beneficiary {
   adminLevel2: string;
   adminLevel3: string;
   adminLevel4: string;
+  matchedFields: string[];
+  pointOfContact: User | null;
+  uploadedBy: User | null;
+  organization: Organization | null;
+  duplicates: Beneficiary[] | [];
 }
