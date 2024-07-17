@@ -25,14 +25,20 @@ export const DeduplicationPage = () => {
 
   return (
     <PageContainer
-      pageTitle="Deduplication Log"
+      pageTitle="Deduplicate Cases"
+      pageSubtitle="On this page you can view a complete record of previous deduplication activity. To run deduplication, click on the Deduplication Wizard button on the right."
       headerNode={
         <Button type="button" onClick={handleDeduplicationWizardOpen}>
           <Wand2Icon className="mr-2 w-4 h-4" />
           Deduplication Wizard
         </Button>
       }
-      breadcrumbs={[{ href: `${APP_ROUTE.Deduplication}`, name: 'Manage cases' }]}
+      breadcrumbs={[
+        {
+          href: `${APP_ROUTE.Deduplication}`,
+          name: 'Deduplicate Cases',
+        },
+      ]}
     >
       <DataTable
         data={listings?.data ?? []}

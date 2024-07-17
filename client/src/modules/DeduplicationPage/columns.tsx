@@ -7,7 +7,7 @@ export const columns: TableColumn<DeduplicationListing>[] = [
   {
     accessorKey: 'uploadUser',
     id: 'uploadUser',
-    header: 'Upload User',
+    header: 'Uploaded by',
     cell: ({ row }) => {
       const { userCreated } = row.original;
 

@@ -39,7 +39,7 @@ export const PageContainer = ({
         <div className="flex">
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl sm:text-2xl font-bold tracking-tight">{pageTitle}</h2>
-            {pageSubtitle && <h2 className="max-w-2xl leading-6 text-muted-foreground">{pageSubtitle}</h2>}
+            {pageSubtitle && <h2 className="max-w-[37rem] leading-6 text-muted-foreground">{pageSubtitle}</h2>}
           </div>
         </div>
         {headerNode}

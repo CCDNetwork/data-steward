@@ -43,7 +43,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     userPermissions: [UserPermission.Deduplication],
     routes: [
       {
-        name: 'Manage cases',
+        name: 'Deduplicate Cases',
         to: APP_ROUTE.Deduplication,
         userPermissions: [UserPermission.Deduplication],
         icon: BookCopyIcon,
