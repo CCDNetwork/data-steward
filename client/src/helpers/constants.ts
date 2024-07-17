@@ -49,7 +49,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
         icon: BookCopyIcon,
       },
       {
-        name: 'Beneficiary List',
+        name: 'Manage Duplicates',
         to: APP_ROUTE.BeneficiaryList,
         icon: BookUserIcon,
         userPermissions: [UserPermission.Deduplication],

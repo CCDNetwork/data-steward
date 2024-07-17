@@ -78,7 +78,8 @@ export const BeneficiaryListPage = () => {
   return (
     <PageContainer
       pageTitle="Manage Duplicates"
-      breadcrumbs={[{ href: `${APP_ROUTE.BeneficiaryList}`, name: 'Beneficiary List' }]}
+      pageSubtitle="On this page you can view and manage duplicates. The Unresolved tab will show you potential duplicates which you should check. The Resolved tab will show you potential duplicates which have already been resolved."
+      breadcrumbs={[{ href: `${APP_ROUTE.BeneficiaryList}`, name: 'Manage Duplicates' }]}
     >
       <Tabs defaultValue="unresolved">
         <TabsList>
