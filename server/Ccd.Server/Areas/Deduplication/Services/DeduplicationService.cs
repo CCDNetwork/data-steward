@@ -15,6 +15,7 @@ using FuzzySharp;
 using Microsoft.EntityFrameworkCore;
 using Ccd.Server.Beneficiaries;
 using Ccd.Server.Storage;
+using DocumentFormat.OpenXml.Office.Drawing;
 
 namespace Ccd.Server.Deduplication;
 
@@ -453,6 +454,18 @@ public class DeduplicationService
             beneficary.IsPrimary = !record.IsSystemDuplicate && !record.IsOrganizationDuplicate;
             beneficary.Status = (record.IsSystemDuplicate || record.IsOrganizationDuplicate) ? BeneficaryStatus.AcceptedDuplicate : BeneficaryStatus.NotDuplicate;
             newBeneficaries.Add(beneficary);
+
+            // Sync duplicates to old beneficaries
+            if (record.DuplicateOfIds.Count != 0)
+            {
+                var existingBeneficiaries = _context.Beneficaries.Where(e => record.DuplicateOfIds.Contains(e.Id)).ToList();
+                foreach (var existingBeneficiary in existingBeneficiaries)
+                {
+                    existingBeneficiary.DuplicateOfIds.Add(beneficary.Id);
+                }
+
+                _context.UpdateRange(existingBeneficiaries);
+            }
         }
 
         await _context.AddRangeAsync(newBeneficaries);
