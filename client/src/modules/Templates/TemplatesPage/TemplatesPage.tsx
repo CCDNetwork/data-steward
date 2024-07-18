@@ -45,12 +45,14 @@ export const TemplatesPage = () => {
 
   const onTemplateRowClick = (templateRow: Template) => navigate(`${APP_ROUTE.Templates}/${templateRow.id}`);
 
+  console.log('templates', templates);
+
   return (
     <PageContainer
-      pageTitle="Templates"
-      pageSubtitle="Deduplication templates"
+      pageTitle="Manage Templates"
+      pageSubtitle="On this page you can create and edit Templates which allow you to upload your data to the platform easily."
       headerNode={<CreateTemplateModal />}
-      breadcrumbs={[{ href: `${APP_ROUTE.Templates}`, name: 'Templates' }]}
+      breadcrumbs={[{ href: `${APP_ROUTE.Templates}`, name: 'Manage Templates' }]}
     >
       <DataTable
         data={templates?.data ?? []}
@@ -61,8 +63,7 @@ export const TemplatesPage = () => {
         pageSizeClicked={onPageSizeChange}
         headerClicked={onSortChange}
         onSearchChange={onSearchChange}
-        onRowClick={onTemplateRowClick}
-        columns={columns(setTemplateToDelete)}
+        columns={columns(setTemplateToDelete, onTemplateRowClick)}
       />
       <ConfirmationDialog
         open={!!templateToDelete}

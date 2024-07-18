@@ -55,7 +55,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
         userPermissions: [UserPermission.Deduplication],
       },
       {
-        name: 'Templates',
+        name: 'Manage Templates',
         to: APP_ROUTE.Templates,
         icon: FilesIcon,
         userPermissions: [UserPermission.Deduplication],

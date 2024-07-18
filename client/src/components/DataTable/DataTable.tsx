@@ -105,14 +105,14 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="truncate">
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, index) => {
                   // @ts-ignore
                   return header.column.columnDef.isSortable ? (
                     <TableHead key={header.id}>
                       <div>
                         <Button
                           variant="ghost"
-                          className="p-0 hover:bg-transparent"
+                          className={cn('p-0 hover:bg-transparent', columns[index]?.headerClassName)}
                           onClick={() => (table.getRowModel().rows.length > 0 ? onHeaderClicked(header.column) : null)}
                         >
                           {header.isPlaceholder
@@ -123,7 +123,7 @@ export function DataTable<TData, TValue>({
                       </div>
                     </TableHead>
                   ) : (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className={cn('', columns[index]?.headerClassName)}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
