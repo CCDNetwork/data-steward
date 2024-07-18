@@ -151,7 +151,7 @@ export const AddUserModal = () => {
               </div>
               <AsyncSelect
                 label="Organisation"
-                name="organisation"
+                name="organization"
                 requiredField
                 control={control}
                 useInfiniteQueryFunction={useOrganizationsInfinite}
