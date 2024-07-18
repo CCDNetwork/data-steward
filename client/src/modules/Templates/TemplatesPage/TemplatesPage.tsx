@@ -45,8 +45,6 @@ export const TemplatesPage = () => {
 
   const onTemplateRowClick = (templateRow: Template) => navigate(`${APP_ROUTE.Templates}/${templateRow.id}`);
 
-  console.log('templates', templates);
-
   return (
     <PageContainer
       pageTitle="Manage Templates"

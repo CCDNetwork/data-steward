@@ -61,6 +61,7 @@ export const ReceivedReferralsPage = () => {
   return (
     <PageContainer
       pageTitle="Manage Received Referrals"
+      pageSubtitle="On this page you can view the referrals that you have received from other organisations. You should review each referral and decide whether to accept or reject it."
       breadcrumbs={[{ href: `${APP_ROUTE.ReceivedReferrals}`, name: 'Received Referrals' }]}
     >
       <DataTable

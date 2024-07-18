@@ -67,7 +67,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     userPermissions: [UserPermission.Referrals],
     routes: [
       {
-        name: 'Received',
+        name: 'Manage Received',
         to: APP_ROUTE.ReceivedReferrals,
         icon: LogInIcon,
         userPermissions: [UserPermission.Referrals],
