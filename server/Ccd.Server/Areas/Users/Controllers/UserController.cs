@@ -112,7 +112,7 @@ public class UserController : ControllerBaseExtended
         if (model.Permissions != null)
         {
             var userTenant = await _context.UserOrganizations.FirstOrDefaultAsync(
-                e => e.UserId == user.Id && e.OrganizationId == this.OrganizationId
+                e => e.UserId == user.Id
             ) ?? throw new NotFoundException();
             userTenant.Permissions = model.Permissions;
             _context.UserOrganizations.Update(userTenant);
