@@ -73,7 +73,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
         userPermissions: [UserPermission.Referrals],
       },
       {
-        name: 'Sent',
+        name: 'Manage Sent',
         to: APP_ROUTE.SentReferrals,
         icon: LogOutIcon,
         userPermissions: [UserPermission.Referrals],

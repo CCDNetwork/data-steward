@@ -1,20 +1,13 @@
-import { MoreHorizontal } from 'lucide-react';
-
+import { EditIcon, Trash2Icon } from 'lucide-react';
 import { TableColumn } from '@/components/DataTable/types';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Organization } from '@/services/organizations';
 import { formatDate } from 'date-fns';
+import { Tooltip } from '@/components/Tooltip';
 
 export const columns = (
   setOrganizationToDelete: React.Dispatch<React.SetStateAction<Organization | null>>,
+  onOrganizationTableRowClick: (organizationRow: Organization) => void,
 ): TableColumn<Organization>[] => [
   {
     accessorKey: 'name',
@@ -49,32 +42,37 @@ export const columns = (
   },
   {
     id: 'actions',
+    header: 'Actions',
+    headerClassName: 'text-right pr-5',
     cell: ({ row }) => {
       const organization = row.original;
 
       return (
         <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-red-500 focus:text-white focus:bg-red-500"
-                onClick={(e: React.SyntheticEvent) => {
-                  e.stopPropagation();
-                  setOrganizationToDelete(organization);
-                }}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Tooltip tooltipContent={'Edit'}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e: React.SyntheticEvent) => {
+                e.stopPropagation();
+                onOrganizationTableRowClick(organization);
+              }}
+            >
+              <EditIcon className="w-5 h-5" />
+            </Button>
+          </Tooltip>
+          <Tooltip tooltipContent={'Delete'}>
+            <Button
+              variant="ghost"
+              onClick={(e: React.SyntheticEvent) => {
+                e.stopPropagation();
+                setOrganizationToDelete(organization);
+              }}
+              size="icon"
+            >
+              <Trash2Icon className="w-5 h-5 text-destructive" />
+            </Button>
+          </Tooltip>
         </div>
       );
     },

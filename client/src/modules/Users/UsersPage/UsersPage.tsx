@@ -49,6 +49,7 @@ export const UsersPage = () => {
   return (
     <PageContainer
       pageTitle="Manage Users"
+      pageSubtitle="On this page you can create and edit profiles for individual users from the organisations using the platform."
       headerNode={<AddUserModal />}
       breadcrumbs={[{ href: `${APP_ROUTE.Users}`, name: 'Users' }]}
     >
@@ -61,8 +62,7 @@ export const UsersPage = () => {
         pageSizeClicked={onPageSizeChange}
         headerClicked={onSortChange}
         onSearchChange={onSearchChange}
-        columns={columns(setUserToDelete)}
-        onRowClick={onUserTableRowClick}
+        columns={columns(setUserToDelete, onUserTableRowClick)}
       />
       <ConfirmationDialog
         open={!!userToDelete}

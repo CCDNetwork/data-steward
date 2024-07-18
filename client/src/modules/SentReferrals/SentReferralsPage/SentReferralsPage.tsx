@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VisibilityState } from '@tanstack/react-table';
 
@@ -18,10 +18,12 @@ import { ReferralStatus } from '@/services/referrals/const';
 import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
 
 import { columns } from './columns';
+import { useSentReferralsProvider } from '../SentReferralsProvider';
 
 export const SentReferralsPage = () => {
   const navigate = useNavigate();
   const pagination = usePagination();
+  const { setViewOnlyEnabled } = useSentReferralsProvider();
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
 
   const [sentReferralsFilters, setSentReferralsFilters] = useState<Record<string, string>>({
@@ -62,14 +64,28 @@ export const SentReferralsPage = () => {
     setSentReferralToDelete(null);
   };
 
-  const onSentReferralTableRowClick = (referralRow: Referral) =>
-    navigate(`${APP_ROUTE.SentReferrals}/${referralRow.id}`);
+  const onSentReferralTableRowClick = useCallback(
+    (referralRow: Referral) => {
+      setViewOnlyEnabled(true);
+      navigate(`${APP_ROUTE.SentReferrals}/${referralRow.id}`);
+    },
+    [navigate, setViewOnlyEnabled],
+  );
 
   const onNewCaseClick = () => navigate(`${APP_ROUTE.SentReferrals}/new`);
+
+  const onEditSentReferralClick = useCallback(
+    async (referralRow: Referral) => {
+      setViewOnlyEnabled(false);
+      navigate(`${APP_ROUTE.SentReferrals}/${referralRow.id}`);
+    },
+    [navigate, setViewOnlyEnabled],
+  );
 
   return (
     <PageContainer
       pageTitle="Manage Sent Referrals"
+      pageSubtitle="On this page you can view the referrals that you have sent to other organisations. The Sent tab will show you referrals that have already been sent. The Drafts tab will show you referrals which you have drafted but not sent."
       headerNode={<Button onClick={onNewCaseClick}>New Case</Button>}
       breadcrumbs={[{ href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' }]}
     >
@@ -108,7 +124,7 @@ export const SentReferralsPage = () => {
         pageSizeClicked={onPageSizeChange}
         headerClicked={onSortChange}
         onSearchChange={onSearchChange}
-        columns={columns(setSentReferralToDelete)}
+        columns={columns(setSentReferralToDelete, onEditSentReferralClick)}
         onRowClick={onSentReferralTableRowClick}
         hiddenColumns={hiddenColumns}
         tableFilterNodes={

@@ -143,7 +143,7 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
                   <FormItem>
                     <div className="space-y-0.5">
                       <FormLabel>Select Attributes</FormLabel>
-                      <FormDescription>Which fields do you want to use for deduplication?</FormDescription>
+                      <FormDescription>Which fields do you want to use to check for duplicates?</FormDescription>
                     </div>
                     <FormControl>
                       <DataTable
@@ -179,7 +179,7 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                     <div className="space-y-0.5">
-                      <FormLabel>Activate this rule for deduplication?</FormLabel>
+                      <FormLabel>Activate this rule?</FormLabel>
                     </div>
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />

@@ -39,14 +39,20 @@ import { defaultSentReferralFormFormValues } from './const';
 import { MinorForm } from './components/MinorForm';
 import { MpcaSpecificForm } from './components/MpcaSpecificForm';
 import { SentReferralPageViewOnly } from './components/SentReferralPageViewOnly';
+import { useSentReferralsProvider } from '../SentReferralsProvider';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
   const { hdxHapiAppIdentifier } = useAuth();
   const { id: sentReferralId, isCreate } = useIdFromParams();
-
+  const { viewOnlyEnabled, setViewOnlyEnabled } = useSentReferralsProvider();
   const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
-  const [areInputsDisabled, setAreInputsDisabled] = useState<boolean>(isCreate ? false : true);
+
+  useEffect(() => {
+    if (isCreate) {
+      setViewOnlyEnabled(false);
+    }
+  }, [isCreate, setViewOnlyEnabled]);
 
   const {
     data: uaAdminLvl1Data,
@@ -168,20 +174,20 @@ export const SentReferralPage = () => {
             <Button
               type="submit"
               onClick={
-                areInputsDisabled ? () => setAreInputsDisabled(false) : handleSubmit((values) => onSubmit({ values }))
+                viewOnlyEnabled ? () => setViewOnlyEnabled(false) : handleSubmit((values) => onSubmit({ values }))
               }
               isLoading={patchReferral.isLoading}
-              disabled={!areInputsDisabled && (formState.isSubmitting || patchReferral.isLoading || !formState.isDirty)}
+              disabled={!viewOnlyEnabled && (formState.isSubmitting || patchReferral.isLoading || !formState.isDirty)}
             >
-              {areInputsDisabled ? 'Edit' : 'Submit'}
+              {viewOnlyEnabled ? 'Edit' : 'Submit'}
             </Button>
 
-            {!areInputsDisabled && (
+            {!viewOnlyEnabled && (
               <Button variant="destructive" onClick={() => window.location.reload()}>
                 Cancel edits
               </Button>
             )}
-            {areInputsDisabled && sentReferralData?.status !== ReferralStatus.Withdrawn && <CancelReferralModal />}
+            {viewOnlyEnabled && sentReferralData?.status !== ReferralStatus.Withdrawn && <CancelReferralModal />}
           </div>
         )
       }
@@ -206,11 +212,11 @@ export const SentReferralPage = () => {
 
       {activeTab === ReferralTab.Discussion && <ReferralDiscussions referralId={sentReferralId} />}
 
-      {sentReferralData && areInputsDisabled && activeTab === ReferralTab.Referral && (
+      {sentReferralData && viewOnlyEnabled && activeTab === ReferralTab.Referral && (
         <SentReferralPageViewOnly receivedReferralData={sentReferralData} />
       )}
 
-      {!areInputsDisabled && activeTab === ReferralTab.Referral && (
+      {!viewOnlyEnabled && activeTab === ReferralTab.Referral && (
         <Form {...form}>
           <form onSubmit={handleSubmit((values) => onSubmit({ values }))}>
             <div className="space-y-8 max-w-2xl">
@@ -241,11 +247,7 @@ export const SentReferralPage = () => {
                             <FormDescription>Mark referral as urgent (within 24 hours)</FormDescription>
                           </div>
                           <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                              disabled={areInputsDisabled}
-                            />
+                            <Switch checked={field.value} onCheckedChange={field.onChange} disabled={viewOnlyEnabled} />
                           </FormControl>
                         </FormItem>
                       )}
@@ -282,7 +284,7 @@ export const SentReferralPage = () => {
                         labelKey="name"
                         valueKey="id"
                         required
-                        disabled={areInputsDisabled}
+                        disabled={viewOnlyEnabled}
                       />
                       {currentFormSelectedOrganization &&
                         (currentFormSelectedOrganization.isMpcaActive ||
@@ -308,7 +310,7 @@ export const SentReferralPage = () => {
                                   value={field.value}
                                 >
                                   <FormControl>
-                                    <SelectTrigger disabled={areInputsDisabled}>
+                                    <SelectTrigger disabled={viewOnlyEnabled}>
                                       <SelectValue placeholder="Select service category" />
                                     </SelectTrigger>
                                   </FormControl>
@@ -348,7 +350,7 @@ export const SentReferralPage = () => {
                                     <FormItem key={item.id} className="flex flex-row items-center space-x-3 space-y-0">
                                       <FormControl>
                                         <Checkbox
-                                          disabled={areInputsDisabled}
+                                          disabled={viewOnlyEnabled}
                                           checked={!!field.value?.find((i) => i.id === item.id)}
                                           onCheckedChange={(checked) => {
                                             return checked
@@ -371,7 +373,7 @@ export const SentReferralPage = () => {
                   {currentFormServiceCategory === 'mpca' && (
                     <div>
                       <Separator className="my-4" />
-                      <MpcaSpecificForm control={control} disabled={areInputsDisabled} />
+                      <MpcaSpecificForm control={control} disabled={viewOnlyEnabled} />
                     </div>
                   )}
                 </CardContent>
@@ -394,7 +396,7 @@ export const SentReferralPage = () => {
                               className=""
                               placeholder="First name"
                               {...field}
-                              disabled={areInputsDisabled}
+                              disabled={viewOnlyEnabled}
                             />
                           </FormControl>
                           <FormMessage />
@@ -408,7 +410,7 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField>Surname</FormLabel>
                           <FormControl>
-                            <Input id="surname" placeholder="Surname" {...field} disabled={areInputsDisabled} />
+                            <Input id="surname" placeholder="Surname" {...field} disabled={viewOnlyEnabled} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -425,7 +427,7 @@ export const SentReferralPage = () => {
                               id="patronymicName"
                               placeholder="Patronymic name"
                               {...field}
-                              disabled={areInputsDisabled}
+                              disabled={viewOnlyEnabled}
                             />
                           </FormControl>
                           <FormMessage />
@@ -438,7 +440,7 @@ export const SentReferralPage = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel requiredField>Gender</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value} disabled={areInputsDisabled}>
+                          <Select onValueChange={field.onChange} value={field.value} disabled={viewOnlyEnabled}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select gender" />
@@ -465,7 +467,7 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField>Date of birth</FormLabel>
                           <FormControl>
-                            <DatePicker field={field} btnclass="w-full" disabled={areInputsDisabled} />
+                            <DatePicker field={field} btnclass="w-full" disabled={viewOnlyEnabled} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -482,7 +484,7 @@ export const SentReferralPage = () => {
                             <FormLabel requiredField={!currentFormNoTaxId}>Tax ID</FormLabel>
                             <FormControl>
                               <Input
-                                disabled={currentFormNoTaxId || areInputsDisabled}
+                                disabled={currentFormNoTaxId || viewOnlyEnabled}
                                 id="taxId"
                                 placeholder="Tax ID"
                                 {...field}
@@ -503,7 +505,7 @@ export const SentReferralPage = () => {
                         <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                           <FormControl>
                             <Checkbox
-                              disabled={areInputsDisabled}
+                              disabled={viewOnlyEnabled}
                               checked={field.value}
                               onCheckedChange={(value) => {
                                 if (value) {
@@ -529,7 +531,7 @@ export const SentReferralPage = () => {
                       <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                          <Input id="address" placeholder="Address" {...field} disabled={areInputsDisabled} />
+                          <Input id="address" placeholder="Address" {...field} disabled={viewOnlyEnabled} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -543,7 +545,7 @@ export const SentReferralPage = () => {
                         name="oblast"
                         control={control}
                         options={uaAdminLvl1Data!.map((i) => ({ value: i.name, label: i.name }))}
-                        disabled={areInputsDisabled}
+                        disabled={viewOnlyEnabled}
                       />
                     )}
                     {adminLvl2Fetched && !ukraineAdminLeve2lDataLoading && watch('oblast') && (
@@ -554,7 +556,7 @@ export const SentReferralPage = () => {
                         options={uaAdminLvl2Data!
                           .filter((i) => i.admin1Name === watch('oblast'))
                           .map((i) => ({ value: i.name, label: i.name }))}
-                        disabled={areInputsDisabled}
+                        disabled={viewOnlyEnabled}
                       />
                     )}
                     {watch('ryon') && (
@@ -565,7 +567,7 @@ export const SentReferralPage = () => {
                         options={admin_3
                           .filter((i) => i.admin2_name === watch('ryon'))
                           .map((i, index) => ({ value: i.name, label: i.name, key: index }))}
-                        disabled={areInputsDisabled}
+                        disabled={viewOnlyEnabled}
                       />
                     )}
                     {watch('hromada') && watch('ryon') && (
@@ -576,7 +578,7 @@ export const SentReferralPage = () => {
                         options={admin_4
                           .filter((i) => i.admin3_name === watch('hromada'))
                           .map((i, index) => ({ value: i.name, label: i.name, key: index }))}
-                        disabled={areInputsDisabled}
+                        disabled={viewOnlyEnabled}
                       />
                     )}
                   </div>
@@ -593,7 +595,7 @@ export const SentReferralPage = () => {
                             defaultValue="email"
                             value={field.value}
                             className="flex flex-col space-y-1"
-                            disabled={areInputsDisabled}
+                            disabled={viewOnlyEnabled}
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
@@ -632,7 +634,7 @@ export const SentReferralPage = () => {
                               placeholder="email@example.com"
                               type="email"
                               {...field}
-                              disabled={areInputsDisabled}
+                              disabled={viewOnlyEnabled}
                             />
                           </FormControl>
                           <FormMessage />
@@ -647,7 +649,7 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField={currentFormContactPreference === 'phone'}>Phone</FormLabel>
                           <FormControl>
-                            <Input id="phone" placeholder="Phone" type="tel" {...field} disabled={areInputsDisabled} />
+                            <Input id="phone" placeholder="Phone" type="tel" {...field} disabled={viewOnlyEnabled} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -668,7 +670,7 @@ export const SentReferralPage = () => {
                             maxLength={300}
                             limitCounterEnabled
                             {...field}
-                            disabled={areInputsDisabled}
+                            disabled={viewOnlyEnabled}
                           />
                         </FormControl>
                       </FormItem>
@@ -688,7 +690,7 @@ export const SentReferralPage = () => {
                         </div>
                         <FormControl>
                           <Switch
-                            disabled={areInputsDisabled}
+                            disabled={viewOnlyEnabled}
                             checked={field.value}
                             onCheckedChange={(value) => {
                               setValue('isSeparated', false);
@@ -710,7 +712,7 @@ export const SentReferralPage = () => {
                       control={control}
                       currentFormCaregiverContactPreference={currentFormCaregiverContactPreference}
                       isCaregiverInformed={currentFormIsCaregiverInformed}
-                      disabled={areInputsDisabled}
+                      disabled={viewOnlyEnabled}
                     />
                   )}
                 </CardContent>
@@ -738,7 +740,7 @@ export const SentReferralPage = () => {
                               maxLength={300}
                               limitCounterEnabled
                               {...field}
-                              disabled={areInputsDisabled}
+                              disabled={viewOnlyEnabled}
                             />
                           </FormControl>
                           <FormMessage />
@@ -754,7 +756,7 @@ export const SentReferralPage = () => {
                           <FormLabel>Service explanation</FormLabel>
                           <FormControl>
                             <Textarea
-                              disabled={areInputsDisabled}
+                              disabled={viewOnlyEnabled}
                               id="required"
                               placeholder="Please explain any need for service, and any already provided"
                               maxLength={300}
@@ -767,7 +769,7 @@ export const SentReferralPage = () => {
                     />
                     <div className="flex flex-col gap-3">
                       <FormLabel>Upload additional information</FormLabel>
-                      <FilesDropzone control={control} name="files" disabled={areInputsDisabled} />
+                      <FilesDropzone control={control} name="files" disabled={viewOnlyEnabled} />
                     </div>
                   </div>
                 </CardContent>
@@ -785,7 +787,7 @@ export const SentReferralPage = () => {
                           <FormDescription>Has the Beneficiary given you consent to share their data?</FormDescription>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} disabled={areInputsDisabled} />
+                          <Switch checked={field.value} onCheckedChange={field.onChange} disabled={viewOnlyEnabled} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

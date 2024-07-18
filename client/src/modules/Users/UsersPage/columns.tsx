@@ -1,19 +1,14 @@
 import { formatDate } from 'date-fns';
-import { MoreHorizontal } from 'lucide-react';
-
+import { EditIcon, Trash2Icon } from 'lucide-react';
 import { TableColumn } from '@/components/DataTable/types';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { User } from '@/services/users';
 import { Button } from '@/components/ui/button';
+import { Tooltip } from '@/components/Tooltip';
 
-export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<User | null>>): TableColumn<User>[] => [
+export const columns = (
+  setUserToDelete: React.Dispatch<React.SetStateAction<User | null>>,
+  onUserTableRowClick: (userRow: User) => void,
+): TableColumn<User>[] => [
   {
     accessorKey: 'firstName',
     id: 'firstName',
@@ -68,32 +63,37 @@ export const columns = (setUserToDelete: React.Dispatch<React.SetStateAction<Use
   },
   {
     id: 'actions',
+    header: 'Actions',
+    headerClassName: 'text-right pr-5',
     cell: ({ row }) => {
       const user = row.original;
 
       return (
         <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-red-500 focus:text-white focus:bg-red-500"
-                onClick={(e: React.SyntheticEvent) => {
-                  e.stopPropagation();
-                  setUserToDelete(user);
-                }}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Tooltip tooltipContent={'Edit'}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e: React.SyntheticEvent) => {
+                e.stopPropagation();
+                onUserTableRowClick(user);
+              }}
+            >
+              <EditIcon className="w-5 h-5" />
+            </Button>
+          </Tooltip>
+          <Tooltip tooltipContent={'Delete'}>
+            <Button
+              variant="ghost"
+              onClick={(e: React.SyntheticEvent) => {
+                e.stopPropagation();
+                setUserToDelete(user);
+              }}
+              size="icon"
+            >
+              <Trash2Icon className="w-5 h-5 text-destructive" />
+            </Button>
+          </Tooltip>
         </div>
       );
     },

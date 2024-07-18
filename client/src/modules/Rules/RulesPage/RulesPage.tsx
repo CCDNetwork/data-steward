@@ -93,6 +93,7 @@ export const RulesPage = () => {
   return (
     <PageContainer
       pageTitle="Rules"
+      pageSubtitle="On this page you can create rules to define which fields you will use to check for duplicates."
       headerNode={<RuleModal />}
       breadcrumbs={[{ href: `${APP_ROUTE.Rules}`, name: 'Rules' }]}
     >

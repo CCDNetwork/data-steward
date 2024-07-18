@@ -50,7 +50,7 @@ export const OrganizationsPage = () => {
   return (
     <PageContainer
       pageTitle="Organisations"
-      pageSubtitle="Manage organisations"
+      pageSubtitle="On this page you can create and edit profiles for the organisations using the platform."
       headerNode={<AddOrganizationModal />}
       breadcrumbs={[{ href: `${APP_ROUTE.Organizations}`, name: 'Organisations' }]}
     >
@@ -63,8 +63,7 @@ export const OrganizationsPage = () => {
         pageSizeClicked={onPageSizeChange}
         headerClicked={onSortChange}
         onSearchChange={onSearchChange}
-        columns={columns(setOrganizationToDelete)}
-        onRowClick={onOrganizationTableRowClick}
+        columns={columns(setOrganizationToDelete, onOrganizationTableRowClick)}
       />
       <ConfirmationDialog
         open={!!organizationToDelete}
