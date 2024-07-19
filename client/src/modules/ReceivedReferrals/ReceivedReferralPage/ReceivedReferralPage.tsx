@@ -95,7 +95,7 @@ export const ReceivedReferralPage = () => {
       isUrgent: receivedReferralData?.isUrgent || false,
       serviceCategory: receivedReferralData?.serviceCategory || 'N/A',
       subactivities: receivedReferralData?.subactivities || [],
-      sendingOrganizationName: receivedReferralData?.organizationReferredTo?.name || 'N/A',
+      sendingOrganizationName: receivedReferralData?.organizationCreated?.name || 'N/A',
       displacementStatus: receivedReferralData?.displacementStatus || 'N/A',
       householdSize: receivedReferralData?.householdSize || 'N/A',
       householdMonthlyIncome: receivedReferralData?.householdMonthlyIncome || 'N/A',

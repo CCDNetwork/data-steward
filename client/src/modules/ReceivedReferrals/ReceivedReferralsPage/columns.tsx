@@ -24,9 +24,9 @@ export const columns = (
     id: 'organizationReferredTo',
     header: 'Sender',
     cell: ({ row }) => {
-      const { organizationReferredTo } = row.original;
+      const { organizationCreated } = row.original;
 
-      return <div>{organizationReferredTo?.name ?? '-'}</div>;
+      return <div>{organizationCreated?.name ?? '-'}</div>;
     },
   },
   {
