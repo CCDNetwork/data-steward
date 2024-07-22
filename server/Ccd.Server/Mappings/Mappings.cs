@@ -25,6 +25,7 @@ public class Mappings : Profile
         // User mappings
         CreateMap<UserAddRequest, User>();
         CreateMap<UserUpdateRequest, User>();
+        CreateMap<UserUpdateMeRequest, User>();
         CreateMap<User, UserResponse>();
         CreateMap<UserResponse, UserMeResponse>();
         CreateMap<UserResponse, UserShortResponse>();

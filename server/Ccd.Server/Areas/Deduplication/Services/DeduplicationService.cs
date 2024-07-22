@@ -388,7 +388,7 @@ public class DeduplicationService
     {
         var file = await _storageService.GetFileById(model.FileId);
 
-        var beneficaryMarkedForImport = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id)).ToList();
+        var beneficaryMarkedForImport = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id) && e.FileId == file.Id).ToList();
         beneficaryMarkedForImport.ForEach(e => e.MarkedForImport = true);
         _context.UpdateRange(beneficaryMarkedForImport);
         await _context.SaveChangesAsync();
@@ -437,7 +437,7 @@ public class DeduplicationService
     {
         var file = await _storageService.GetFileById(model.FileId);
 
-        var beneficaryMarkedForImport = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id)).ToList();
+        var beneficaryMarkedForImport = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id) && e.FileId == file.Id).ToList();
         beneficaryMarkedForImport.ForEach(e => e.MarkedForImport = true);
         _context.UpdateRange(beneficaryMarkedForImport);
 

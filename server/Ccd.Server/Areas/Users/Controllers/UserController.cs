@@ -155,29 +155,22 @@ public class UserController : ControllerBaseExtended
 
     [HttpPut("me")]
     [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult<UserMeResponse>> UpdateCurrentUser(UserUpdateRequest model)
+    public async Task<ActionResult<UserMeResponse>> UpdateCurrentUser(UserUpdateMeRequest model)
     {
         var user =
-            await _userService.GetUserApi(this.OrganizationId, this.UserId)
+            await _userService.GetUserById(this.UserId)
             ?? throw new NotFoundException();
 
-        model.Role = user.Role;
+        if (model.Password != null)
+        {
+            user.Password = AuthenticationHelper.HashPassword(user, model.Password);
+        }
 
-        await Update(model, this.UserId);
+        _mapper.Map(model, user);
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
         return await GetCurrentUser();
-    }
-
-    [HttpDelete("me")]
-    [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult<UserResponse>> DeleteMe()
-    {
-        var user = await _userService.GetUserById(this.UserId) ?? throw new NotFoundException();
-
-        var result = await _userService.GetUserApi(this.OrganizationId, user.Id);
-
-        await _userService.DeleteUser(user);
-
-        return Ok(result);
     }
 
     [HttpGet("email")]
