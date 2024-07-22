@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Ccd.Server.Helpers;
 
 namespace Ccd.Server.Users;
 
-public class UserUpdateMeRequest
+public class UserUpdateMeRequest : PatchRequest
 {
     public string Password { get; set; }
 

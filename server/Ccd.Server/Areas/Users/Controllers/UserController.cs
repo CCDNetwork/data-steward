@@ -160,13 +160,13 @@ public class UserController : ControllerBaseExtended
         var user =
             await _userService.GetUserById(this.UserId)
             ?? throw new NotFoundException();
+        model.Patch(user);
 
         if (model.Password != null)
         {
             user.Password = AuthenticationHelper.HashPassword(user, model.Password);
         }
 
-        _mapper.Map(model, user);
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
 
