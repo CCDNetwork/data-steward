@@ -89,7 +89,7 @@ export const ReceivedReferralsPage = () => {
             />
             <FilterDropdown
               currentFilters={receivedReferralsFilters}
-              filterName="organizationReferredToId[in]"
+              filterName="organizationCreatedId[in]"
               setCurrentFilters={setReceivedReferralsFilters}
               title="Filter by Sender"
               options={isFetched ? organizations!.data.map((org) => ({ label: org.name, value: org.id })) : []}
