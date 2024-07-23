@@ -35,7 +35,21 @@ export const OrganizationPage = () => {
 
   const { control, formState, handleSubmit, reset, watch } = form;
 
-  const [isMPCAChecked, isWashChecked, isShelterChecked] = watch(['isMpcaActive', 'isWashActive', 'isShelterActive']);
+  const [
+    isMPCAChecked,
+    isWashChecked,
+    isShelterChecked,
+    isFoodAssistanceActive,
+    isLivelihoodsActive,
+    isProtectionActive,
+  ] = watch([
+    'isMpcaActive',
+    'isWashActive',
+    'isShelterActive',
+    'isFoodAssistanceActive',
+    'isLivelihoodsActive',
+    'isProtectionActive',
+  ]);
 
   const { fields, append, remove } = useFieldArray({ control, name: 'activities' });
 
@@ -183,6 +197,81 @@ export const OrganizationPage = () => {
                       addActivity={append}
                       removeActivity={remove}
                       serviceType={OrgActivity.Shelter}
+                    />
+                  )}
+                </div>
+                <Separator />
+                <div>
+                  <FormField
+                    control={control}
+                    name="isFoodAssistanceActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>Food Assistance</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isFoodAssistanceActive && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType={OrgActivity.FoodAssistance}
+                    />
+                  )}
+                </div>
+                <Separator />
+                <div>
+                  <FormField
+                    control={control}
+                    name="isLivelihoodsActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>Livelihoods</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isLivelihoodsActive && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType={OrgActivity.Livelihoods}
+                    />
+                  )}
+                </div>
+                <Separator />
+                <div>
+                  <FormField
+                    control={control}
+                    name="isProtectionActive"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>Protection</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isProtectionActive && (
+                    <ServiceActivities
+                      activities={fields}
+                      addActivity={append}
+                      removeActivity={remove}
+                      serviceType={OrgActivity.Protection}
                     />
                   )}
                 </div>

@@ -8,6 +8,9 @@ export const dataToOrganizationEditFormData = (data: Organization): Organization
     isMpcaActive: data.isMpcaActive,
     isWashActive: data.isWashActive,
     isShelterActive: data.isShelterActive,
+    isFoodAssistanceActive: data.isFoodAssistanceActive,
+    isLivelihoodsActive: data.isLivelihoodsActive,
+    isProtectionActive: data.isProtectionActive,
     activities: data.activities,
   };
 };

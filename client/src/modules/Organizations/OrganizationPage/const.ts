@@ -3,5 +3,8 @@ export const defaultOrganizationEditFormFormValues = {
   isMpcaActive: false,
   isWashActive: false,
   isShelterActive: false,
+  isFoodAssistanceActive: false,
+  isLivelihoodsActive: false,
+  isProtectionActive: false,
   activities: undefined,
 };

@@ -10,6 +10,9 @@ export interface Organization {
   isMpcaActive: boolean;
   isWashActive: boolean;
   isShelterActive: boolean;
+  isFoodAssistanceActive: boolean;
+  isLivelihoodsActive: boolean;
+  isProtectionActive: boolean;
   activities: OrganizationActivity[];
   createdAt: Date | null;
   updatedAt: Date | null;

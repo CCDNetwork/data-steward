@@ -5,6 +5,9 @@ export const OrganizationEditFormSchema = z.object({
   isMpcaActive: z.boolean(),
   isWashActive: z.boolean(),
   isShelterActive: z.boolean(),
+  isFoodAssistanceActive: z.boolean(),
+  isLivelihoodsActive: z.boolean(),
+  isProtectionActive: z.boolean(),
   activities: z.array(
     z.object({
       id: z.string().optional(),

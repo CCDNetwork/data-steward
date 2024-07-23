@@ -13,6 +13,9 @@ interface Props {
       isMpcaActive: boolean;
       isWashActive: boolean;
       isShelterActive: boolean;
+      isFoodAssistanceActive: boolean;
+      isLivelihoodsActive: boolean;
+      isProtectionActive: boolean;
       activities: {
         title: string;
         serviceType: string;
@@ -29,6 +32,9 @@ interface Props {
       isMpcaActive: boolean;
       isWashActive: boolean;
       isShelterActive: boolean;
+      isFoodAssistanceActive: boolean;
+      isLivelihoodsActive: boolean;
+      isProtectionActive: boolean;
       activities: {
         title: string;
         serviceType: string;
