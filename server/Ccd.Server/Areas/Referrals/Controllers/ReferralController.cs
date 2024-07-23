@@ -14,11 +14,13 @@ public class ReferralController : ControllerBaseExtended
 {
     private readonly ReferralService _referralService;
     private readonly UserService _userService;
+    private readonly IMapper _mapper;
 
     public ReferralController(ReferralService referralService, UserService userService, IMapper mapper)
     {
         _referralService = referralService;
         _userService = userService;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -114,6 +116,16 @@ public class ReferralController : ControllerBaseExtended
     {
         var newDiscussion = await _referralService.AddDiscussion(id, model);
         var result = await _referralService.GetDiscussionApi(newDiscussion.Id);
+
+        return Ok(result);
+    }
+
+    [HttpGet("focal-point/users")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult<List<UserResponse>>> GetFocalPointUsers()
+    {
+        var userResponse = await _userService.GetUsersApi(this.OrganizationId, new RequestParameters { PageSize = 1000 });
+        var result = _mapper.Map<List<UserResponse>, List<FocalPointUsersResponse>>(userResponse.Data);
 
         return Ok(result);
     }

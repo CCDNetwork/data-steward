@@ -48,6 +48,7 @@ public class Mappings : Profile
         CreateMap<ReferralPatchRequest, Referral>();
         CreateMap<Discussion, DiscussionResponse>();
         CreateMap<DiscussionAddRequest, Discussion>();
+        CreateMap<UserResponse, FocalPointUsersResponse>();
 
         // Handbook
         CreateMap<Handbook, HandbookResponse>();
