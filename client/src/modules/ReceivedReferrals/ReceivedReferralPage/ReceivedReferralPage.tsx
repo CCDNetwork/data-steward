@@ -16,14 +16,12 @@ import { cn } from '@/helpers/utils';
 import { toast } from '@/components/ui/use-toast';
 import { HOUSEHOLDS_VULNERABILITY_CRITERIA, ReferralStatus, ReferralTab } from '@/services/referrals/const';
 import { AsyncSelect } from '@/components/AsyncSelect';
-import { useAuth } from '@/providers/GlobalProvider';
 import { User } from '@/services/users';
 import { formatDate } from 'date-fns';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReferralDiscussions } from '@/components/ReferralDiscussions';
 
 export const ReceivedReferralPage = () => {
-  const { organization } = useAuth();
   const { id: receivedReferralId } = useIdFromParams();
   const [referralAction, setReferralAction] = useState<'rejected' | 'enrolled' | undefined>(undefined);
   const [isUserAssigning, setIsUserAssigning] = useState<boolean>(false);
@@ -216,7 +214,7 @@ export const ReceivedReferralPage = () => {
                       name="focalPoint"
                       control={control}
                       useInfiniteQueryFunction={useUsersInfinite}
-                      queryFilters={{ organizationId: organization?.id ?? '' }}
+                      customEndpoint="/referrals/focal-point/users"
                       labelKey="firstName"
                       getOptionLabel={(o) => `${o.firstName} ${o.lastName}`}
                       valueKey="id"

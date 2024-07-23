@@ -17,8 +17,11 @@ enum QueryKeys {
 //
 // API calls
 //
-export const fetchUsers = async (pagination: PaginationRequest): Promise<DataWithMeta<User>> => {
-  const url = paginationRequestToUrl('users', pagination);
+export const fetchUsers = async (
+  pagination: PaginationRequest,
+  customEndpoint?: string,
+): Promise<DataWithMeta<User>> => {
+  const url = paginationRequestToUrl(customEndpoint ?? 'users', pagination);
 
   const resp = await api.get(url);
   return {
@@ -87,11 +90,11 @@ export const useUser = ({ id, isCreate }: { id: string; isCreate: boolean }) => 
   });
 };
 
-export const useUsersInfinite = (pagination: PaginationRequest, enabled: boolean) => {
+export const useUsersInfinite = (pagination: PaginationRequest, enabled: boolean, customEndpoint?: string) => {
   return useInfiniteQuery(
     [QueryKeys.Users, 'infinite', pagination],
     ({ pageParam = 1 }) => {
-      return fetchUsers({ ...pagination, page: pageParam });
+      return fetchUsers({ ...pagination, page: pageParam }, customEndpoint);
     },
     {
       getNextPageParam: (data) => {

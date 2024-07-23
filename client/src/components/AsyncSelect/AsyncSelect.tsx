@@ -19,6 +19,7 @@ export const AsyncSelect = <T,>({
   required,
   disabled,
   queryFilters,
+  customEndpoint,
   getOptionLabel = (option) => option[labelKey] as string,
   useInfiniteQueryFunction,
   onChange,
@@ -42,6 +43,7 @@ export const AsyncSelect = <T,>({
       queryFilters,
     },
     wasOpened,
+    customEndpoint,
   );
 
   const { field, fieldState } = useController({ control, name });
@@ -178,9 +180,11 @@ export type AsyncSelectProps<T> = {
   labelKey: keyof T;
   disabled?: boolean;
   required?: boolean;
+  customEndpoint?: string;
   useInfiniteQueryFunction?: (
     pagination: PaginationRequest,
     enabled: boolean,
+    customEndpoint?: string,
   ) => ReturnType<typeof useInfiniteQuery<DataWithMeta<T>>>;
   options?: T[];
   getOptionLabel?: (option: T) => string;
