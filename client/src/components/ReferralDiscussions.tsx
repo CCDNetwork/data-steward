@@ -68,29 +68,27 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
                 <Loader2 className="w-10 h-10 animate-spin" />
               </div>
             ) : referralDiscussions && referralDiscussions.length > 0 ? (
-              referralDiscussions
-                ?.sort((a, b) => (a.createdAt! > b.createdAt! ? -1 : 0))
-                .map((discussionEntry) => {
-                  const { userCreated, text, createdAt, isBot } = discussionEntry;
-                  return (
-                    <div
-                      key={discussionEntry.id}
-                      className={cn('px-3 py-2 rounded-md bg-muted flex flex-col', {
-                        'bg-primary text-white': !isBot,
-                      })}
-                    >
-                      <div className="flex justify-between text-xs font-medium">
-                        <div>
-                          {isBot
-                            ? 'Activity'
-                            : `${userCreated?.firstName} ${userCreated?.lastName} - ${userCreated?.organizations[0].name ?? ''}`}
-                        </div>
-                        {createdAt && <div className="font-normal">{formatDate(createdAt, 'dd/MM/yyyy HH:mm')}</div>}
+              referralDiscussions.map((discussionEntry) => {
+                const { userCreated, text, createdAt, isBot } = discussionEntry;
+                return (
+                  <div
+                    key={discussionEntry.id}
+                    className={cn('px-3 py-2 rounded-md bg-muted flex flex-col', {
+                      'bg-primary text-white': !isBot,
+                    })}
+                  >
+                    <div className="flex justify-between text-xs font-medium">
+                      <div>
+                        {isBot
+                          ? 'Activity'
+                          : `${userCreated?.firstName} ${userCreated?.lastName} - ${userCreated?.organizations[0].name ?? ''}`}
                       </div>
-                      <p className={cn('text-sm mt-1', { 'italic text-muted-foreground': isBot })}>{text}</p>
+                      {createdAt && <div className="font-normal">{formatDate(createdAt, 'dd/MM/yyyy HH:mm')}</div>}
                     </div>
-                  );
-                })
+                    <p className={cn('text-sm mt-1', { 'italic text-muted-foreground': isBot })}>{text}</p>
+                  </div>
+                );
+              })
             ) : (
               <div className="text-center text-muted-foreground text-sm">Nothing here yet</div>
             )}
