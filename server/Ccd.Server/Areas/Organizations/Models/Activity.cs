@@ -19,9 +19,12 @@ public class ServiceType
     public const string Mpca = "mpca";
     public const string Wash = "wash";
     public const string Shelter = "shelter";
+    public const string FoodAssistance = "foodAssistance";
+    public const string Livelihoods = "livelihoods";
+    public const string Protection = "protection";
 
     public static bool IsValid(string serviceType)
     {
-        return serviceType == Mpca || serviceType == Wash || serviceType == Shelter;
+        return serviceType == Mpca || serviceType == Wash || serviceType == Shelter || serviceType == FoodAssistance || serviceType == Livelihoods || serviceType == Protection;
     }
 }
