@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
 using Ccd.Server.Storage;
 using Ccd.Server.Users;
@@ -71,7 +72,7 @@ public class ReferralResponse
     [JsonIgnore] public Guid UserCreatedId { get; set; }
     public UserResponse UserCreated { get; set; }
     public List<FileShortResponse> Files { get; set; }
-    public string CaseNumber { get; set; }
+    [QuickSearchable] public string CaseNumber { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime CreatedAt { get; set; }
 }
