@@ -20,6 +20,7 @@ import { User } from '@/services/users';
 import { formatDate } from 'date-fns';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReferralDiscussions } from '@/components/ReferralDiscussions';
+import { serviceCategoryToLabel } from './helpers';
 
 export const ReceivedReferralPage = () => {
   const { id: receivedReferralId } = useIdFromParams();
@@ -246,7 +247,9 @@ export const ReceivedReferralPage = () => {
                 {receivingReferral?.serviceCategory && (
                   <div className="sm:col-span-1">
                     <dt className="text-sm font-bold tracking-tight leading-6">Service category</dt>
-                    <dd className="mt-1 text-sm leading-6 uppercase sm:mt-2">{receivingReferral.serviceCategory}</dd>
+                    <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                      {serviceCategoryToLabel(receivingReferral.serviceCategory)}
+                    </dd>
                   </div>
                 )}
                 {receivingReferral?.subactivities && receivingReferral?.subactivities.length > 0 && (

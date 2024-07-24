@@ -100,12 +100,24 @@ export const SentReferralPage = () => {
   const resolvedServiceCategories = useMemo(() => {
     if (!currentFormSelectedOrganization) return;
 
-    const categoryMappings: { key: 'isMpcaActive' | 'isWashActive' | 'isShelterActive'; id: string; label: string }[] =
-      [
-        { key: 'isMpcaActive', id: 'mpca', label: 'MPCA' },
-        { key: 'isWashActive', id: 'wash', label: 'WASH' },
-        { key: 'isShelterActive', id: 'shelter', label: 'Shelter' },
-      ];
+    const categoryMappings: {
+      key:
+        | 'isMpcaActive'
+        | 'isWashActive'
+        | 'isShelterActive'
+        | 'isLivelihoodsActive'
+        | 'isFoodAssistanceActive'
+        | 'isProtectionActive';
+      id: string;
+      label: string;
+    }[] = [
+      { key: 'isMpcaActive', id: 'mpca', label: 'MPCA' },
+      { key: 'isWashActive', id: 'wash', label: 'WASH' },
+      { key: 'isShelterActive', id: 'shelter', label: 'Shelter' },
+      { key: 'isLivelihoodsActive', id: 'livelihoods', label: 'Livelihoods' },
+      { key: 'isFoodAssistanceActive', id: 'foodAssistance', label: 'Food Assistance' },
+      { key: 'isProtectionActive', id: 'protection', label: 'Protection' },
+    ];
 
     return (
       categoryMappings
@@ -289,7 +301,10 @@ export const SentReferralPage = () => {
                       {currentFormSelectedOrganization &&
                         (currentFormSelectedOrganization.isMpcaActive ||
                           currentFormSelectedOrganization.isShelterActive ||
-                          currentFormSelectedOrganization.isWashActive) && (
+                          currentFormSelectedOrganization.isWashActive ||
+                          currentFormSelectedOrganization.isFoodAssistanceActive ||
+                          currentFormSelectedOrganization.isProtectionActive ||
+                          currentFormSelectedOrganization.isLivelihoodsActive) && (
                           <FormField
                             control={control}
                             name="serviceCategory"

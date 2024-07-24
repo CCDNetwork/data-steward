@@ -7,6 +7,9 @@ const OrganizationSchema = z.object(
     isMpcaActive: z.boolean(),
     isWashActive: z.boolean(),
     isShelterActive: z.boolean(),
+    isLivelihoodsActive: z.boolean(),
+    isFoodAssistanceActive: z.boolean(),
+    isProtectionActive: z.boolean(),
     activities: z.array(
       z.object({
         id: z.string(),
