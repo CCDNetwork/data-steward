@@ -63,12 +63,15 @@ public class UserController : ControllerBaseExtended
         if (existingUser != null)
             throw new BadRequestException("User with this email already exists");
 
+        if (!UserRole.IsValidRole(model.Role))
+            throw new BadRequestException("Invalid role");
+
         var user = _mapper.Map<User>(model);
         user.Password = AuthenticationHelper.HashPassword(user, model.Password);
         user.ActivatedAt = _dateTimeProvider.UtcNow;
 
         user = await _userService.AddUser(user);
-        await _userService.SetOrganizationRole(user.Id, model.OrganizationId, UserRole.User, model.Permissions);
+        await _userService.SetOrganizationRole(user.Id, model.OrganizationId, model.Role, model.Permissions);
 
         var result = await _userService.GetUserApi(model.OrganizationId, user.Id);
 
@@ -86,7 +89,11 @@ public class UserController : ControllerBaseExtended
         var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(
             e => e.UserId == user.Id && e.OrganizationId == this.OrganizationId
         ) ?? throw new NotFoundException();
+        if (!UserRole.IsValidRole(model.Role))
+            throw new BadRequestException("Invalid role");
+
         userOrganization.Permissions = model.Permissions;
+        userOrganization.Role = model.Role;
 
         _mapper.Map(model, user);
 
@@ -108,6 +115,16 @@ public class UserController : ControllerBaseExtended
     {
         var user = await _userService.GetUserById(id) ?? throw new NotFoundException();
         model.Patch(user);
+
+        if (model.Role != null && UserRole.IsValidRole(model.Role))
+        {
+            var userTenant = await _context.UserOrganizations.FirstOrDefaultAsync(
+                e => e.UserId == user.Id
+            ) ?? throw new NotFoundException();
+            userTenant.Role = model.Role;
+            _context.UserOrganizations.Update(userTenant);
+        }
+
 
         if (model.Permissions != null)
         {

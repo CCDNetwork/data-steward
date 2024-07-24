@@ -18,8 +18,9 @@ public class UserAddRequest
     [Required, MinLength(8), MaxLength(30)]
     public string Password { get; set; }
 
-    [Required]
-    public Guid OrganizationId { get; set; }
+    [Required] public Guid OrganizationId { get; set; }
+
+    [Required] public string Role { get; set; }
 
     public List<string> Permissions { get; set; }
 }
