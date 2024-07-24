@@ -370,7 +370,9 @@ export const SentReferralPage = () => {
                                           onCheckedChange={(checked) => {
                                             return checked
                                               ? field.onChange([...field.value, item])
-                                              : field.onChange(field.value?.filter((value: any) => value !== item));
+                                              : field.onChange(
+                                                  field.value?.filter((value: any) => value.id !== item.id),
+                                                );
                                           }}
                                         />
                                       </FormControl>
