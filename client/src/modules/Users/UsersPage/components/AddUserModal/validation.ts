@@ -24,6 +24,7 @@ export const AddUserModalFormSchema = z
     ),
     confirmPassword: z.string().optional(),
     organization: OrganizationSchema,
+    role: z.string(),
     permissions: z.array(z.string()).default([]),
   })
   .refine(

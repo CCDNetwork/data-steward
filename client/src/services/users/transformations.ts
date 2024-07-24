@@ -23,6 +23,7 @@ export const userToReq = (data: any): Omit<User, 'id'> => {
     lastName: data.lastName,
     organizationId: data.organization?.id,
     permissions: data.permissions,
+    role: data.role,
   };
 
   if (data.password) {

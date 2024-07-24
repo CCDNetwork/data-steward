@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { SendHorizonal, UserPlus2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -25,6 +26,7 @@ export const AddUserModal = () => {
       password: '',
       confirmPassword: '',
       organization: undefined,
+      role: 'user',
       permissions: ['deduplication', 'referral'],
     },
     mode: 'onSubmit',
@@ -34,6 +36,7 @@ export const AddUserModal = () => {
   const { control, handleSubmit, reset, watch, setValue } = form;
 
   const currentFormPermissions = watch('permissions');
+  const currentFormRole = watch('role');
 
   const { addUser } = useUserMutation();
 
@@ -158,6 +161,21 @@ export const AddUserModal = () => {
                 labelKey="name"
                 valueKey="id"
               />
+              <FormItem>
+                <FormLabel requiredField>Role</FormLabel>
+                <Select onValueChange={(val: string) => setValue('role', val)} value={currentFormRole}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {['User', 'Admin'].map((el) => (
+                      <SelectItem key={el} value={el.toLowerCase()}>
+                        {el}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
               <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
                 <FormField
                   control={control}
