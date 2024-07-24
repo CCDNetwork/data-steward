@@ -9,5 +9,8 @@ public class OrganizationAddRequest
     [Required] public bool IsMpcaActive { get; set; }
     [Required] public bool IsWashActive { get; set; }
     [Required] public bool IsShelterActive { get; set; }
+    [Required] public bool IsFoodAssistanceActive { get; set; }
+    [Required] public bool IsLivelihoodsActive { get; set; }
+    [Required] public bool IsProtectionActive { get; set; }
     public List<ActivityAddRequest> Activities { get; set; }
 }
