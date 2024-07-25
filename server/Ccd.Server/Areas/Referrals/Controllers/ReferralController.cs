@@ -67,12 +67,15 @@ public class ReferralController : ControllerBaseExtended
     [HttpPatch("{id}")]
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<ReferralResponse>> Update(
-        [FromBody] ReferralPatchRequest model,
-        Guid id
+        Guid id,
+        [FromBody] ReferralPatchRequest model
     )
     {
         var referral = await _referralService.GetReferralById(this.OrganizationId, id) ?? throw new NotFoundException("Referral not found.");
         if (model.Status != null && !ReferralStatus.IsValid(model.Status)) throw new BadRequestException("Invalid status.");
+
+        if (referral.Status == ReferralStatus.Withdrawn || referral.Status == ReferralStatus.Rejected)
+            model.Status = ReferralStatus.Open;
 
         model.Patch(referral);
 
