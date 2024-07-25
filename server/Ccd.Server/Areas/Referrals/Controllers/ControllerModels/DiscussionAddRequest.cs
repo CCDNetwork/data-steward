@@ -1,9 +1,10 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ccd.Server.Referrals
 {
     public class DiscussionAddRequest
     {
-        public string Text { get; set; }
+        [Required] public string Text { get; set; }
     }
 }

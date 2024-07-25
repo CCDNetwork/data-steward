@@ -102,6 +102,60 @@ public class ReferralController : ControllerBaseExtended
         return Ok(result);
     }
 
+    [HttpPatch("{id}/withdraw")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult<ReferralResponse>> RefferalWithdraw(Guid id, [FromBody] DiscussionAddRequest model)
+    {
+        var referral = await _referralService.GetReferralById(this.OrganizationId, id) ?? throw new NotFoundException();
+
+        if (referral.Status == ReferralStatus.Withdrawn)
+            throw new BadRequestException("Referral is already withdrawn.");
+
+        referral.Status = ReferralStatus.Withdrawn;
+
+        await _referralService.UpdateReferral(referral);
+
+        var result = await _referralService.GetReferralApi(this.OrganizationId, id);
+
+        var userUpdated = await _userService.GetUserById(this.UserId);
+        await _referralService.AddDiscussionBot(id, new DiscussionAddRequest
+        {
+            Text = @$"
+                Referral has been withdrawn by {userUpdated.FirstName} {userUpdated.LastName}.
+                Reason: {model.Text}
+            ",
+        });
+
+        return Ok(result);
+    }
+
+    [HttpPatch("{id}/reject")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult<ReferralResponse>> RefferalReject(Guid id, [FromBody] DiscussionAddRequest model)
+    {
+        var referral = await _referralService.GetReferralById(this.OrganizationId, id) ?? throw new NotFoundException();
+
+        if (referral.Status == ReferralStatus.Rejected)
+            throw new BadRequestException("Referral is already rejected.");
+
+        referral.Status = ReferralStatus.Rejected;
+
+        await _referralService.UpdateReferral(referral);
+
+        var result = await _referralService.GetReferralApi(this.OrganizationId, id);
+
+        var userUpdated = await _userService.GetUserById(this.UserId);
+        await _referralService.AddDiscussionBot(id, new DiscussionAddRequest
+        {
+            Text = @$"
+                Referral has been rejected by {userUpdated.FirstName} {userUpdated.LastName}.
+                Reason: {model.Text}
+            ",
+        });
+
+        return Ok(result);
+    }
+
     [HttpGet("{id}/discussions")]
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<List<DiscussionResponse>>> GetDiscussions(Guid id)
