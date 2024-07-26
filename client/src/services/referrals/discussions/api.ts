@@ -14,7 +14,7 @@ enum QueryKeys {
 export const fetchReferralDiscussion = async (referralId: string): Promise<ReferralDiscussion[]> => {
   const resp = await api.get(`/referrals/${referralId}/discussions`);
 
-  return resp.data.map(resToReferralDiscussion);
+  return resp.data.map(resToReferralDiscussion).reverse();
 };
 
 const postReferralDiscussionText = async ({

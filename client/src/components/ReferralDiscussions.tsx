@@ -60,7 +60,7 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
         </CardHeader>
         <CardContent>
           <BottomScrolledContainer
-            containerClassName="max-h-[500px] flex flex-col-reverse gap-4 no-scrollbar"
+            containerClassName="max-h-[500px] flex flex-col gap-4 no-scrollbar"
             shouldTrigger={isMessageSent}
           >
             {referralDiscussionLoading ? (
