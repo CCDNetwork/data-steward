@@ -32,7 +32,6 @@ import { useAuth } from '@/providers/GlobalProvider';
 import admin_3 from '@/local-json/admin_3.json';
 import admin_4 from '@/local-json/admin_4.json';
 
-import { CancelReferralModal } from './components/CancelReferralModal';
 import { dataToSentReferralFormData } from './form-transformation';
 import { SentReferralFormData, SentReferralSchema } from './validations';
 import { defaultSentReferralFormFormValues } from './const';
@@ -40,6 +39,7 @@ import { MinorForm } from './components/MinorForm';
 import { MpcaSpecificForm } from './components/MpcaSpecificForm';
 import { SentReferralPageViewOnly } from './components/SentReferralPageViewOnly';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
+import { StatusReasonModal } from '@/components/StatusReasonModal';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
@@ -47,6 +47,7 @@ export const SentReferralPage = () => {
   const { id: sentReferralId, isCreate } = useIdFromParams();
   const { viewOnlyEnabled, setViewOnlyEnabled } = useSentReferralsProvider();
   const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
+  const [isStatusReasonModal, setOpenStatusReasonModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (isCreate) {
@@ -72,7 +73,7 @@ export const SentReferralPage = () => {
 
   const { data: sentReferralData, isLoading: queryLoading } = useReferral({ id: sentReferralId, isCreate });
 
-  const { createReferral, patchReferral } = useReferralMutation();
+  const { createReferral, patchReferral, updateReferralReason } = useReferralMutation();
 
   const form = useForm<SentReferralFormData>({
     defaultValues: defaultSentReferralFormFormValues,
@@ -154,8 +155,19 @@ export const SentReferralPage = () => {
       return;
     }
 
+    const changedFields: Partial<any> = Object.keys(formState.dirtyFields).reduce((acc: Partial<any>, key: string) => {
+      const value = values[key as keyof SentReferralFormData];
+      if (value !== null && value !== undefined) {
+        acc[key as keyof SentReferralFormData] = value;
+      }
+      return acc;
+    }, {});
+
     try {
-      await patchReferral.mutateAsync({ data: { ...values, isDraft }, referralId: sentReferralId });
+      await patchReferral.mutateAsync({
+        data: { ...changedFields, isDraft: isDraft ? isDraft : undefined },
+        referralId: sentReferralId,
+      });
       toast({
         title: 'Success!',
         variant: 'default',
@@ -171,6 +183,77 @@ export const SentReferralPage = () => {
     }
   };
 
+  const onWithdrawConfirmClick = async (reasonText: string) => {
+    try {
+      await updateReferralReason.mutateAsync({
+        referralId: sentReferralId,
+        referralType: 'withdraw',
+        text: reasonText,
+      });
+
+      toast({
+        title: 'Success!',
+        variant: 'default',
+        description: 'Referral successfully withdrawn.',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong!',
+        variant: 'destructive',
+        description: error.response?.data?.errorMessage || 'Error withdrawing referral.',
+      });
+    }
+    setOpenStatusReasonModal(false);
+  };
+
+  const onWithdrawActionClick = () => {
+    setOpenStatusReasonModal(true);
+  };
+
+  const onCancelWithdrawActionClick = () => {
+    setOpenStatusReasonModal(false);
+  };
+
+  const headerNodeButtons = () => {
+    if (sentReferralData?.status !== ReferralStatus.Enrolled && !isCreate && !sentReferralData?.isDraft) {
+      if (viewOnlyEnabled) {
+        return (
+          <div className="flex sm:flex-row flex-col gap-2 sm:gap-4">
+            <Button type="submit" onClick={() => setViewOnlyEnabled(false)}>
+              Edit
+            </Button>
+            {sentReferralData?.status !== ReferralStatus.Withdrawn && (
+              <Button
+                variant="destructive"
+                onClick={onWithdrawActionClick}
+                isLoading={patchReferral.isLoading}
+                disabled={formState.isSubmitting || patchReferral.isLoading}
+              >
+                Withdraw referral
+              </Button>
+            )}
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex sm:flex-row flex-col gap-2 sm:gap-4">
+          <Button
+            type="submit"
+            onClick={handleSubmit((values) => onSubmit({ values }))}
+            isLoading={patchReferral.isLoading}
+            disabled={formState.isSubmitting || patchReferral.isLoading || !formState.isDirty}
+          >
+            Submit
+          </Button>
+          <Button variant="destructive" onClick={() => window.location.reload()}>
+            Cancel edits
+          </Button>
+        </div>
+      );
+    }
+  };
+
   return (
     <PageContainer
       pageTitle={isCreate ? 'Make Referral' : `Case  ${sentReferralData?.caseNumber ?? '-'}`}
@@ -179,30 +262,7 @@ export const SentReferralPage = () => {
         { href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' },
         { name: isCreate ? 'New case' : `Case ${sentReferralData?.caseNumber ?? '-'}` },
       ]}
-      headerNode={
-        !isCreate &&
-        !sentReferralData?.isDraft && (
-          <div className="flex sm:flex-row flex-col gap-2 sm:gap-4">
-            <Button
-              type="submit"
-              onClick={
-                viewOnlyEnabled ? () => setViewOnlyEnabled(false) : handleSubmit((values) => onSubmit({ values }))
-              }
-              isLoading={patchReferral.isLoading}
-              disabled={!viewOnlyEnabled && (formState.isSubmitting || patchReferral.isLoading || !formState.isDirty)}
-            >
-              {viewOnlyEnabled ? 'Edit' : 'Submit'}
-            </Button>
-
-            {!viewOnlyEnabled && (
-              <Button variant="destructive" onClick={() => window.location.reload()}>
-                Cancel edits
-              </Button>
-            )}
-            {viewOnlyEnabled && sentReferralData?.status !== ReferralStatus.Withdrawn && <CancelReferralModal />}
-          </div>
-        )
-      }
+      headerNode={headerNodeButtons()}
     >
       {!isCreate && (
         <Tabs defaultValue="referral">
@@ -844,6 +904,16 @@ export const SentReferralPage = () => {
           </form>
         </Form>
       )}
+
+      <StatusReasonModal
+        open={!!isStatusReasonModal}
+        title="Withdraw Referral"
+        body={`Please provide a reason for withdrawing referral "${sentReferralData?.caseNumber}".`}
+        confirmButtonLoading={patchReferral.isLoading}
+        actionButtonVariant="destructive"
+        onCancel={onCancelWithdrawActionClick}
+        onAction={onWithdrawConfirmClick}
+      />
     </PageContainer>
   );
 };

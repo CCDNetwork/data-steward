@@ -42,6 +42,15 @@ const postReferral = async (data: SentReferralFormData): Promise<Referral> => {
   return resToReferral(resp.data);
 };
 
+const patchReferralReason = async (data: {
+  referralId: string;
+  referralType: string;
+  text: string;
+}): Promise<Referral> => {
+  const resp = await api.patch(`/referrals/${data.referralId}/${data.referralType}`, { text: data.text });
+  return resToReferral(resp.data);
+};
+
 const patchReferral = async ({
   referralId,
   data,
@@ -100,6 +109,12 @@ export const useReferralMutation = () => {
   return {
     createReferral: useMutation(postReferral, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Referrals]),
+    }),
+    updateReferralReason: useMutation(patchReferralReason, {
+      onSuccess: () => {
+        queryClient.invalidateQueries([QueryKeys.Referrals]);
+        queryClient.invalidateQueries([QueryKeys.SingleReferral]);
+      },
     }),
     patchReferral: useMutation(patchReferral, {
       onSuccess: () => {

@@ -83,21 +83,23 @@ export const columns = (
     headerClassName: 'text-right pr-5',
     cell: ({ row }) => {
       const referral = row.original;
-
       return (
         <div className="text-right">
-          <Tooltip tooltipContent={'Edit'}>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e: React.SyntheticEvent) => {
-                e.stopPropagation();
-                onEditSentReferralClick(referral);
-              }}
-            >
-              <EditIcon className="w-5 h-5" />
-            </Button>
-          </Tooltip>
+          {referral.status !== ReferralStatus.Enrolled && (
+            <Tooltip tooltipContent={'Edit'}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e: React.SyntheticEvent) => {
+                  e.stopPropagation();
+                  onEditSentReferralClick(referral);
+                }}
+              >
+                <EditIcon className="w-5 h-5" />
+              </Button>
+            </Tooltip>
+          )}
+
           <Tooltip tooltipContent={'Delete'}>
             <Button
               variant="ghost"

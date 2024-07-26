@@ -74,7 +74,7 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
           </div>
         )}
         <div
-          className={cn('px-6 pb-6 flex items-center justify-center', {
+          className={cn('px-6 pb-6 mt-3 flex items-center justify-center', {
             'mt-5': receivingReferral?.isUrgent,
           })}
         >
