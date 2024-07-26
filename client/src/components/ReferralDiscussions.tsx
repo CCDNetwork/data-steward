@@ -85,7 +85,10 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
                       </div>
                       {createdAt && <div className="font-normal">{formatDate(createdAt, 'dd/MM/yyyy HH:mm')}</div>}
                     </div>
-                    <p className={cn('text-sm mt-1', { 'italic text-muted-foreground': isBot })}>{text}</p>
+                    <p
+                      className={cn('text-sm mt-1', { 'italic text-muted-foreground': isBot })}
+                      dangerouslySetInnerHTML={{ __html: text }}
+                    />
                   </div>
                 );
               })

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
 using Ccd.Server.Users;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ccd.Server.Referrals;
 
@@ -77,6 +78,7 @@ public class ReferralController : ControllerBaseExtended
         if (referral.Status == ReferralStatus.Withdrawn || referral.Status == ReferralStatus.Rejected)
             model.Status = ReferralStatus.Open;
 
+        var updatedFieldsText = await _referralService.GetUpdatedFieldText(model, referral);
         model.Patch(referral);
 
         await _referralService.UpdateReferral(referral);
@@ -86,7 +88,11 @@ public class ReferralController : ControllerBaseExtended
         var userUpdated = await _userService.GetUserById(this.UserId);
         await _referralService.AddDiscussionBot(id, new DiscussionAddRequest
         {
-            Text = $"Referral has been updated by {userUpdated.FirstName} {userUpdated.LastName}.",
+            Text = @$"
+                Referral has been updated by {userUpdated.FirstName} {userUpdated.LastName}.<br>
+                Changes:<br>
+                {updatedFieldsText}
+            ",
         });
 
         return Ok(result);
@@ -124,7 +130,7 @@ public class ReferralController : ControllerBaseExtended
         await _referralService.AddDiscussionBot(id, new DiscussionAddRequest
         {
             Text = @$"
-                Referral has been withdrawn by {userUpdated.FirstName} {userUpdated.LastName}.
+                Referral has been withdrawn by {userUpdated.FirstName} {userUpdated.LastName}.<br>
                 Reason: {model.Text}
             ",
         });
@@ -151,7 +157,7 @@ public class ReferralController : ControllerBaseExtended
         await _referralService.AddDiscussionBot(id, new DiscussionAddRequest
         {
             Text = @$"
-                Referral has been rejected by {userUpdated.FirstName} {userUpdated.LastName}.
+                Referral has been rejected by {userUpdated.FirstName} {userUpdated.LastName}.<br>
                 Reason: {model.Text}
             ",
         });

@@ -57,5 +57,5 @@ public class ReferralPatchRequest : PatchRequest
     // Internal
     public Guid? FocalPointId { get; set; }
     public string Status { get; set; }
-    public bool IsDraft { get; set; }
+    public bool? IsDraft { get; set; }
 }

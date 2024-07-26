@@ -9,6 +9,8 @@ using Ccd.Server.Organizations;
 using System.Linq;
 using Ccd.Server.Storage;
 using System.Collections.Generic;
+using DocumentFormat.OpenXml.Drawing;
+using System.Reflection;
 
 namespace Ccd.Server.Referrals;
 
@@ -175,6 +177,45 @@ public class ReferralService
         }
 
         return discussionsResponse;
+    }
+
+    public async Task<string> GetUpdatedFieldText(ReferralPatchRequest model, Referral referral)
+    {
+        var updatedProperties = model.GetType().GetProperties();
+        var oldProperties = referral.GetType().GetProperties();
+        var updatedFields = updatedProperties.Where(x => x.GetValue(model) != null);
+        var updatedFieldsText = "";
+
+        foreach (var field in updatedFields)
+        {
+            var filedName = field.Name;
+            var value = field.GetValue(model);
+            var oldValue = oldProperties.FirstOrDefault(x => x.Name == field.Name)?.GetValue(referral);
+
+            if (field.Name == "OrganizationReferredToId")
+            {
+                var organization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == (Guid)value);
+                value = organization.Name;
+                var oldOrganization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == (Guid)oldValue);
+                oldValue = oldOrganization.Name;
+                filedName = "OrganizationReferredTo";
+            }
+
+            if (field.Name == "SubactivitiesIds")
+            {
+                var activities = await _context.Activities.Where(e => ((List<Guid>)value).Contains(e.Id)).ToListAsync();
+                var activitiesTitles = activities.Select(e => e.Title);
+                value = string.Join(", ", activitiesTitles);
+                var oldActivities = await _context.Activities.Where(e => ((List<Guid>)oldValue).Contains(e.Id)).ToListAsync();
+                var oldActivitiesTitles = oldActivities.Select(e => e.Title);
+                oldValue = string.Join(", ", oldActivitiesTitles);
+                filedName = "Subactivities";
+            }
+
+            updatedFieldsText += $"{filedName}:  {oldValue} => {value}<br>";
+        }
+
+        return updatedFieldsText;
     }
 
     private async Task resolveDependencies(ReferralResponse referral)
