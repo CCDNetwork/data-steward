@@ -135,10 +135,10 @@ export const SentReferralPage = () => {
     return currentFormSelectedOrganization.activities.filter((i) => i.serviceType === currentFormServiceCategory);
   }, [currentFormServiceCategory, currentFormSelectedOrganization]);
 
-  const onSubmit = async ({ values, isDraft = false }: { values: SentReferralFormData; isDraft?: boolean }) => {
+  const onSubmit = async ({ values, isDraft }: { values: SentReferralFormData; isDraft?: boolean }) => {
     if (isCreate) {
       try {
-        await createReferral.mutateAsync({ ...values, isDraft });
+        await createReferral.mutateAsync({ ...values, isDraft: !!isDraft });
         toast({
           title: 'Success!',
           variant: 'default',
@@ -165,7 +165,7 @@ export const SentReferralPage = () => {
 
     try {
       await patchReferral.mutateAsync({
-        data: { ...changedFields, isDraft: isDraft ? isDraft : undefined },
+        data: { ...changedFields, isDraft },
         referralId: sentReferralId,
       });
       toast({
@@ -240,7 +240,7 @@ export const SentReferralPage = () => {
         <div className="flex sm:flex-row flex-col gap-2 sm:gap-4">
           <Button
             type="submit"
-            onClick={handleSubmit((values) => onSubmit({ values }))}
+            onClick={handleSubmit((values) => onSubmit({ values, isDraft: undefined }))}
             isLoading={patchReferral.isLoading}
             disabled={formState.isSubmitting || patchReferral.isLoading || !formState.isDirty}
           >
@@ -887,7 +887,7 @@ export const SentReferralPage = () => {
                         <Button
                           type="submit"
                           variant="default"
-                          onClick={handleSubmit((values) => onSubmit({ values }))}
+                          onClick={handleSubmit((values) => onSubmit({ values, isDraft: false }))}
                           disabled={createReferral.isLoading}
                         >
                           Send Referral
