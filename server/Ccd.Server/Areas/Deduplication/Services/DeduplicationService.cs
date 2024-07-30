@@ -93,7 +93,7 @@ public class DeduplicationService
                 FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
                 FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
                 Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
-                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
+                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateOfBirth, worksheet)).Value.ToString(),
                 AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
                 AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
                 AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
@@ -113,8 +113,8 @@ public class DeduplicationService
                 Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
 
-            worksheet.Cell(i, lastColumnIndex).Value =
-                deduplicationRecords.Any((e) => AreRecordsEqual(e, record, beneficiaryAttributesGroups)) ? "YES" : "NO";
+            // worksheet.Cell(i, lastColumnIndex).Value =
+            //     deduplicationRecords.Any((e) => AreRecordsEqual(e, record, beneficiaryAttributesGroups)) ? "YES" : "NO";
 
             deduplicationRecords.Add(record);
         }
@@ -163,7 +163,7 @@ public class DeduplicationService
                 FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
                 FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
                 Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
-                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
+                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateOfBirth, worksheet)).Value.ToString(),
                 AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
                 AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
                 AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
@@ -242,12 +242,12 @@ public class DeduplicationService
 
         for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
         {
-            var record = new DeduplicationRecord
+            var fileRecord = new DeduplicationRecord
             {
                 FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
                 FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
                 Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
-                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
+                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateOfBirth, worksheet)).Value.ToString(),
                 AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
                 AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
                 AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
@@ -267,15 +267,61 @@ public class DeduplicationService
                 Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
 
-            worksheet.Cell(i, lastColumnIndex).Value =
-                deduplicationRecords.Any((e) =>
-                {
-                    var equal = AreRecordsEqual(e, record, beneficiaryAttributesGroups);
-                    if (equal) duplicates += 1;
-                    return equal;
-                }) ? "YES" : "NO";
+            deduplicationRecords.Add(fileRecord);
+        }
 
-            deduplicationRecords.Add(record);
+
+        for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
+        {
+            var fileRecord = new DeduplicationRecord
+            {
+                FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
+                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
+                Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
+                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateOfBirth, worksheet)).Value.ToString(),
+                AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
+                AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
+                AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
+                AdminLevel4 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel4, worksheet)).Value.ToString(),
+                HhId = worksheet.Cell(i, GetHeaderIndex(template.HHID, worksheet)).Value.ToString(),
+                MobilePhoneId = worksheet.Cell(i, GetHeaderIndex(template.MobilePhoneID, worksheet)).Value.ToString(),
+                GovIdType = worksheet.Cell(i, GetHeaderIndex(template.GovIDType, worksheet)).Value.ToString(),
+                GovIdNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIDNumber, worksheet)).Value.ToString(),
+                OtherIdType = worksheet.Cell(i, GetHeaderIndex(template.OtherIDType, worksheet)).Value.ToString(),
+                OtherIdNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIDNumber, worksheet)).Value.ToString(),
+                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
+                Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
+                Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
+                CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
+                StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
+                EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
+                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
+            };
+
+            var hasDuplicates = false;
+            worksheet.Cell(i, lastColumnIndex).Value = "NO";
+            for (var k = 2; k <= worksheet.LastRowUsed().RowNumber(); k++)
+            {
+                // Skip the same record
+                if (i == k) continue;
+
+                var deduplicationRecord = deduplicationRecords[k - 2];
+                var (equal, matchedFields) = AreRecordsEqual(deduplicationRecord, fileRecord, beneficiaryAttributesGroups);
+                if (equal)
+                {
+                    hasDuplicates = true;
+                    worksheet.Cell(i, lastColumnIndex).Value = "YES";
+
+                    foreach (var field in matchedFields)
+                    {
+                        var fieldName = template.GetType().GetProperty(field)?.GetValue(template).ToString();
+                        var columnIndex = GetHeaderIndex(fieldName, worksheet);
+                        worksheet.Cell(i, columnIndex).Style.Fill.BackgroundColor = XLColor.Red;
+                    }
+                };
+            }
+
+            if (hasDuplicates) duplicates++;
         }
 
         await _context.SaveChangesAsync();
@@ -317,7 +363,7 @@ public class DeduplicationService
                 FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
                 FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
                 Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
-                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateofBirth, worksheet)).Value.ToString(),
+                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateOfBirth, worksheet)).Value.ToString(),
                 AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
                 AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
                 AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
@@ -508,7 +554,7 @@ public class DeduplicationService
         return 16384;
     }
 
-    private static bool AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
+    private static (bool, List<string>) AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
     {
         foreach (var group in beneficiaryAttributesGroups)
         {
@@ -533,10 +579,10 @@ public class DeduplicationService
                 matchedFields.Add(attributeName);
             }
 
-            return matchedFields.Count >= group.BeneficiaryAttributes.Count;
+            return (matchedFields.Count >= group.BeneficiaryAttributes.Count, matchedFields);
         }
 
-        return false;
+        return (false, []);
     }
 
     private static (bool, List<string>) AreRecordsEqual(Beneficary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)

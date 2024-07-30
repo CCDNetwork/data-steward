@@ -12,7 +12,7 @@ public class Template : UserChangeTracked
     public string FirstName { get; set; }
     public string FamilyName { get; set; }
     public string Gender { get; set; }
-    public string DateofBirth { get; set; }
+    public string DateOfBirth { get; set; }
     public string AdminLevel1 { get; set; }
     public string AdminLevel2 { get; set; }
     public string AdminLevel3 { get; set; }
