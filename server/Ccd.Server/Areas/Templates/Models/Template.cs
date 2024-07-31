@@ -19,10 +19,10 @@ public class Template : UserChangeTracked
     public string AdminLevel4 { get; set; }
     public string HHID { get; set; }
     public string MobilePhoneID { get; set; }
-    public string GovIDType { get; set; }
-    public string GovIDNumber { get; set; }
-    public string OtherIDType { get; set; }
-    public string OtherIDNumber { get; set; }
+    public string GovIdType { get; set; }
+    public string GovIdNumber { get; set; }
+    public string OtherIdType { get; set; }
+    public string OtherIdNumber { get; set; }
     public string AssistanceDetails { get; set; }
     public string Activity { get; set; }
     public string Currency { get; set; }
