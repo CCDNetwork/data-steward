@@ -235,7 +235,11 @@ public class DeduplicationService
 
         worksheet.Cell(1, lastColumnIndex).Style.Fill.BackgroundColor = XLColor.Gainsboro;
         worksheet.Cell(1, lastColumnIndex).Style.Font.Bold = true;
-        worksheet.Cell(1, lastColumnIndex).Value = "duplicate";
+        worksheet.Cell(1, lastColumnIndex).Value = "Duplicate";
+
+        worksheet.Cell(1, lastColumnIndex + 1).Style.Fill.BackgroundColor = XLColor.Gainsboro;
+        worksheet.Cell(1, lastColumnIndex + 1).Style.Font.Bold = true;
+        worksheet.Cell(1, lastColumnIndex + 1).Value = "Duplicate of";
 
         var deduplicationRecords = new List<DeduplicationRecord>();
         var duplicates = 0;
@@ -300,6 +304,7 @@ public class DeduplicationService
 
             var hasDuplicates = false;
             worksheet.Cell(i, lastColumnIndex).Value = "NO";
+            var matchedRows = new List<int>();
             for (var k = 2; k <= worksheet.LastRowUsed().RowNumber(); k++)
             {
                 // Skip the same record
@@ -311,6 +316,7 @@ public class DeduplicationService
                 {
                     hasDuplicates = true;
                     worksheet.Cell(i, lastColumnIndex).Value = "YES";
+                    matchedRows.Add(k);
 
                     foreach (var field in matchedFields)
                     {
@@ -321,7 +327,11 @@ public class DeduplicationService
                 };
             }
 
-            if (hasDuplicates) duplicates++;
+            if (hasDuplicates)
+            {
+                duplicates++;
+                worksheet.Cell(i, lastColumnIndex + 1).Value = string.Join(", ", matchedRows);
+            }
         }
 
         await _context.SaveChangesAsync();
