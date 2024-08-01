@@ -88,17 +88,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      {onSearchChange && (
-        <div className="pb-4 flex flex-wrap gap-4">
+      <div className="pb-4 flex flex-wrap gap-4">
+        {onSearchChange && (
           <Input
             type="search"
             placeholder="Search..."
             className="sm:max-w-[250px] w-full"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange?.(e.target.value)}
           />
-          {tableFilterNodes}
-        </div>
-      )}
+        )}
+        {tableFilterNodes}
+      </div>
 
       <div className="border rounded-md">
         <Table>

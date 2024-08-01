@@ -13,10 +13,14 @@ import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
 import { ReferralStatus } from '@/services/referrals/const';
 import { useOrganizations } from '@/services/organizations/api';
 import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
+import { OrgActivityFilterMap } from '@/services/organizations';
+import { FilterBySelf } from '@/components/FilterBySelf';
+import { useAuth } from '@/providers/GlobalProvider';
 
 import { columns } from './columns';
 
 export const ReceivedReferralsPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const pagination = usePagination();
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
@@ -77,6 +81,13 @@ export const ReceivedReferralsPage = () => {
         onRowClick={onReceivedReferralTableRowClick}
         tableFilterNodes={
           <div className="flex flex-wrap gap-4">
+            <FilterBySelf
+              currentFilters={receivedReferralsFilters}
+              filterName="focalPointId"
+              setCurrentFilters={setReceivedReferralsFilters}
+              label="Assigned to me"
+              value={user.id ?? ''}
+            />
             <FilterDropdown
               currentFilters={receivedReferralsFilters}
               filterName="status[in]"
@@ -93,6 +104,13 @@ export const ReceivedReferralsPage = () => {
               setCurrentFilters={setReceivedReferralsFilters}
               title="Filter by Sender"
               options={isFetched ? organizations!.data.map((org) => ({ label: org.name, value: org.id })) : []}
+            />
+            <FilterDropdown
+              currentFilters={receivedReferralsFilters}
+              filterName="serviceCategory[in]"
+              setCurrentFilters={setReceivedReferralsFilters}
+              title="Filter by Activity"
+              options={Object.entries(OrgActivityFilterMap).map(([label, value]) => ({ label, value }))}
             />
             <DateRangePickerFilter setCurrentFilters={setReceivedReferralsFilters} placeholder="Filter by Date" />
           </div>

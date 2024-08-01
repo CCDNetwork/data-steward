@@ -16,11 +16,15 @@ import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
 import { useOrganizations } from '@/services/organizations/api';
 import { ReferralStatus } from '@/services/referrals/const';
 import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
+import { OrgActivityFilterMap } from '@/services/organizations';
+import { FilterBySelf } from '@/components/FilterBySelf';
+import { useAuth } from '@/providers/GlobalProvider';
 
 import { columns } from './columns';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
 
 export const SentReferralsPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const pagination = usePagination();
   const { setViewOnlyEnabled } = useSentReferralsProvider();
@@ -129,6 +133,13 @@ export const SentReferralsPage = () => {
         hiddenColumns={hiddenColumns}
         tableFilterNodes={
           <div className="flex flex-wrap gap-4">
+            <FilterBySelf
+              currentFilters={sentReferralsFilters}
+              filterName="focalPointId"
+              setCurrentFilters={setSentReferralsFilters}
+              label="Sent by me"
+              value={user.id ?? ''}
+            />
             <FilterDropdown
               currentFilters={sentReferralsFilters}
               filterName="status[in]"
@@ -147,6 +158,13 @@ export const SentReferralsPage = () => {
               options={
                 isOrganizationsFetched ? organizations!.data.map((org) => ({ label: org.name, value: org.id })) : []
               }
+            />
+            <FilterDropdown
+              currentFilters={sentReferralsFilters}
+              filterName="serviceCategory[in]"
+              setCurrentFilters={setSentReferralsFilters}
+              title="Filter by Activity"
+              options={Object.entries(OrgActivityFilterMap).map(([label, value]) => ({ label, value }))}
             />
             <DateRangePickerFilter setCurrentFilters={setSentReferralsFilters} placeholder="Filter by Date" />
           </div>
