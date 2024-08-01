@@ -163,7 +163,7 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
                 control={control}
                 name="useFuzzyMatch"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm space-y-0">
                     <div className="space-y-0.5">
                       <FormLabel>Enable Fuzzy Matching?</FormLabel>
                     </div>
@@ -177,7 +177,7 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
                 control={control}
                 name="isActive"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm space-y-0">
                     <div className="space-y-0.5">
                       <FormLabel>Activate this rule?</FormLabel>
                     </div>

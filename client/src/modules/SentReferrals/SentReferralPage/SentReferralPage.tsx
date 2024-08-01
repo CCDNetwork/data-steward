@@ -40,6 +40,7 @@ import { MpcaSpecificForm } from './components/MpcaSpecificForm';
 import { SentReferralPageViewOnly } from './components/SentReferralPageViewOnly';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
 import { StatusReasonModal } from '@/components/StatusReasonModal';
+import { OrgActivity } from '@/services/organizations';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
@@ -375,11 +376,6 @@ export const SentReferralPage = () => {
                                   onValueChange={(value) => {
                                     setValue('subactivities', []);
                                     setValue('subactivitiesIds', []);
-                                    setValue('displacementStatus', '');
-                                    setValue('householdSize', '');
-                                    setValue('householdMonthlyIncome', '');
-                                    setValue('householdsVulnerabilityCriteria', []);
-                                    setValue('noTaxId', false);
                                     field.onChange(value);
                                   }}
                                   value={field.value}
@@ -582,12 +578,11 @@ export const SentReferralPage = () => {
                         <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                           <FormControl>
                             <Checkbox
-                              disabled={viewOnlyEnabled}
+                              disabled={viewOnlyEnabled || currentFormServiceCategory === OrgActivity.Mpca}
                               checked={field.value}
                               onCheckedChange={(value) => {
                                 if (value) {
                                   setValue('taxId', '');
-                                  setValue('serviceCategory', '');
                                 }
                                 field.onChange(value);
                               }}

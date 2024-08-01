@@ -131,7 +131,7 @@ export const AddUserModal = () => {
               />
               <div className="flex flex-col gap-3">
                 <div className="text-sm font-medium leading-none">Permissions</div>
-                <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <div className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                   <Checkbox
                     className="shadow-none"
                     checked={currentFormPermissions?.includes('deduplication')}
@@ -141,7 +141,7 @@ export const AddUserModal = () => {
                     <FormLabel>Deduplicate Data</FormLabel>
                   </div>
                 </div>
-                <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <div className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                   <Checkbox
                     className="shadow-none"
                     checked={currentFormPermissions?.includes('referral')}

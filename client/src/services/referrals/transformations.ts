@@ -1,4 +1,4 @@
-import { OrganizationActivity, resToActivities, resToOrganization } from '@/services/organizations';
+import { OrgActivity, OrganizationActivity, resToActivities, resToOrganization } from '@/services/organizations';
 
 import { Referral } from './types';
 import { resToUser } from '../users';
@@ -63,10 +63,10 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
     isUrgent: data.isUrgent,
     organizationReferredToId: data.organizationReferredTo?.id,
     serviceCategory: data.serviceCategory,
-    displacementStatus: data.displacementStatus,
-    householdSize: data.householdSize,
-    householdMonthlyIncome: data.householdMonthlyIncome,
-    householdsVulnerabilityCriteria: data.householdsVulnerabilityCriteria,
+    // displacementStatus: data.displacementStatus,
+    // householdSize: data.householdSize,
+    // householdMonthlyIncome: data.householdMonthlyIncome,
+    // householdsVulnerabilityCriteria: data.householdsVulnerabilityCriteria,
     firstName: data.firstName,
     patronymicName: data.patronymicName,
     subactivitiesIds:
@@ -107,6 +107,13 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
     status: data.status,
   };
 
+  if (data.serviceCategory && data.serviceCategory === OrgActivity.Mpca) {
+    req.displacementStatus = data.displacementStatus;
+    req.householdSize = data.householdSize;
+    req.householdMonthlyIncome = data.householdMonthlyIncome;
+    req.householdsVulnerabilityCriteria = data.householdsVulnerabilityCriteria;
+  }
+
   return req;
 };
 
@@ -114,10 +121,6 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
   const req: any = {
     isUrgent: data.isUrgent,
     serviceCategory: data.serviceCategory,
-    displacementStatus: data.displacementStatus,
-    householdSize: data.householdSize,
-    householdMonthlyIncome: data.householdMonthlyIncome,
-    householdsVulnerabilityCriteria: data.householdsVulnerabilityCriteria,
     firstName: data.firstName,
     patronymicName: data.patronymicName,
     surname: data.surname,
@@ -146,6 +149,13 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     status: data.status,
     isDraft: data.isDraft,
   };
+
+  if (data.serviceCategory && data.serviceCategory === OrgActivity.Mpca) {
+    req.displacementStatus = data.displacementStatus;
+    req.householdSize = data.householdSize;
+    req.householdMonthlyIncome = data.householdMonthlyIncome;
+    req.householdsVulnerabilityCriteria = data.householdsVulnerabilityCriteria;
+  }
 
   if (data.organizationReferredTo && data.organizationReferredTo.id) {
     req.organizationReferredToId = data.organizationReferredTo.id;

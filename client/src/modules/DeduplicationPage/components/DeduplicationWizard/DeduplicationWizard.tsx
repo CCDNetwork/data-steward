@@ -374,7 +374,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                 )}
                 {currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION && (
                   <AnimationWrapper key={WIZARD_STEP.ORGANIZATION_DEDUPLICATION}>
-                    {deduplicateFile.isLoading ? (
+                    {deduplicateSameOrganization.isLoading ? (
                       <div className="flex flex-col items-center justify-center gap-4 max-w-[400px] mx-auto">
                         <Loader2 className="w-16 h-16 animate-spin" />
                         <p className="text-center text-sm">
@@ -426,7 +426,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                 )}
                 {currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION && (
                   <AnimationWrapper key={WIZARD_STEP.REGISTRY_DEDUPLICATION}>
-                    {deduplicateFile.isLoading ? (
+                    {deduplicateSystemOrganizations.isLoading ? (
                       <div className="flex flex-col items-center justify-center gap-4 max-w-[400px] mx-auto">
                         <Loader2 className="w-16 h-16 animate-spin" />
                         <p className="text-center text-sm">

@@ -121,7 +121,7 @@ export const AddOrganizationModal = () => {
                       control={control}
                       name="isMpcaActive"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm space-y-0">
                           <div className="space-y-0.5">
                             <FormLabel>MPCA</FormLabel>
                           </div>
@@ -146,7 +146,7 @@ export const AddOrganizationModal = () => {
                       control={control}
                       name="isWashActive"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm space-y-0">
                           <div className="space-y-0.5">
                             <FormLabel>WASH</FormLabel>
                           </div>
@@ -171,7 +171,7 @@ export const AddOrganizationModal = () => {
                       control={control}
                       name="isShelterActive"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm space-y-0">
                           <div className="space-y-0.5">
                             <FormLabel>Shelter</FormLabel>
                           </div>
@@ -196,7 +196,7 @@ export const AddOrganizationModal = () => {
                       control={control}
                       name="isFoodAssistanceActive"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm space-y-0">
                           <div className="space-y-0.5">
                             <FormLabel>Food Assistance</FormLabel>
                           </div>
@@ -221,7 +221,7 @@ export const AddOrganizationModal = () => {
                       control={control}
                       name="isLivelihoodsActive"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm space-y-0">
                           <div className="space-y-0.5">
                             <FormLabel>Livelihoods</FormLabel>
                           </div>
@@ -246,7 +246,7 @@ export const AddOrganizationModal = () => {
                       control={control}
                       name="isProtectionActive"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm space-y-0">
                           <div className="space-y-0.5">
                             <FormLabel>Protection</FormLabel>
                           </div>

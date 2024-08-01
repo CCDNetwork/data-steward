@@ -13,11 +13,14 @@ import {
   UsersIcon,
 } from 'lucide-react';
 
+export enum PAGE_TYPE {
+  Create = 'new',
+}
+
 export enum APP_ROUTE {
   // PRIVATE
   Users = '/users',
   MyProfile = '/my-profile',
-  SignIn = '/sign-in',
   BeneficiaryList = '/beneficiary-list',
   Deduplication = '/deduplication',
   SentReferrals = '/sent-referrals',
@@ -29,12 +32,9 @@ export enum APP_ROUTE {
   Rules = '/rules',
   Templates = '/templates',
   // PUBLIC
+  SignIn = '/sign-in',
   PermissionDenied = '/permission-denied',
   ReferralData = '/referral-data',
-}
-
-export enum PAGE_TYPE {
-  Create = 'new',
 }
 
 export const NAVIGATION_ITEMS: NavigationItem[] = [
