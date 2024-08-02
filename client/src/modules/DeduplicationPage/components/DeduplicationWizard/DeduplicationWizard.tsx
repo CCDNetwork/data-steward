@@ -386,7 +386,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                         {!internalFileDedupResponse?.duplicates ? (
                           <div className="flex flex-col items-center justify-center gap-4 text-sm">
                             <CheckCircleIcon className="w-16 h-16 text-green-600" />
-                            <p className="pb-4">
+                            <p className="pb-4 text-center">
                               The platform has found no duplicates with your organisation’s existing records.
                             </p>
                             <p>

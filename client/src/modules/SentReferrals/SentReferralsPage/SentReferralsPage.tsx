@@ -135,7 +135,7 @@ export const SentReferralsPage = () => {
           <div className="flex flex-wrap gap-4">
             <FilterBySelf
               currentFilters={sentReferralsFilters}
-              filterName="focalPointId"
+              filterName="userCreatedId"
               setCurrentFilters={setSentReferralsFilters}
               label="Sent by me"
               value={user.id ?? ''}

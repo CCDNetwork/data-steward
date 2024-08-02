@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PlusSquareIcon } from 'lucide-react';
 
 import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
@@ -50,8 +51,9 @@ export const HandbookPage = () => {
       pageTitle="Handbook"
       pageSubtitle="Handbook entries"
       headerNode={
-        <Button type="button" onClick={() => navigate(`${APP_ROUTE.Handbook}/new`)}>
-          Create
+        <Button type="button" variant="outline" onClick={() => navigate(`${APP_ROUTE.Handbook}/new`)}>
+          <PlusSquareIcon className="w-5 h-5 mr-2" />
+          Create Handbook
         </Button>
       }
       breadcrumbs={[{ href: `${APP_ROUTE.Handbook}`, name: 'Handbook entries' }]}
