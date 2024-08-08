@@ -8,5 +8,4 @@ public class SystemOrganizationsDeduplicationRequest
 {
     [Required] public Guid FileId { get; set; }
     [Required] public Guid TemplateId { get; set; }
-    [Required] public List<Guid> KeepDuplicatesIds { get; set; }
 }

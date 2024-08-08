@@ -292,15 +292,9 @@ public class DeduplicationService
         };
     }
 
-    public async Task<SameOrganizationDeduplicationResponse> SystemOrganizationsDeduplication(Guid organizationId, Guid userId, SystemOrganizationsDeduplicationRequest model)
+    public async Task<SystemOrganizationDeduplicationResponse> SystemOrganizationsDeduplication(Guid organizationId, Guid userId, SystemOrganizationsDeduplicationRequest model)
     {
         var file = await _storageService.GetFileById(model.FileId);
-
-        var beneficaryMarkedForImport = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id) && e.FileId == file.Id).ToList();
-        beneficaryMarkedForImport.ForEach(e => e.MarkedForImport = true);
-        _context.UpdateRange(beneficaryMarkedForImport);
-        await _context.SaveChangesAsync();
-
 
         var beneficaries = _context.Beneficaries.Include(e => e.Organization).Where(e => e.OrganizationId != organizationId).ToList();
         var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization).Where(e => e.FileId == model.FileId).ToList();
@@ -331,23 +325,21 @@ public class DeduplicationService
 
         var fileResponse = await _storageService.GetFileApiById(file.Id);
         var duplicateBeneficiaries = _context.BeneficaryDeduplications.Where(e => e.FileId == model.FileId && e.IsSystemDuplicate).ToList();
+        var ruleFields = GetRuleFields(beneficiaryAttributesGroups);
 
-        return new SameOrganizationDeduplicationResponse
+        return new SystemOrganizationDeduplicationResponse
         {
             File = fileResponse,
             TemplateId = model.TemplateId,
-            // Duplicates = totalDuplicates,
-            // DuplicateBeneficiaries = duplicateBeneficiaries
+            Duplicates = totalDuplicates,
+            DuplicateBeneficiaries = duplicateBeneficiaries,
+            RuleFields = ruleFields
         };
     }
 
     public async Task<SameOrganizationDeduplicationResponse> FinishDeduplication(Guid organizationId, Guid userId, SystemOrganizationsDeduplicationRequest model)
     {
         var file = await _storageService.GetFileById(model.FileId);
-
-        var beneficaryMarkedForImport = _context.BeneficaryDeduplications.Where(e => model.KeepDuplicatesIds.Contains(e.Id) && e.FileId == file.Id).ToList();
-        beneficaryMarkedForImport.ForEach(e => e.MarkedForImport = true);
-        _context.UpdateRange(beneficaryMarkedForImport);
 
         var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
         var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization).Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
@@ -359,8 +351,8 @@ public class DeduplicationService
             var beneficary = _mapper.Map<Beneficary>(record);
             beneficary.ListId = list.Id;
             beneficary.OrganizationId = organizationId;
-            beneficary.IsPrimary = !record.IsSystemDuplicate && !record.IsOrganizationDuplicate;
-            beneficary.Status = (record.IsSystemDuplicate || record.IsOrganizationDuplicate) ? BeneficaryStatus.AcceptedDuplicate : BeneficaryStatus.NotDuplicate;
+            beneficary.IsPrimary = !record.IsSystemDuplicate;
+            beneficary.Status = null;
             newBeneficaries.Add(beneficary);
 
             // Sync duplicates to old beneficaries
@@ -507,5 +499,22 @@ public class DeduplicationService
                                     e.GetValue(template) != null &&
                                     !string.IsNullOrEmpty(e.GetValue(template).ToString()))
                         .ToList().Count;
+    }
+
+    private static List<string> GetRuleFields(List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
+    {
+        var ruleFields = new List<string>();
+
+        foreach (var group in beneficiaryAttributesGroups)
+        {
+            foreach (var attribute in group.BeneficiaryAttributes)
+            {
+                var fieldName = attribute.AttributeName;
+                fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
+                ruleFields.Add(fieldName);
+            }
+        }
+
+        return ruleFields;
     }
 }
