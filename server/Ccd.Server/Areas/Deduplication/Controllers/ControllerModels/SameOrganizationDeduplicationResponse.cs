@@ -8,6 +8,7 @@ public class SameOrganizationDeduplicationResponse
 {
     public FileShortResponse File { get; set; }
     public Guid TemplateId { get; set; }
-    public int Duplicates { get; set; }
-    public List<BeneficaryDeduplication> DuplicateBeneficiaries { get; set; }
+    public int TotalRecords { get; set; }
+    public int IdenticalRecords { get; set; }
+    public int PotentialDuplicateRecords { get; set; }
 }

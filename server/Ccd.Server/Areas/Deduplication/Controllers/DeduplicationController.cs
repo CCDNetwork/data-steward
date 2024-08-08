@@ -35,26 +35,6 @@ public class DeduplicationController : ControllerBaseExtended
         return NoContent();
     }
 
-    [HttpPost("deduplicate")]
-    [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult> Deduplicate([FromForm] DeduplicationListAddRequest model)
-    {
-        if (!DeduplicationType.IsValid(model.Type)) throw new BadRequestException("Invalid deduplication type.");
-        if (model.TemplateId == Guid.Empty) throw new BadRequestException("Template ID is required.");
-
-        byte[] fileBytes;
-        if (model.Type == DeduplicationType.Single)
-        {
-            fileBytes = await _deduplicationService.InternalDeduplication(this.OrganizationId, model);
-        }
-        else
-        {
-            fileBytes = await _deduplicationService.RegistryDeduplication(this.OrganizationId, this.UserId, model);
-        }
-
-        return File(fileBytes, "application/octet-stream", model.File.FileName);
-    }
-
     [HttpPost("dataset")]
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<DatasetDeduplicationResponse>> DatasetDeduplicate([FromForm] DatasetDeduplicationRequest model)
