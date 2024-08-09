@@ -350,6 +350,12 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                       </span>
                                       , to see if there are “organisational duplicates“.
                                     </p>
+                                    <p className="text-xs text-muted-foreground max-w-[500px] pt-6">
+                                      <strong>Note: </strong>
+                                      Organisational duplicates are beneficiary data uploaded by your organisation that
+                                      matches data in your file. We check for that before adding your data to the
+                                      registry.
+                                    </p>
                                   </div>
                                 ) : (
                                   <div className="flex flex-col items-center justify-center gap-2">
@@ -444,12 +450,6 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                   <p>
                                     Next, we will add your data to the registry and check for potential duplicates with
                                     other organisations’ records.
-                                  </p>
-                                  <p className="text-xs text-muted-foreground max-w-[500px] pt-6">
-                                    <strong>Note: </strong>
-                                    Organisational duplicates are beneficiary data uploaded by your organisation that
-                                    matches data in your file. We check for that before adding your data to the
-                                    registry.
                                   </p>
                                 </div>
                               </div>
