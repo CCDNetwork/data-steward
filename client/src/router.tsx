@@ -100,6 +100,16 @@ export const router = createBrowserRouter(
 
         {/* OTHER */}
 
+        <Route
+          path={APP_ROUTE.Dashboard}
+          element={
+            <iframe
+              src="http://ccd-meta.initdevelopment.com/public/dashboard/be49c8cb-7a6b-4503-b888-3cf63e51c73b"
+              width="800"
+              height="600"
+            />
+          }
+        />
         <Route path={APP_ROUTE.UserHandbookList} element={<UserHandbookListPage />} />
         <Route path={APP_ROUTE.MyProfile} element={<DynamicRoute component={<MyProfilePage />} />} />
       </Route>

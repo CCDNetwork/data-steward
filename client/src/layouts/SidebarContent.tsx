@@ -1,4 +1,4 @@
-import { BookOpenTextIcon } from 'lucide-react';
+import { BookOpenTextIcon, LayoutDashboardIcon } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import { MyProfileItemWithDropdown } from '@/components/MyProfileItemWithDropdown';
@@ -46,6 +46,25 @@ export const SidebarContent = ({
           </NavLink>
         </div>
       )}
+      <div className={cn('-mx-2', { 'mt-3': !showHandbookRoute })}>
+        <NavLink
+          to={APP_ROUTE.Dashboard}
+          onClick={closeSidebar}
+          className={cn(
+            'group flex border-l-[3px] border-transparent gap-x-3 w-full p-2 text-sm leading-6 font-semibold transition-colors duration-150 ease-linear',
+            {
+              'border-primary bg-gradient-to-r from-muted-foreground/10 to-transparent dark:from-muted-foreground/20 animate-grow-right':
+                pathname.includes(APP_ROUTE.Dashboard),
+            },
+            {
+              'hover:border-primary/30': !pathname.includes(APP_ROUTE.Dashboard),
+            },
+          )}
+        >
+          <LayoutDashboardIcon className="h-6 w-6 shrink-0" />
+          Dashboard
+        </NavLink>
+      </div>
       <div className="-mx-2 mt-3">
         <Separator />
       </div>

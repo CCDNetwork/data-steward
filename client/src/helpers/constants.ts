@@ -31,6 +31,7 @@ export enum APP_ROUTE {
   UserHandbookList = '/handbook-list',
   Rules = '/rules',
   Templates = '/templates',
+  Dashboard = '/dashboard',
   // PUBLIC
   SignIn = '/sign-in',
   PermissionDenied = '/permission-denied',
