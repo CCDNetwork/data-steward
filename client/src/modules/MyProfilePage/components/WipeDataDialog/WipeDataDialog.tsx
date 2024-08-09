@@ -13,17 +13,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useDeduplicationMutation } from '@/services/deduplication';
+import { deleteDeduplicationData } from '@/services/deduplication';
 
 export const WipeDataDialog = () => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
-
-  const { wipeDeduplicationData } = useDeduplicationMutation();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onConfirmWipe = async () => {
+    setIsLoading(true);
     try {
-      await wipeDeduplicationData.mutateAsync();
+      await deleteDeduplicationData();
       toast({
         title: 'Success!',
         variant: 'default',
@@ -38,6 +38,7 @@ export const WipeDataDialog = () => {
       });
     }
     setOpen(false);
+    setIsLoading(false);
   };
 
   const onOpenChange = () => {
@@ -56,12 +57,7 @@ export const WipeDataDialog = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button
-            type="button"
-            onClick={onConfirmWipe}
-            isLoading={wipeDeduplicationData.isLoading}
-            disabled={wipeDeduplicationData.isLoading}
-          >
+          <Button type="button" onClick={onConfirmWipe} isLoading={isLoading} disabled={isLoading}>
             Confirm
           </Button>
         </AlertDialogFooter>

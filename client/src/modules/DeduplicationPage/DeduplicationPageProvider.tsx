@@ -1,16 +1,20 @@
-import { createContext, useMemo, ReactNode, useContext } from 'react';
+import { createContext, useMemo, ReactNode, useContext, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 interface DeduplicationContextInterface {
-  x: number;
+  deduplicationWizardError: any;
+  setDeduplicationWizardError: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const DeduplicationContext = createContext<DeduplicationContextInterface>(undefined!);
 
 export const DeduplicationProvider = ({ children = <Outlet /> }: Props) => {
-  const x = 0;
+  const [deduplicationWizardError, setDeduplicationWizardError] = useState<any>(undefined);
 
-  const value = useMemo(() => ({ x }), [x]);
+  const value = useMemo(
+    () => ({ deduplicationWizardError, setDeduplicationWizardError }),
+    [deduplicationWizardError, setDeduplicationWizardError],
+  );
 
   return <DeduplicationContext.Provider value={value}>{children}</DeduplicationContext.Provider>;
 };

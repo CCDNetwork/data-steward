@@ -1,6 +1,13 @@
 import { resToOrganization } from '@/services/organizations';
 
-import { DeduplicationDataset, DeduplicationListing, UserCreated } from './types';
+import {
+  DeduplicationDataset,
+  DeduplicationListing,
+  SameOrgDedupeResponse,
+  SystemOrgDedupeResponse,
+  UserCreated,
+} from './types';
+import { resToBeneficiary } from '../beneficiaryList/transformations';
 
 const resToUserCreated = (res: any): UserCreated => {
   return {
@@ -39,6 +46,21 @@ export const resToDatasetResponse = (res: any): DeduplicationDataset => {
     file: res.file ?? null,
     templateId: res.templateId ?? '',
     duplicates: res.duplicates ?? 0,
-    duplicateBeneficiaries: res.duplicateBeneficiaries ?? [],
+  };
+};
+
+export const resToSameOrgDedupResponse = (res: any): SameOrgDedupeResponse => {
+  return {
+    identicalRecords: res.identicalRecords ?? 0,
+    potentialDuplicateRecords: res.potentialDuplicateRecords ?? 0,
+    totalRecords: res.totalRecords ?? 0,
+  };
+};
+
+export const resToSystemDedupeResponse = (res: any): SystemOrgDedupeResponse => {
+  return {
+    duplicates: res.duplicates ?? 0,
+    duplicateBeneficiaries: res.duplicateBeneficiaries ? res.duplicateBeneficiaries.map(resToBeneficiary) : [],
+    ruleFields: res.ruleFields,
   };
 };

@@ -1,11 +1,19 @@
 import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
+import { useDeduplicationProvider } from '@/modules/DeduplicationPage';
 import { api } from '@/services';
 import {
   dataToDatasetRequest,
   resToDatasetResponse,
   resToDeduplicationListing,
+  resToSameOrgDedupResponse,
+  resToSystemDedupeResponse,
 } from '@/services/deduplication/transformations';
-import { DeduplicationDataset, DeduplicationListing } from '@/services/deduplication/types';
+import {
+  DeduplicationDataset,
+  DeduplicationListing,
+  SameOrgDedupeResponse,
+  SystemOrgDedupeResponse,
+} from '@/services/deduplication/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 enum QueryKeys {
@@ -24,7 +32,7 @@ export const fetchDeduplicationListings = async (
   };
 };
 
-const deleteDeduplicationData = async (): Promise<object> => {
+export const deleteDeduplicationData = async (): Promise<object> => {
   const resp = await api.delete('/deduplication');
   return resp.data;
 };
@@ -40,27 +48,22 @@ const postDeduplicationDataset = async (data: { file: File; templateId: string }
 const postDeduplicationSameOrganization = async (data: {
   fileId: string;
   templateId: string;
-}): Promise<DeduplicationDataset> => {
+}): Promise<SameOrgDedupeResponse> => {
   const resp = await api.post('/deduplication/same-organization', data);
 
-  return resToDatasetResponse(resp.data);
+  return resToSameOrgDedupResponse(resp.data);
 };
 
 const postDeduplicationSystemOrganizations = async (data: {
   fileId: string;
   templateId: string;
-  keepDuplicatesIds: string[];
-}): Promise<DeduplicationDataset> => {
+}): Promise<SystemOrgDedupeResponse> => {
   const resp = await api.post('/deduplication/system-organizations', data);
 
-  return resToDatasetResponse(resp.data);
+  return resToSystemDedupeResponse(resp.data);
 };
 
-const postDeduplicationFinish = async (data: {
-  fileId: string;
-  templateId: string;
-  keepDuplicatesIds: string[];
-}): Promise<DeduplicationDataset> => {
+const postDeduplicationFinish = async (data: { fileId: string; templateId: string }): Promise<DeduplicationDataset> => {
   const resp = await api.post('/deduplication/finish', data);
 
   return resToDatasetResponse(resp.data);
@@ -75,13 +78,21 @@ export const useDeduplicationListings = ({ currentPage, pageSize, sortBy, sortDi
 
 export const useDeduplicationMutation = () => {
   const queryClient = useQueryClient();
+  const { setDeduplicationWizardError } = useDeduplicationProvider();
+
   return {
-    wipeDeduplicationData: useMutation(deleteDeduplicationData),
-    deduplicateFile: useMutation(postDeduplicationDataset),
-    deduplicateSameOrganization: useMutation(postDeduplicationSameOrganization),
-    deduplicateSystemOrganizations: useMutation(postDeduplicationSystemOrganizations),
+    deduplicateFile: useMutation(postDeduplicationDataset, {
+      onError: (error) => setDeduplicationWizardError(error),
+    }),
+    deduplicateSameOrganization: useMutation(postDeduplicationSameOrganization, {
+      onError: (error) => setDeduplicationWizardError(error),
+    }),
+    deduplicateSystemOrganizations: useMutation(postDeduplicationSystemOrganizations, {
+      onError: (error) => setDeduplicationWizardError(error),
+    }),
     deduplicateFinish: useMutation(postDeduplicationFinish, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.DeduplicationListings]),
+      onError: (error) => setDeduplicationWizardError(error),
     }),
   };
 };

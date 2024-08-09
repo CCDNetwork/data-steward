@@ -19,7 +19,7 @@ export const SidebarContent = ({
   const { pathname } = useLocation();
 
   return (
-    <div className="flex h-full grow flex-col overflow-hidden bg-primary/5 border-r border-border px-6">
+    <div className="flex dark:bg-muted/50 h-full grow flex-col overflow-hidden bg-primary/5 border-r border-border px-6">
       <div className="flex mt-4 -ml-1 shrink-0 items-center">
         <NavLink to="/" onClick={closeSidebar} className="flex-shrink-0">
           <img className="h-12 object-contain grayscale dark:brightness-[20]" src="/ccd_logo.png" alt="CCD Logo" />

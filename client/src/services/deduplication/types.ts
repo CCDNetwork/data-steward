@@ -1,4 +1,5 @@
 import { Organization } from '@/services/organizations';
+import { Beneficiary } from '../beneficiaryList';
 
 export interface UserCreated {
   id: string;
@@ -29,5 +30,16 @@ export interface DeduplicationDataset {
   };
   templateId: string;
   duplicates: number;
-  duplicateBeneficiaries: any[];
+}
+
+export interface SameOrgDedupeResponse {
+  totalRecords: number;
+  identicalRecords: number;
+  potentialDuplicateRecords: number;
+}
+
+export interface SystemOrgDedupeResponse {
+  duplicates: number;
+  duplicateBeneficiaries: Beneficiary[];
+  ruleFields: string[];
 }

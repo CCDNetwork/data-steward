@@ -4,7 +4,7 @@ import { LocalStorage } from '@/helpers/localStorage';
 
 export const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
-  timeout: 100000,
+  timeout: 100000, // 100seconds,
 });
 
 api.defaults.headers.common.Authorization = `Bearer ${LocalStorage.getToken()}`;
