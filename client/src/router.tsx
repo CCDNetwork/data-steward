@@ -105,8 +105,8 @@ export const router = createBrowserRouter(
           element={
             <iframe
               src="https://ccd-meta.initdevelopment.com/public/dashboard/be49c8cb-7a6b-4503-b888-3cf63e51c73b"
-              width="800"
-              height="600"
+              width="100%"
+              height="100%"
             />
           }
         />
