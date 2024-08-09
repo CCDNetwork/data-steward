@@ -1,27 +1,133 @@
-import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+
 import { PageContainer } from '@/components/PageContainer';
 import { APP_ROUTE } from '@/helpers/constants';
-import { useBeneficiary } from '@/services/beneficiaryList';
+import { Beneficiary, useBeneficiariesMutation, useBeneficiary } from '@/services/beneficiaryList';
 import { useIdFromParams } from '@/helpers/common';
 import { BeneficiaryStatus } from '@/components/BeneficiaryStatus';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { ConfirmationDialog } from '@/components/ConfirmationDialog';
+import { toast } from '@/components/ui/use-toast';
+
 import { beneficiaryDataToSingleBeneficiary } from '../helpers';
 import { DuplicateCard } from './DuplicateCard';
 
 export const SingleBeneficiaryPage = () => {
+  const navigate = useNavigate();
   const { id: beneficiaryId } = useIdFromParams();
+
+  const [beneficiaryToDelete, setBeneficiaryToDelete] = useState<Beneficiary | null>(null);
+
   const { data: beneficiaryData, isLoading } = useBeneficiary({ id: beneficiaryId });
+  const { changeBeneficiaryStatus, removeBeneficiary } = useBeneficiariesMutation();
 
   const beneficiary = useMemo(() => beneficiaryDataToSingleBeneficiary(beneficiaryData), [beneficiaryData]);
   const isPrimaryDuplicate = useMemo(() => beneficiary.duplicates.find((el) => el.isPrimary), [beneficiary]);
   const notPrimaryDuplicates = useMemo(() => beneficiary.duplicates.filter((el) => !el.isPrimary), [beneficiary]);
+
+  const handleStatusChange = async ({
+    beneficiaryId,
+    status,
+  }: {
+    beneficiaryId: string;
+    status: 'notDuplicate' | 'acceptedDuplicate' | 'rejectedDuplicate';
+  }) => {
+    try {
+      await changeBeneficiaryStatus.mutateAsync({ beneficiaryId, status });
+      toast({
+        title: 'Success!',
+        variant: 'default',
+        description: 'Status successfully changed!',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong!',
+        variant: 'destructive',
+        description: error.response?.data?.errorMessage || 'Failed to change status.',
+      });
+    }
+  };
+
+  const handleDeleteBeneficiary = async () => {
+    if (!beneficiaryToDelete) return;
+
+    try {
+      await removeBeneficiary.mutateAsync({ beneficiaryId: beneficiaryToDelete.id });
+      toast({
+        title: 'Success!',
+        variant: 'default',
+        description: 'Beneficiary successfully deleted!',
+      });
+      navigate(APP_ROUTE.BeneficiaryList);
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong!',
+        variant: 'destructive',
+        description: error.response?.data?.errorMessage || 'Failed to delete beneficiary.',
+      });
+    }
+    setBeneficiaryToDelete(null);
+  };
 
   return (
     <PageContainer
       pageTitle="Beneficiary Preview"
       pageSubtitle="Duplicate beneficiary details"
       isLoading={isLoading}
+      headerNode={
+        <div className="text-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <span className="sr-only">Open menu</span>
+                Actions
+                <ChevronDown className="ml-1 w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Change status</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={(e: React.SyntheticEvent) => {
+                  e.stopPropagation();
+                  handleStatusChange({ beneficiaryId, status: 'acceptedDuplicate' });
+                }}
+              >
+                Accepted Duplicate
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e: React.SyntheticEvent) => {
+                  e.stopPropagation();
+                  handleStatusChange({ beneficiaryId, status: 'rejectedDuplicate' });
+                }}
+              >
+                Rejected Duplicate
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-red-500 focus:text-white focus:bg-red-500"
+                onClick={(e: React.SyntheticEvent) => {
+                  e.stopPropagation();
+                  setBeneficiaryToDelete(beneficiaryData!);
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      }
       breadcrumbs={[
         { href: `${APP_ROUTE.BeneficiaryList}`, name: 'Beneficiary List' },
         { name: 'Beneficiary Preview' },
@@ -186,6 +292,15 @@ export const SingleBeneficiaryPage = () => {
           </CardContent>
         </Card>
       </div>
+      <ConfirmationDialog
+        open={!!beneficiaryToDelete}
+        title="Delete Beneficiary"
+        body={`Are you sure you want to delete the benficiary "${beneficiaryToDelete?.firstName} ${beneficiaryToDelete?.familyName}"?`}
+        onAction={handleDeleteBeneficiary}
+        confirmButtonLoading={removeBeneficiary.isLoading}
+        actionButtonVariant="destructive"
+        onCancel={() => setBeneficiaryToDelete(null)}
+      />
     </PageContainer>
   );
 };

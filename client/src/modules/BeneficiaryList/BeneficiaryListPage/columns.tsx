@@ -2,86 +2,10 @@ import { formatDate } from 'date-fns';
 
 import { TableColumn } from '@/components/DataTable/types';
 import { Beneficiary } from '@/services/beneficiaryList';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/helpers/utils';
 
-export const columns = (
-  handleStatusChange: ({
-    beneficiaryId,
-    status,
-  }: {
-    beneficiaryId: string;
-    status: 'notDuplicate' | 'acceptedDuplicate' | 'rejectedDuplicate';
-  }) => Promise<void>,
-  setBeneficiaryToDelete: React.Dispatch<React.SetStateAction<Beneficiary | null>>,
-): TableColumn<Beneficiary>[] => [
-  {
-    header: 'Actions',
-    id: 'actions',
-    cell: ({ row }) => {
-      const beneficiaryRowData = row.original;
-
-      return (
-        <div className="text-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Change status</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={(e: React.SyntheticEvent) => {
-                  e.stopPropagation();
-                  handleStatusChange({ beneficiaryId: beneficiaryRowData.id, status: 'notDuplicate' });
-                }}
-              >
-                Not Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e: React.SyntheticEvent) => {
-                  e.stopPropagation();
-                  handleStatusChange({ beneficiaryId: beneficiaryRowData.id, status: 'acceptedDuplicate' });
-                }}
-              >
-                Accepted Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e: React.SyntheticEvent) => {
-                  e.stopPropagation();
-                  handleStatusChange({ beneficiaryId: beneficiaryRowData.id, status: 'rejectedDuplicate' });
-                }}
-              >
-                Rejected Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-red-500 focus:text-white focus:bg-red-500"
-                onClick={(e: React.SyntheticEvent) => {
-                  e.stopPropagation();
-                  setBeneficiaryToDelete(beneficiaryRowData);
-                }}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
-  },
+export const columns: TableColumn<Beneficiary>[] = [
   {
     accessorKey: 'createdAt',
     id: 'createdAt',
