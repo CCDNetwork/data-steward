@@ -104,7 +104,7 @@ export const router = createBrowserRouter(
           path={APP_ROUTE.Dashboard}
           element={
             <iframe
-              src="http://ccd-meta.initdevelopment.com/public/dashboard/be49c8cb-7a6b-4503-b888-3cf63e51c73b"
+              src="https://ccd-meta.initdevelopment.com/public/dashboard/be49c8cb-7a6b-4503-b888-3cf63e51c73b"
               width="800"
               height="600"
             />
