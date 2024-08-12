@@ -13,24 +13,6 @@ export const columns = (
   onEditSentReferralClick: (referralRow: Referral) => Promise<void>,
 ): TableColumn<Referral>[] => [
   {
-    accessorKey: 'caseNumber',
-    id: 'caseNumber',
-    header: 'Case number',
-    cell: ({ getValue }) => {
-      return getValue() || '-';
-    },
-  },
-  {
-    accessorKey: 'organizationReferredTo',
-    id: 'organizationReferredTo',
-    header: 'Sent to',
-    cell: ({ row }) => {
-      const { organizationReferredTo } = row.original;
-
-      return <div>{organizationReferredTo?.name ?? '-'}</div>;
-    },
-  },
-  {
     accessorKey: 'status',
     id: 'status',
     header: 'Status',
@@ -49,6 +31,24 @@ export const columns = (
           {status === ReferralStatus.InEvaluation ? 'In Evaluation' : status}
         </Badge>
       );
+    },
+  },
+  {
+    accessorKey: 'caseNumber',
+    id: 'caseNumber',
+    header: 'Case number',
+    cell: ({ getValue }) => {
+      return getValue() || '-';
+    },
+  },
+  {
+    accessorKey: 'organizationReferredTo',
+    id: 'organizationReferredTo',
+    header: 'Sent to',
+    cell: ({ row }) => {
+      const { organizationReferredTo } = row.original;
+
+      return <div>{organizationReferredTo?.name ?? '-'}</div>;
     },
   },
   {

@@ -12,24 +12,6 @@ export const columns = (
   setReceivedReferralToDelete: React.Dispatch<React.SetStateAction<Referral | null>>,
 ): TableColumn<Referral>[] => [
   {
-    accessorKey: 'caseNumber',
-    id: 'caseNumber',
-    header: 'Case number',
-    cell: ({ getValue }) => {
-      return getValue() ?? '-';
-    },
-  },
-  {
-    accessorKey: 'organizationReferredTo',
-    id: 'organizationReferredTo',
-    header: 'Sender',
-    cell: ({ row }) => {
-      const { organizationCreated } = row.original;
-
-      return <div>{organizationCreated?.name ?? '-'}</div>;
-    },
-  },
-  {
     accessorKey: 'status',
     id: 'status',
     header: 'Status',
@@ -48,6 +30,24 @@ export const columns = (
           {status === ReferralStatus.InEvaluation ? 'In Evaluation' : status}
         </Badge>
       );
+    },
+  },
+  {
+    accessorKey: 'caseNumber',
+    id: 'caseNumber',
+    header: 'Case number',
+    cell: ({ getValue }) => {
+      return getValue() ?? '-';
+    },
+  },
+  {
+    accessorKey: 'organizationReferredTo',
+    id: 'organizationReferredTo',
+    header: 'Sender',
+    cell: ({ row }) => {
+      const { organizationCreated } = row.original;
+
+      return <div>{organizationCreated?.name ?? '-'}</div>;
     },
   },
   {
