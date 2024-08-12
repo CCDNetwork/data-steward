@@ -27,12 +27,10 @@ import {
 import { useAuth } from '@/providers/GlobalProvider';
 import { cn } from '@/helpers/utils';
 import { appendStringToFilename, createDownloadLink } from '@/helpers/common';
-import { DataTable } from '@/components/DataTable';
 
 import { DeduplicationUploadForm, DeduplicationUploadFormSchema } from './validation';
 import { AnimationWrapper, DeduplicationError, DeduplicationSteps, DeduplicationSuccess } from './components';
-import { BENEFICIARY_FIELDS, WIZARD_STEP } from './const';
-import { columns } from './columns';
+import { WIZARD_STEP } from './const';
 import { useDeduplicationProvider } from '../../DeduplicationPageProvider';
 
 interface Props {
@@ -435,7 +433,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                     <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
                                       {sameOrgDedupResponse?.identicalRecords}
                                     </span>{' '}
-                                    identicals records,{' '}
+                                    identical records,{' '}
                                     <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
                                       {sameOrgDedupResponse?.potentialDuplicateRecords}
                                     </span>{' '}
@@ -488,7 +486,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                     </p>
                                   </div>
                                 ) : (
-                                  <div className="flex flex-col items-center justify-center gap-2">
+                                  <div className="flex flex-col text-sm items-center justify-center gap-4">
                                     <AlertTriangle className="w-16 h-16 text-yellow-500" />
                                     <p className="text-sm">
                                       The platform has found{' '}
@@ -497,18 +495,10 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                       </span>{' '}
                                       potential duplicates between your upload and the registry.
                                     </p>
-                                    <div className="max-w-[500px] w-full">
-                                      <DataTable
-                                        data={systemOrgDedupResponse?.duplicateBeneficiaries ?? []}
-                                        isQueryLoading={false}
-                                        columns={columns}
-                                        hiddenColumns={Object.fromEntries(
-                                          BENEFICIARY_FIELDS.filter(
-                                            (i) => !systemOrgDedupResponse.ruleFields.includes(i),
-                                          ).map((item) => [item, false]),
-                                        )}
-                                      />
-                                    </div>
+                                    <p className="text-center">
+                                      {'You can view and manage these duplicates on the "Manage Duplicates" page.'}
+                                    </p>
+                                    <p className="text-muted-foreground">This concludes the upload wizard</p>
                                   </div>
                                 )}
                               </div>

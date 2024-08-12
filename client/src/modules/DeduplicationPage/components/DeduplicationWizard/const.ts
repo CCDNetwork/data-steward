@@ -5,27 +5,3 @@ export enum WIZARD_STEP {
   REGISTRY_DEDUPLICATION = 4,
   SUCCESSS = 5,
 }
-
-export const BENEFICIARY_FIELDS: string[] = [
-  'firstName',
-  'familyName',
-  'gender',
-  'dateOfBirth',
-  'hhId',
-  'mobilePhoneId',
-  'govIdType',
-  'govIdNumber',
-  'otherIdType',
-  'otherIdNumber',
-  'assistanceDetails',
-  'activity',
-  'currency',
-  'currencyAmount',
-  'startDate',
-  'endDate',
-  'frequency',
-  'adminLevel1',
-  'adminLevel2',
-  'adminLevel3',
-  'adminLevel4',
-];
