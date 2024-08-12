@@ -853,16 +853,20 @@ export const SentReferralPage = () => {
                     control={control}
                     name="consent"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <div className="space-y-0.5">
-                          <FormLabel>Consent</FormLabel>
-                          <FormDescription>Has the Beneficiary given you consent to share their data?</FormDescription>
-                        </div>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} disabled={viewOnlyEnabled} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                      <>
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                          <div className="space-y-0.5">
+                            <FormLabel requiredField>Consent</FormLabel>
+                            <FormDescription>
+                              Has the Beneficiary given you consent to share their data?
+                            </FormDescription>
+                          </div>
+                          <FormControl>
+                            <Switch checked={field.value} onCheckedChange={field.onChange} disabled={viewOnlyEnabled} />
+                          </FormControl>
+                        </FormItem>
+                        <FormMessage className="mt-1" />
+                      </>
                     )}
                   />
                 </CardContent>

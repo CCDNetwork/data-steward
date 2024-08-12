@@ -66,7 +66,7 @@ export const SentReferralSchema = z
     phone: z.string().optional(),
     contactPreference: z.string(),
     restrictions: z.string(),
-    consent: z.boolean(),
+    consent: z.literal<boolean>(true, { errorMap: () => ({ message: 'Consent is required' }) }),
     required: z.string().min(1, { message: 'Reason is required' }),
     needForService: z.string(),
     isSeparated: z.boolean(),
