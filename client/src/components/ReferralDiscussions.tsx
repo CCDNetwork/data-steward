@@ -5,7 +5,7 @@ import { useReferralDiscussion, useReferralDiscussionMutation } from '@/services
 import { cn } from '@/helpers/utils';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { BottomScrolledContainer } from './BottomScrolledContainer';
+
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { formatDate } from 'date-fns';
@@ -16,7 +16,6 @@ interface Props {
 }
 
 export const ReferralDiscussions = ({ referralId }: Props) => {
-  const [isMessageSent, setIsMessageSent] = useState<boolean>(false);
   const [discussionInputValue, setDiscussionInputValue] = useState<string>('');
   const discussionMessageInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -36,7 +35,6 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
       return;
     }
 
-    setIsMessageSent(true);
     try {
       await createReferralDiscussionEntry.mutateAsync({ referralId, text: discussionInputValue });
       fetchReferralDiscussions();
@@ -47,7 +45,7 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
         description: error.response?.data?.errorMessage || 'Error sending a message.',
       });
     }
-    setIsMessageSent(false);
+
     setDiscussionInputValue('');
   };
 
@@ -58,11 +56,28 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
           <CardTitle>Discussion</CardTitle>
           <CardDescription>Referral discussion history</CardDescription>
         </CardHeader>
-        <CardContent>
-          <BottomScrolledContainer
-            containerClassName="max-h-[500px] flex flex-col gap-4 no-scrollbar"
-            shouldTrigger={isMessageSent}
+        <div className="flex gap-2 sm:px-6 pb-6 pt-2">
+          <Input
+            value={discussionInputValue}
+            onChange={(e) => setDiscussionInputValue(e.target.value)}
+            placeholder="Send message..."
+            ref={discussionMessageInputRef}
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            className="text-primary hover:text-primary"
+            size="icon"
+            disabled={createReferralDiscussionEntry.isLoading}
+            isLoading={createReferralDiscussionEntry.isLoading}
+            loadingIconOnly
+            onClick={onSendClick}
           >
+            <LucideSendHorizontal className="w-5 h-5" />
+          </Button>
+        </div>
+        <CardContent>
+          <div className="max-h-[500px] flex flex-col gap-4 no-scrollbar overflow-y-auto">
             {referralDiscussionLoading ? (
               <div className="flex items-center justify-center h-[500px]">
                 <Loader2 className="w-10 h-10 animate-spin" />
@@ -95,28 +110,8 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
             ) : (
               <div className="text-center text-muted-foreground text-sm">Nothing here yet</div>
             )}
-          </BottomScrolledContainer>
+          </div>
         </CardContent>
-        <div className="flex gap-2 sm:px-6 pb-6 pt-2">
-          <Input
-            value={discussionInputValue}
-            onChange={(e) => setDiscussionInputValue(e.target.value)}
-            placeholder="Send message..."
-            ref={discussionMessageInputRef}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            className="text-primary hover:text-primary"
-            size="icon"
-            disabled={createReferralDiscussionEntry.isLoading}
-            isLoading={createReferralDiscussionEntry.isLoading}
-            loadingIconOnly
-            onClick={onSendClick}
-          >
-            <LucideSendHorizontal className="w-5 h-5" />
-          </Button>
-        </div>
       </Card>
     </div>
   );
