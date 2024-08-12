@@ -484,7 +484,8 @@ public class DeduplicationService
                 matchedFields.Add(attributeName);
             }
 
-            return (matchedFields.Count >= group.BeneficiaryAttributes.Count, matchedFields);
+            if (matchedFields.Count >= group.BeneficiaryAttributes.Count)
+                return (true, matchedFields);
         }
 
         return (false, []);
