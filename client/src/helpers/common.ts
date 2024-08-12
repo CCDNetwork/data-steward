@@ -73,3 +73,14 @@ export const appendStringToFilename = (filename: string, appendString: string) =
 
   return (newNamePart + extensionPart).split(' ').join('_');
 };
+
+export const isImageUrl = (url: string): boolean => {
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'tiff'];
+  const urlExtension = url.split('.').pop()?.toLowerCase();
+
+  if (urlExtension && imageExtensions.includes(urlExtension)) {
+    return true;
+  }
+
+  return false;
+};

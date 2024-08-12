@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUsersInfinite } from '@/services/users/api';
 import { PageContainer } from '@/components/PageContainer';
-import { createDownloadLink, useIdFromParams } from '@/helpers/common';
+import { createDownloadLink, isImageUrl, useIdFromParams } from '@/helpers/common';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { APP_ROUTE } from '@/helpers/constants';
@@ -534,10 +534,15 @@ export const ReceivedReferralPage = () => {
                             className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6"
                           >
                             <div className="flex w-0 flex-1 items-center">
-                              <PaperclipIcon
-                                className="h-5 w-5 flex-shrink-0 text-muted-foreground"
-                                aria-hidden="true"
-                              />
+                              {isImageUrl(file.url) ? (
+                                <img src={file.url} className="rounded-md h-10 w-10 object-cover" />
+                              ) : (
+                                <PaperclipIcon
+                                  className="h-6 w-10 flex-shrink-0 text-muted-foreground"
+                                  aria-hidden="true"
+                                />
+                              )}
+
                               <div className="ml-4 flex min-w-0 flex-1 gap-2">
                                 <span className="truncate font-medium">{file.name}</span>
                               </div>
