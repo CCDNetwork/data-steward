@@ -1,7 +1,8 @@
+import { requiredSafeHtmlString, safeHtmlString } from '@/helpers/common';
 import * as z from 'zod';
 
 export const OrganizationEditFormSchema = z.object({
-  name: z.string().min(1, { message: 'First name is required' }),
+  name: requiredSafeHtmlString('First name is required'),
   isMpcaActive: z.boolean(),
   isWashActive: z.boolean(),
   isShelterActive: z.boolean(),
@@ -11,7 +12,7 @@ export const OrganizationEditFormSchema = z.object({
   activities: z.array(
     z.object({
       id: z.string().optional(),
-      title: z.string(),
+      title: safeHtmlString,
       serviceType: z.string(),
     }),
   ),

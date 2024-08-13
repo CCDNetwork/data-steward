@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
+import * as z from 'zod';
 
 import { PAGE_TYPE } from '@/helpers/constants';
 
@@ -84,3 +85,23 @@ export const isImageUrl = (url: string): boolean => {
 
   return false;
 };
+
+export const escapeHtml = (text: string) => {
+  const map: Record<string, string> = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    "'": '&#39;',
+    '"': '&quot;',
+    '/': '&#47;',
+  };
+  return text.replace(/[<>&'"/]/g, (char: string): string => map[char]);
+};
+
+export const safeHtmlString = z.string().transform((str) => escapeHtml(str));
+
+export const requiredSafeHtmlString = (message: string) =>
+  z
+    .string()
+    .min(1, message)
+    .transform((str) => escapeHtml(str));

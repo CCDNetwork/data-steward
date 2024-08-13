@@ -1,9 +1,11 @@
 import * as z from 'zod';
 
+import { requiredSafeHtmlString } from '@/helpers/common';
+
 export const UserProfileFormSchema = z
   .object({
-    firstName: z.string().min(1, { message: 'First name is required' }),
-    lastName: z.string().min(1, { message: 'Last name is required' }),
+    firstName: requiredSafeHtmlString('First name is required'),
+    lastName: requiredSafeHtmlString('Last name is required'),
     email: z.string().email(),
     password: z
       .string()

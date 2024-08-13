@@ -1,5 +1,7 @@
 import * as z from 'zod';
 
+import { requiredSafeHtmlString } from '@/helpers/common';
+
 const OrganizationSchema = z.object(
   {
     id: z.string().min(1, { message: 'Organization Id is required' }),
@@ -10,8 +12,8 @@ const OrganizationSchema = z.object(
 
 export const AddUserModalFormSchema = z
   .object({
-    firstName: z.string().min(1, { message: 'First name is required' }),
-    lastName: z.string().min(1, { message: 'Last name is required' }),
+    firstName: requiredSafeHtmlString('First name is required'),
+    lastName: requiredSafeHtmlString('Last name is required'),
     email: z.string().email(),
     password: z.string().refine(
       (data) => {

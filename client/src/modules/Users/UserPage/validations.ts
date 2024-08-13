@@ -1,5 +1,7 @@
 import * as z from 'zod';
 
+import { requiredSafeHtmlString, safeHtmlString } from '@/helpers/common';
+
 const OrganizationSchema = z.object(
   {
     id: z.string().min(1, { message: 'Organization Id is required' }),
@@ -10,8 +12,8 @@ const OrganizationSchema = z.object(
 
 export const UserEditFormSchema = z
   .object({
-    firstName: z.string().min(1, { message: 'First name is required' }),
-    lastName: z.string().min(1, { message: 'Last name is required' }),
+    firstName: requiredSafeHtmlString('First name is required'),
+    lastName: requiredSafeHtmlString('Last name is required'),
     email: z.string().email(),
     password: z
       .string()
@@ -25,7 +27,7 @@ export const UserEditFormSchema = z
         },
         { message: 'Password must contain at least 8 characters' },
       ),
-    confirmPassword: z.string().optional(),
+    confirmPassword: safeHtmlString.optional(),
     organization: OrganizationSchema,
     permissions: z.array(z.string()).default([]),
   })
