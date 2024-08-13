@@ -205,6 +205,11 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
 
   const duplicateFileName = appendStringToFilename(internalFileDedupResponse?.file.name ?? '-', '-duplicates');
 
+  const sameOrgDedupUploadCount =
+    (sameOrgDedupResponse?.totalRecords ?? 0) -
+    (sameOrgDedupResponse?.potentialDuplicateRecords ?? 0) -
+    (sameOrgDedupResponse?.identicalRecords ?? 0);
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-4xl p-4" showCloseButton={false} disableBackdropClose>
@@ -432,16 +437,21 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                 </span>{' '}
                                 potential duplicates and will upload{' '}
                                 <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
-                                  {(sameOrgDedupResponse?.totalRecords ?? 0) -
-                                    (sameOrgDedupResponse?.potentialDuplicateRecords ?? 0) -
-                                    (sameOrgDedupResponse?.identicalRecords ?? 0)}
+                                  {sameOrgDedupUploadCount}
                                 </span>{' '}
                                 new beneficiaries.
                               </p>
-                              <p>
-                                Next, we will add your data to the registry and check for potential duplicates with
-                                other organisations’ records.
-                              </p>
+                              {sameOrgDedupUploadCount === 0 ? (
+                                <p className="font-medium">
+                                  Since there are no new beneficiaries to be added, the wizard will now exit. No new
+                                  beneficiaries will be added to the platform.
+                                </p>
+                              ) : (
+                                <p>
+                                  Next, we will add your data to the registry and check for potential duplicates with
+                                  other organisations’ records.
+                                </p>
+                              )}
                             </div>
                           </div>
                         )}
@@ -508,9 +518,16 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                 type="button"
                 isLoading={currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION && deduplicateFinish.isLoading}
                 disabled={isContinueButtonDisabled || isWizardProcessing}
-                onClick={handleContinueClick}
+                onClick={
+                  currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION && sameOrgDedupUploadCount === 0
+                    ? onOpenChange
+                    : handleContinueClick
+                }
               >
-                {currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION ? 'Finish' : 'Continue'}
+                {currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION ||
+                (currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION && sameOrgDedupUploadCount === 0)
+                  ? 'Finish'
+                  : 'Continue'}
               </Button>
             </div>
           </>
