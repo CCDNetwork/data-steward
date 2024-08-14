@@ -212,6 +212,18 @@ public class ReferralService
                 filedName = "Subactivities";
             }
 
+            if (field.Name == "FocalPointId")
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(e => e.Id == (Guid)value);
+                value = user.FirstName + " " + user.LastName;
+                if (oldValue != null)
+                {
+                    var oldUser = await _context.Users.FirstOrDefaultAsync(e => e.Id == (Guid)oldValue);
+                    oldValue = oldUser.FirstName + " " + oldUser.LastName;
+                }
+                filedName = "FocalPoint";
+            }
+
             updatedFieldsText += $"{filedName}:  {oldValue} => {value}<br>";
         }
 
