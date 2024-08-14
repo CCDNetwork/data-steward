@@ -51,9 +51,9 @@ export const MyProfileItemWithDropdown = ({ closeSidebar }: { closeSidebar?: () 
             </Avatar>
             <span className="sr-only">Your profile</span>
             <div className="flex flex-col truncate">
-              <span aria-hidden="true">{`${user.firstName} ${user.lastName}`}</span>
+              <span aria-hidden="true">{`${user.firstName ?? '-'} ${user.lastName ?? '-'}`}</span>
               <span aria-hidden="true" className="text-sm truncate opacity-80 font-normal">
-                {user.organizations[0].name || user.email}
+                {(user.organizations?.[0].name ?? '-') || (user.email ?? '-')}
               </span>
             </div>
           </div>

@@ -140,8 +140,10 @@ export function DataTable<TData, TValue>({
                   className={cn('truncate', { 'cursor-pointer': !!onRowClick })}
                   onClick={() => (onRowClick ? onRowClick(row.original) : null)}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  {row.getVisibleCells().map((cell, index) => (
+                    <TableCell className={columns[index]?.cellClassName} key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))

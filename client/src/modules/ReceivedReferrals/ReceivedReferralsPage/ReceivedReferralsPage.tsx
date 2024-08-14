@@ -18,6 +18,7 @@ import { FilterBySelf } from '@/components/FilterBySelf';
 import { useAuth } from '@/providers/GlobalProvider';
 
 import { columns } from './columns';
+import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
 
 export const ReceivedReferralsPage = () => {
   const { user } = useAuth();
@@ -81,6 +82,12 @@ export const ReceivedReferralsPage = () => {
         onRowClick={onReceivedReferralTableRowClick}
         tableFilterNodes={
           <div className="flex flex-wrap gap-4">
+            <FilterByUrgencyButton
+              currentFilters={receivedReferralsFilters}
+              filterName="isUrgent"
+              setCurrentFilters={setReceivedReferralsFilters}
+              label="Show only urgent"
+            />
             <FilterBySelf
               currentFilters={receivedReferralsFilters}
               filterName="focalPointId"

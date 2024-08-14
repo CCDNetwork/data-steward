@@ -22,6 +22,7 @@ import { useAuth } from '@/providers/GlobalProvider';
 
 import { columns } from './columns';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
+import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
 
 export const SentReferralsPage = () => {
   const { user } = useAuth();
@@ -133,6 +134,12 @@ export const SentReferralsPage = () => {
         hiddenColumns={hiddenColumns}
         tableFilterNodes={
           <div className="flex flex-wrap gap-4">
+            <FilterByUrgencyButton
+              currentFilters={sentReferralsFilters}
+              filterName="isUrgent"
+              setCurrentFilters={setSentReferralsFilters}
+              label="Show only urgent"
+            />
             <FilterBySelf
               currentFilters={sentReferralsFilters}
               filterName="userCreatedId"

@@ -13,6 +13,14 @@ export const columns = (
   onEditSentReferralClick: (referralRow: Referral) => Promise<void>,
 ): TableColumn<Referral>[] => [
   {
+    accessorKey: 'urgencyFlag',
+    id: 'urgencyFlag',
+    header: '',
+    headerClassName: 'w-0',
+    cellClassName: 'pl-0 pt-0 pb-0',
+    cell: ({ row }) => <div className={cn('w-1.5 bg-red-500 h-[53px]', { hidden: !row.original.isUrgent })} />,
+  },
+  {
     accessorKey: 'status',
     id: 'status',
     header: 'Status',
