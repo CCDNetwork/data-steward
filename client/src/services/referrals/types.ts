@@ -54,3 +54,11 @@ export interface Referral {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+
+export interface ReferralUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  createdAt: Date | null;
+}

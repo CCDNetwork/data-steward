@@ -75,9 +75,27 @@ export const useUserMe = ({ queryEnabled = true }: { queryEnabled?: boolean }) =
   });
 };
 
-export const useUsers = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
-  return useQuery([QueryKeys.Users, currentPage, pageSize, sortBy, sortDirection, debouncedSearch], () =>
-    fetchUsers({ page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch }),
+export const useUsers = ({
+  currentPage,
+  pageSize,
+  sortBy,
+  sortDirection,
+  debouncedSearch,
+  filters,
+  queryFilters,
+}: any) => {
+  return useQuery(
+    [QueryKeys.Users, currentPage, pageSize, sortBy, sortDirection, debouncedSearch, filters, queryFilters],
+    () =>
+      fetchUsers({
+        page: currentPage,
+        pageSize,
+        sortBy,
+        sortDirection,
+        search: debouncedSearch,
+        filters,
+        queryFilters,
+      }),
   );
 };
 

@@ -1,6 +1,6 @@
 import { OrgActivity, OrganizationActivity, resToActivities, resToOrganization } from '@/services/organizations';
 
-import { Referral } from './types';
+import { Referral, ReferralUser } from './types';
 import { resToUser } from '../users';
 import { resToStorageFile } from '../storage';
 
@@ -182,4 +182,14 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
   }
 
   return req;
+};
+
+export const resToReferralUser = (res: any): ReferralUser => {
+  return {
+    id: res.id,
+    email: res.email ?? '',
+    firstName: res.firstName ?? '',
+    lastName: res.lastName ?? '',
+    createdAt: res.createdAt ? new Date(res.createdAt) : null,
+  };
 };

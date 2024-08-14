@@ -3,14 +3,15 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
 import { useGlobalErrors } from '@/providers/GlobalProvider';
 
-import { referralPatchToReq, referralPostToReq, resToReferral } from './transformations';
-import { Referral } from './types';
+import { referralPatchToReq, referralPostToReq, resToReferral, resToReferralUser } from './transformations';
+import { Referral, ReferralUser } from './types';
 import { api } from '../api';
 import { SentReferralFormData } from '@/modules/SentReferrals/SentReferralPage/validations';
 
 enum QueryKeys {
   Referrals = 'referrals',
   SingleReferral = 'single_referral',
+  ReferralUsers = 'referral_users',
 }
 
 //
@@ -29,6 +30,16 @@ export const fetchReferrals = async ({
   return {
     meta: resp.data.meta,
     data: resp.data.data?.map(resToReferral) ?? [],
+  };
+};
+
+export const fetchReferralUsers = async (pagination: PaginationRequest): Promise<DataWithMeta<ReferralUser>> => {
+  const url = paginationRequestToUrl('referrals/focal-point/users', pagination);
+
+  const resp = await api.get(url);
+  return {
+    meta: resp.data.meta,
+    data: resp.data.data?.map(resToReferralUser) ?? [],
   };
 };
 
@@ -86,6 +97,30 @@ export const useReferrals = ({
       fetchReferrals({
         pagination: { page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch, filters },
         received,
+      }),
+  );
+};
+
+export const useReferralUsers = ({
+  currentPage,
+  pageSize,
+  sortBy,
+  sortDirection,
+  debouncedSearch,
+  filters,
+  queryFilters,
+}: any) => {
+  return useQuery(
+    [QueryKeys.ReferralUsers, currentPage, pageSize, sortBy, sortDirection, debouncedSearch, filters, queryFilters],
+    () =>
+      fetchReferralUsers({
+        page: currentPage,
+        pageSize,
+        sortBy,
+        sortDirection,
+        search: debouncedSearch,
+        filters,
+        queryFilters,
       }),
   );
 };

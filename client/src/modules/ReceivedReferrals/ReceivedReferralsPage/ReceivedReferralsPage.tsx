@@ -7,21 +7,19 @@ import { usePagination } from '@/helpers/pagination';
 import { APP_ROUTE } from '@/helpers/constants';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { toast } from '@/components/ui/use-toast';
-import { useReferralMutation, useReferrals } from '@/services/referrals/api';
+import { useReferralMutation, useReferrals, useReferralUsers } from '@/services/referrals/api';
 import { Referral } from '@/services/referrals';
 import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
 import { ReferralStatus } from '@/services/referrals/const';
 import { useOrganizations } from '@/services/organizations/api';
 import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
 import { OrgActivityFilterMap } from '@/services/organizations';
-import { FilterBySelf } from '@/components/FilterBySelf';
-import { useAuth } from '@/providers/GlobalProvider';
-
-import { columns } from './columns';
 import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
 
+import { columns } from './columns';
+import { UserPermission } from '@/services/users';
+
 export const ReceivedReferralsPage = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const pagination = usePagination();
   const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
@@ -38,6 +36,11 @@ export const ReceivedReferralsPage = () => {
   });
   const { data: organizations, isFetched } = useOrganizations({ currentPage: 1, pageSize: 999 });
 
+  const { data: users, isFetched: usersFetched } = useReferralUsers({
+    currentPage: 1,
+    pageSize: 999,
+    queryFilters: { permission: UserPermission.Referrals },
+  });
   const { removeReferral } = useReferralMutation();
 
   const handleDeleteReferral = async () => {
@@ -88,12 +91,19 @@ export const ReceivedReferralsPage = () => {
               setCurrentFilters={setReceivedReferralsFilters}
               label="Show only urgent"
             />
-            <FilterBySelf
+            <FilterDropdown
               currentFilters={receivedReferralsFilters}
-              filterName="focalPointId"
+              filterName="focalPointId[in]"
               setCurrentFilters={setReceivedReferralsFilters}
-              label="Assigned to me"
-              value={user.id ?? ''}
+              title="Filter by focal point"
+              options={
+                usersFetched
+                  ? users!.data.map((user) => ({
+                      label: `${user.firstName} ${user.lastName}`,
+                      value: user.id,
+                    }))
+                  : []
+              }
             />
             <FilterDropdown
               currentFilters={receivedReferralsFilters}

@@ -9,7 +9,7 @@ import { APP_ROUTE } from '@/helpers/constants';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { toast } from '@/components/ui/use-toast';
 import { Referral } from '@/services/referrals';
-import { useReferralMutation, useReferrals } from '@/services/referrals/api';
+import { useReferralMutation, useReferrals, useReferralUsers } from '@/services/referrals/api';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
@@ -17,15 +17,13 @@ import { useOrganizations } from '@/services/organizations/api';
 import { ReferralStatus } from '@/services/referrals/const';
 import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
 import { OrgActivityFilterMap } from '@/services/organizations';
-import { FilterBySelf } from '@/components/FilterBySelf';
-import { useAuth } from '@/providers/GlobalProvider';
+import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
 
 import { columns } from './columns';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
-import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
+import { UserPermission } from '@/services/users';
 
 export const SentReferralsPage = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const pagination = usePagination();
   const { setViewOnlyEnabled } = useSentReferralsProvider();
@@ -45,6 +43,12 @@ export const SentReferralsPage = () => {
   const { data: organizations, isFetched: isOrganizationsFetched } = useOrganizations({
     currentPage: 1,
     pageSize: 999,
+  });
+
+  const { data: users, isFetched: usersFetched } = useReferralUsers({
+    currentPage: 1,
+    pageSize: 999,
+    queryFilters: { permission: UserPermission.Referrals },
   });
 
   const { removeReferral } = useReferralMutation();
@@ -140,12 +144,16 @@ export const SentReferralsPage = () => {
               setCurrentFilters={setSentReferralsFilters}
               label="Show only urgent"
             />
-            <FilterBySelf
+            <FilterDropdown
               currentFilters={sentReferralsFilters}
-              filterName="userCreatedId"
+              filterName="userCreatedId[in]"
               setCurrentFilters={setSentReferralsFilters}
-              label="Sent by me"
-              value={user.id ?? ''}
+              title="Filter by creator"
+              options={
+                usersFetched
+                  ? users!.data.map((user) => ({ label: `${user.firstName} ${user.lastName}`, value: user.id }))
+                  : []
+              }
             />
             <FilterDropdown
               currentFilters={sentReferralsFilters}
