@@ -185,9 +185,9 @@ public class ReferralController : ControllerBaseExtended
 
     [HttpGet("focal-point/users")]
     [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult<PagedApiResponse<FocalPointUsersResponse>>> GetFocalPointUsers([FromQuery] RequestParameters requestParams)
+    public async Task<ActionResult<PagedApiResponse<FocalPointUsersResponse>>> GetFocalPointUsers([FromQuery] RequestParameters requestParams, [FromQuery] string permission)
     {
-        var userResponse = await _userService.GetUsersApi(this.OrganizationId, requestParams);
+        var userResponse = await _userService.GetUsersApi(this.OrganizationId, requestParams, permission);
         var data = _mapper.Map<List<UserResponse>, List<FocalPointUsersResponse>>(userResponse.Data);
 
         return Ok(new PagedApiResponse<FocalPointUsersResponse>

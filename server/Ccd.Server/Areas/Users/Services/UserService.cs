@@ -33,11 +33,12 @@ public class UserService
                  (@id is null OR u.id = @id)
                  AND (@email is null OR lower(u.email) = lower(@email))
                  AND (@organizationId is null OR uo.organization_id = @organizationId)
+                 AND (@permission is null OR uo.permissions ? @permission)
                  AND (is_deleted = false)";
 
-    private object getSelectSqlParams(Guid? id = null, string email = null, Guid? organizationId = null)
+    private object getSelectSqlParams(Guid? id = null, string email = null, Guid? organizationId = null, string permission = null)
     {
-        return new { id, email, organizationId };
+        return new { id, email, organizationId, permission };
     }
 
     public UserService(CcdContext context, DateTimeProvider dateTimeProvider, EmailManagerService emailManagerService,
@@ -189,12 +190,12 @@ public class UserService
     }
 
     public async Task<PagedApiResponse<UserResponse>> GetUsersApi(Guid? organizationId,
-        RequestParameters requestParameters = null)
+        RequestParameters requestParameters = null, string permission = null)
     {
         return await PagedApiResponse<UserResponse>.GetFromSql(
             _context,
             _selectSql,
-            getSelectSqlParams(organizationId: organizationId),
+            getSelectSqlParams(organizationId: organizationId, permission: permission),
             requestParameters,
             resolveDependencies
         );
