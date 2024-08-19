@@ -1,8 +1,5 @@
 # CCD Data Stewardship Platform
 
-## Name
-Welcome to the CCD Data Stewardship Platform.
-
 ## Background
 This platform was developed as part of the CCD's [data interoperability project](https://www.collaborativecash.org/data-interoperability). It is part of a toolkit intended to enable humanitarian organisations to manage data on a collective basis, to enable aid organisations to share data more responsibly to provide more accountability towards aid recipients. This README will be expanded in the near future, including an Admin Guide and a User Manual.
 
@@ -29,7 +26,8 @@ If you need more information about this project, please contact the repository o
 A roadmap for the next stage of development will be posted here soon.
 
 ## Authors and acknowledgment
-Watch this space.
+The platform was developed by the [CCD Network](https://www.collaborativecash.org/data-interoperability), with technical development by [INIT Grupa](https://init.hr/), inputs from the [DIGID Consortium](https://interoperability.ifrc.org/), and funding from [DG ECHO](https://civil-protection-humanitarian-aid.ec.europa.eu/index_en) (European Civil Protection and Humanitarian Aid Operations).
+
 ## License
 This project is under the MIT License.
 ur project to keep going. You can also make an explicit request for maintainers.
