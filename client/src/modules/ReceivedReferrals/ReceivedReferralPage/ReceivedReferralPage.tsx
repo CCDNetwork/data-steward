@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PaperclipIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -41,13 +41,20 @@ export const ReceivedReferralPage = () => {
     isCreate: false,
   });
 
-  const { control, handleSubmit } = useForm<{ focalPoint: User | null }>({
+  const { control, handleSubmit, reset } = useForm<{ focalPoint: User | null }>({
     defaultValues: {
       focalPoint: null,
     },
   });
 
   const { patchReferral, updateReferralReason } = useReferralMutation();
+
+  useEffect(() => {
+    if (receivedReferralData) {
+      reset({ focalPoint: receivedReferralData.focalPoint });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [receivedReferralData]);
 
   const onReferralActionClick = async () => {
     try {
@@ -269,7 +276,8 @@ export const ReceivedReferralPage = () => {
             </div>
             <Separator />
             <CardContent className="pt-6">
-              {receivingReferral.focalPoint ? (
+              {receivingReferral.focalPoint &&
+              (receivingReferral.status === ReferralStatus.Enrolment || receivingReferral.isRejected) ? (
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-bold tracking-tight leading-6">Focal Point</dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
