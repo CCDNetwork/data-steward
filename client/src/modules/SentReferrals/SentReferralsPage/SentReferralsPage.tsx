@@ -114,7 +114,7 @@ export const SentReferralsPage = () => {
           <TabsTrigger
             value="draft"
             onClick={() => {
-              setHiddenColumns({ status: false });
+              setHiddenColumns({ status: false, organizationReferredTo: false });
               setSentReferralsFilters(() => ({
                 isDraft: 'true',
               }));
