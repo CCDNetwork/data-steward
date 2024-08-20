@@ -89,6 +89,7 @@ export const SentReferralSchema = z
     isMinor: z.boolean(),
     noTaxId: z.boolean(),
     subactivitiesIds: z.array(z.string()),
+    isRejected: z.boolean(),
   })
   .superRefine((data, ctx) => {
     if (data.isMinor) {

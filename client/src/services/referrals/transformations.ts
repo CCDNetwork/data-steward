@@ -53,6 +53,7 @@ export const resToReferral = (res: any): Referral => {
     organizationCreated: res.organizationCreated ? resToOrganization(res.organizationCreated) : null,
     userCreated: res.userCreated ? resToUser(res.userCreated) : null,
     files: res.files ? res.files.map(resToStorageFile) : [],
+    isRejected: res.isRejected ?? false,
     createdAt: res.createdAt ? new Date(res.createdAt) : null,
     updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
   };
@@ -148,6 +149,7 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     caregiverNote: data.caregiverNote,
     status: data.status,
     isDraft: data.isDraft,
+    isRejected: data.isRejected,
   };
 
   if (data.serviceCategory && data.serviceCategory === OrgActivity.Mpca) {

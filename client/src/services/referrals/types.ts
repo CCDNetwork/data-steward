@@ -47,6 +47,7 @@ export interface Referral {
   focalPoint: User | null;
   status: string;
   isDraft: boolean;
+  isRejected: boolean;
   fileIds: string[];
   organizationCreated: Organization | null;
   userCreated: User | null;

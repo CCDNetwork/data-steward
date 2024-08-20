@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useIdFromParams } from '@/helpers/common';
 import { useReferralMutation } from '@/services/referrals/api';
-import { ReferralStatus } from '@/services/referrals/const';
 
 export const CancelReferralModal = () => {
   const { id: referralId } = useIdFromParams();
@@ -21,7 +20,7 @@ export const CancelReferralModal = () => {
 
   const onConfirm = async () => {
     try {
-      await patchReferral.mutateAsync({ referralId, data: { status: ReferralStatus.Withdrawn } });
+      await patchReferral.mutateAsync({ referralId, data: { isDraft: true } });
       toast({
         title: 'Success!',
         variant: 'default',
@@ -45,7 +44,9 @@ export const CancelReferralModal = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>This action cannot be undone. This will cancel a referral.</AlertDialogDescription>
+          <AlertDialogDescription>
+            This action cannot be undone. This will cancel a referral and move it to your drafts.
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

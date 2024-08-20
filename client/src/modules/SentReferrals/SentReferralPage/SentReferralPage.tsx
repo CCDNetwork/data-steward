@@ -58,7 +58,8 @@ export const SentReferralPage = () => {
 
   const {
     data: uaAdminLvl1Data,
-    isFetched,
+    isFetched: adminLvl1Fetched,
+    isFetching: adminLvl1Fetching,
     isLoading: ukraineAdminLevel1DataLoading,
   } = useUkraineAdminLevel1Data({
     APP_IDENTIFIER: hdxHapiAppIdentifier,
@@ -67,7 +68,8 @@ export const SentReferralPage = () => {
   const {
     data: uaAdminLvl2Data,
     isFetched: adminLvl2Fetched,
-    isLoading: ukraineAdminLeve2lDataLoading,
+    isFetching: adminLvl2Fetching,
+    isLoading: ukraineAdminLevel2DataLoading,
   } = useUkraineAdminLevel2Data({
     APP_IDENTIFIER: hdxHapiAppIdentifier,
   });
@@ -197,6 +199,7 @@ export const SentReferralPage = () => {
         variant: 'default',
         description: 'Referral successfully withdrawn.',
       });
+      navigate(APP_ROUTE.SentReferrals);
     } catch (error: any) {
       toast({
         title: 'Something went wrong!',
@@ -216,14 +219,14 @@ export const SentReferralPage = () => {
   };
 
   const headerNodeButtons = () => {
-    if (sentReferralData?.status !== ReferralStatus.Enrolled && !isCreate && !sentReferralData?.isDraft) {
+    if (sentReferralData?.status !== ReferralStatus.Enrolment && !isCreate && !sentReferralData?.isDraft) {
       if (viewOnlyEnabled) {
         return (
           <div className="flex sm:flex-row flex-col gap-2 sm:gap-4">
             <Button type="submit" onClick={() => setViewOnlyEnabled(false)}>
               Edit
             </Button>
-            {sentReferralData?.status !== ReferralStatus.Withdrawn && (
+            {!sentReferralData?.isRejected && (
               <Button
                 variant="destructive"
                 onClick={onWithdrawActionClick}
@@ -258,7 +261,10 @@ export const SentReferralPage = () => {
   return (
     <PageContainer
       pageTitle={isCreate ? 'Make Referral' : `Case  ${sentReferralData?.caseNumber ?? '-'}`}
-      isLoading={(queryLoading || !adminLvl2Fetched || !isFetched) && !isCreate}
+      isLoading={
+        (queryLoading || (adminLvl1Fetching && !adminLvl1Fetched) || (adminLvl2Fetching && !adminLvl2Fetched)) &&
+        !isCreate
+      }
       breadcrumbs={[
         { href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' },
         { name: isCreate ? 'New case' : `Case ${sentReferralData?.caseNumber ?? '-'}` },
@@ -302,7 +308,10 @@ export const SentReferralPage = () => {
                   ) : (
                     <>
                       <div className="px-6 pt-2 pb-6 flex items-center justify-center">
-                        <StatusTimeline currentStatus={sentReferralData?.status ?? ReferralStatus.Open} />
+                        <StatusTimeline
+                          currentStatus={sentReferralData?.status ?? ReferralStatus.Submission}
+                          isRejected={sentReferralData?.isRejected ?? false}
+                        />
                       </div>
                       <Separator />
                     </>
@@ -611,7 +620,7 @@ export const SentReferralPage = () => {
                   />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {isFetched && !ukraineAdminLevel1DataLoading && (
+                    {adminLvl1Fetched && !ukraineAdminLevel1DataLoading && (
                       <Combobox
                         label="Oblast"
                         name="oblast"
@@ -620,7 +629,7 @@ export const SentReferralPage = () => {
                         disabled={viewOnlyEnabled}
                       />
                     )}
-                    {adminLvl2Fetched && !ukraineAdminLeve2lDataLoading && watch('oblast') && (
+                    {adminLvl2Fetched && !ukraineAdminLevel2DataLoading && watch('oblast') && (
                       <Combobox
                         label="Raion"
                         name="ryon"

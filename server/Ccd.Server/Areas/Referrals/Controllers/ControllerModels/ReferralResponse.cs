@@ -66,6 +66,7 @@ public class ReferralResponse
     public UserResponse FocalPoint { get; set; }
     public string Status { get; set; }
     public bool IsDraft { get; set; }
+    public bool IsRejected { get; set; }
     public List<Guid> FileIds { get; set; }
     [JsonIgnore] public Guid OrganizationCreatedId { get; set; }
     public OrganizationResponse OrganizationCreated { get; set; }

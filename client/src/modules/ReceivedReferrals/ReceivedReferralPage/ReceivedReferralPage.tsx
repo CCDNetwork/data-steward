@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import { PaperclipIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { formatDate } from 'date-fns';
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUsersInfinite } from '@/services/users/api';
 import { PageContainer } from '@/components/PageContainer';
@@ -17,18 +20,18 @@ import { toast } from '@/components/ui/use-toast';
 import { HOUSEHOLDS_VULNERABILITY_CRITERIA, ReferralStatus, ReferralTab } from '@/services/referrals/const';
 import { AsyncSelect } from '@/components/AsyncSelect';
 import { User } from '@/services/users';
-import { formatDate } from 'date-fns';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReferralDiscussions } from '@/components/ReferralDiscussions';
-import { serviceCategoryToLabel } from './helpers';
-import { referralStatuses } from './const';
-import { useNavigate } from 'react-router-dom';
 import { StatusReasonModal } from '@/components/StatusReasonModal';
+
+import { serviceCategoryToLabel } from './helpers';
 
 export const ReceivedReferralPage = () => {
   const navigate = useNavigate();
   const { id: receivedReferralId } = useIdFromParams();
-  const [referralAction, setReferralAction] = useState<'rejected' | 'enrolled' | 'inEvaluation' | undefined>(undefined);
+  const [referralAction, setReferralAction] = useState<'evaluation' | 'acceptance' | 'enrolment' | undefined>(
+    undefined,
+  );
   const [isUserAssigning, setIsUserAssigning] = useState<boolean>(false);
   const [isStatusReasonModal, setOpenStatusReasonModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
@@ -48,7 +51,10 @@ export const ReceivedReferralPage = () => {
 
   const onReferralActionClick = async () => {
     try {
-      await patchReferral.mutateAsync({ data: { status: referralAction }, referralId: receivedReferralId });
+      await patchReferral.mutateAsync({
+        data: { status: referralAction, isRejected: false },
+        referralId: receivedReferralId,
+      });
       toast({
         title: 'Success!',
         variant: 'default',
@@ -58,9 +64,7 @@ export const ReceivedReferralPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description:
-          error.response?.data?.errorMessage ||
-          `An error has occured while ${referralAction === 'rejected' ? 'rejecting' : 'accepting'} referral.`,
+        description: error.response?.data?.errorMessage || 'An error has occured.',
       });
     }
   };
@@ -109,7 +113,7 @@ export const ReceivedReferralPage = () => {
     setIsUserAssigning(true);
     try {
       await patchReferral.mutateAsync({
-        data: { focalPoint, status: ReferralStatus.InEvaluation },
+        data: { focalPoint, status: ReferralStatus.Evaluation },
         referralId: receivedReferralId,
       });
       toast({
@@ -168,8 +172,9 @@ export const ReceivedReferralPage = () => {
       caregiverExplanation: receivedReferralData?.caregiverExplanation || 'N/A',
       caregiverNote: receivedReferralData?.caregiverNote || 'N/A',
       focalPoint: receivedReferralData?.focalPoint || null,
-      status: receivedReferralData?.status || ReferralStatus.Open,
+      status: receivedReferralData?.status || ReferralStatus.Submission,
       isDraft: receivedReferralData?.isDraft || false,
+      isRejected: receivedReferralData?.isRejected || false,
       organizationCreated: receivedReferralData?.organizationCreated?.name || 'N/A',
       userCreated:
         `${receivedReferralData?.userCreated?.firstName} ${receivedReferralData?.userCreated?.lastName}` || 'N/A',
@@ -187,37 +192,49 @@ export const ReceivedReferralPage = () => {
         { name: `Case ${receivingReferral.caseNumber}` },
       ]}
       headerNode={
-        (receivingReferral.status === ReferralStatus.InEvaluation ||
-          receivingReferral.status === ReferralStatus.Open) && (
-          <div className="flex sm:flex-row flex-col sm:gap-4 gap-2">
-            <Select
-              onValueChange={(val: string) => onStatusSelect({ action: val as typeof referralAction })}
-              value={referralAction}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Change status" />
-              </SelectTrigger>
-              <SelectContent>
-                {referralStatuses.map((el) => (
-                  <SelectItem key={el.value} value={el.value}>
-                    {el.label}
+        <div className="flex sm:flex-row flex-col sm:gap-4 gap-2">
+          <Select
+            onValueChange={(val: string) => onStatusSelect({ action: val as typeof referralAction })}
+            value={referralAction}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Move to step" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(ReferralStatus)
+                .filter(([, value]) => value !== ReferralStatus.Submission)
+                .map(([key, value]) => (
+                  <SelectItem key={key} value={value}>
+                    {key}
                   </SelectItem>
                 ))}
-              </SelectContent>
-            </Select>
-            <Button
-              type="button"
-              onClick={() => (referralAction === 'rejected' ? openStatusReasonModal() : onReferralActionClick())}
-              isLoading={patchReferral.isLoading}
-              disabled={patchReferral.isLoading || !referralAction}
-            >
-              Submit
-            </Button>
-            <Button type="button" variant="destructive" onClick={() => navigate(APP_ROUTE.ReceivedReferrals)}>
-              Cancel
-            </Button>
-          </div>
-        )
+            </SelectContent>
+          </Select>
+          <Button
+            type="button"
+            onClick={onReferralActionClick}
+            isLoading={patchReferral.isLoading}
+            disabled={patchReferral.isLoading || !referralAction}
+          >
+            Submit
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={receivingReferral.isRejected}
+            onClick={openStatusReasonModal}
+          >
+            Reject
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="border-red-500 text-red-500 hover:bg-red-50 hover:text-red-500"
+            onClick={() => navigate(APP_ROUTE.ReceivedReferrals)}
+          >
+            Cancel
+          </Button>
+        </div>
       }
     >
       <Tabs defaultValue="referral">
@@ -248,7 +265,7 @@ export const ReceivedReferralPage = () => {
                 'mt-5': receivingReferral?.isUrgent,
               })}
             >
-              <StatusTimeline currentStatus={receivingReferral.status} />
+              <StatusTimeline currentStatus={receivingReferral.status} isRejected={receivingReferral.isRejected} />
             </div>
             <Separator />
             <CardContent className="pt-6">

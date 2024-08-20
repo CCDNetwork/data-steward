@@ -48,6 +48,7 @@ export const dataToSentReferralFormData = (
     focalPoint: data.focalPoint as User,
     status: data.status,
     isDraft: data.isDraft,
+    isRejected: data.isRejected,
     userCreated: data.userCreated as User,
     files: data.files,
     noTaxId: false,

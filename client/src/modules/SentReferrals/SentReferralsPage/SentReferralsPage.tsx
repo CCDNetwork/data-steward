@@ -157,12 +157,12 @@ export const SentReferralsPage = () => {
             />
             <FilterDropdown
               currentFilters={sentReferralsFilters}
-              filterName="status[in]"
+              filterName="isRejected=false,status[in]"
               setCurrentFilters={setSentReferralsFilters}
-              title="Filter by Status"
+              title="Filter by Step"
               options={Object.entries(ReferralStatus).map(([label, value]) => ({
                 value,
-                label: label === 'InEvaluation' ? 'In Evaluation' : label,
+                label,
               }))}
             />
             <FilterDropdown

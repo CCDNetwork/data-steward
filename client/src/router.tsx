@@ -99,7 +99,7 @@ export const router = createBrowserRouter(
         </Route>
 
         {/* OTHER */}
-
+        {/* For testing purposes, later make a proper page component for this */}
         <Route
           path={APP_ROUTE.Dashboard}
           element={

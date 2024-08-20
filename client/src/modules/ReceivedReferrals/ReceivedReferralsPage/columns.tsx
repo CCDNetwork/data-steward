@@ -22,20 +22,23 @@ export const columns = (
   {
     accessorKey: 'status',
     id: 'status',
-    header: 'Status',
+    header: 'Step',
     cell: ({ row }) => {
-      const { status } = row.original;
+      const { status, isRejected } = row.original;
+
+      if (isRejected) {
+        return <Badge className="bg-red-600 hover:bg-red-600">Rejected</Badge>;
+      }
 
       return (
         <Badge
           className={cn('bg-primary capitalize', {
-            'bg-green-600 hover:bg-green-600': status === ReferralStatus.Enrolled,
-            'bg-yellow-500 hover:bg-yellow-500': status === ReferralStatus.InEvaluation,
-            'bg-orange-500 hover:bg-orange-500': status === ReferralStatus.Withdrawn,
-            'bg-red-600 hover:bg-red-600': status === ReferralStatus.Rejected,
+            'bg-green-600 hover:bg-green-600': status === ReferralStatus.Enrolment,
+            'bg-yellow-500 hover:bg-yellow-500': status === ReferralStatus.Evaluation,
+            'bg-orange-500 hover:bg-orange-500': status === ReferralStatus.Acceptance,
           })}
         >
-          {status === ReferralStatus.InEvaluation ? 'In Evaluation' : status}
+          {status}
         </Badge>
       );
     },

@@ -49,7 +49,7 @@
     "date-fns": "^3.0.6",
     "framer-motion": "^11.2.12",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.294.0",
+    "lucide-react": "^0.428.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-day-picker": "^8.10.0",

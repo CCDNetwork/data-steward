@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { PaperclipIcon } from 'lucide-react';
+import { formatDate } from 'date-fns';
 
 import { createDownloadLink, isImageUrl } from '@/helpers/common';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,6 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/helpers/utils';
 import { HOUSEHOLDS_VULNERABILITY_CRITERIA, ReferralStatus } from '@/services/referrals/const';
-import { formatDate } from 'date-fns';
 import { Referral } from '@/services/referrals';
 import { serviceCategoryToLabel } from '@/modules/ReceivedReferrals';
 
@@ -55,8 +55,9 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
       caregiverExplanation: receivedReferralData?.caregiverExplanation || 'N/A',
       caregiverNote: receivedReferralData?.caregiverNote || 'N/A',
       focalPoint: receivedReferralData?.focalPoint || null,
-      status: receivedReferralData?.status || ReferralStatus.Open,
+      status: receivedReferralData?.status || ReferralStatus.Submission,
       isDraft: receivedReferralData?.isDraft || false,
+      isRejected: receivedReferralData?.isRejected || false,
       organizationCreated: receivedReferralData?.organizationCreated?.name || 'N/A',
       userCreated:
         `${receivedReferralData?.userCreated?.firstName} ${receivedReferralData?.userCreated?.lastName}` || 'N/A',
@@ -73,14 +74,18 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
             Urgent
           </div>
         )}
-        <div
-          className={cn('px-6 pb-6 mt-3 flex items-center justify-center', {
-            'mt-5': receivingReferral?.isUrgent,
-          })}
-        >
-          <StatusTimeline currentStatus={receivingReferral.status} />
-        </div>
-        <Separator />
+        {!receivingReferral.isDraft && (
+          <>
+            <div
+              className={cn('px-6 pb-6 mt-3 flex items-center justify-center', {
+                'mt-5': receivingReferral?.isUrgent,
+              })}
+            >
+              <StatusTimeline currentStatus={receivingReferral.status} isRejected={receivingReferral.isRejected} />
+            </div>
+            <Separator />
+          </>
+        )}
         {receivingReferral.focalPoint && (
           <CardContent className="pt-6">
             <div className="sm:col-span-1">

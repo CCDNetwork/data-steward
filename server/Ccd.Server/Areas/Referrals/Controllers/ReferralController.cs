@@ -74,9 +74,8 @@ public class ReferralController : ControllerBaseExtended
     {
         var referral = await _referralService.GetReferralById(this.OrganizationId, id) ?? throw new NotFoundException("Referral not found.");
         if (model.Status != null && !ReferralStatus.IsValid(model.Status)) throw new BadRequestException("Invalid status.");
-
-        if (referral.Status == ReferralStatus.Withdrawn || referral.Status == ReferralStatus.Rejected)
-            model.Status = ReferralStatus.Open;
+        if (referral.IsDraft)
+            model.Status = ReferralStatus.Submission;
 
         var updatedFieldsText = await _referralService.GetUpdatedFieldText(model, referral);
         model.Patch(referral);
@@ -117,10 +116,11 @@ public class ReferralController : ControllerBaseExtended
     {
         var referral = await _referralService.GetReferralById(this.OrganizationId, id) ?? throw new NotFoundException();
 
-        if (referral.Status == ReferralStatus.Withdrawn)
+        // Since we removed the Withdrawn status and the client wants all "withdrawn" referrals to go into draft, this is the change that reflects on that
+        if (referral.IsDraft)
             throw new BadRequestException("Referral is already withdrawn.");
 
-        referral.Status = ReferralStatus.Withdrawn;
+        referral.IsDraft = true;
 
         await _referralService.UpdateReferral(referral);
 
@@ -144,10 +144,11 @@ public class ReferralController : ControllerBaseExtended
     {
         var referral = await _referralService.GetReferralById(this.OrganizationId, id) ?? throw new NotFoundException();
 
-        if (referral.Status == ReferralStatus.Rejected)
+        // Same here, we dont have "rejected" status anymore but a new flag "isRejected" which we check for instead of that previous status
+        if (referral.IsRejected)
             throw new BadRequestException("Referral is already rejected.");
 
-        referral.Status = ReferralStatus.Rejected;
+        referral.IsRejected = true;
 
         await _referralService.UpdateReferral(referral);
 

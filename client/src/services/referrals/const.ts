@@ -1,9 +1,8 @@
 export const ReferralStatus = {
-  Open: 'open',
-  InEvaluation: 'inEvaluation',
-  Withdrawn: 'withdrawn',
-  Rejected: 'rejected',
-  Enrolled: 'enrolled',
+  Submission: 'submission',
+  Evaluation: 'evaluation',
+  Acceptance: 'acceptance',
+  Enrolment: 'enrolment',
 };
 
 export enum OrgServiceCategory {

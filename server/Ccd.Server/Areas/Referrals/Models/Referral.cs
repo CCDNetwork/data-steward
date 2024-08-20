@@ -67,6 +67,7 @@ public class Referral : UserChangeTracked
     public User FocalPoint { get; set; }
     public string Status { get; set; }
     public bool IsDraft { get; set; }
+    public bool IsRejected { get; set; }
     [Column(TypeName = "jsonb")] public List<Guid> FileIds { get; set; }
     [ForeignKey("Organization"), Required] public Guid OrganizationCreatedId { get; set; }
     public Organization OrganizationCreated { get; set; }
@@ -75,14 +76,13 @@ public class Referral : UserChangeTracked
 
 public class ReferralStatus
 {
-    public const string Open = "open";
-    public const string Enrolled = "enrolled";
-    public const string InEvaluation = "inEvaluation";
-    public const string Withdrawn = "withdrawn";
-    public const string Rejected = "rejected";
+    public const string Submission = "submission";
+    public const string Enrolment = "enrolment";
+    public const string Evaluation = "evaluation";
+    public const string Acceptance = "acceptance";
 
     public static bool IsValid(string status)
     {
-        return status == Open || status == Enrolled || status == InEvaluation || status == Withdrawn || status == Rejected;
+        return status == Submission || status == Enrolment || status == Evaluation || status == Acceptance;
     }
 }
