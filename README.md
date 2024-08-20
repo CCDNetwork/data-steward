@@ -30,4 +30,3 @@ The platform was developed by the [CCD Network](https://www.collaborativecash.or
 
 ## License
 This project is under the MIT License.
-ur project to keep going. You can also make an explicit request for maintainers.
