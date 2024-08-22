@@ -135,7 +135,9 @@ export const SentReferralPage = () => {
       return;
     }
 
-    return currentFormSelectedOrganization.activities.filter((i) => i.serviceType === currentFormServiceCategory);
+    return (
+      currentFormSelectedOrganization?.activities.filter((i) => i.serviceType === currentFormServiceCategory) ?? []
+    );
   }, [currentFormServiceCategory, currentFormSelectedOrganization]);
 
   const onSubmit = async ({ values, isDraft }: { values: SentReferralFormData; isDraft?: boolean }) => {

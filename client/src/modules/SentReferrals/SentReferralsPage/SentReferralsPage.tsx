@@ -18,10 +18,10 @@ import { ReferralStatus } from '@/services/referrals/const';
 import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
 import { OrgActivityFilterMap } from '@/services/organizations';
 import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
+import { UserPermission } from '@/services/users';
 
 import { columns } from './columns';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
-import { UserPermission } from '@/services/users';
 
 export const SentReferralsPage = () => {
   const navigate = useNavigate();

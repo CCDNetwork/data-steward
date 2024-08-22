@@ -199,10 +199,10 @@ public class ReferralService
 
             if (field.Name == "OrganizationReferredToId")
             {
-                var organization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == (Guid)value);
-                value = organization.Name;
-                var oldOrganization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == (Guid)oldValue);
-                oldValue = oldOrganization.Name;
+                var organization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == (Guid?)value);
+                value = organization?.Name;
+                var oldOrganization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == (Guid?)oldValue);
+                oldValue = oldOrganization?.Name;
                 filedName = "OrganizationReferredTo";
             }
 
