@@ -87,16 +87,18 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
           </>
         )}
         {receivingReferral.focalPoint && (
-          <CardContent className="pt-6">
-            <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Focal Point</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                {`${receivingReferral.focalPoint.firstName} ${receivingReferral?.focalPoint?.lastName}`}
-              </dd>
-            </div>
-          </CardContent>
+          <>
+            <CardContent className="pt-6">
+              <div className="sm:col-span-1">
+                <dt className="text-sm font-bold tracking-tight leading-6">Focal Point</dt>
+                <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                  {`${receivingReferral.focalPoint.firstName} ${receivingReferral?.focalPoint?.lastName}`}
+                </dd>
+              </div>
+            </CardContent>
+            <Separator />
+          </>
         )}
-        <Separator />
         <CardHeader>
           <CardTitle>Sending Organization Details</CardTitle>
         </CardHeader>

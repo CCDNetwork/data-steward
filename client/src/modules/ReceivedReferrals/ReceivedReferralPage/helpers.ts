@@ -15,6 +15,6 @@ export const serviceCategoryToLabel = (serviceCategory: string) => {
     case OrgActivity.Protection:
       return 'Protection';
     default:
-      return '';
+      return 'N/A';
   }
 };

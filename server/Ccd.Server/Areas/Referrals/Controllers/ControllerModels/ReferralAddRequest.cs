@@ -7,10 +7,10 @@ namespace Ccd.Server.Referrals;
 public class ReferralAddRequest
 {
     // Priority
-    [Required] public bool IsUrgent { get; set; }
+    public bool IsUrgent { get; set; }
 
     // Receiving organization details
-    [Required] public Guid OrganizationReferredToId { get; set; }
+    public Guid? OrganizationReferredToId { get; set; }
     public string ServiceCategory { get; set; }
     public List<Guid> SubactivitiesIds { get; set; }
 
@@ -21,11 +21,11 @@ public class ReferralAddRequest
     public List<string> HouseholdsVulnerabilityCriteria { get; set; }
 
     // Beneficiary general data
-    [Required] public string FirstName { get; set; }
-    [Required] public string PatronymicName { get; set; }
-    [Required] public string Surname { get; set; }
+    public string FirstName { get; set; }
+    public string PatronymicName { get; set; }
+    public string Surname { get; set; }
     public DateTime? DateOfBirth { get; set; }
-    [Required] public string Gender { get; set; }
+    public string Gender { get; set; }
     public string TaxId { get; set; }
     public string Address { get; set; }
     public string Oblast { get; set; }
@@ -39,7 +39,7 @@ public class ReferralAddRequest
     public bool Consent { get; set; }
 
     // Reason for refferal
-    [Required] public string Required { get; set; }
+    public string Required { get; set; }
     public string NeedForService { get; set; }
     public List<Guid> FileIds { get; set; }
 

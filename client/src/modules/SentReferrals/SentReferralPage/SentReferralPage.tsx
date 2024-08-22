@@ -887,7 +887,7 @@ export const SentReferralPage = () => {
                         <Button
                           type="button"
                           variant="default"
-                          onClick={handleSubmit((values) => onSubmit({ values, isDraft: true }))}
+                          onClick={() => onSubmit({ values: form.getValues(), isDraft: true })}
                           disabled={createReferral.isLoading}
                         >
                           Save draft

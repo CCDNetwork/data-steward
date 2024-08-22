@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Ccd.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ccd.Server.Migrations
 {
     [DbContext(typeof(CcdContext))]
-    partial class CcdContextModelSnapshot : ModelSnapshot
+    [Migration("20240822074057_ChangeReferralAddRequestFields")]
+    partial class ChangeReferralAddRequestFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -924,7 +927,7 @@ namespace Ccd.Server.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("organization_created_id");
 
-                    b.Property<Guid?>("OrganizationReferredToId")
+                    b.Property<Guid>("OrganizationReferredToId")
                         .HasColumnType("uuid")
                         .HasColumnName("organization_referred_to_id");
 
@@ -1465,6 +1468,8 @@ namespace Ccd.Server.Migrations
                     b.HasOne("Ccd.Server.Organizations.Organization", "OrganizationReferredTo")
                         .WithMany()
                         .HasForeignKey("OrganizationReferredToId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
                         .HasConstraintName("fk_referral_organization_organization_referred_to_id");
 
                     b.HasOne("Ccd.Server.Users.User", "UserCreated")

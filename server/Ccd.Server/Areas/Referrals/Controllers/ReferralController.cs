@@ -59,6 +59,34 @@ public class ReferralController : ControllerBaseExtended
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<ReferralResponse>> Add([FromBody] ReferralAddRequest model)
     {
+
+        if (!model.IsDraft)
+        {
+            var missingFields = new List<string>();
+            var fieldsToCheck = new Dictionary<string, object>
+            {
+                { nameof(model.OrganizationReferredToId), model.OrganizationReferredToId },
+                { nameof(model.FirstName), model.FirstName },
+                { nameof(model.PatronymicName), model.PatronymicName },
+                { nameof(model.Surname), model.Surname },
+                { nameof(model.Gender), model.Gender },
+                { nameof(model.Required), model.Required }
+            };
+
+            missingFields = fieldsToCheck
+                .Where(field => field.Value == null)
+                .Select(field => field.Key)
+                .ToList();
+
+            if (missingFields.Count != 0)
+            {
+                var missingFieldsMessage = string.Join(", ", missingFields);
+                var errorMessage = $"The following fields are required but missing: {missingFieldsMessage}.";
+                throw new BadRequestException(errorMessage);
+            }
+        }
+
+
         var newReferral = await _referralService.AddReferral(this.OrganizationId, model);
         var result = await _referralService.GetReferralApi(this.OrganizationId, newReferral.Id);
 
@@ -121,6 +149,10 @@ public class ReferralController : ControllerBaseExtended
             throw new BadRequestException("Referral is already withdrawn.");
 
         referral.IsDraft = true;
+        referral.OrganizationReferredTo = null;
+        referral.OrganizationReferredToId = null;
+        referral.ServiceCategory = null;
+        referral.SubactivitiesIds = null;
 
         await _referralService.UpdateReferral(referral);
 

@@ -95,7 +95,11 @@ export const SentReferralsPage = () => {
     <PageContainer
       pageTitle="Manage Sent Referrals"
       pageSubtitle="On this page you can view the referrals that you have sent to other organisations. The Sent tab will show you referrals that have already been sent. The Drafts tab will show you referrals which you have drafted but not sent."
-      headerNode={<Button onClick={onNewCaseClick}>New Case</Button>}
+      headerNode={
+        <Button variant="outline" onClick={onNewCaseClick}>
+          New Case
+        </Button>
+      }
       breadcrumbs={[{ href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' }]}
     >
       <Tabs defaultValue="sent">
