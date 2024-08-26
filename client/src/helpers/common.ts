@@ -42,23 +42,19 @@ export const capitalizeFirstLetter = (str: string): string => {
   return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
 };
 
-export const createDownloadLink = async (url: string, fileName: string) => {
+export const createDownloadLink = (url: string, fileName: string) => {
   try {
-    const response = await fetch(url, {
-      headers: { 'Access-Control-Origin': '*' },
-    });
-    const blob = await response.blob();
-
-    const objectUrl = URL.createObjectURL(blob);
-
     const link = document.createElement('a');
-    link.href = objectUrl;
+    link.href = url;
     link.setAttribute('download', fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
 
-    URL.revokeObjectURL(objectUrl);
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
   } catch (error) {
     console.error('Failed to download file:', error);
   }
