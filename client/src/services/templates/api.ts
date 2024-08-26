@@ -1,6 +1,15 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
-import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
+import {
+  DataWithMeta,
+  PaginationRequest,
+  paginationRequestToUrl,
+} from '@/helpers/pagination';
 import { useGlobalErrors } from '@/providers/GlobalProvider';
 
 import { api } from '../api';
@@ -16,7 +25,9 @@ enum QueryKeys {
 //
 // API calls
 //
-export const fetchTemplates = async (pagination: PaginationRequest): Promise<DataWithMeta<Template>> => {
+export const fetchTemplates = async (
+  pagination: PaginationRequest,
+): Promise<DataWithMeta<Template>> => {
   const url = paginationRequestToUrl('templates', pagination);
 
   const resp = await api.get(url);
@@ -36,7 +47,13 @@ const postTemplate = async (data: TemplateForm): Promise<Template> => {
   return resToTemplate(resp.data);
 };
 
-const patchTemplate = async ({ data, templateId }: { data: TemplateForm; templateId: string }): Promise<Template> => {
+const patchTemplate = async ({
+  data,
+  templateId,
+}: {
+  data: TemplateForm;
+  templateId: string;
+}): Promise<Template> => {
   const resp = await api.patch(`/templates/${templateId}`, templateToReq(data));
   return resToTemplate(resp.data);
 };
@@ -50,13 +67,40 @@ const deleteTemplate = async (templateId: string): Promise<Template> => {
 // GET hooks
 //
 
-export const useTemplates = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
-  return useQuery([QueryKeys.Templates, currentPage, pageSize, sortBy, sortDirection, debouncedSearch], () =>
-    fetchTemplates({ page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch }),
+export const useTemplates = ({
+  currentPage,
+  pageSize,
+  sortBy,
+  sortDirection,
+  debouncedSearch,
+}: any) => {
+  return useQuery(
+    [
+      QueryKeys.Templates,
+      currentPage,
+      pageSize,
+      sortBy,
+      sortDirection,
+      debouncedSearch,
+    ],
+    () =>
+      fetchTemplates({
+        page: currentPage,
+        pageSize,
+        sortBy,
+        sortDirection,
+        search: debouncedSearch,
+      }),
   );
 };
 
-export const useTemplate = ({ id, isCreate }: { id: string; isCreate: boolean }) => {
+export const useTemplate = ({
+  id,
+  isCreate,
+}: {
+  id: string;
+  isCreate: boolean;
+}) => {
   const { onSetCollectionNotFound } = useGlobalErrors();
 
   return useQuery([QueryKeys.SingleTemplate, id], () => fetchTemplate(id), {
@@ -65,7 +109,10 @@ export const useTemplate = ({ id, isCreate }: { id: string; isCreate: boolean })
   });
 };
 
-export const useTemplatesInfinite = (pagination: PaginationRequest, enabled: boolean) => {
+export const useTemplatesInfinite = (
+  pagination: PaginationRequest,
+  enabled: boolean,
+) => {
   return useInfiniteQuery(
     [QueryKeys.Templates, 'infinite', pagination],
     ({ pageParam = 1 }) => {
@@ -97,7 +144,8 @@ export const useTemplateMutation = () => {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Templates]),
     }),
     editTemplate: useMutation(patchTemplate, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.SingleTemplate]),
+      onSuccess: () =>
+        queryClient.invalidateQueries([QueryKeys.SingleTemplate]),
     }),
     deleteTemplate: useMutation(deleteTemplate, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Templates]),

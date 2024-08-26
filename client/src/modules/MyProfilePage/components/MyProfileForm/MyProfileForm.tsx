@@ -2,7 +2,14 @@ import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from '@/components/ui/form';
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  Form,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useUserMutation } from '@/services/users/api';
 import { useAuth } from '@/providers/GlobalProvider';
@@ -20,7 +27,10 @@ interface MyProfileFormProps {
   userProfileQueryLoading: boolean;
 }
 
-export const MyProfileForm = ({ userProfileData, userProfileQueryLoading }: MyProfileFormProps) => {
+export const MyProfileForm = ({
+  userProfileData,
+  userProfileQueryLoading,
+}: MyProfileFormProps) => {
   const { updateUser } = useAuth();
 
   const form = useForm<UserProfileFormData>({
@@ -52,7 +62,8 @@ export const MyProfileForm = ({ userProfileData, userProfileQueryLoading }: MyPr
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Something went wrong',
+        description:
+          error.response?.data?.errorMessage || 'Something went wrong',
       });
     }
   });
@@ -95,7 +106,13 @@ export const MyProfileForm = ({ userProfileData, userProfileQueryLoading }: MyPr
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input id="email" disabled placeholder="Password" type="email" {...field} />
+                <Input
+                  id="email"
+                  disabled
+                  placeholder="Password"
+                  type="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -108,7 +125,13 @@ export const MyProfileForm = ({ userProfileData, userProfileQueryLoading }: MyPr
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input id="password" autoComplete="new-password" placeholder="Password" type="password" {...field} />
+                <Input
+                  id="password"
+                  autoComplete="new-password"
+                  placeholder="Password"
+                  type="password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -90,7 +90,11 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   {
     categoryName: 'Admin',
     routes: [
-      { name: 'Organisations', to: APP_ROUTE.Organizations, icon: Building2Icon },
+      {
+        name: 'Organisations',
+        to: APP_ROUTE.Organizations,
+        icon: Building2Icon,
+      },
       { name: 'Users', to: APP_ROUTE.Users, icon: UsersIcon },
       {
         name: 'Rules',

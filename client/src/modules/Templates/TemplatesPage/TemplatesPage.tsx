@@ -16,9 +16,17 @@ import { useTemplatesProvider } from '../TemplatesProvider';
 export const TemplatesPage = () => {
   const navigate = useNavigate();
   const { pagination } = useTemplatesProvider();
-  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
+  const {
+    currentPage,
+    onPageChange,
+    onPageSizeChange,
+    onSortChange,
+    onSearchChange,
+  } = pagination;
 
-  const [templateToDelete, setTemplateToDelete] = useState<Template | null>(null);
+  const [templateToDelete, setTemplateToDelete] = useState<Template | null>(
+    null,
+  );
 
   const { data: templates, isLoading } = useTemplates(pagination);
   const { deleteTemplate } = useTemplateMutation();
@@ -37,20 +45,24 @@ export const TemplatesPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Failed to delete template.',
+        description:
+          error.response?.data?.errorMessage || 'Failed to delete template.',
       });
     }
     setTemplateToDelete(null);
   };
 
-  const onTemplateRowClick = (templateRow: Template) => navigate(`${APP_ROUTE.Templates}/${templateRow.id}`);
+  const onTemplateRowClick = (templateRow: Template) =>
+    navigate(`${APP_ROUTE.Templates}/${templateRow.id}`);
 
   return (
     <PageContainer
       pageTitle="Manage Templates"
       pageSubtitle="On this page you can create and edit Templates which allow you to upload your data to the platform easily."
       headerNode={<CreateTemplateModal />}
-      breadcrumbs={[{ href: `${APP_ROUTE.Templates}`, name: 'Manage Templates' }]}
+      breadcrumbs={[
+        { href: `${APP_ROUTE.Templates}`, name: 'Manage Templates' },
+      ]}
     >
       <DataTable
         data={templates?.data ?? []}

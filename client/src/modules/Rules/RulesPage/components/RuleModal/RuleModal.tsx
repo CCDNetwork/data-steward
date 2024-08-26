@@ -3,14 +3,32 @@ import { EditIcon, PlusSquareIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
 import { defaultRuleFormValues } from '@/modules/Rules/const';
 import { RulesForm, RulesFormSchema } from '@/modules/Rules/validation';
-import { useAttributeGroup, useAttributeGroupsMutation } from '@/services/attributeGroups/api';
+import {
+  useAttributeGroup,
+  useAttributeGroupsMutation,
+} from '@/services/attributeGroups/api';
 import { useBeneficiaryAttributes } from '@/services/beneficiaryAttribute';
 import { Switch } from '@/components/ui/switch';
 import { DataTable } from '@/components/DataTable';
@@ -19,15 +37,23 @@ import { columns } from './columns';
 import { dataToRuleFormValues } from './transformations';
 import { Tooltip } from '@/components/Tooltip';
 
-export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?: string; showTooltip?: boolean }) => {
+export const RuleModal = ({
+  attributeGroupId,
+  showTooltip,
+}: {
+  attributeGroupId?: string;
+  showTooltip?: boolean;
+}) => {
   const [open, setOpen] = useState<boolean>(false);
 
-  const { data: beneficiaryAttributesData, isLoading } = useBeneficiaryAttributes({ queryEnabled: open });
+  const { data: beneficiaryAttributesData, isLoading } =
+    useBeneficiaryAttributes({ queryEnabled: open });
   const { data: attributeGroupData } = useAttributeGroup({
     id: attributeGroupId ?? '',
     queryEnabled: open,
   });
-  const { createAttributeGroup, editAttributeGroup } = useAttributeGroupsMutation();
+  const { createAttributeGroup, editAttributeGroup } =
+    useAttributeGroupsMutation();
 
   const form = useForm<RulesForm>({
     defaultValues: defaultRuleFormValues,
@@ -36,7 +62,9 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
 
   const { control, handleSubmit, reset, watch, setValue } = form;
 
-  const currentBeneficiaryAttributeIdsFormValue = watch('beneficiaryAttributeIds');
+  const currentBeneficiaryAttributeIdsFormValue = watch(
+    'beneficiaryAttributeIds',
+  );
 
   useEffect(() => {
     if (attributeGroupData) {
@@ -47,7 +75,10 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
   const onSubmit = handleSubmit(async (values) => {
     if (attributeGroupId) {
       try {
-        await editAttributeGroup.mutateAsync({ attributeFormData: values, attributeGroupId });
+        await editAttributeGroup.mutateAsync({
+          attributeFormData: values,
+          attributeGroupId,
+        });
         toast({
           title: 'Success!',
           variant: 'default',
@@ -58,7 +89,9 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
         toast({
           title: 'Something went wrong!',
           variant: 'destructive',
-          description: error.response?.data?.errorMessage || 'An error occured while updating rule.',
+          description:
+            error.response?.data?.errorMessage ||
+            'An error occured while updating rule.',
         });
       }
       return;
@@ -75,21 +108,29 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'An error occured while creating new rule.',
+        description:
+          error.response?.data?.errorMessage ||
+          'An error occured while creating new rule.',
       });
     }
   });
 
   const onTableToggleClick = (beneficiaryAttributeId: number) => {
-    const existingBeneficiaryAttributeId = currentBeneficiaryAttributeIdsFormValue.includes(beneficiaryAttributeId);
+    const existingBeneficiaryAttributeId =
+      currentBeneficiaryAttributeIdsFormValue.includes(beneficiaryAttributeId);
 
     if (existingBeneficiaryAttributeId) {
       setValue(
         'beneficiaryAttributeIds',
-        currentBeneficiaryAttributeIdsFormValue.filter((i) => i !== beneficiaryAttributeId),
+        currentBeneficiaryAttributeIdsFormValue.filter(
+          (i) => i !== beneficiaryAttributeId,
+        ),
       );
     } else {
-      setValue('beneficiaryAttributeIds', [...currentBeneficiaryAttributeIdsFormValue, beneficiaryAttributeId]);
+      setValue('beneficiaryAttributeIds', [
+        ...currentBeneficiaryAttributeIdsFormValue,
+        beneficiaryAttributeId,
+      ]);
     }
   };
 
@@ -109,7 +150,10 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
             </>
           </Button>
         ) : (
-          <Tooltip tooltipContent={'Edit'} className={showTooltip ? '' : 'hidden'}>
+          <Tooltip
+            tooltipContent={'Edit'}
+            className={showTooltip ? '' : 'hidden'}
+          >
             <Button variant="ghost" size="icon" onClick={onOpenChange}>
               <EditIcon className="w-5 h-5" />
             </Button>
@@ -143,7 +187,9 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
                   <FormItem>
                     <div className="space-y-0.5">
                       <FormLabel>Select Attributes</FormLabel>
-                      <FormDescription>Which fields do you want to use to check for duplicates?</FormDescription>
+                      <FormDescription>
+                        Which fields do you want to use to check for duplicates?
+                      </FormDescription>
                     </div>
                     <FormControl>
                       <DataTable
@@ -168,7 +214,10 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
                       <FormLabel>Enable Fuzzy Matching?</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -182,7 +231,10 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
                       <FormLabel>Activate this rule?</FormLabel>
                     </div>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -194,8 +246,14 @@ export const RuleModal = ({ attributeGroupId, showTooltip }: { attributeGroupId?
                 <Button
                   type="submit"
                   onClick={onSubmit}
-                  isLoading={createAttributeGroup.isLoading || editAttributeGroup.isLoading}
-                  disabled={createAttributeGroup.isLoading || editAttributeGroup.isLoading}
+                  isLoading={
+                    createAttributeGroup.isLoading ||
+                    editAttributeGroup.isLoading
+                  }
+                  disabled={
+                    createAttributeGroup.isLoading ||
+                    editAttributeGroup.isLoading
+                  }
                   className="w-full mt-2"
                 >
                   {!attributeGroupId ? 'Create' : 'Save changes'}

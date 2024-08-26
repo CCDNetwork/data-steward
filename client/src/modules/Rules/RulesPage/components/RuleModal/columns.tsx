@@ -20,11 +20,16 @@ export const columns = ({
     header: () => <div className="text-right">Enabled</div>,
     cell: ({ row }) => {
       const { id: beneficiaryAttributeId } = row.original;
-      const isChecked = ruleBeneficiaryAttributeIds.includes(beneficiaryAttributeId);
+      const isChecked = ruleBeneficiaryAttributeIds.includes(
+        beneficiaryAttributeId,
+      );
 
       return (
         <div className="text-right">
-          <Switch checked={isChecked} onClick={() => onTableToggleClick(beneficiaryAttributeId)} />
+          <Switch
+            checked={isChecked}
+            onClick={() => onTableToggleClick(beneficiaryAttributeId)}
+          />
         </div>
       );
     },

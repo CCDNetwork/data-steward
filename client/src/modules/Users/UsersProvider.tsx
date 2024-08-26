@@ -14,7 +14,9 @@ export const UsersProvider = ({ children = <Outlet /> }: Props) => {
 
   const value = useMemo(() => ({ pagination }), [pagination]);
 
-  return <UsersContext.Provider value={value}>{children}</UsersContext.Provider>;
+  return (
+    <UsersContext.Provider value={value}>{children}</UsersContext.Provider>
+  );
 };
 
 export const useUsersProvider = () => {

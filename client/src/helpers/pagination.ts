@@ -71,19 +71,32 @@ type UsePaginationHookProps = {
   useUrlParams?: boolean;
 };
 
-export const usePagination = (props: UsePaginationHookProps = { initialPagination: undefined, useUrlParams: true }) => {
+export const usePagination = (
+  props: UsePaginationHookProps = {
+    initialPagination: undefined,
+    useUrlParams: true,
+  },
+) => {
   const { initialPagination, useUrlParams } = props;
 
   const [searchParams, setSearchParams] = useSearchParams({});
   const [currentPage, setCurrentPage] = useState(
     Number(searchParams.get('page')) || initialPagination?.currentPage || 1,
   );
-  const [pageSize, setPageSize] = useState(Number(searchParams.get('pageSize')) || initialPagination?.pageSize || 10);
-  const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || initialPagination?.sortBy || '');
-  const [sortDirection, setSortDirection] = useState<SortDirection>(
-    (searchParams.get('sortDirection') as SortDirection) || initialPagination?.sortDirection || SortDirection.None,
+  const [pageSize, setPageSize] = useState(
+    Number(searchParams.get('pageSize')) || initialPagination?.pageSize || 10,
   );
-  const [filters, setFilters] = useState<PaginationFilters>(initialPagination?.filters ?? {});
+  const [sortBy, setSortBy] = useState(
+    searchParams.get('sortBy') || initialPagination?.sortBy || '',
+  );
+  const [sortDirection, setSortDirection] = useState<SortDirection>(
+    (searchParams.get('sortDirection') as SortDirection) ||
+      initialPagination?.sortDirection ||
+      SortDirection.None,
+  );
+  const [filters, setFilters] = useState<PaginationFilters>(
+    initialPagination?.filters ?? {},
+  );
   const [queryFilters, setQueryFilters] = useState<PaginationFilters>({});
   const [search, setSearch] = useState(searchParams.get('search') || '');
 
@@ -236,28 +249,37 @@ export const usePagination = (props: UsePaginationHookProps = { initialPaginatio
 export const paginationRequestToUrl = (
   url: string,
   pagination: PaginationRequest,
-  filtersTransformation?: (filters: PaginationFilters) => { [key: string]: any },
+  filtersTransformation?: (filters: PaginationFilters) => {
+    [key: string]: any;
+  },
 ) => {
   const separator = url.indexOf('?') === -1 ? '?' : '&';
   let newUrl = `${url}${separator}page=${pagination.page}&pageSize=${pagination.pageSize}`;
 
   if (pagination.sortBy) newUrl += `&sortBy=${pagination.sortBy}`;
-  if (pagination.sortDirection) newUrl += `&sortDirection=${pagination.sortDirection}`;
-  if (pagination.search && !pagination.replaceSearchParam) newUrl += `&search=${pagination.search}`;
+  if (pagination.sortDirection)
+    newUrl += `&sortDirection=${pagination.sortDirection}`;
+  if (pagination.search && !pagination.replaceSearchParam)
+    newUrl += `&search=${pagination.search}`;
   if (pagination.replaceSearchParam && pagination.replaceSearchParam.value) {
     newUrl += `&${pagination.replaceSearchParam.key}=${pagination.replaceSearchParam.value}`;
   }
   if (pagination.filters) {
-    const transformedFilters = filtersTransformation ? filtersTransformation(pagination.filters) : pagination.filters;
+    const transformedFilters = filtersTransformation
+      ? filtersTransformation(pagination.filters)
+      : pagination.filters;
 
     // remove empty values
-    const preparedFilters = Object.keys(transformedFilters).reduce((acc: any, key) => {
-      if (transformedFilters[key] !== '' && transformedFilters[key] != null) {
-        acc[key] = transformedFilters[key];
-      }
+    const preparedFilters = Object.keys(transformedFilters).reduce(
+      (acc: any, key) => {
+        if (transformedFilters[key] !== '' && transformedFilters[key] != null) {
+          acc[key] = transformedFilters[key];
+        }
 
-      return acc;
-    }, {});
+        return acc;
+      },
+      {},
+    );
 
     // filters are encoded as query params
     const filters = Object.keys(preparedFilters)
@@ -273,13 +295,19 @@ export const paginationRequestToUrl = (
       : pagination.queryFilters;
 
     // remove empty values
-    const preparedFQueryFilters = Object.keys(transformedQueryFilters).reduce((acc: any, key) => {
-      if (transformedQueryFilters[key] !== '' && transformedQueryFilters[key] != null) {
-        acc[key] = transformedQueryFilters[key];
-      }
+    const preparedFQueryFilters = Object.keys(transformedQueryFilters).reduce(
+      (acc: any, key) => {
+        if (
+          transformedQueryFilters[key] !== '' &&
+          transformedQueryFilters[key] != null
+        ) {
+          acc[key] = transformedQueryFilters[key];
+        }
 
-      return acc;
-    }, {});
+        return acc;
+      },
+      {},
+    );
 
     // queryFilters are encoded as query params
     const queryFilters = Object.keys(preparedFQueryFilters)

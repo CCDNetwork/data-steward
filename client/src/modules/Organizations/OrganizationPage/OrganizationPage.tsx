@@ -6,17 +6,36 @@ import { PageContainer } from '@/components/PageContainer';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useOrganization, useOrganizationMutation } from '@/services/organizations/api';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  useOrganization,
+  useOrganizationMutation,
+} from '@/services/organizations/api';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { APP_ROUTE } from '@/helpers/constants';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { OrgActivity } from '@/services/organizations';
 
 import { dataToOrganizationEditFormData } from './form-transformation';
-import { OrganizationEditFormSchema, OrganizationEditFormData } from './validations';
+import {
+  OrganizationEditFormSchema,
+  OrganizationEditFormData,
+} from './validations';
 import { defaultOrganizationEditFormFormValues } from './const';
 
 import { ServiceActivities } from '../components';
@@ -24,7 +43,10 @@ import { ServiceActivities } from '../components';
 export const OrganizationPage = () => {
   const { id: organizationId } = useIdFromParams();
 
-  const { data: organizationData, isLoading: queryLoading } = useOrganization({ id: organizationId, isCreate: false });
+  const { data: organizationData, isLoading: queryLoading } = useOrganization({
+    id: organizationId,
+    isCreate: false,
+  });
 
   const { editOrganization } = useOrganizationMutation();
 
@@ -51,7 +73,10 @@ export const OrganizationPage = () => {
     'isProtectionActive',
   ]);
 
-  const { fields, append, remove } = useFieldArray({ control, name: 'activities' });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'activities',
+  });
 
   useEffect(() => {
     if (organizationData) {
@@ -72,7 +97,8 @@ export const OrganizationPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error updating organisation.',
+        description:
+          error.response?.data?.errorMessage || 'Error updating organisation.',
       });
     }
   });
@@ -87,7 +113,11 @@ export const OrganizationPage = () => {
           type="submit"
           onClick={onSubmit}
           isLoading={editOrganization.isLoading}
-          disabled={formState.isSubmitting || editOrganization.isLoading || !formState.isDirty}
+          disabled={
+            formState.isSubmitting ||
+            editOrganization.isLoading ||
+            !formState.isDirty
+          }
         >
           Save
         </Button>
@@ -109,7 +139,11 @@ export const OrganizationPage = () => {
                     <FormItem>
                       <FormLabel requiredField>Organization name</FormLabel>
                       <FormControl>
-                        <Input id="name" placeholder="Organization name" {...field} />
+                        <Input
+                          id="name"
+                          placeholder="Organization name"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -122,7 +156,9 @@ export const OrganizationPage = () => {
 
             <CardHeader>
               <CardTitle>Services</CardTitle>
-              <CardDescription>Which services does this organisation provide?</CardDescription>
+              <CardDescription>
+                Which services does this organisation provide?
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 gap-6">
@@ -136,7 +172,10 @@ export const OrganizationPage = () => {
                           <FormLabel>MPCA</FormLabel>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -161,7 +200,10 @@ export const OrganizationPage = () => {
                           <FormLabel>WASH</FormLabel>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -186,7 +228,10 @@ export const OrganizationPage = () => {
                           <FormLabel>Shelter</FormLabel>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -211,7 +256,10 @@ export const OrganizationPage = () => {
                           <FormLabel>Food Assistance</FormLabel>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -236,7 +284,10 @@ export const OrganizationPage = () => {
                           <FormLabel>Livelihoods</FormLabel>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -261,7 +312,10 @@ export const OrganizationPage = () => {
                           <FormLabel>Protection</FormLabel>
                         </div>
                         <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
                         </FormControl>
                       </FormItem>
                     )}

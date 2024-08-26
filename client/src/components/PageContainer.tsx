@@ -35,11 +35,22 @@ export const PageContainer = ({
           <Breadcrumb breadcrumbs={breadcrumbs} />
         </div>
       )}
-      <div className={cn('flex items-start justify-between space-y-2', headerClassName)}>
+      <div
+        className={cn(
+          'flex items-start justify-between space-y-2',
+          headerClassName,
+        )}
+      >
         <div className="flex">
           <div className="flex flex-col gap-1">
-            <h2 className="text-2xl sm:text-2xl font-bold tracking-tight">{pageTitle}</h2>
-            {pageSubtitle && <h2 className="max-w-[37rem] leading-6 text-muted-foreground">{pageSubtitle}</h2>}
+            <h2 className="text-2xl sm:text-2xl font-bold tracking-tight">
+              {pageTitle}
+            </h2>
+            {pageSubtitle && (
+              <h2 className="max-w-[37rem] leading-6 text-muted-foreground">
+                {pageSubtitle}
+              </h2>
+            )}
           </div>
         </div>
         {headerNode}

@@ -1,6 +1,10 @@
 import { useRef, useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { FieldArrayWithId, UseFieldArrayAppend, UseFieldArrayRemove } from 'react-hook-form';
+import {
+  FieldArrayWithId,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
+} from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,7 +50,12 @@ interface Props {
   removeActivity: UseFieldArrayRemove;
 }
 
-export const ServiceActivities = ({ activities, addActivity, removeActivity, serviceType }: Props) => {
+export const ServiceActivities = ({
+  activities,
+  addActivity,
+  removeActivity,
+  serviceType,
+}: Props) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [inputValue, setInputValue] = useState<string>('');
 
@@ -64,7 +73,9 @@ export const ServiceActivities = ({ activities, addActivity, removeActivity, ser
     setInputValue('');
   };
 
-  const filteredActivities = activities.filter((activity) => activity.serviceType === serviceType);
+  const filteredActivities = activities.filter(
+    (activity) => activity.serviceType === serviceType,
+  );
 
   return (
     <div>

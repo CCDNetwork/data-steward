@@ -21,4 +21,6 @@ export const AddOrganizationModalFormSchema = z.object({
     .default([]),
 });
 
-export type AddOrganizationModalForm = z.infer<typeof AddOrganizationModalFormSchema>;
+export type AddOrganizationModalForm = z.infer<
+  typeof AddOrganizationModalFormSchema
+>;

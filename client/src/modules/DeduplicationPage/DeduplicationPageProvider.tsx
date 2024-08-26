@@ -6,17 +6,24 @@ interface DeduplicationContextInterface {
   setDeduplicationWizardError: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const DeduplicationContext = createContext<DeduplicationContextInterface>(undefined!);
+const DeduplicationContext = createContext<DeduplicationContextInterface>(
+  undefined!,
+);
 
 export const DeduplicationProvider = ({ children = <Outlet /> }: Props) => {
-  const [deduplicationWizardError, setDeduplicationWizardError] = useState<any>(undefined);
+  const [deduplicationWizardError, setDeduplicationWizardError] =
+    useState<any>(undefined);
 
   const value = useMemo(
     () => ({ deduplicationWizardError, setDeduplicationWizardError }),
     [deduplicationWizardError, setDeduplicationWizardError],
   );
 
-  return <DeduplicationContext.Provider value={value}>{children}</DeduplicationContext.Provider>;
+  return (
+    <DeduplicationContext.Provider value={value}>
+      {children}
+    </DeduplicationContext.Provider>
+  );
 };
 
 export const useDeduplicationProvider = () => {

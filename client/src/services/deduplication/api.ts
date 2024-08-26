@@ -1,4 +1,8 @@
-import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
+import {
+  DataWithMeta,
+  PaginationRequest,
+  paginationRequestToUrl,
+} from '@/helpers/pagination';
 import { useDeduplicationProvider } from '@/modules/DeduplicationPage';
 import { api } from '@/services';
 import {
@@ -37,10 +41,17 @@ export const deleteDeduplicationData = async (): Promise<object> => {
   return resp.data;
 };
 
-const postDeduplicationDataset = async (data: { file: File; templateId: string }): Promise<DeduplicationDataset> => {
-  const resp = await api.post('/deduplication/dataset', dataToDatasetRequest(data), {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+const postDeduplicationDataset = async (data: {
+  file: File;
+  templateId: string;
+}): Promise<DeduplicationDataset> => {
+  const resp = await api.post(
+    '/deduplication/dataset',
+    dataToDatasetRequest(data),
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    },
+  );
 
   return resToDatasetResponse(resp.data);
 };
@@ -63,16 +74,39 @@ const postDeduplicationSystemOrganizations = async (data: {
   return resToSystemDedupeResponse(resp.data);
 };
 
-const postDeduplicationFinish = async (data: { fileId: string; templateId: string }): Promise<DeduplicationDataset> => {
+const postDeduplicationFinish = async (data: {
+  fileId: string;
+  templateId: string;
+}): Promise<DeduplicationDataset> => {
   const resp = await api.post('/deduplication/finish', data);
 
   return resToDatasetResponse(resp.data);
 };
 
-export const useDeduplicationListings = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
+export const useDeduplicationListings = ({
+  currentPage,
+  pageSize,
+  sortBy,
+  sortDirection,
+  debouncedSearch,
+}: any) => {
   return useQuery(
-    [QueryKeys.DeduplicationListings, currentPage, pageSize, sortBy, sortDirection, debouncedSearch],
-    () => fetchDeduplicationListings({ page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch }),
+    [
+      QueryKeys.DeduplicationListings,
+      currentPage,
+      pageSize,
+      sortBy,
+      sortDirection,
+      debouncedSearch,
+    ],
+    () =>
+      fetchDeduplicationListings({
+        page: currentPage,
+        pageSize,
+        sortBy,
+        sortDirection,
+        search: debouncedSearch,
+      }),
   );
 };
 
@@ -84,14 +118,21 @@ export const useDeduplicationMutation = () => {
     deduplicateFile: useMutation(postDeduplicationDataset, {
       onError: (error) => setDeduplicationWizardError(error),
     }),
-    deduplicateSameOrganization: useMutation(postDeduplicationSameOrganization, {
-      onError: (error) => setDeduplicationWizardError(error),
-    }),
-    deduplicateSystemOrganizations: useMutation(postDeduplicationSystemOrganizations, {
-      onError: (error) => setDeduplicationWizardError(error),
-    }),
+    deduplicateSameOrganization: useMutation(
+      postDeduplicationSameOrganization,
+      {
+        onError: (error) => setDeduplicationWizardError(error),
+      },
+    ),
+    deduplicateSystemOrganizations: useMutation(
+      postDeduplicationSystemOrganizations,
+      {
+        onError: (error) => setDeduplicationWizardError(error),
+      },
+    ),
     deduplicateFinish: useMutation(postDeduplicationFinish, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.DeduplicationListings]),
+      onSuccess: () =>
+        queryClient.invalidateQueries([QueryKeys.DeduplicationListings]),
       onError: (error) => setDeduplicationWizardError(error),
     }),
   };

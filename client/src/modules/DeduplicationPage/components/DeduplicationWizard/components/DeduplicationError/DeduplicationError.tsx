@@ -31,14 +31,23 @@ export const DeduplicationError = ({ errorMessage, onOpenChange }: Props) => {
       variants={variants}
       animate="visible"
     >
-      <BadgeXIcon fill="#ff0000" stroke="white" strokeWidth={1} className="h-40 w-40" />
-      <h4 className="text-2xl font-semibold md:text-3xl tracking-tight">An unexpected error has occcured!</h4>
+      <BadgeXIcon
+        fill="#ff0000"
+        stroke="white"
+        strokeWidth={1}
+        className="h-40 w-40"
+      />
+      <h4 className="text-2xl font-semibold md:text-3xl tracking-tight">
+        An unexpected error has occcured!
+      </h4>
       {errorMessage && (
         <code className="bg-muted px-2 py-1 text-xs rounded-sm text-red-500 whitespace-pre-wrap max-w-[500px] break-words">
           {errorMessage}
         </code>
       )}
-      <p className="text-muted-foreground">Please close the wizard and try again.</p>
+      <p className="text-muted-foreground">
+        Please close the wizard and try again.
+      </p>
       <div className="flex items-center mt-6">
         <Button onClick={onOpenChange} variant="destructive">
           Close

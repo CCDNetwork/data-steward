@@ -11,7 +11,9 @@ enum QueryKeys {
 //
 // API calls
 //
-export const fetchReferralDiscussion = async (referralId: string): Promise<ReferralDiscussion[]> => {
+export const fetchReferralDiscussion = async (
+  referralId: string,
+): Promise<ReferralDiscussion[]> => {
   const resp = await api.get(`/referrals/${referralId}/discussions`);
 
   return resp.data.map(resToReferralDiscussion).reverse();
@@ -33,10 +35,18 @@ const postReferralDiscussionText = async ({
 // GET hooks
 //
 
-export const useReferralDiscussion = ({ referralId }: { referralId: string }) => {
-  return useQuery([QueryKeys.ReferralDiscussion, referralId], () => fetchReferralDiscussion(referralId), {
-    enabled: !!referralId,
-  });
+export const useReferralDiscussion = ({
+  referralId,
+}: {
+  referralId: string;
+}) => {
+  return useQuery(
+    [QueryKeys.ReferralDiscussion, referralId],
+    () => fetchReferralDiscussion(referralId),
+    {
+      enabled: !!referralId,
+    },
+  );
 };
 
 //
@@ -48,7 +58,8 @@ export const useReferralDiscussionMutation = () => {
 
   return {
     createReferralDiscussionEntry: useMutation(postReferralDiscussionText, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.ReferralDiscussion]),
+      onSuccess: () =>
+        queryClient.invalidateQueries([QueryKeys.ReferralDiscussion]),
     }),
   };
 };

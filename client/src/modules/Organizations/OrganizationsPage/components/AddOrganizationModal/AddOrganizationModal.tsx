@@ -14,7 +14,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { useOrganizationMutation } from '@/services/organizations/api';
 import { toast } from '@/components/ui/use-toast';
 
@@ -22,10 +29,18 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { ServiceActivities } from '@/modules/Organizations/components';
 
-import { AddOrganizationModalFormSchema, AddOrganizationModalForm } from './validation';
+import {
+  AddOrganizationModalFormSchema,
+  AddOrganizationModalForm,
+} from './validation';
 import { defaultNewOrganizationFormFormValues } from './const';
 import { OrgActivity } from '@/services/organizations';
-import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 export const AddOrganizationModal = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -53,7 +68,10 @@ export const AddOrganizationModal = () => {
     'isProtectionActive',
   ]);
 
-  const { fields, append, remove } = useFieldArray({ control, name: 'activities' });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'activities',
+  });
 
   const { addOrganization } = useOrganizationMutation();
 
@@ -70,7 +88,8 @@ export const AddOrganizationModal = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error creating organisation.',
+        description:
+          error.response?.data?.errorMessage || 'Error creating organisation.',
       });
     }
   });
@@ -91,7 +110,9 @@ export const AddOrganizationModal = () => {
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Add a new organisation</DialogTitle>
-          <DialogDescription>Submit organisation information below.</DialogDescription>
+          <DialogDescription>
+            Submit organisation information below.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={onSubmit}>
@@ -103,7 +124,12 @@ export const AddOrganizationModal = () => {
                   <FormItem>
                     <FormLabel requiredField>Organisation name</FormLabel>
                     <FormControl>
-                      <Input id="name" placeholder="Organisation name" type="text" {...field} />
+                      <Input
+                        id="name"
+                        placeholder="Organisation name"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -112,7 +138,9 @@ export const AddOrganizationModal = () => {
               <Separator />
               <CardHeader className="!p-0">
                 <CardTitle>Services</CardTitle>
-                <CardDescription>Which services does this organisation provide?</CardDescription>
+                <CardDescription>
+                  Which services does this organisation provide?
+                </CardDescription>
               </CardHeader>
               <CardContent className="!p-0">
                 <div className="grid grid-cols-1 gap-4">
@@ -126,7 +154,10 @@ export const AddOrganizationModal = () => {
                             <FormLabel>MPCA</FormLabel>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -151,7 +182,10 @@ export const AddOrganizationModal = () => {
                             <FormLabel>WASH</FormLabel>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -176,7 +210,10 @@ export const AddOrganizationModal = () => {
                             <FormLabel>Shelter</FormLabel>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -201,7 +238,10 @@ export const AddOrganizationModal = () => {
                             <FormLabel>Food Assistance</FormLabel>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -226,7 +266,10 @@ export const AddOrganizationModal = () => {
                             <FormLabel>Livelihoods</FormLabel>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -251,7 +294,10 @@ export const AddOrganizationModal = () => {
                             <FormLabel>Protection</FormLabel>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                           </FormControl>
                         </FormItem>
                       )}

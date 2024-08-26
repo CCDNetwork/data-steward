@@ -29,7 +29,8 @@ export const BeneficiaryReferralDataPage = () => {
       toast({
         title: 'An error has occured!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Something went wrong',
+        description:
+          error.response?.data?.errorMessage || 'Something went wrong',
       });
     }
     setInputValue('');
@@ -44,35 +45,57 @@ export const BeneficiaryReferralDataPage = () => {
             <div className="flex gap-2  items-center justify-evenly">
               {referralData.createdAt && (
                 <div className="text-center">
-                  <span className="text-xs text-muted-foreground uppercase font-medium">Date created</span>
-                  <p className="text-sm font-medium">{formatDate(referralData.createdAt, 'dd/MM/yyyy HH:mm')}</p>
+                  <span className="text-xs text-muted-foreground uppercase font-medium">
+                    Date created
+                  </span>
+                  <p className="text-sm font-medium">
+                    {formatDate(referralData.createdAt, 'dd/MM/yyyy HH:mm')}
+                  </p>
                 </div>
               )}
 
               {referralData.updatedAt && (
                 <div className="text-center">
-                  <span className="text-xs font-medium text-muted-foreground uppercase">Last update</span>
-                  <p className="text-sm font-medium">{formatDate(referralData.updatedAt, 'dd/MM/yyyy HH:mm')}</p>
+                  <span className="text-xs font-medium text-muted-foreground uppercase">
+                    Last update
+                  </span>
+                  <p className="text-sm font-medium">
+                    {formatDate(referralData.updatedAt, 'dd/MM/yyyy HH:mm')}
+                  </p>
                 </div>
               )}
             </div>
             <div className="flex gap-2 flex-col items-center">
-              <span className="text-sm text-muted-foreground">Your case was registered by</span>
-              <p className="text-xl font-medium">{referralData.organizationCreated?.name || ''}</p>
+              <span className="text-sm text-muted-foreground">
+                Your case was registered by
+              </span>
+              <p className="text-xl font-medium">
+                {referralData.organizationCreated?.name || ''}
+              </p>
             </div>
             <div className="flex gap-2 flex-col items-center">
-              <span className="text-sm text-muted-foreground">It has been referred to</span>
-              <p className="text-xl font-medium">{referralData.organizationReferredTo?.name || ''}</p>
+              <span className="text-sm text-muted-foreground">
+                It has been referred to
+              </span>
+              <p className="text-xl font-medium">
+                {referralData.organizationReferredTo?.name || ''}
+              </p>
             </div>
             <div className="flex gap-2 flex-col items-center">
-              <span className="text-sm text-muted-foreground">The status of your case is</span>
+              <span className="text-sm text-muted-foreground">
+                The status of your case is
+              </span>
               <p className="text-md font-semibold uppercase px-3 py-1 rounded-lg text-white bg-primary">
                 {referralData.status || ''}
               </p>
             </div>
             <div className="text-center whitespace-pre-line text-sm italic text-muted-foreground">{`If you have any questions, please contact a representative of \n ${referralData.organizationReferredTo?.name}`}</div>
           </div>
-          <Button type="button" variant="link" onClick={() => setReferralData(null)}>
+          <Button
+            type="button"
+            variant="link"
+            onClick={() => setReferralData(null)}
+          >
             &larr; Go Back
           </Button>
         </div>

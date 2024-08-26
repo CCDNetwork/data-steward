@@ -8,7 +8,8 @@ export const api = axios.create({
 });
 
 api.defaults.headers.common.Authorization = `Bearer ${LocalStorage.getToken()}`;
-api.defaults.headers.common['organization-id'] = `${LocalStorage.getOrganization()?.id}`;
+api.defaults.headers.common['organization-id'] =
+  `${LocalStorage.getOrganization()?.id}`;
 
 api.interceptors.response.use(
   (config) => config,

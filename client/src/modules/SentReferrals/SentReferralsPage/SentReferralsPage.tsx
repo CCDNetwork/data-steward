@@ -9,7 +9,11 @@ import { APP_ROUTE } from '@/helpers/constants';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { toast } from '@/components/ui/use-toast';
 import { Referral } from '@/services/referrals';
-import { useReferralMutation, useReferrals, useReferralUsers } from '@/services/referrals/api';
+import {
+  useReferralMutation,
+  useReferrals,
+  useReferralUsers,
+} from '@/services/referrals/api';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
@@ -27,23 +31,35 @@ export const SentReferralsPage = () => {
   const navigate = useNavigate();
   const pagination = usePagination();
   const { setViewOnlyEnabled } = useSentReferralsProvider();
-  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
+  const {
+    currentPage,
+    onPageChange,
+    onPageSizeChange,
+    onSortChange,
+    onSearchChange,
+  } = pagination;
 
-  const [sentReferralsFilters, setSentReferralsFilters] = useState<Record<string, string>>({
+  const [sentReferralsFilters, setSentReferralsFilters] = useState<
+    Record<string, string>
+  >({
     isDraft: 'false',
   });
-  const [hiddenColumns, setHiddenColumns] = useState<VisibilityState | undefined>({ status: true });
-  const [sentReferralToDelete, setSentReferralToDelete] = useState<Referral | null>(null);
+  const [hiddenColumns, setHiddenColumns] = useState<
+    VisibilityState | undefined
+  >({ status: true });
+  const [sentReferralToDelete, setSentReferralToDelete] =
+    useState<Referral | null>(null);
 
   const { data: sentReferralsData, isLoading: queryLoading } = useReferrals({
     ...pagination,
     filters: sentReferralsFilters,
   });
 
-  const { data: organizations, isFetched: isOrganizationsFetched } = useOrganizations({
-    currentPage: 1,
-    pageSize: 999,
-  });
+  const { data: organizations, isFetched: isOrganizationsFetched } =
+    useOrganizations({
+      currentPage: 1,
+      pageSize: 999,
+    });
 
   const { data: users, isFetched: usersFetched } = useReferralUsers({
     currentPage: 1,
@@ -67,7 +83,8 @@ export const SentReferralsPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Failed to delete referral.',
+        description:
+          error.response?.data?.errorMessage || 'Failed to delete referral.',
       });
     }
     setSentReferralToDelete(null);
@@ -100,7 +117,9 @@ export const SentReferralsPage = () => {
           New Case
         </Button>
       }
-      breadcrumbs={[{ href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' }]}
+      breadcrumbs={[
+        { href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' },
+      ]}
     >
       <Tabs defaultValue="sent">
         <TabsList>
@@ -118,7 +137,10 @@ export const SentReferralsPage = () => {
           <TabsTrigger
             value="draft"
             onClick={() => {
-              setHiddenColumns({ status: false, organizationReferredTo: false });
+              setHiddenColumns({
+                status: false,
+                organizationReferredTo: false,
+              });
               setSentReferralsFilters(() => ({
                 isDraft: 'true',
               }));
@@ -155,7 +177,10 @@ export const SentReferralsPage = () => {
               title="Filter by creator"
               options={
                 usersFetched
-                  ? users!.data.map((user) => ({ label: `${user.firstName} ${user.lastName}`, value: user.id }))
+                  ? users!.data.map((user) => ({
+                      label: `${user.firstName} ${user.lastName}`,
+                      value: user.id,
+                    }))
                   : []
               }
             />
@@ -175,7 +200,12 @@ export const SentReferralsPage = () => {
               setCurrentFilters={setSentReferralsFilters}
               title="Filter by Recipient"
               options={
-                isOrganizationsFetched ? organizations!.data.map((org) => ({ label: org.name, value: org.id })) : []
+                isOrganizationsFetched
+                  ? organizations!.data.map((org) => ({
+                      label: org.name,
+                      value: org.id,
+                    }))
+                  : []
               }
             />
             <FilterDropdown
@@ -183,9 +213,14 @@ export const SentReferralsPage = () => {
               filterName="serviceCategory[in]"
               setCurrentFilters={setSentReferralsFilters}
               title="Filter by Activity"
-              options={Object.entries(OrgActivityFilterMap).map(([label, value]) => ({ label, value }))}
+              options={Object.entries(OrgActivityFilterMap).map(
+                ([label, value]) => ({ label, value }),
+              )}
             />
-            <DateRangePickerFilter setCurrentFilters={setSentReferralsFilters} placeholder="Filter by Date" />
+            <DateRangePickerFilter
+              setCurrentFilters={setSentReferralsFilters}
+              placeholder="Filter by Date"
+            />
           </div>
         }
       />

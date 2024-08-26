@@ -2,12 +2,32 @@ import { useState } from 'react';
 import { SendHorizonal, UserPlus2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { useUserMutation } from '@/services/users/api';
 import { toast } from '@/components/ui/use-toast';
 import { AsyncSelect } from '@/components/AsyncSelect';
@@ -53,14 +73,17 @@ export const AddUserModal = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Something went wrong',
+        description:
+          error.response?.data?.errorMessage || 'Something went wrong',
       });
     }
   });
 
   const onPermissionClick = (permission: string) => {
     if (currentFormPermissions?.includes(permission)) {
-      const filteredFormPermissions = currentFormPermissions?.filter((i) => i !== permission);
+      const filteredFormPermissions = currentFormPermissions?.filter(
+        (i) => i !== permission,
+      );
       setValue('permissions', filteredFormPermissions);
       return;
     }
@@ -96,7 +119,12 @@ export const AddUserModal = () => {
                     <FormItem>
                       <FormLabel requiredField>First name</FormLabel>
                       <FormControl>
-                        <Input id="firstName" placeholder="John" type="text" {...field} />
+                        <Input
+                          id="firstName"
+                          placeholder="John"
+                          type="text"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -109,7 +137,12 @@ export const AddUserModal = () => {
                     <FormItem>
                       <FormLabel requiredField>Last name</FormLabel>
                       <FormControl>
-                        <Input id="lastName" placeholder="Doe" type="text" {...field} />
+                        <Input
+                          id="lastName"
+                          placeholder="Doe"
+                          type="text"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -123,14 +156,21 @@ export const AddUserModal = () => {
                   <FormItem>
                     <FormLabel requiredField>Email</FormLabel>
                     <FormControl>
-                      <Input id="username" placeholder="email@example.com" type="email" {...field} />
+                      <Input
+                        id="username"
+                        placeholder="email@example.com"
+                        type="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div className="flex flex-col gap-3">
-                <div className="text-sm font-medium leading-none">Permissions</div>
+                <div className="text-sm font-medium leading-none">
+                  Permissions
+                </div>
                 <div className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                   <Checkbox
                     className="shadow-none"
@@ -163,7 +203,10 @@ export const AddUserModal = () => {
               />
               <FormItem>
                 <FormLabel requiredField>Role</FormLabel>
-                <Select onValueChange={(val: string) => setValue('role', val)} value={currentFormRole}>
+                <Select
+                  onValueChange={(val: string) => setValue('role', val)}
+                  value={currentFormRole}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

@@ -9,7 +9,11 @@ const DEDUPLICATION_STEPS: { step: string }[] = [
   { step: 'Registry deduplication' },
 ];
 
-export const DeduplicationSteps = ({ currentStep }: { currentStep: number }) => {
+export const DeduplicationSteps = ({
+  currentStep,
+}: {
+  currentStep: number;
+}) => {
   const [stepUnderlineWidth, setStepUnderlineWidth] = useState(0);
   const [stepUnderlineOffset, stepTabUnderlineOffset] = useState(0);
 
@@ -34,9 +38,12 @@ export const DeduplicationSteps = ({ currentStep }: { currentStep: number }) => 
         <div
           ref={(el) => (tabsRef.current[stepIndex + 1] = el as HTMLDivElement)}
           key={step}
-          className={cn('relative px-2 text-sm pb-2 pt-1 rounded-md w-full transition-opacity duration-300', {
-            'opacity-60': stepIndex + 1 < currentStep,
-          })}
+          className={cn(
+            'relative px-2 text-sm pb-2 pt-1 rounded-md w-full transition-opacity duration-300',
+            {
+              'opacity-60': stepIndex + 1 < currentStep,
+            },
+          )}
         >
           <span className="font-medium flex items-center">
             {`Step ${stepIndex + 1}`}

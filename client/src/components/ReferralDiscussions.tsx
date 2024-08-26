@@ -1,10 +1,19 @@
 import { useRef, useState } from 'react';
 import { Loader2, LucideSendHorizontal } from 'lucide-react';
 
-import { useReferralDiscussion, useReferralDiscussionMutation } from '@/services/referrals';
+import {
+  useReferralDiscussion,
+  useReferralDiscussionMutation,
+} from '@/services/referrals';
 import { cn } from '@/helpers/utils';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from './ui/card';
 
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -36,13 +45,17 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
     }
 
     try {
-      await createReferralDiscussionEntry.mutateAsync({ referralId, text: discussionInputValue });
+      await createReferralDiscussionEntry.mutateAsync({
+        referralId,
+        text: discussionInputValue,
+      });
       fetchReferralDiscussions();
     } catch (error: any) {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error sending a message.',
+        description:
+          error.response?.data?.errorMessage || 'Error sending a message.',
       });
     }
 
@@ -88,9 +101,12 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
                 return (
                   <div
                     key={discussionEntry.id}
-                    className={cn('px-3 py-2 rounded-md bg-muted flex flex-col', {
-                      'bg-primary text-white': !isBot,
-                    })}
+                    className={cn(
+                      'px-3 py-2 rounded-md bg-muted flex flex-col',
+                      {
+                        'bg-primary text-white': !isBot,
+                      },
+                    )}
                   >
                     <div className="flex justify-between text-xs font-medium">
                       <div>
@@ -98,17 +114,25 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
                           ? 'Activity'
                           : `${userCreated?.firstName} ${userCreated?.lastName} - ${userCreated?.organizations[0].name ?? ''}`}
                       </div>
-                      {createdAt && <div className="font-normal">{formatDate(createdAt, 'dd/MM/yyyy HH:mm')}</div>}
+                      {createdAt && (
+                        <div className="font-normal">
+                          {formatDate(createdAt, 'dd/MM/yyyy HH:mm')}
+                        </div>
+                      )}
                     </div>
                     <p
-                      className={cn('text-sm mt-1', { 'italic text-muted-foreground': isBot })}
+                      className={cn('text-sm mt-1', {
+                        'italic text-muted-foreground': isBot,
+                      })}
                       dangerouslySetInnerHTML={{ __html: text }}
                     />
                   </div>
                 );
               })
             ) : (
-              <div className="text-center text-muted-foreground text-sm">Nothing here yet</div>
+              <div className="text-center text-muted-foreground text-sm">
+                Nothing here yet
+              </div>
             )}
           </div>
         </CardContent>

@@ -1,5 +1,9 @@
 import * as React from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DotsHorizontalIcon,
+} from '@radix-ui/react-icons';
 
 import { cn } from '@/helpers/utils';
 import { ButtonProps, buttonVariants } from '@/components/ui/button';
@@ -15,14 +19,22 @@ const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
 );
 Pagination.displayName = 'Pagination';
 
-const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProps<'ul'>>(
-  ({ className, ...props }, ref) => (
-    <ul ref={ref} className={cn('flex flex-row items-center gap-2', className)} {...props} />
-  ),
-);
+const PaginationContent = React.forwardRef<
+  HTMLUListElement,
+  React.ComponentProps<'ul'>
+>(({ className, ...props }, ref) => (
+  <ul
+    ref={ref}
+    className={cn('flex flex-row items-center gap-2', className)}
+    {...props}
+  />
+));
 PaginationContent.displayName = 'PaginationContent';
 
-const PaginationItem = React.forwardRef<HTMLLIElement, React.ComponentProps<'li'>>(({ className, ...props }, ref) => (
+const PaginationItem = React.forwardRef<
+  HTMLLIElement,
+  React.ComponentProps<'li'>
+>(({ className, ...props }, ref) => (
   <li ref={ref} className={cn('', className)} {...props} />
 ));
 PaginationItem.displayName = 'PaginationItem';
@@ -32,7 +44,12 @@ type PaginationLinkProps = {
 } & Pick<ButtonProps, 'size'> &
   React.ComponentProps<'button'>;
 
-const PaginationLink = ({ className, isActive, size = 'icon', ...props }: PaginationLinkProps) => (
+const PaginationLink = ({
+  className,
+  isActive,
+  size = 'icon',
+  ...props
+}: PaginationLinkProps) => (
   <button
     type="button"
     aria-current={isActive ? 'page' : undefined}
@@ -50,7 +67,10 @@ const PaginationLink = ({ className, isActive, size = 'icon', ...props }: Pagina
 );
 PaginationLink.displayName = 'PaginationLink';
 
-const PaginationPrevious = ({ className, ...props }: React.ComponentProps<typeof PaginationLink>) => (
+const PaginationPrevious = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
     size="default"
@@ -63,7 +83,10 @@ const PaginationPrevious = ({ className, ...props }: React.ComponentProps<typeof
 );
 PaginationPrevious.displayName = 'PaginationPrevious';
 
-const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof PaginationLink>) => (
+const PaginationNext = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to next page"
     size="default"
@@ -76,22 +99,33 @@ const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof Pag
 );
 PaginationNext.displayName = 'PaginationNext';
 
-const PaginationFirstPage = ({ ...props }: React.ComponentProps<typeof PaginationLink>) => (
+const PaginationFirstPage = ({
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink aria-label="Go to first page" size="icon" {...props}>
     <LucideChevronsLeft className="h-4 w-4" />
   </PaginationLink>
 );
 PaginationFirstPage.displayName = 'PaginationFirstPage';
 
-const PaginationLastPage = ({ ...props }: React.ComponentProps<typeof PaginationLink>) => (
+const PaginationLastPage = ({
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink aria-label="Go to last page" size="icon" {...props}>
     <ChevronsRightIcon className="h-4 w-4" />
   </PaginationLink>
 );
 PaginationLastPage.displayName = 'PaginationLastPage';
 
-const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => (
-  <span aria-hidden className={cn('flex h-9 w-9 items-center justify-center', className)} {...props}>
+const PaginationEllipsis = ({
+  className,
+  ...props
+}: React.ComponentProps<'span'>) => (
+  <span
+    aria-hidden
+    className={cn('flex h-9 w-9 items-center justify-center', className)}
+    {...props}
+  >
     <DotsHorizontalIcon className="h-4 w-4" />
     <span className="sr-only">More pages</span>
   </span>

@@ -14,7 +14,9 @@ export const RulesProvider = ({ children = <Outlet /> }: Props) => {
 
   const value = useMemo(() => ({ pagination }), [pagination]);
 
-  return <RulesContext.Provider value={value}>{children}</RulesContext.Provider>;
+  return (
+    <RulesContext.Provider value={value}>{children}</RulesContext.Provider>
+  );
 };
 
 export const useRulesProvider = () => {

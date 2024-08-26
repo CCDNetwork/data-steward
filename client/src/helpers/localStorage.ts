@@ -3,9 +3,11 @@ import { User, initialUser } from '@/services/users';
 
 export class LocalStorage {
   // Manage token
-  static getToken = () => localStorage.getItem('token') || sessionStorage.getItem('token');
+  static getToken = () =>
+    localStorage.getItem('token') || sessionStorage.getItem('token');
   static setToken = (token: string) => localStorage.setItem('token', token);
-  static setTokenToSession = (token: string) => sessionStorage.setItem('token', token);
+  static setTokenToSession = (token: string) =>
+    sessionStorage.setItem('token', token);
   static removeToken = () => {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
@@ -19,7 +21,8 @@ export class LocalStorage {
     }
     return JSON.parse(user);
   };
-  static setUser = (user: User) => localStorage.setItem('user', JSON.stringify(user));
+  static setUser = (user: User) =>
+    localStorage.setItem('user', JSON.stringify(user));
   static removeUser = () => localStorage.removeItem('user');
 
   // Manage organization

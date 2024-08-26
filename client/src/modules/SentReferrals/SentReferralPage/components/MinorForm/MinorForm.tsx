@@ -1,6 +1,13 @@
 import { Control } from 'react-hook-form';
 
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,12 +23,18 @@ interface Props {
   disabled: boolean;
 }
 
-export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverContactPreference, disabled }: Props) => {
+export const MinorForm = ({
+  control,
+  isCaregiverInformed,
+  currentFormCaregiverContactPreference,
+  disabled,
+}: Props) => {
   return (
     <>
       <CardDescription>
-        Remember: if it is not appropriate to involve the child’s caregiver (for instance if the caregiver is involved
-        in the abuse), informed assent should be sought from the younger child
+        Remember: if it is not appropriate to involve the child’s caregiver (for
+        instance if the caregiver is involved in the abuse), informed assent
+        should be sought from the younger child
       </CardDescription>
 
       <FormField
@@ -34,7 +47,11 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
               <FormDescription>Description text</FormDescription>
             </div>
             <FormControl>
-              <Switch checked={field.value} onCheckedChange={field.onChange} disabled={disabled} />
+              <Switch
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={disabled}
+              />
             </FormControl>
           </FormItem>
         )}
@@ -126,7 +143,13 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
           name="caregiverEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel requiredField={currentFormCaregiverContactPreference === 'email'}>Email</FormLabel>
+              <FormLabel
+                requiredField={
+                  currentFormCaregiverContactPreference === 'email'
+                }
+              >
+                Email
+              </FormLabel>
               <FormControl>
                 <Input
                   id="caregiverEmail"
@@ -145,9 +168,21 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
           name="caregiverPhone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel requiredField={currentFormCaregiverContactPreference === 'phone'}>Phone</FormLabel>
+              <FormLabel
+                requiredField={
+                  currentFormCaregiverContactPreference === 'phone'
+                }
+              >
+                Phone
+              </FormLabel>
               <FormControl>
-                <Input id="caregiverPhone" placeholder="Phone" type="tel" {...field} disabled={disabled} />
+                <Input
+                  id="caregiverPhone"
+                  placeholder="Phone"
+                  type="tel"
+                  {...field}
+                  disabled={disabled}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -178,7 +213,9 @@ export const MinorForm = ({ control, isCaregiverInformed, currentFormCaregiverCo
                   <FormControl>
                     <RadioGroupItem value="false" />
                   </FormControl>
-                  <FormLabel className="font-normal">No (provide explanation)</FormLabel>
+                  <FormLabel className="font-normal">
+                    No (provide explanation)
+                  </FormLabel>
                 </FormItem>
               </RadioGroup>
             </FormControl>

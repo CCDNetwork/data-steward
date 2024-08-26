@@ -1,4 +1,9 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { api } from '@/services/api';
 import {
@@ -8,7 +13,11 @@ import {
   organizationMeToReq,
   organizationToReq,
 } from '@/services/organizations';
-import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
+import {
+  DataWithMeta,
+  PaginationRequest,
+  paginationRequestToUrl,
+} from '@/helpers/pagination';
 import { useGlobalErrors } from '@/providers/GlobalProvider';
 import { OrganizationEditFormData } from '@/modules/Organizations/OrganizationPage/validations';
 
@@ -17,7 +26,9 @@ enum QueryKeys {
   Organization = 'organization',
 }
 
-export const fetchOrganizations = async (pagination: PaginationRequest): Promise<DataWithMeta<Organization>> => {
+export const fetchOrganizations = async (
+  pagination: PaginationRequest,
+): Promise<DataWithMeta<Organization>> => {
   const url = paginationRequestToUrl('organizations', pagination);
 
   const resp = await api.get(url);
@@ -39,7 +50,10 @@ const putOrganization = async ({
   payload: OrganizationEditFormData;
   organizationId: string;
 }): Promise<Organization> => {
-  const resp = await api.put(`/organizations/${organizationId}`, organizationToReq(payload));
+  const resp = await api.put(
+    `/organizations/${organizationId}`,
+    organizationToReq(payload),
+  );
   return resToOrganization(resp.data);
 };
 
@@ -48,18 +62,28 @@ const fetchOrganizationMe = async (): Promise<Organization> => {
   return resToOrganization(resp.data);
 };
 
-const postOrganization = async (data: { name: string }): Promise<Organization> => {
+const postOrganization = async (data: {
+  name: string;
+}): Promise<Organization> => {
   const resp = await api.post('/organizations', organizationToReq(data));
   return resToOrganization(resp.data);
 };
 
-const putOrganizationMe = async (data: OrganizationMeRequestPayload): Promise<Organization> => {
+const putOrganizationMe = async (
+  data: OrganizationMeRequestPayload,
+): Promise<Organization> => {
   const resp = await api.put('/organizations/me', organizationMeToReq(data));
   return resToOrganization(resp.data);
 };
 
-export const useOrganizationMe = ({ queryEnabled = false }: { queryEnabled: boolean }) => {
-  return useQuery([QueryKeys.Organization], fetchOrganizationMe, { enabled: queryEnabled });
+export const useOrganizationMe = ({
+  queryEnabled = false,
+}: {
+  queryEnabled: boolean;
+}) => {
+  return useQuery([QueryKeys.Organization], fetchOrganizationMe, {
+    enabled: queryEnabled,
+  });
 };
 
 const deleteOrganization = async (id: string): Promise<Organization> => {
@@ -71,13 +95,40 @@ const deleteOrganization = async (id: string): Promise<Organization> => {
 // GET HOOKS
 //
 
-export const useOrganizations = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
-  return useQuery([QueryKeys.Organizations, currentPage, pageSize, sortBy, sortDirection, debouncedSearch], () =>
-    fetchOrganizations({ page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch }),
+export const useOrganizations = ({
+  currentPage,
+  pageSize,
+  sortBy,
+  sortDirection,
+  debouncedSearch,
+}: any) => {
+  return useQuery(
+    [
+      QueryKeys.Organizations,
+      currentPage,
+      pageSize,
+      sortBy,
+      sortDirection,
+      debouncedSearch,
+    ],
+    () =>
+      fetchOrganizations({
+        page: currentPage,
+        pageSize,
+        sortBy,
+        sortDirection,
+        search: debouncedSearch,
+      }),
   );
 };
 
-export const useOrganization = ({ id, isCreate }: { id: string; isCreate: boolean }) => {
+export const useOrganization = ({
+  id,
+  isCreate,
+}: {
+  id: string;
+  isCreate: boolean;
+}) => {
   const { onSetCollectionNotFound } = useGlobalErrors();
 
   return useQuery([QueryKeys.Organization, id], () => fetchOrganization(id), {
@@ -86,7 +137,10 @@ export const useOrganization = ({ id, isCreate }: { id: string; isCreate: boolea
   });
 };
 
-export const useOrganizationsInfinite = (pagination: PaginationRequest, enabled: boolean) => {
+export const useOrganizationsInfinite = (
+  pagination: PaginationRequest,
+  enabled: boolean,
+) => {
   return useInfiniteQuery(
     [QueryKeys.Organizations, 'infinite', pagination],
     ({ pageParam = 1 }) => {

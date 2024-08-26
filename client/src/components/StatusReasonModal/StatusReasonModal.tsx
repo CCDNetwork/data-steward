@@ -10,9 +10,19 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { StatusReasonModalForm, StatusReasonModalFormSchema } from './validation';
+import {
+  StatusReasonModalForm,
+  StatusReasonModalFormSchema,
+} from './validation';
 
 export const StatusReasonModal = ({
   open,
@@ -64,7 +74,9 @@ export const StatusReasonModal = ({
                 )}
               />
               <AlertDialogFooter>
-                <AlertDialogCancel onClick={onCancel}>{cancelButtonLabel}</AlertDialogCancel>
+                <AlertDialogCancel onClick={onCancel}>
+                  {cancelButtonLabel}
+                </AlertDialogCancel>
                 <Button
                   type="button"
                   variant={actionButtonVariant}
@@ -90,7 +102,13 @@ interface Props {
   cancelButtonLabel?: string;
   confirmButtonLabel?: string;
   confirmButtonLoading?: boolean;
-  actionButtonVariant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  actionButtonVariant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link';
   onCancel: () => void;
   onAction: (text: string) => Promise<void>;
 }

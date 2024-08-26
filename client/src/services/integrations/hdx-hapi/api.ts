@@ -24,7 +24,11 @@ const generateAppIdentifier = async ({
   return resp.data;
 };
 
-const getUkraineAdminLvl1Data = async ({ APP_IDENTIFIER }: { APP_IDENTIFIER: string }): Promise<AdminLevel1[]> => {
+const getUkraineAdminLvl1Data = async ({
+  APP_IDENTIFIER,
+}: {
+  APP_IDENTIFIER: string;
+}): Promise<AdminLevel1[]> => {
   const resp = await axios.get(
     `https://hapi.humdata.org/api/v1/metadata/admin1?location_code=UKR&output_format=json&app_identifier=${APP_IDENTIFIER}`,
   );
@@ -32,7 +36,11 @@ const getUkraineAdminLvl1Data = async ({ APP_IDENTIFIER }: { APP_IDENTIFIER: str
   return resp.data.data.map(resToAdminLevel1);
 };
 
-const getUkraineAdminLvl2Data = async ({ APP_IDENTIFIER }: { APP_IDENTIFIER: string }): Promise<AdminLevel2[]> => {
+const getUkraineAdminLvl2Data = async ({
+  APP_IDENTIFIER,
+}: {
+  APP_IDENTIFIER: string;
+}): Promise<AdminLevel2[]> => {
   const resp = await axios.get(
     `https://hapi.humdata.org/api/v1/metadata/admin2?location_code=UKR&output_format=json&app_identifier=${APP_IDENTIFIER}`,
   );
@@ -40,20 +48,42 @@ const getUkraineAdminLvl2Data = async ({ APP_IDENTIFIER }: { APP_IDENTIFIER: str
   return resp.data.data.map(resToAdminLevel2);
 };
 
-export const useHdxHapiGenerateAppIdentifier = ({ application, email }: { application: string; email: string }) => {
+export const useHdxHapiGenerateAppIdentifier = ({
+  application,
+  email,
+}: {
+  application: string;
+  email: string;
+}) => {
   return useQuery([QueryKeys.HdxHapiAppIdentifier, application, email], () =>
     generateAppIdentifier({ application, email }),
   );
 };
 
-export const useUkraineAdminLevel1Data = ({ APP_IDENTIFIER }: { APP_IDENTIFIER: string }) => {
-  return useQuery([QueryKeys.AdminLevel1], () => getUkraineAdminLvl1Data({ APP_IDENTIFIER }), {
-    enabled: !!APP_IDENTIFIER,
-  });
+export const useUkraineAdminLevel1Data = ({
+  APP_IDENTIFIER,
+}: {
+  APP_IDENTIFIER: string;
+}) => {
+  return useQuery(
+    [QueryKeys.AdminLevel1],
+    () => getUkraineAdminLvl1Data({ APP_IDENTIFIER }),
+    {
+      enabled: !!APP_IDENTIFIER,
+    },
+  );
 };
 
-export const useUkraineAdminLevel2Data = ({ APP_IDENTIFIER }: { APP_IDENTIFIER: string }) => {
-  return useQuery([QueryKeys.AdminLevel2], () => getUkraineAdminLvl2Data({ APP_IDENTIFIER }), {
-    enabled: !!APP_IDENTIFIER,
-  });
+export const useUkraineAdminLevel2Data = ({
+  APP_IDENTIFIER,
+}: {
+  APP_IDENTIFIER: string;
+}) => {
+  return useQuery(
+    [QueryKeys.AdminLevel2],
+    () => getUkraineAdminLvl2Data({ APP_IDENTIFIER }),
+    {
+      enabled: !!APP_IDENTIFIER,
+    },
+  );
 };

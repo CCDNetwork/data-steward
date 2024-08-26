@@ -1,9 +1,22 @@
 import { useEffect, useMemo } from 'react';
-import { VisibilityState, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import {
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 
 import { useSearchParams } from 'react-router-dom';
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { MetaData, SortDirection } from '@/helpers/pagination';
 import { Pagination } from '@/components/DataTable/Pagination';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -48,7 +61,10 @@ export function DataTable<TData, TValue>({
   const currentQueryPageSize = searchParams.get('pageSize');
 
   const tableData = useMemo(
-    () => (isQueryLoading ? Array(Number(currentQueryPageSize) || 10).fill({}) : data),
+    () =>
+      isQueryLoading
+        ? Array(Number(currentQueryPageSize) || 10).fill({})
+        : data,
     [isQueryLoading, currentQueryPageSize, data],
   );
 
@@ -75,13 +91,22 @@ export function DataTable<TData, TValue>({
 
   const onHeaderClicked = (column: any) => {
     if (headerClicked && column.columnDef?.isSortable) {
-      const sort = pagination?.sortDirection === SortDirection.Desc ? SortDirection.Asc : SortDirection.Desc;
+      const sort =
+        pagination?.sortDirection === SortDirection.Desc
+          ? SortDirection.Asc
+          : SortDirection.Desc;
       headerClicked(column.id, sort);
     }
   };
 
   useEffect(() => {
-    if (currentPage && pagination && pagination.totalRows > 1 && pageClicked && pagination?.totalPages < currentPage) {
+    if (
+      currentPage &&
+      pagination &&
+      pagination.totalRows > 1 &&
+      pageClicked &&
+      pagination?.totalPages < currentPage
+    ) {
       pageClicked(pagination.totalPages || 1);
     }
   }, [currentPage, pageClicked, pagination]);
@@ -94,7 +119,9 @@ export function DataTable<TData, TValue>({
             type="search"
             placeholder="Search..."
             className="sm:max-w-[250px] w-full"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange?.(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onSearchChange?.(e.target.value)
+            }
           />
         )}
         {tableFilterNodes}
@@ -112,19 +139,37 @@ export function DataTable<TData, TValue>({
                       <div>
                         <Button
                           variant="ghost"
-                          className={cn('p-0 hover:bg-transparent', columns[index]?.headerClassName)}
-                          onClick={() => (table.getRowModel().rows.length > 0 ? onHeaderClicked(header.column) : null)}
+                          className={cn(
+                            'p-0 hover:bg-transparent',
+                            columns[index]?.headerClassName,
+                          )}
+                          onClick={() =>
+                            table.getRowModel().rows.length > 0
+                              ? onHeaderClicked(header.column)
+                              : null
+                          }
                         >
                           {header.isPlaceholder
                             ? null
-                            : flexRender(header.column.columnDef.header, header.getContext())}
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
                           <ChevronsUpDown className="ml-2 h-4 w-4" />
                         </Button>
                       </div>
                     </TableHead>
                   ) : (
-                    <TableHead key={header.id} className={cn('', columns[index]?.headerClassName)}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    <TableHead
+                      key={header.id}
+                      className={cn('', columns[index]?.headerClassName)}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
@@ -141,15 +186,24 @@ export function DataTable<TData, TValue>({
                   onClick={() => (onRowClick ? onRowClick(row.original) : null)}
                 >
                   {row.getVisibleCells().map((cell, index) => (
-                    <TableCell className={columns[index]?.cellClassName} key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    <TableCell
+                      className={columns[index]?.cellClassName}
+                      key={cell.id}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -157,15 +211,19 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {data.length > 0 && pagination && currentPage && pageClicked && pageSizeClicked && (
-        <Pagination
-          currentPage={currentPage}
-          pagination={pagination}
-          pageClicked={pageClicked}
-          pageSizeClicked={pageSizeClicked}
-          key={`${pagination.totalPages}-${pagination.pageSize}`}
-        />
-      )}
+      {data.length > 0 &&
+        pagination &&
+        currentPage &&
+        pageClicked &&
+        pageSizeClicked && (
+          <Pagination
+            currentPage={currentPage}
+            pagination={pagination}
+            pageClicked={pageClicked}
+            pageSizeClicked={pageSizeClicked}
+            key={`${pagination.totalPages}-${pagination.pageSize}`}
+          />
+        )}
     </div>
   );
 }

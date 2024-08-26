@@ -24,7 +24,9 @@ interface FilterDropdownProps {
     value: string;
   }[];
   currentFilters: Record<string, string>;
-  setCurrentFilters: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  setCurrentFilters: React.Dispatch<
+    React.SetStateAction<Record<string, string>>
+  >;
 }
 
 export const FilterDropdown = ({
@@ -53,14 +55,23 @@ export const FilterDropdown = ({
               <Separator orientation="vertical" className="mx-2 h-4" />
               <div className="space-x-1 flex">
                 {currentFilterValues.length > 2 ? (
-                  <Badge variant="secondary" className="rounded-sm px-1 font-normal">
+                  <Badge
+                    variant="secondary"
+                    className="rounded-sm px-1 font-normal"
+                  >
                     {currentFilterValues.length} selected
                   </Badge>
                 ) : (
                   options
-                    .filter((option) => currentFilterValues.includes(option.value))
+                    .filter((option) =>
+                      currentFilterValues.includes(option.value),
+                    )
                     .map((option) => (
-                      <Badge variant="secondary" key={option.value} className="rounded-sm px-1 font-normal">
+                      <Badge
+                        variant="secondary"
+                        key={option.value}
+                        className="rounded-sm px-1 font-normal"
+                      >
                         {option.label}
                       </Badge>
                     ))
@@ -80,7 +91,9 @@ export const FilterDropdown = ({
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
-                const isSelected = currentFilterValues.find((i) => i === option.value);
+                const isSelected = currentFilterValues.find(
+                  (i) => i === option.value,
+                );
                 return (
                   <CommandItem
                     key={option.value}
@@ -88,14 +101,18 @@ export const FilterDropdown = ({
                       if (isSelected) {
                         setCurrentFilters((old) => ({
                           ...old,
-                          [filterName]: currentFilterValues.filter((i) => i !== option.value).join('|'),
+                          [filterName]: currentFilterValues
+                            .filter((i) => i !== option.value)
+                            .join('|'),
                         }));
                       } else {
                         setCurrentFilters((old) => ({
                           ...old,
                           [filterName]:
                             currentFilterValues.length >= 1
-                              ? [...currentFilterValues, option.value].filter((i) => i !== '').join('|')
+                              ? [...currentFilterValues, option.value]
+                                  .filter((i) => i !== '')
+                                  .join('|')
                               : option.value,
                         }));
                       }
@@ -104,7 +121,9 @@ export const FilterDropdown = ({
                     <div
                       className={cn(
                         'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-                        isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
+                        isSelected
+                          ? 'bg-primary text-primary-foreground'
+                          : 'opacity-50 [&_svg]:invisible',
                       )}
                     >
                       <CheckIcon className={cn('h-4 w-4')} />
@@ -119,7 +138,9 @@ export const FilterDropdown = ({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => setCurrentFilters((old) => ({ ...old, [filterName]: '' }))}
+                    onSelect={() =>
+                      setCurrentFilters((old) => ({ ...old, [filterName]: '' }))
+                    }
                     className="justify-center text-center"
                   >
                     Clear filters

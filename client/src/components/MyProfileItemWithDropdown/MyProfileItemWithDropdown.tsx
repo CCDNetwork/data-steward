@@ -19,7 +19,11 @@ import { cn } from '@/helpers/utils';
 import { useAuth } from '@/providers/GlobalProvider';
 import { useTheme } from '@/providers/ThemeProvider';
 
-export const MyProfileItemWithDropdown = ({ closeSidebar }: { closeSidebar?: () => void }) => {
+export const MyProfileItemWithDropdown = ({
+  closeSidebar,
+}: {
+  closeSidebar?: () => void;
+}) => {
   const { user, logoutUser } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -35,16 +39,22 @@ export const MyProfileItemWithDropdown = ({ closeSidebar }: { closeSidebar?: () 
             className={cn(
               'flex cursor-pointer hover:bg-muted-foreground/10 justify-start items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary-foreground transition-colors duration-150 ease-linear',
               {
-                'bg-primary/90 text-gray-50 hover:bg-primary/90': pathname.includes(APP_ROUTE.MyProfile),
+                'bg-primary/90 text-gray-50 hover:bg-primary/90':
+                  pathname.includes(APP_ROUTE.MyProfile),
               },
             )}
           >
             <Avatar>
               <AvatarImage src="profileimageurlgoeshere" />
               <AvatarFallback
-                className={cn('bg-foreground/30 text-gray-50 tracking-tight text-lg uppercase', {
-                  'dark:bg-background/30': pathname.includes(APP_ROUTE.MyProfile),
-                })}
+                className={cn(
+                  'bg-foreground/30 text-gray-50 tracking-tight text-lg uppercase',
+                  {
+                    'dark:bg-background/30': pathname.includes(
+                      APP_ROUTE.MyProfile,
+                    ),
+                  },
+                )}
               >
                 {userInitials}
               </AvatarFallback>
@@ -52,7 +62,10 @@ export const MyProfileItemWithDropdown = ({ closeSidebar }: { closeSidebar?: () 
             <span className="sr-only">Your profile</span>
             <div className="flex flex-col truncate">
               <span aria-hidden="true">{`${user.firstName ?? '-'} ${user.lastName ?? '-'}`}</span>
-              <span aria-hidden="true" className="text-sm truncate opacity-80 font-normal">
+              <span
+                aria-hidden="true"
+                className="text-sm truncate opacity-80 font-normal"
+              >
                 {(user.organizations?.[0].name ?? '-') || (user.email ?? '-')}
               </span>
             </div>
@@ -95,7 +108,10 @@ export const MyProfileItemWithDropdown = ({ closeSidebar }: { closeSidebar?: () 
           </DropdownMenuPortal>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-red-500 focus:text-red-500" onClick={logoutUser}>
+        <DropdownMenuItem
+          className="text-red-500 focus:text-red-500"
+          onClick={logoutUser}
+        >
           <LogOut className="mr-2 h-[1.2rem] w-[1.2rem]" />
           Sign out
         </DropdownMenuItem>

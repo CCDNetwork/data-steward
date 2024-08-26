@@ -20,10 +20,14 @@ export const UserHandbookListPage = () => {
       pageTitle="Handbook"
       isLoading={isLoading}
       pageSubtitle="Handbook List"
-      breadcrumbs={[{ href: `${APP_ROUTE.UserHandbookList}`, name: 'Handbook' }]}
+      breadcrumbs={[
+        { href: `${APP_ROUTE.UserHandbookList}`, name: 'Handbook' },
+      ]}
     >
       <div className="flex flex-col gap-4 pb-8 last:pb-0 max-w-[700px]">
-        {handbooksData?.data.map((handbook) => <HandbookItem key={handbook.id} {...handbook} />)}
+        {handbooksData?.data.map((handbook) => (
+          <HandbookItem key={handbook.id} {...handbook} />
+        ))}
       </div>
     </PageContainer>
   );

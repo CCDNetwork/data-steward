@@ -2,7 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { PublicPage } from '@/layouts/PublicPage';
 import { toast } from '@/components/ui/use-toast';
@@ -38,7 +44,8 @@ export const SignInPage = () => {
       toast({
         title: 'An error has occured!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Something went wrong',
+        description:
+          error.response?.data?.errorMessage || 'Something went wrong',
       });
     }
   });
@@ -58,7 +65,12 @@ export const SignInPage = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input id="username" placeholder="email@example.com" type="email" {...field} />
+                    <Input
+                      id="username"
+                      placeholder="email@example.com"
+                      type="email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

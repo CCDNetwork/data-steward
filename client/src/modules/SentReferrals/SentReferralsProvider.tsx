@@ -9,7 +9,9 @@ interface SentReferralsContextInterface {
   setViewOnlyEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SentReferralsContext = createContext<SentReferralsContextInterface>(undefined!);
+const SentReferralsContext = createContext<SentReferralsContextInterface>(
+  undefined!,
+);
 
 export const SentReferralsProvider = ({ children = <Outlet /> }: Props) => {
   const pagination = usePagination();
@@ -20,7 +22,11 @@ export const SentReferralsProvider = ({ children = <Outlet /> }: Props) => {
     [pagination, viewOnlyEnabled, setViewOnlyEnabled],
   );
 
-  return <SentReferralsContext.Provider value={value}>{children}</SentReferralsContext.Provider>;
+  return (
+    <SentReferralsContext.Provider value={value}>
+      {children}
+    </SentReferralsContext.Provider>
+  );
 };
 
 export const useSentReferralsProvider = () => {

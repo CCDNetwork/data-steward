@@ -6,7 +6,9 @@ interface BeneficiaryStatusProps {
   currentStatus: string;
 }
 
-export const BeneficiaryStatus: React.FC<BeneficiaryStatusProps> = ({ currentStatus }) => {
+export const BeneficiaryStatus: React.FC<BeneficiaryStatusProps> = ({
+  currentStatus,
+}) => {
   const statusIcon = useMemo(() => {
     switch (currentStatus) {
       case BENEFICIARY_STATUS.AcceptedDuplicate:

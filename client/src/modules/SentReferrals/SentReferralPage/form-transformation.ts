@@ -52,6 +52,7 @@ export const dataToSentReferralFormData = (
     userCreated: data.userCreated as User,
     files: data.files,
     noTaxId: false,
-    isMinor: !!data.caregiver || !!data.relationshipToChild || !!data.caregiverEmail,
+    isMinor:
+      !!data.caregiver || !!data.relationshipToChild || !!data.caregiverEmail,
   };
 };

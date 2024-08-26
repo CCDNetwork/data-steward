@@ -6,9 +6,14 @@ import { format } from 'date-fns';
 import { cn } from '@/helpers/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
-export interface DatePickerProps extends React.AllHTMLAttributes<HTMLDivElement> {
+export interface DatePickerProps
+  extends React.AllHTMLAttributes<HTMLDivElement> {
   fromDate?: Date;
   field: ControllerRenderProps<any, any>;
   btnclass?: string;
@@ -27,12 +32,17 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
               className={cn(
                 'w-[240px] justify-start text-left font-normal',
                 !field.value && 'text-muted-foreground',
-                disabled && '!cursor-not-allowed !disabled:pointer-events-auto pointer-events-auto',
+                disabled &&
+                  '!cursor-not-allowed !disabled:pointer-events-auto pointer-events-auto',
                 btnclass,
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+              {field.value ? (
+                format(field.value, 'PPP')
+              ) : (
+                <span>Pick a date</span>
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">

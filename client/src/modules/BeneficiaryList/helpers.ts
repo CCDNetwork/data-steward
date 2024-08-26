@@ -2,7 +2,9 @@ import { Beneficiary } from '@/services/beneficiaryList';
 import { MATCHED_FIELDS, SingleBeneficiary } from './types';
 import { BENEFICIARY_STATUS } from '@/components/BeneficiaryStatus/const';
 
-export const beneficiaryDataToSingleBeneficiary = (res: Beneficiary | undefined): SingleBeneficiary => {
+export const beneficiaryDataToSingleBeneficiary = (
+  res: Beneficiary | undefined,
+): SingleBeneficiary => {
   return {
     id: res?.id || '',
     isPrimary: res?.isPrimary || false,
@@ -33,7 +35,9 @@ export const beneficiaryDataToSingleBeneficiary = (res: Beneficiary | undefined)
     pointOfContact: res?.pointOfContact || null,
     uploadedBy: res?.uploadedBy || null,
     organization: res?.organization || null,
-    duplicates: res?.duplicates ? res?.duplicates.map(beneficiaryDataToSingleBeneficiary) : [],
+    duplicates: res?.duplicates
+      ? res?.duplicates.map(beneficiaryDataToSingleBeneficiary)
+      : [],
   };
 };
 

@@ -14,7 +14,11 @@ export const TemplatesProvider = ({ children = <Outlet /> }: Props) => {
 
   const value = useMemo(() => ({ pagination }), [pagination]);
 
-  return <TemplatesContext.Provider value={value}>{children}</TemplatesContext.Provider>;
+  return (
+    <TemplatesContext.Provider value={value}>
+      {children}
+    </TemplatesContext.Provider>
+  );
 };
 
 export const useTemplatesProvider = () => {

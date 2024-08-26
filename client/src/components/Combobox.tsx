@@ -2,9 +2,20 @@ import { Control, useController } from 'react-hook-form';
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 
 import { Button } from '@/components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import { FormControl } from '@/components/ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { cn } from '@/helpers/utils';
 import { useState } from 'react';
 
@@ -18,7 +29,15 @@ type Props = {
   disabled?: boolean;
 };
 
-const Combobox = ({ name, control, label, labelClassName, requiredField, options, disabled }: Props) => {
+const Combobox = ({
+  name,
+  control,
+  label,
+  labelClassName,
+  requiredField,
+  options,
+  disabled,
+}: Props) => {
   const { field } = useController({ name, control });
   const [open, setOpen] = useState(false);
 
@@ -28,11 +47,15 @@ const Combobox = ({ name, control, label, labelClassName, requiredField, options
   }
 
   return (
-    <div className={cn('flex flex-col justify-end', { 'cursor-not-allowed': disabled })}>
+    <div
+      className={cn('flex flex-col justify-end', {
+        'cursor-not-allowed': disabled,
+      })}
+    >
       <label
         htmlFor={name}
         className={cn(
-          'block text-sm mb-2 text-sm font-bold tracking-tight leading-6',
+          'block mb-2 text-sm font-bold tracking-tight leading-6',
           { 'after:content-["_*"] after:text-red-500': requiredField },
           labelClassName,
         )}
@@ -46,9 +69,13 @@ const Combobox = ({ name, control, label, labelClassName, requiredField, options
               disabled={disabled}
               variant="outline"
               role="combobox"
-              className={cn('justify-between', !field.value && 'text-muted-foreground')}
+              className={cn(
+                'justify-between',
+                !field.value && 'text-muted-foreground',
+              )}
             >
-              {field.value && options.find((option) => option.value === field.value)
+              {field.value &&
+              options.find((option) => option.value === field.value)
                 ? options.find((option) => option.value === field.value)?.label
                 : 'Select...'}
               <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -75,7 +102,12 @@ const Combobox = ({ name, control, label, labelClassName, requiredField, options
                   >
                     {option.label}
                     <CheckIcon
-                      className={cn('ml-auto h-4 w-4', option.value === field.value ? 'opacity-100' : 'opacity-0')}
+                      className={cn(
+                        'ml-auto h-4 w-4',
+                        option.value === field.value
+                          ? 'opacity-100'
+                          : 'opacity-0',
+                      )}
                     />
                   </CommandItem>
                 ))}

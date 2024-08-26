@@ -34,7 +34,9 @@ export const WipeDataDialog = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'An error has occured trying to delete deduplication data',
+        description:
+          error.response?.data?.errorMessage ||
+          'An error has occured trying to delete deduplication data',
       });
     }
     setOpen(false);
@@ -53,11 +55,18 @@ export const WipeDataDialog = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Action Confirmation</AlertDialogTitle>
-          <AlertDialogDescription>Are you sure you want to delete ALL deduplication data?</AlertDialogDescription>
+          <AlertDialogDescription>
+            Are you sure you want to delete ALL deduplication data?
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button type="button" onClick={onConfirmWipe} isLoading={isLoading} disabled={isLoading}>
+          <Button
+            type="button"
+            onClick={onConfirmWipe}
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
             Confirm
           </Button>
         </AlertDialogFooter>

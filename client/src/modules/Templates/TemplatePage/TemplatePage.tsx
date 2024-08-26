@@ -6,7 +6,14 @@ import { PageContainer } from '@/components/PageContainer';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useTemplate, useTemplateMutation } from '@/services/templates/api';
 
@@ -21,7 +28,10 @@ export const TemplatePage = () => {
   const uniqueId = useId();
   const { id: templateId } = useIdFromParams();
 
-  const { data: templateData, isLoading: queryLoading } = useTemplate({ id: templateId, isCreate: false });
+  const { data: templateData, isLoading: queryLoading } = useTemplate({
+    id: templateId,
+    isCreate: false,
+  });
   const { editTemplate } = useTemplateMutation();
 
   const form = useForm<TemplateForm>({
@@ -50,7 +60,8 @@ export const TemplatePage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error updating template.',
+        description:
+          error.response?.data?.errorMessage || 'Error updating template.',
       });
     }
   });
@@ -64,12 +75,19 @@ export const TemplatePage = () => {
           type="submit"
           onClick={onSubmit}
           isLoading={editTemplate.isLoading}
-          disabled={formState.isSubmitting || editTemplate.isLoading || !formState.isDirty}
+          disabled={
+            formState.isSubmitting ||
+            editTemplate.isLoading ||
+            !formState.isDirty
+          }
         >
           Save
         </Button>
       }
-      breadcrumbs={[{ href: `${APP_ROUTE.Templates}`, name: 'Templates' }, { name: `${templateData?.name}` }]}
+      breadcrumbs={[
+        { href: `${APP_ROUTE.Templates}`, name: 'Templates' },
+        { name: `${templateData?.name}` },
+      ]}
     >
       <Form {...form}>
         <form onSubmit={onSubmit}>
@@ -84,7 +102,11 @@ export const TemplatePage = () => {
                       <FormItem className="pb-2">
                         <FormLabel requiredField>Template name</FormLabel>
                         <FormControl>
-                          <Input id="name" placeholder="Template name" {...field} />
+                          <Input
+                            id="name"
+                            placeholder="Template name"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -95,24 +117,33 @@ export const TemplatePage = () => {
                       <p className="w-full">Standard Field</p>
                       <p className="pl-28 w-full">Your Label</p>
                     </div>
-                    {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(([fieldName, fieldType]) => (
-                      <div className="flex justify-between items-center gap-4" key={`${fieldName}-${uniqueId}`}>
-                        <span className="capitalize text-sm w-44">{`${fieldName} (${fieldType})`}</span>
-                        <p className="text-xl font-light">&rarr;</p>
-                        <FormField
-                          control={control}
-                          name={`${fieldName}` as any}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input id={fieldName} placeholder="Column label" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    ))}
+                    {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(
+                      ([fieldName, fieldType]) => (
+                        <div
+                          className="flex justify-between items-center gap-4"
+                          key={`${fieldName}-${uniqueId}`}
+                        >
+                          <span className="capitalize text-sm w-44">{`${fieldName} (${fieldType})`}</span>
+                          <p className="text-xl font-light">&rarr;</p>
+                          <FormField
+                            control={control}
+                            name={`${fieldName}` as any}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input
+                                    id={fieldName}
+                                    placeholder="Column label"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
               </CardContent>

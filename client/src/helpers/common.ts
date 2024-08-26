@@ -24,7 +24,13 @@ export const useIdFromParams = () => {
   return { id, isCreate };
 };
 
-export const formatCurrency = ({ value, fractionDigits = 0 }: { value: number; fractionDigits?: number }) => {
+export const formatCurrency = ({
+  value,
+  fractionDigits = 0,
+}: {
+  value: number;
+  fractionDigits?: number;
+}) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -38,7 +44,9 @@ export const capitalizeFirstLetter = (str: string): string => {
 
 export const createDownloadLink = async (url: string, fileName: string) => {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: { 'Access-Control-Origin': '*' },
+    });
     const blob = await response.blob();
 
     const objectUrl = URL.createObjectURL(blob);
@@ -60,7 +68,10 @@ export const shortenId = (id: string | undefined) => {
   return id ? id.substring(id.length - 6) : '';
 };
 
-export const appendStringToFilename = (filename: string, appendString: string) => {
+export const appendStringToFilename = (
+  filename: string,
+  appendString: string,
+) => {
   const lastDotIndex = filename.lastIndexOf('.');
 
   if (lastDotIndex === -1) {
@@ -76,7 +87,16 @@ export const appendStringToFilename = (filename: string, appendString: string) =
 };
 
 export const isImageUrl = (url: string): boolean => {
-  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'tiff'];
+  const imageExtensions = [
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'bmp',
+    'webp',
+    'svg',
+    'tiff',
+  ];
   const urlExtension = url.split('.').pop()?.toLowerCase();
 
   if (urlExtension && imageExtensions.includes(urlExtension)) {

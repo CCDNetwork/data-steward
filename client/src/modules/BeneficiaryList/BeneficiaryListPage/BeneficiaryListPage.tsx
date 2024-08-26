@@ -14,15 +14,23 @@ import { columns } from './columns';
 export const BeneficiaryListPage = () => {
   const navigate = useNavigate();
   const pagination = usePagination();
-  const { currentPage, onPageChange, onSortChange, onPageSizeChange } = pagination;
+  const { currentPage, onPageChange, onSortChange, onPageSizeChange } =
+    pagination;
 
-  const [beneficiaryFilters, setBeneficiaryFilters] = useState<Record<string, string>>({
+  const [beneficiaryFilters, setBeneficiaryFilters] = useState<
+    Record<string, string>
+  >({
     isPrimary: 'false',
     status: '$null',
   });
-  const [hiddenColumns, setHiddenColumns] = useState<VisibilityState | undefined>({ status: false });
+  const [hiddenColumns, setHiddenColumns] = useState<
+    VisibilityState | undefined
+  >({ status: false });
 
-  const { data: beneficiaryList, isLoading } = useBeneficiaryList({ ...pagination, filters: beneficiaryFilters });
+  const { data: beneficiaryList, isLoading } = useBeneficiaryList({
+    ...pagination,
+    filters: beneficiaryFilters,
+  });
 
   const onBeneficiaryRowClick = (beneficiaryRow: Beneficiary) =>
     navigate(`${APP_ROUTE.BeneficiaryList}/${beneficiaryRow.id}`);
@@ -31,7 +39,9 @@ export const BeneficiaryListPage = () => {
     <PageContainer
       pageTitle="Manage Duplicates"
       pageSubtitle="On this page you can view and manage duplicates. The Unresolved tab will show you potential duplicates which you should check. The Resolved tab will show you potential duplicates which have already been resolved."
-      breadcrumbs={[{ href: `${APP_ROUTE.BeneficiaryList}`, name: 'Manage Duplicates' }]}
+      breadcrumbs={[
+        { href: `${APP_ROUTE.BeneficiaryList}`, name: 'Manage Duplicates' },
+      ]}
     >
       <Tabs defaultValue="unresolved">
         <TabsList>

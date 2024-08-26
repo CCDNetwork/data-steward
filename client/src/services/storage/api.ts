@@ -1,6 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { imageToFormData, resToStorageFile, fileToFormData } from './transformations';
+import {
+  imageToFormData,
+  resToStorageFile,
+  fileToFormData,
+} from './transformations';
 import { StorageFile } from './types';
 import { api } from '../api';
 
@@ -19,9 +23,13 @@ const fetchStorageFile = async (fileName: string): Promise<StorageFile> => {
 };
 
 const postStorageFile = async (data: any): Promise<StorageFile> => {
-  const resp = await api.post(`/storage/files`, data.type ? fileToFormData(data) : imageToFormData(data.file), {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const resp = await api.post(
+    `/storage/files`,
+    data.type ? fileToFormData(data) : imageToFormData(data.file),
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    },
+  );
   return resToStorageFile(resp.data);
 };
 
@@ -34,7 +42,9 @@ const putStorageFileAlt = async (data: any): Promise<StorageFile> => {
 // GET hooks
 //
 export const useStorageFile = ({ fileName }: { fileName: string }) => {
-  return useQuery([QueryKeys.StorageFileSingle, fileName], () => fetchStorageFile(fileName));
+  return useQuery([QueryKeys.StorageFileSingle, fileName], () =>
+    fetchStorageFile(fileName),
+  );
 };
 
 //

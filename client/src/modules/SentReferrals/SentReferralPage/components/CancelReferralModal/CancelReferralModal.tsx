@@ -30,14 +30,19 @@ export const CancelReferralModal = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error cancelling referral.',
+        description:
+          error.response?.data?.errorMessage || 'Error cancelling referral.',
       });
     }
   };
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button isLoading={patchReferral.isLoading} disabled={patchReferral.isLoading} variant="destructive">
+        <Button
+          isLoading={patchReferral.isLoading}
+          disabled={patchReferral.isLoading}
+          variant="destructive"
+        >
           Cancel referral
         </Button>
       </AlertDialogTrigger>
@@ -45,7 +50,8 @@ export const CancelReferralModal = () => {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will cancel a referral and move it to your drafts.
+            This action cannot be undone. This will cancel a referral and move
+            it to your drafts.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

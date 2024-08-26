@@ -6,7 +6,11 @@ import { DateRange } from 'react-day-picker';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { cn } from '@/helpers/utils';
 
 import { Separator } from '../ui/separator';
@@ -17,7 +21,9 @@ export const DateRangePickerFilter = ({
   setCurrentFilters,
 }: React.HTMLAttributes<HTMLDivElement> & {
   placeholder?: string;
-  setCurrentFilters: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  setCurrentFilters: React.Dispatch<
+    React.SetStateAction<Record<string, string>>
+  >;
 }) => {
   const [date, setDate] = useState<DateRange | undefined>(undefined);
 
@@ -27,11 +33,17 @@ export const DateRangePickerFilter = ({
     setDate(date);
 
     if (date.from) {
-      setCurrentFilters((old) => ({ ...old, 'createdAt[gt]': date.from!.toISOString() }));
+      setCurrentFilters((old) => ({
+        ...old,
+        'createdAt[gt]': date.from!.toISOString(),
+      }));
     }
 
     if (date.to) {
-      setCurrentFilters((old) => ({ ...old, 'createdAt[lt]': date.to!.toISOString() }));
+      setCurrentFilters((old) => ({
+        ...old,
+        'createdAt[lt]': date.to!.toISOString(),
+      }));
     }
   };
 
@@ -39,18 +51,25 @@ export const DateRangePickerFilter = ({
     <div className={cn('grid gap-2', className)}>
       <Popover>
         <PopoverTrigger asChild>
-          <Button id="date" variant="outline" className="border-dashed w-fit justify-start text-left font-normal">
+          <Button
+            id="date"
+            variant="outline"
+            className="border-dashed w-fit justify-start text-left font-normal"
+          >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
+                  {format(date.from, 'LLL dd, y')} -{' '}
+                  {format(date.to, 'LLL dd, y')}
                 </>
               ) : (
                 format(date.from, 'LLL dd, y')
               )
             ) : (
-              <span className="font-medium">{placeholder || 'Pick a date'}</span>
+              <span className="font-medium">
+                {placeholder || 'Pick a date'}
+              </span>
             )}
             {date && (
               <>
@@ -59,7 +78,11 @@ export const DateRangePickerFilter = ({
                   onClick={(e: any) => {
                     e.preventDefault();
                     setDate(undefined);
-                    setCurrentFilters((old) => ({ ...old, 'createdAt[gt]': '', 'createdAt[lt]': '' }));
+                    setCurrentFilters((old) => ({
+                      ...old,
+                      'createdAt[gt]': '',
+                      'createdAt[lt]': '',
+                    }));
                   }}
                   className="w-4 h-4"
                 />

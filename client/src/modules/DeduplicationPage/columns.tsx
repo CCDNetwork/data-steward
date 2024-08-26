@@ -11,7 +11,9 @@ export const columns: TableColumn<DeduplicationListing>[] = [
     cell: ({ row }) => {
       const { userCreated } = row.original;
 
-      return <div>{`${userCreated?.firstName ?? '-'} ${userCreated?.lastName ?? '-'}`}</div>;
+      return (
+        <div>{`${userCreated?.firstName ?? '-'} ${userCreated?.lastName ?? '-'}`}</div>
+      );
     },
   },
   {

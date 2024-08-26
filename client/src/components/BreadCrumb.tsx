@@ -36,7 +36,9 @@ export const Breadcrumb = ({ breadcrumbs }: Props) => {
                     <Link to={breadcrumb.href}>{breadcrumb.name}</Link>
                   </BreadcrumbLink>
                 ) : (
-                  <BreadcrumbPage className="font-medium">{breadcrumb.name}</BreadcrumbPage>
+                  <BreadcrumbPage className="font-medium">
+                    {breadcrumb.name}
+                  </BreadcrumbPage>
                 )}
               </BreadcrumbItem>
               {breadcrumbs.length !== index + 1 && <BreadcrumbSeparator />}

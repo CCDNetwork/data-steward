@@ -9,7 +9,10 @@ import { APP_ROUTE } from '@/helpers/constants';
 import { toast } from '@/components/ui/use-toast';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { AttributeGroup } from '@/services/attributeGroups';
-import { useAttributeGroups, useAttributeGroupsMutation } from '@/services/attributeGroups/api';
+import {
+  useAttributeGroups,
+  useAttributeGroupsMutation,
+} from '@/services/attributeGroups/api';
 import { StrictModeDroppable } from '@/components/StrictModeDroppable';
 import { cn } from '@/helpers/utils';
 import { Button } from '@/components/ui/button';
@@ -25,8 +28,12 @@ export const RulesPage = () => {
 
   const [ruleToDelete, setRuleToDelete] = useState<AttributeGroup | null>(null);
 
-  const { data: attributeGroupData, isLoading } = useAttributeGroups({ ...pagination, pageSize: 999 });
-  const { removeAttributeGroup, reorderAttributeGroups } = useAttributeGroupsMutation();
+  const { data: attributeGroupData, isLoading } = useAttributeGroups({
+    ...pagination,
+    pageSize: 999,
+  });
+  const { removeAttributeGroup, reorderAttributeGroups } =
+    useAttributeGroupsMutation();
 
   const handleRuleDelete = async () => {
     if (!ruleToDelete) return;
@@ -42,7 +49,8 @@ export const RulesPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Failed to delete rule.',
+        description:
+          error.response?.data?.errorMessage || 'Failed to delete rule.',
       });
     }
     setRuleToDelete(null);
@@ -55,37 +63,48 @@ export const RulesPage = () => {
       return;
     }
 
-    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
       return;
     }
 
-    const updatedGroupOrderData = queryClient.setQueriesData(['attribute_groups'], (prevData: any) => {
-      const updatedGroups = [...prevData.data];
+    const updatedGroupOrderData = queryClient.setQueriesData(
+      ['attribute_groups'],
+      (prevData: any) => {
+        const updatedGroups = [...prevData.data];
 
-      const draggedGroup = updatedGroups.splice(source.index, 1)[0];
-      updatedGroups.splice(destination.index, 0, draggedGroup);
+        const draggedGroup = updatedGroups.splice(source.index, 1)[0];
+        updatedGroups.splice(destination.index, 0, draggedGroup);
 
-      const updatedData = {
-        ...prevData,
-        data: updatedGroups.map((group: AttributeGroup, index: number) => {
-          return {
-            ...group,
-            order: index + 1,
-          };
-        }),
-      };
-      return updatedData;
-    });
+        const updatedData = {
+          ...prevData,
+          data: updatedGroups.map((group: AttributeGroup, index: number) => {
+            return {
+              ...group,
+              order: index + 1,
+            };
+          }),
+        };
+        return updatedData;
+      },
+    );
 
     try {
       await reorderAttributeGroups.mutateAsync({
-        newOrderList: updatedGroupOrderData[0][1].data.map((data: any) => ({ id: data.id, order: data.order })),
+        newOrderList: updatedGroupOrderData[0][1].data.map((data: any) => ({
+          id: data.id,
+          order: data.order,
+        })),
       });
     } catch (error: any) {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'An error occured while re-ordering rules.',
+        description:
+          error.response?.data?.errorMessage ||
+          'An error occured while re-ordering rules.',
       });
     }
   };
@@ -124,7 +143,11 @@ export const RulesPage = () => {
                     className="min-w-[1000px] h-full overflow-hidden flex flex-col p-2 flex-1"
                   >
                     {attributeGroupData?.data.map((attributeGroup, index) => (
-                      <Draggable draggableId={attributeGroup.id} key={attributeGroup.id} index={index}>
+                      <Draggable
+                        draggableId={attributeGroup.id}
+                        key={attributeGroup.id}
+                        index={index}
+                      >
                         {(provided, snapshot) => (
                           <tr
                             className={cn(
@@ -136,17 +159,27 @@ export const RulesPage = () => {
                             ref={provided.innerRef}
                           >
                             <td className="flex gap-4 w-[20%]">
-                              <span className="truncate w-[160px] 2xl:w-fit">{attributeGroup.name}</span>
+                              <span className="truncate w-[160px] 2xl:w-fit">
+                                {attributeGroup.name}
+                              </span>
                             </td>
                             <td className="w-[20%]">
                               <Badge
                                 className={cn(
                                   'capitalize',
-                                  { 'bg-destructive dark:text-white hover:bg-destructive': !attributeGroup.isActive },
-                                  { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.isActive },
+                                  {
+                                    'bg-destructive dark:text-white hover:bg-destructive':
+                                      !attributeGroup.isActive,
+                                  },
+                                  {
+                                    'bg-primary dark:text-white hover:bg-primary':
+                                      attributeGroup.isActive,
+                                  },
                                 )}
                               >
-                                {attributeGroup.isActive ? 'active' : 'inactive'}
+                                {attributeGroup.isActive
+                                  ? 'active'
+                                  : 'inactive'}
                               </Badge>
                             </td>
                             <td className="w-[20%]">
@@ -157,18 +190,36 @@ export const RulesPage = () => {
                                     'bg-destructive dark:text-white hover:bg-destructive':
                                       !attributeGroup.useFuzzyMatch,
                                   },
-                                  { 'bg-primary dark:text-white hover:bg-primary': attributeGroup.useFuzzyMatch },
+                                  {
+                                    'bg-primary dark:text-white hover:bg-primary':
+                                      attributeGroup.useFuzzyMatch,
+                                  },
                                 )}
                               >
-                                {attributeGroup.useFuzzyMatch ? 'enabled' : 'disabled'}
+                                {attributeGroup.useFuzzyMatch
+                                  ? 'enabled'
+                                  : 'disabled'}
                               </Badge>
                             </td>
-                            <td className="w-[20%]">{format(attributeGroup.createdAt ?? '', 'PPP')}</td>
-                            <td className="w-[20%]">{format(attributeGroup.updatedAt ?? '', 'PPP')}</td>
+                            <td className="w-[20%]">
+                              {format(attributeGroup.createdAt ?? '', 'PPP')}
+                            </td>
+                            <td className="w-[20%]">
+                              {format(attributeGroup.updatedAt ?? '', 'PPP')}
+                            </td>
                             <td className="flex gap-1">
-                              <RuleModal attributeGroupId={attributeGroup.id} showTooltip />
+                              <RuleModal
+                                attributeGroupId={attributeGroup.id}
+                                showTooltip
+                              />
                               <Tooltip tooltipContent={'Delete'}>
-                                <Button variant="ghost" onClick={() => setRuleToDelete(attributeGroup)} size="icon">
+                                <Button
+                                  variant="ghost"
+                                  onClick={() =>
+                                    setRuleToDelete(attributeGroup)
+                                  }
+                                  size="icon"
+                                >
                                   <Trash2Icon className="w-5 h-5 text-destructive" />
                                 </Button>
                               </Tooltip>

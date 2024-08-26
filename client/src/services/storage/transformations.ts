@@ -9,7 +9,10 @@ export const resToStorageFile = (res: any): StorageFile => {
   };
 };
 
-export const storageFileToPostReq = (data: { storageFileType: StorageTypeId; file: File }) => {
+export const storageFileToPostReq = (data: {
+  storageFileType: StorageTypeId;
+  file: File;
+}) => {
   return {
     storageFileType: data.storageFileType,
     file: data.file,
@@ -18,7 +21,10 @@ export const storageFileToPostReq = (data: { storageFileType: StorageTypeId; fil
 
 export const imageToFormData = (image: Image): FormData => {
   const formData = new FormData();
-  formData.append('file', new File([image.buffer], image.name, { type: 'image/*' }));
+  formData.append(
+    'file',
+    new File([image.buffer], image.name, { type: 'image/*' }),
+  );
   formData.append('storageTypeId', StorageTypeId.Assets.toString());
   return formData;
 };

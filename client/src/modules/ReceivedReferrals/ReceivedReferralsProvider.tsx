@@ -7,14 +7,19 @@ interface ReceivedReferralsContextInterface {
   pagination: PaginationContext;
 }
 
-const ReceivedReferralsContext = createContext<ReceivedReferralsContextInterface>(undefined!);
+const ReceivedReferralsContext =
+  createContext<ReceivedReferralsContextInterface>(undefined!);
 
 export const ReceivedReferralsProvider = ({ children = <Outlet /> }: Props) => {
   const pagination = usePagination();
 
   const value = useMemo(() => ({ pagination }), [pagination]);
 
-  return <ReceivedReferralsContext.Provider value={value}>{children}</ReceivedReferralsContext.Provider>;
+  return (
+    <ReceivedReferralsContext.Provider value={value}>
+      {children}
+    </ReceivedReferralsContext.Provider>
+  );
 };
 
 export const useReceivedReferralsProvider = () => {

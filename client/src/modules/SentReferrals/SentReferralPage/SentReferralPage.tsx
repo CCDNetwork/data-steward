@@ -7,16 +7,37 @@ import { PageContainer } from '@/components/PageContainer';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { APP_ROUTE } from '@/helpers/constants';
 import { useReferral, useReferralMutation } from '@/services/referrals/api';
 import { Separator } from '@/components/ui/separator';
 import { AsyncSelect } from '@/components/AsyncSelect';
 import { useOrganizationsInfinite } from '@/services/organizations/api';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { FilesDropzone } from '@/components/FilesDropzone';
 import { StatusTimeline } from '@/components/StatusTimeline';
@@ -27,7 +48,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReferralDiscussions } from '@/components/ReferralDiscussions';
 import { Combobox } from '@/components/Combobox';
-import { useUkraineAdminLevel1Data, useUkraineAdminLevel2Data } from '@/services/integrations';
+import {
+  useUkraineAdminLevel1Data,
+  useUkraineAdminLevel2Data,
+} from '@/services/integrations';
 import { useAuth } from '@/providers/GlobalProvider';
 import admin_3 from '@/local-json/admin_3.json';
 import admin_4 from '@/local-json/admin_4.json';
@@ -47,8 +71,11 @@ export const SentReferralPage = () => {
   const { hdxHapiAppIdentifier } = useAuth();
   const { id: sentReferralId, isCreate } = useIdFromParams();
   const { viewOnlyEnabled, setViewOnlyEnabled } = useSentReferralsProvider();
-  const [activeTab, setActiveTab] = useState<ReferralTab.Discussion | ReferralTab.Referral>(ReferralTab.Referral);
-  const [isStatusReasonModal, setOpenStatusReasonModal] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<
+    ReferralTab.Discussion | ReferralTab.Referral
+  >(ReferralTab.Referral);
+  const [isStatusReasonModal, setOpenStatusReasonModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (isCreate) {
@@ -74,9 +101,13 @@ export const SentReferralPage = () => {
     APP_IDENTIFIER: hdxHapiAppIdentifier,
   });
 
-  const { data: sentReferralData, isLoading: queryLoading } = useReferral({ id: sentReferralId, isCreate });
+  const { data: sentReferralData, isLoading: queryLoading } = useReferral({
+    id: sentReferralId,
+    isCreate,
+  });
 
-  const { createReferral, patchReferral, updateReferralReason } = useReferralMutation();
+  const { createReferral, patchReferral, updateReferralReason } =
+    useReferralMutation();
 
   const form = useForm<SentReferralFormData>({
     defaultValues: defaultSentReferralFormFormValues,
@@ -92,7 +123,9 @@ export const SentReferralPage = () => {
   const currentFormIsCaregiverInformed = watch('isCaregiverInformed');
   const currentFormNoTaxId = watch('noTaxId');
   const currentFormContactPreference = watch('contactPreference');
-  const currentFormCaregiverContactPreference = watch('caregiverContactPreference');
+  const currentFormCaregiverContactPreference = watch(
+    'caregiverContactPreference',
+  );
 
   useEffect(() => {
     if (sentReferralData) {
@@ -119,7 +152,11 @@ export const SentReferralPage = () => {
       { key: 'isWashActive', id: 'wash', label: 'WASH' },
       { key: 'isShelterActive', id: 'shelter', label: 'Shelter' },
       { key: 'isLivelihoodsActive', id: 'livelihoods', label: 'Livelihoods' },
-      { key: 'isFoodAssistanceActive', id: 'foodAssistance', label: 'Food Assistance' },
+      {
+        key: 'isFoodAssistanceActive',
+        id: 'foodAssistance',
+        label: 'Food Assistance',
+      },
       { key: 'isProtectionActive', id: 'protection', label: 'Protection' },
     ];
 
@@ -136,11 +173,19 @@ export const SentReferralPage = () => {
     }
 
     return (
-      currentFormSelectedOrganization?.activities.filter((i) => i.serviceType === currentFormServiceCategory) ?? []
+      currentFormSelectedOrganization?.activities.filter(
+        (i) => i.serviceType === currentFormServiceCategory,
+      ) ?? []
     );
   }, [currentFormServiceCategory, currentFormSelectedOrganization]);
 
-  const onSubmit = async ({ values, isDraft }: { values: SentReferralFormData; isDraft?: boolean }) => {
+  const onSubmit = async ({
+    values,
+    isDraft,
+  }: {
+    values: SentReferralFormData;
+    isDraft?: boolean;
+  }) => {
     if (isCreate) {
       try {
         await createReferral.mutateAsync({ ...values, isDraft: !!isDraft });
@@ -154,13 +199,16 @@ export const SentReferralPage = () => {
         toast({
           title: 'Something went wrong!',
           variant: 'destructive',
-          description: error.response?.data?.errorMessage || 'Error creating referral.',
+          description:
+            error.response?.data?.errorMessage || 'Error creating referral.',
         });
       }
       return;
     }
 
-    const changedFields: Partial<any> = Object.keys(formState.dirtyFields).reduce((acc: Partial<any>, key: string) => {
+    const changedFields: Partial<any> = Object.keys(
+      formState.dirtyFields,
+    ).reduce((acc: Partial<any>, key: string) => {
       const value = values[key as keyof SentReferralFormData];
       if (value !== null && value !== undefined) {
         acc[key as keyof SentReferralFormData] = value;
@@ -183,7 +231,8 @@ export const SentReferralPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error editing referral.',
+        description:
+          error.response?.data?.errorMessage || 'Error editing referral.',
       });
     }
   };
@@ -206,7 +255,8 @@ export const SentReferralPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error withdrawing referral.',
+        description:
+          error.response?.data?.errorMessage || 'Error withdrawing referral.',
       });
     }
     setOpenStatusReasonModal(false);
@@ -221,7 +271,11 @@ export const SentReferralPage = () => {
   };
 
   const headerNodeButtons = () => {
-    if (sentReferralData?.status !== ReferralStatus.Enrolment && !isCreate && !sentReferralData?.isDraft) {
+    if (
+      sentReferralData?.status !== ReferralStatus.Enrolment &&
+      !isCreate &&
+      !sentReferralData?.isDraft
+    ) {
       if (viewOnlyEnabled) {
         return (
           <div className="flex sm:flex-row flex-col gap-2 sm:gap-4">
@@ -246,13 +300,22 @@ export const SentReferralPage = () => {
         <div className="flex sm:flex-row flex-col gap-2 sm:gap-4">
           <Button
             type="submit"
-            onClick={handleSubmit((values) => onSubmit({ values, isDraft: undefined }))}
+            onClick={handleSubmit((values) =>
+              onSubmit({ values, isDraft: undefined }),
+            )}
             isLoading={patchReferral.isLoading}
-            disabled={formState.isSubmitting || patchReferral.isLoading || !formState.isDirty}
+            disabled={
+              formState.isSubmitting ||
+              patchReferral.isLoading ||
+              !formState.isDirty
+            }
           >
             Submit
           </Button>
-          <Button variant="destructive" onClick={() => window.location.reload()}>
+          <Button
+            variant="destructive"
+            onClick={() => window.location.reload()}
+          >
             Cancel edits
           </Button>
         </div>
@@ -262,21 +325,34 @@ export const SentReferralPage = () => {
 
   return (
     <PageContainer
-      pageTitle={isCreate ? 'Make Referral' : `Case  ${sentReferralData?.caseNumber ?? '-'}`}
+      pageTitle={
+        isCreate
+          ? 'Make Referral'
+          : `Case  ${sentReferralData?.caseNumber ?? '-'}`
+      }
       isLoading={
-        (queryLoading || (adminLvl1Fetching && !adminLvl1Fetched) || (adminLvl2Fetching && !adminLvl2Fetched)) &&
+        (queryLoading ||
+          (adminLvl1Fetching && !adminLvl1Fetched) ||
+          (adminLvl2Fetching && !adminLvl2Fetched)) &&
         !isCreate
       }
       breadcrumbs={[
         { href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' },
-        { name: isCreate ? 'New case' : `Case ${sentReferralData?.caseNumber ?? '-'}` },
+        {
+          name: isCreate
+            ? 'New case'
+            : `Case ${sentReferralData?.caseNumber ?? '-'}`,
+        },
       ]}
       headerNode={headerNodeButtons()}
     >
       {!isCreate && (
         <Tabs defaultValue="referral">
           <TabsList>
-            <TabsTrigger value="referral" onClick={() => setActiveTab(ReferralTab.Referral)}>
+            <TabsTrigger
+              value="referral"
+              onClick={() => setActiveTab(ReferralTab.Referral)}
+            >
               Referral
             </TabsTrigger>
             <TabsTrigger
@@ -291,11 +367,15 @@ export const SentReferralPage = () => {
         </Tabs>
       )}
 
-      {activeTab === ReferralTab.Discussion && <ReferralDiscussions referralId={sentReferralId} />}
-
-      {sentReferralData && viewOnlyEnabled && activeTab === ReferralTab.Referral && (
-        <SentReferralPageViewOnly receivedReferralData={sentReferralData} />
+      {activeTab === ReferralTab.Discussion && (
+        <ReferralDiscussions referralId={sentReferralId} />
       )}
+
+      {sentReferralData &&
+        viewOnlyEnabled &&
+        activeTab === ReferralTab.Referral && (
+          <SentReferralPageViewOnly receivedReferralData={sentReferralData} />
+        )}
 
       {!viewOnlyEnabled && activeTab === ReferralTab.Referral && (
         <Form {...form}>
@@ -311,7 +391,10 @@ export const SentReferralPage = () => {
                     <>
                       <div className="px-6 pt-2 pb-6 flex items-center justify-center">
                         <StatusTimeline
-                          currentStatus={sentReferralData?.status ?? ReferralStatus.Submission}
+                          currentStatus={
+                            sentReferralData?.status ??
+                            ReferralStatus.Submission
+                          }
                           isRejected={sentReferralData?.isRejected ?? false}
                         />
                       </div>
@@ -328,10 +411,16 @@ export const SentReferralPage = () => {
                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                           <div className="space-y-0.5">
                             <FormLabel>Urgent Referral</FormLabel>
-                            <FormDescription>Mark referral as urgent (within 24 hours)</FormDescription>
+                            <FormDescription>
+                              Mark referral as urgent (within 24 hours)
+                            </FormDescription>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} disabled={viewOnlyEnabled} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              disabled={viewOnlyEnabled}
+                            />
                           </FormControl>
                         </FormItem>
                       )}
@@ -348,7 +437,9 @@ export const SentReferralPage = () => {
                   <div className="grid grid-cols-1 gap-4">
                     {!isCreate && !sentReferralData?.isDraft && (
                       <div className="sm:col-span-1">
-                        <dt className="text-sm font-bold tracking-tight leading-6">Focal point</dt>
+                        <dt className="text-sm font-bold tracking-tight leading-6">
+                          Focal point
+                        </dt>
                         <dd className="mt-1 text-sm leading sm:mt-2">
                           {currentFormAssignedFocalPoint ? (
                             `${currentFormAssignedFocalPoint?.firstName ?? ''} ${currentFormAssignedFocalPoint.lastName ?? ''}`
@@ -382,7 +473,9 @@ export const SentReferralPage = () => {
                             name="serviceCategory"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel requiredField>Service category</FormLabel>
+                                <FormLabel requiredField>
+                                  Service category
+                                </FormLabel>
                                 <Select
                                   onValueChange={(value) => {
                                     setValue('subactivities', []);
@@ -413,51 +506,70 @@ export const SentReferralPage = () => {
                         )}
                     </div>
 
-                    {resolvedCurrentOrgSubactivities && resolvedCurrentOrgSubactivities.length > 0 && (
-                      <FormField
-                        control={control}
-                        name="subactivities"
-                        render={() => (
-                          <FormItem>
-                            <div className="mb-4">
-                              <FormLabel>List of (sub)activities</FormLabel>
-                            </div>
-                            {resolvedCurrentOrgSubactivities.map((item) => (
-                              <FormField
-                                key={item.id}
-                                control={control}
-                                name="subactivities"
-                                render={({ field }) => {
-                                  return (
-                                    <FormItem key={item.id} className="flex flex-row items-center space-x-3 space-y-0">
-                                      <FormControl>
-                                        <Checkbox
-                                          disabled={viewOnlyEnabled}
-                                          checked={!!field.value?.find((i) => i.id === item.id)}
-                                          onCheckedChange={(checked) => {
-                                            return checked
-                                              ? field.onChange([...field.value, item])
-                                              : field.onChange(
-                                                  field.value?.filter((value: any) => value.id !== item.id),
-                                                );
-                                          }}
-                                        />
-                                      </FormControl>
-                                      <FormLabel className="text-sm font-normal">{item.title}</FormLabel>
-                                    </FormItem>
-                                  );
-                                }}
-                              />
-                            ))}
-                          </FormItem>
-                        )}
-                      />
-                    )}
+                    {resolvedCurrentOrgSubactivities &&
+                      resolvedCurrentOrgSubactivities.length > 0 && (
+                        <FormField
+                          control={control}
+                          name="subactivities"
+                          render={() => (
+                            <FormItem>
+                              <div className="mb-4">
+                                <FormLabel>List of (sub)activities</FormLabel>
+                              </div>
+                              {resolvedCurrentOrgSubactivities.map((item) => (
+                                <FormField
+                                  key={item.id}
+                                  control={control}
+                                  name="subactivities"
+                                  render={({ field }) => {
+                                    return (
+                                      <FormItem
+                                        key={item.id}
+                                        className="flex flex-row items-center space-x-3 space-y-0"
+                                      >
+                                        <FormControl>
+                                          <Checkbox
+                                            disabled={viewOnlyEnabled}
+                                            checked={
+                                              !!field.value?.find(
+                                                (i) => i.id === item.id,
+                                              )
+                                            }
+                                            onCheckedChange={(checked) => {
+                                              return checked
+                                                ? field.onChange([
+                                                    ...field.value,
+                                                    item,
+                                                  ])
+                                                : field.onChange(
+                                                    field.value?.filter(
+                                                      (value: any) =>
+                                                        value.id !== item.id,
+                                                    ),
+                                                  );
+                                            }}
+                                          />
+                                        </FormControl>
+                                        <FormLabel className="text-sm font-normal">
+                                          {item.title}
+                                        </FormLabel>
+                                      </FormItem>
+                                    );
+                                  }}
+                                />
+                              ))}
+                            </FormItem>
+                          )}
+                        />
+                      )}
                   </div>
                   {currentFormServiceCategory === 'mpca' && (
                     <div>
                       <Separator className="my-4" />
-                      <MpcaSpecificForm control={control} disabled={viewOnlyEnabled} />
+                      <MpcaSpecificForm
+                        control={control}
+                        disabled={viewOnlyEnabled}
+                      />
                     </div>
                   )}
                 </CardContent>
@@ -494,7 +606,12 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField>Surname</FormLabel>
                           <FormControl>
-                            <Input id="surname" placeholder="Surname" {...field} disabled={viewOnlyEnabled} />
+                            <Input
+                              id="surname"
+                              placeholder="Surname"
+                              {...field}
+                              disabled={viewOnlyEnabled}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -524,7 +641,11 @@ export const SentReferralPage = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel requiredField>Gender</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value} disabled={viewOnlyEnabled}>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            disabled={viewOnlyEnabled}
+                          >
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select gender" />
@@ -534,7 +655,9 @@ export const SentReferralPage = () => {
                               <SelectItem value="male">Male</SelectItem>
                               <SelectItem value="female">Female</SelectItem>
                               <SelectItem value="other">Other</SelectItem>
-                              <SelectItem value="nonDisclosed">Prefer not to say</SelectItem>
+                              <SelectItem value="nonDisclosed">
+                                Prefer not to say
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -551,7 +674,11 @@ export const SentReferralPage = () => {
                         <FormItem>
                           <FormLabel requiredField>Date of birth</FormLabel>
                           <FormControl>
-                            <DatePicker field={field} btnclass="w-full" disabled={viewOnlyEnabled} />
+                            <DatePicker
+                              field={field}
+                              btnclass="w-full"
+                              disabled={viewOnlyEnabled}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -565,7 +692,9 @@ export const SentReferralPage = () => {
                         name="taxId"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel requiredField={!currentFormNoTaxId}>Tax ID</FormLabel>
+                            <FormLabel requiredField={!currentFormNoTaxId}>
+                              Tax ID
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 disabled={currentFormNoTaxId || viewOnlyEnabled}
@@ -575,7 +704,8 @@ export const SentReferralPage = () => {
                               />
                             </FormControl>
                             <FormDescription className="line-clamp-1 overflow-visible">
-                              Note: It is not possible to do MPCA referrals without Tax ID
+                              Note: It is not possible to do MPCA referrals
+                              without Tax ID
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -589,7 +719,10 @@ export const SentReferralPage = () => {
                         <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                           <FormControl>
                             <Checkbox
-                              disabled={viewOnlyEnabled || currentFormServiceCategory === OrgActivity.Mpca}
+                              disabled={
+                                viewOnlyEnabled ||
+                                currentFormServiceCategory === OrgActivity.Mpca
+                              }
                               checked={field.value}
                               onCheckedChange={(value) => {
                                 if (value) {
@@ -599,7 +732,9 @@ export const SentReferralPage = () => {
                               }}
                             />
                           </FormControl>
-                          <FormLabel className="font-normal text-sm whitespace-nowrap">No Tax ID</FormLabel>
+                          <FormLabel className="font-normal text-sm whitespace-nowrap">
+                            No Tax ID
+                          </FormLabel>
                         </FormItem>
                       )}
                     />
@@ -614,7 +749,12 @@ export const SentReferralPage = () => {
                       <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                          <Input id="address" placeholder="Address" {...field} disabled={viewOnlyEnabled} />
+                          <Input
+                            id="address"
+                            placeholder="Address"
+                            {...field}
+                            disabled={viewOnlyEnabled}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -627,21 +767,26 @@ export const SentReferralPage = () => {
                         label="Oblast"
                         name="oblast"
                         control={control}
-                        options={uaAdminLvl1Data!.map((i) => ({ value: i.name, label: i.name }))}
+                        options={uaAdminLvl1Data!.map((i) => ({
+                          value: i.name,
+                          label: i.name,
+                        }))}
                         disabled={viewOnlyEnabled}
                       />
                     )}
-                    {adminLvl2Fetched && !ukraineAdminLevel2DataLoading && watch('oblast') && (
-                      <Combobox
-                        label="Raion"
-                        name="ryon"
-                        control={control}
-                        options={uaAdminLvl2Data!
-                          .filter((i) => i.admin1Name === watch('oblast'))
-                          .map((i) => ({ value: i.name, label: i.name }))}
-                        disabled={viewOnlyEnabled}
-                      />
-                    )}
+                    {adminLvl2Fetched &&
+                      !ukraineAdminLevel2DataLoading &&
+                      watch('oblast') && (
+                        <Combobox
+                          label="Raion"
+                          name="ryon"
+                          control={control}
+                          options={uaAdminLvl2Data!
+                            .filter((i) => i.admin1Name === watch('oblast'))
+                            .map((i) => ({ value: i.name, label: i.name }))}
+                          disabled={viewOnlyEnabled}
+                        />
+                      )}
                     {watch('ryon') && (
                       <Combobox
                         label="Hromada"
@@ -649,7 +794,11 @@ export const SentReferralPage = () => {
                         control={control}
                         options={admin_3
                           .filter((i) => i.admin2_name === watch('ryon'))
-                          .map((i, index) => ({ value: i.name, label: i.name, key: index }))}
+                          .map((i, index) => ({
+                            value: i.name,
+                            label: i.name,
+                            key: index,
+                          }))}
                         disabled={viewOnlyEnabled}
                       />
                     )}
@@ -660,7 +809,11 @@ export const SentReferralPage = () => {
                         control={control}
                         options={admin_4
                           .filter((i) => i.admin3_name === watch('hromada'))
-                          .map((i, index) => ({ value: i.name, label: i.name, key: index }))}
+                          .map((i, index) => ({
+                            value: i.name,
+                            label: i.name,
+                            key: index,
+                          }))}
                         disabled={viewOnlyEnabled}
                       />
                     )}
@@ -684,19 +837,25 @@ export const SentReferralPage = () => {
                               <FormControl>
                                 <RadioGroupItem value="email" />
                               </FormControl>
-                              <FormLabel className="font-normal">Email</FormLabel>
+                              <FormLabel className="font-normal">
+                                Email
+                              </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
                                 <RadioGroupItem value="phone" />
                               </FormControl>
-                              <FormLabel className="font-normal">Phone</FormLabel>
+                              <FormLabel className="font-normal">
+                                Phone
+                              </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
                                 <RadioGroupItem value="visit" />
                               </FormControl>
-                              <FormLabel className="font-normal">Visit</FormLabel>
+                              <FormLabel className="font-normal">
+                                Visit
+                              </FormLabel>
                             </FormItem>
                           </RadioGroup>
                         </FormControl>
@@ -710,7 +869,13 @@ export const SentReferralPage = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel requiredField={currentFormContactPreference === 'email'}>Email</FormLabel>
+                          <FormLabel
+                            requiredField={
+                              currentFormContactPreference === 'email'
+                            }
+                          >
+                            Email
+                          </FormLabel>
                           <FormControl>
                             <Input
                               id="email"
@@ -730,9 +895,21 @@ export const SentReferralPage = () => {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel requiredField={currentFormContactPreference === 'phone'}>Phone</FormLabel>
+                          <FormLabel
+                            requiredField={
+                              currentFormContactPreference === 'phone'
+                            }
+                          >
+                            Phone
+                          </FormLabel>
                           <FormControl>
-                            <Input id="phone" placeholder="Phone" type="tel" {...field} disabled={viewOnlyEnabled} />
+                            <Input
+                              id="phone"
+                              placeholder="Phone"
+                              type="tel"
+                              {...field}
+                              disabled={viewOnlyEnabled}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -745,7 +922,10 @@ export const SentReferralPage = () => {
                     name="restrictions"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Are there any contact or referral restrictions to be aware of?</FormLabel>
+                        <FormLabel>
+                          Are there any contact or referral restrictions to be
+                          aware of?
+                        </FormLabel>
                         <FormControl>
                           <Textarea
                             id="restrictions"
@@ -769,7 +949,9 @@ export const SentReferralPage = () => {
                       <FormItem className="flex dark:border-orange-400 dark:bg-card border-orange-200 bg-orange-50 flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>Child under 18 years old?</FormLabel>
-                          <FormDescription>Enable if minor and fill out necessary information</FormDescription>
+                          <FormDescription>
+                            Enable if minor and fill out necessary information
+                          </FormDescription>
                         </div>
                         <FormControl>
                           <Switch
@@ -793,7 +975,9 @@ export const SentReferralPage = () => {
                   {currentFormIsMinor && (
                     <MinorForm
                       control={control}
-                      currentFormCaregiverContactPreference={currentFormCaregiverContactPreference}
+                      currentFormCaregiverContactPreference={
+                        currentFormCaregiverContactPreference
+                      }
                       isCaregiverInformed={currentFormIsCaregiverInformed}
                       disabled={viewOnlyEnabled}
                     />
@@ -802,10 +986,12 @@ export const SentReferralPage = () => {
                 <Separator />
                 <CardHeader>
                   <CardDescription>
-                    Describe the minimum information required by the receiving agency to be able to respond to the
-                    referral. This can include problem description, whether they receive other assistance, number in the
-                    household, etc. For referrals to GBV, CP and Protection case management, do not provide details of
-                    the case or incident.
+                    Describe the minimum information required by the receiving
+                    agency to be able to respond to the referral. This can
+                    include problem description, whether they receive other
+                    assistance, number in the household, etc. For referrals to
+                    GBV, CP and Protection case management, do not provide
+                    details of the case or incident.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -852,7 +1038,11 @@ export const SentReferralPage = () => {
                     />
                     <div className="flex flex-col gap-3">
                       <FormLabel>Upload additional information</FormLabel>
-                      <FilesDropzone control={control} name="files" disabled={viewOnlyEnabled} />
+                      <FilesDropzone
+                        control={control}
+                        name="files"
+                        disabled={viewOnlyEnabled}
+                      />
                     </div>
                   </div>
                 </CardContent>
@@ -869,11 +1059,16 @@ export const SentReferralPage = () => {
                           <div className="space-y-0.5">
                             <FormLabel requiredField>Consent</FormLabel>
                             <FormDescription>
-                              Has the Beneficiary given you consent to share their data?
+                              Has the Beneficiary given you consent to share
+                              their data?
                             </FormDescription>
                           </div>
                           <FormControl>
-                            <Switch checked={field.value} onCheckedChange={field.onChange} disabled={viewOnlyEnabled} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              disabled={viewOnlyEnabled}
+                            />
                           </FormControl>
                         </FormItem>
                         <FormMessage className="mt-1" />
@@ -889,7 +1084,12 @@ export const SentReferralPage = () => {
                         <Button
                           type="button"
                           variant="default"
-                          onClick={() => onSubmit({ values: form.getValues(), isDraft: true })}
+                          onClick={() =>
+                            onSubmit({
+                              values: form.getValues(),
+                              isDraft: true,
+                            })
+                          }
                           disabled={createReferral.isLoading}
                         >
                           Save draft
@@ -897,13 +1097,19 @@ export const SentReferralPage = () => {
                         <Button
                           type="submit"
                           variant="default"
-                          onClick={handleSubmit((values) => onSubmit({ values, isDraft: false }))}
+                          onClick={handleSubmit((values) =>
+                            onSubmit({ values, isDraft: false }),
+                          )}
                           disabled={createReferral.isLoading}
                         >
                           Send Referral
                         </Button>
                       </div>
-                      <Button type="button" variant="outline" onClick={() => navigate(APP_ROUTE.SentReferrals)}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => navigate(APP_ROUTE.SentReferrals)}
+                      >
                         Cancel
                       </Button>
                     </CardFooter>

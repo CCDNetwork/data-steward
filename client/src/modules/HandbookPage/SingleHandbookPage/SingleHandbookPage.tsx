@@ -7,7 +7,14 @@ import { PageContainer } from '@/components/PageContainer';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useHandbook, useHandbookMutation } from '@/services/handbooks/api';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
@@ -22,7 +29,10 @@ export const SingleHandbookPage = () => {
   const navigate = useNavigate();
   const { id: handbookId, isCreate } = useIdFromParams();
 
-  const { data: handbookData, isLoading: queryLoading } = useHandbook({ id: handbookId, isCreate });
+  const { data: handbookData, isLoading: queryLoading } = useHandbook({
+    id: handbookId,
+    isCreate,
+  });
   const { editHandbook, createHandbook } = useHandbookMutation();
 
   const form = useForm<HandbookForm>({
@@ -53,7 +63,9 @@ export const SingleHandbookPage = () => {
         toast({
           title: 'Something went wrong!',
           variant: 'destructive',
-          description: error.response?.data?.errorMessage || 'An error occured while creating handbook.',
+          description:
+            error.response?.data?.errorMessage ||
+            'An error occured while creating handbook.',
         });
       }
       return;
@@ -70,7 +82,8 @@ export const SingleHandbookPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error updating handbook.',
+        description:
+          error.response?.data?.errorMessage || 'Error updating handbook.',
       });
     }
   });
@@ -85,12 +98,19 @@ export const SingleHandbookPage = () => {
           type="submit"
           onClick={onSubmit}
           isLoading={editHandbook.isLoading}
-          disabled={formState.isSubmitting || editHandbook.isLoading || !formState.isDirty}
+          disabled={
+            formState.isSubmitting ||
+            editHandbook.isLoading ||
+            !formState.isDirty
+          }
         >
           Save
         </Button>
       }
-      breadcrumbs={[{ href: `${APP_ROUTE.Handbook}`, name: 'Handbook entries' }, { name: `${handbookData?.title}` }]}
+      breadcrumbs={[
+        { href: `${APP_ROUTE.Handbook}`, name: 'Handbook entries' },
+        { name: `${handbookData?.title}` },
+      ]}
     >
       <Form {...form}>
         <form onSubmit={onSubmit}>
@@ -105,14 +125,23 @@ export const SingleHandbookPage = () => {
                       <FormItem>
                         <FormLabel requiredField>Handbook title</FormLabel>
                         <FormControl>
-                          <Input id="title" placeholder="Handbook title" {...field} />
+                          <Input
+                            id="title"
+                            placeholder="Handbook title"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <MarkdownEditor label="Content" name="content" control={control} height={0} />
+                <MarkdownEditor
+                  label="Content"
+                  name="content"
+                  control={control}
+                  height={0}
+                />
               </CardContent>
             </Card>
           </div>

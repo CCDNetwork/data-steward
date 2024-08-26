@@ -1,6 +1,15 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
-import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
+import {
+  DataWithMeta,
+  PaginationRequest,
+  paginationRequestToUrl,
+} from '@/helpers/pagination';
 import { useGlobalErrors } from '@/providers/GlobalProvider';
 
 import { resToUser, userToReq } from './transformations';
@@ -40,7 +49,13 @@ const postUser = async (data: any): Promise<User> => {
   return resToUser(resp.data);
 };
 
-const putUser = async ({ payload, userId }: { payload: UserEditFormData; userId: string }): Promise<User> => {
+const putUser = async ({
+  payload,
+  userId,
+}: {
+  payload: UserEditFormData;
+  userId: string;
+}): Promise<User> => {
   const resp = await api.put(`/users/${userId}`, userToReq(payload));
   return resToUser(resp.data);
 };
@@ -60,7 +75,13 @@ const putUserMe = async (data: UserProfileRequestPayload): Promise<User> => {
   return resToUser(resp.data);
 };
 
-const patchUser = async ({ userId, data }: { userId: string; data: UserEditFormData }): Promise<User> => {
+const patchUser = async ({
+  userId,
+  data,
+}: {
+  userId: string;
+  data: UserEditFormData;
+}): Promise<User> => {
   const resp = await api.patch(`/users/${userId}`, userToReq(data));
   return resToUser(resp.data);
 };
@@ -69,7 +90,11 @@ const patchUser = async ({ userId, data }: { userId: string; data: UserEditFormD
 // GET hooks
 //
 
-export const useUserMe = ({ queryEnabled = true }: { queryEnabled?: boolean }) => {
+export const useUserMe = ({
+  queryEnabled = true,
+}: {
+  queryEnabled?: boolean;
+}) => {
   return useQuery([QueryKeys.UserMe], () => fetchUserMe(), {
     enabled: queryEnabled,
   });
@@ -85,7 +110,16 @@ export const useUsers = ({
   queryFilters,
 }: any) => {
   return useQuery(
-    [QueryKeys.Users, currentPage, pageSize, sortBy, sortDirection, debouncedSearch, filters, queryFilters],
+    [
+      QueryKeys.Users,
+      currentPage,
+      pageSize,
+      sortBy,
+      sortDirection,
+      debouncedSearch,
+      filters,
+      queryFilters,
+    ],
     () =>
       fetchUsers({
         page: currentPage,
@@ -99,7 +133,13 @@ export const useUsers = ({
   );
 };
 
-export const useUser = ({ id, isCreate }: { id: string; isCreate: boolean }) => {
+export const useUser = ({
+  id,
+  isCreate,
+}: {
+  id: string;
+  isCreate: boolean;
+}) => {
   const { onSetCollectionNotFound } = useGlobalErrors();
 
   return useQuery([QueryKeys.UserSingle, id], () => fetchUser(id), {
@@ -108,7 +148,11 @@ export const useUser = ({ id, isCreate }: { id: string; isCreate: boolean }) => 
   });
 };
 
-export const useUsersInfinite = (pagination: PaginationRequest, enabled: boolean, customEndpoint?: string) => {
+export const useUsersInfinite = (
+  pagination: PaginationRequest,
+  enabled: boolean,
+  customEndpoint?: string,
+) => {
   return useInfiniteQuery(
     [QueryKeys.Users, 'infinite', pagination],
     ({ pageParam = 1 }) => {

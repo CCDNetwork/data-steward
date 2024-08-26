@@ -7,7 +7,9 @@ interface FilterByUrgencyButtonProps {
   filterName: string;
   label: string;
   currentFilters: Record<string, string>;
-  setCurrentFilters: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  setCurrentFilters: React.Dispatch<
+    React.SetStateAction<Record<string, string>>
+  >;
 }
 
 export const FilterByUrgencyButton = ({
@@ -27,7 +29,11 @@ export const FilterByUrgencyButton = ({
   const isFilterActive = !!currentFilters[filterName];
 
   return (
-    <Button variant={isFilterActive ? 'destructive' : 'outline'} onClick={handleClick} className="border-dashed">
+    <Button
+      variant={isFilterActive ? 'destructive' : 'outline'}
+      onClick={handleClick}
+      className="border-dashed"
+    >
       <HourglassIcon className="mr-2 h-4 w-4" />
       {label}
     </Button>

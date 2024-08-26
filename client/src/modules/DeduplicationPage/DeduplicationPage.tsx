@@ -12,12 +12,25 @@ import { columns } from './columns';
 import { DeduplicationWizard } from './components';
 
 export const DeduplicationPage = () => {
-  const pagination = usePagination({ initialPagination: { sortBy: 'createdAt', sortDirection: SortDirection.Desc } });
-  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
+  const pagination = usePagination({
+    initialPagination: {
+      sortBy: 'createdAt',
+      sortDirection: SortDirection.Desc,
+    },
+  });
+  const {
+    currentPage,
+    onPageChange,
+    onPageSizeChange,
+    onSortChange,
+    onSearchChange,
+  } = pagination;
 
-  const [isDeduplicationWizardOpen, setIsDeduplicationWizardOpen] = useState<boolean>(false);
+  const [isDeduplicationWizardOpen, setIsDeduplicationWizardOpen] =
+    useState<boolean>(false);
 
-  const { data: listings, isLoading: queryLoading } = useDeduplicationListings(pagination);
+  const { data: listings, isLoading: queryLoading } =
+    useDeduplicationListings(pagination);
 
   const handleDeduplicationWizardOpen = () => {
     setIsDeduplicationWizardOpen(true);
@@ -52,7 +65,10 @@ export const DeduplicationPage = () => {
         columns={columns}
       />
 
-      <DeduplicationWizard isOpen={isDeduplicationWizardOpen} setIsOpen={setIsDeduplicationWizardOpen} />
+      <DeduplicationWizard
+        isOpen={isDeduplicationWizardOpen}
+        setIsOpen={setIsDeduplicationWizardOpen}
+      />
     </PageContainer>
   );
 };

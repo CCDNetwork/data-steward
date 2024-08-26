@@ -16,7 +16,13 @@ import { columns } from './columns';
 export const UsersPage = () => {
   const navigate = useNavigate();
   const pagination = usePagination();
-  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
+  const {
+    currentPage,
+    onPageChange,
+    onPageSizeChange,
+    onSortChange,
+    onSearchChange,
+  } = pagination;
 
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
@@ -38,13 +44,15 @@ export const UsersPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Failed to delete user.',
+        description:
+          error.response?.data?.errorMessage || 'Failed to delete user.',
       });
     }
     setUserToDelete(null);
   };
 
-  const onUserTableRowClick = (userRow: User) => navigate(`${APP_ROUTE.Users}/${userRow.id}`);
+  const onUserTableRowClick = (userRow: User) =>
+    navigate(`${APP_ROUTE.Users}/${userRow.id}`);
 
   return (
     <PageContainer

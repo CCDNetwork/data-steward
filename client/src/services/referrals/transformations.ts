@@ -1,4 +1,9 @@
-import { OrgActivity, OrganizationActivity, resToActivities, resToOrganization } from '@/services/organizations';
+import {
+  OrgActivity,
+  OrganizationActivity,
+  resToActivities,
+  resToOrganization,
+} from '@/services/organizations';
 
 import { Referral, ReferralUser } from './types';
 import { resToUser } from '../users';
@@ -11,9 +16,13 @@ export const resToReferral = (res: any): Referral => {
     isUrgent: res.isUrgent ?? false,
     subactivitiesIds: res.subactivitiesIds ?? [],
     serviceCategory: res.serviceCategory ?? '',
-    subactivities: res.subactivities ? res.subactivities.map(resToActivities) : [],
+    subactivities: res.subactivities
+      ? res.subactivities.map(resToActivities)
+      : [],
     organizationReferredToId: res.organizationReferredToId ?? '',
-    organizationReferredTo: res.organizationReferredTo ? resToOrganization(res.organizationReferredTo) : null,
+    organizationReferredTo: res.organizationReferredTo
+      ? resToOrganization(res.organizationReferredTo)
+      : null,
     displacementStatus: res.displacementStatus ?? '',
     householdSize: res.householdSize ?? '',
     householdMonthlyIncome: res.householdMonthlyIncome ?? '',
@@ -42,7 +51,9 @@ export const resToReferral = (res: any): Referral => {
     caregiverEmail: res.caregiverEmail ?? '',
     caregiverPhone: res.caregiverPhone ?? '',
     caregiverContactPreference: res.caregiverContactPreference ?? '',
-    isCaregiverInformed: res.isCaregiverInformed ? res.isCaregiverInformed.toString() : 'false',
+    isCaregiverInformed: res.isCaregiverInformed
+      ? res.isCaregiverInformed.toString()
+      : 'false',
     caregiverExplanation: res.caregiverExplanation ?? '',
     caregiverNote: res.caregiverNote ?? '',
     focalPointId: res.focalPointId ?? '',
@@ -50,7 +61,9 @@ export const resToReferral = (res: any): Referral => {
     status: res.status ?? '',
     isDraft: res.isDraft ?? false,
     fileIds: res.fileIds ? res.fileIds.map(String) : [],
-    organizationCreated: res.organizationCreated ? resToOrganization(res.organizationCreated) : null,
+    organizationCreated: res.organizationCreated
+      ? resToOrganization(res.organizationCreated)
+      : null,
     userCreated: res.userCreated ? resToUser(res.userCreated) : null,
     files: res.files ? res.files.map(resToStorageFile) : [],
     isRejected: res.isRejected ?? false,
@@ -164,7 +177,9 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
   }
 
   if (data.subactivities && data.subactivities.length > 0) {
-    req.subactivitiesIds = data.subactivities.map((i: OrganizationActivity) => i.id);
+    req.subactivitiesIds = data.subactivities.map(
+      (i: OrganizationActivity) => i.id,
+    );
   }
 
   if (data.dateOfBirth) {

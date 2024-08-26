@@ -7,7 +7,15 @@ import { useUser, useUserMutation } from '@/services/users/api';
 import { useIdFromParams } from '@/helpers/common';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { APP_ROUTE } from '@/helpers/constants';
@@ -21,7 +29,10 @@ import { UserEditFormData, UserEditFormSchema } from './validations';
 export const UserPage = () => {
   const { id: userId } = useIdFromParams();
 
-  const { data: userData, isLoading: queryLoading } = useUser({ id: userId, isCreate: false });
+  const { data: userData, isLoading: queryLoading } = useUser({
+    id: userId,
+    isCreate: false,
+  });
   const { patchUser } = useUserMutation();
 
   const form = useForm<UserEditFormData>({
@@ -52,14 +63,17 @@ export const UserPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Error updating user.',
+        description:
+          error.response?.data?.errorMessage || 'Error updating user.',
       });
     }
   });
 
   const onPermissionClick = (permission: string) => {
     if (currentFormPermissions?.includes(permission)) {
-      const filteredFormPermissions = currentFormPermissions?.filter((i) => i !== permission);
+      const filteredFormPermissions = currentFormPermissions?.filter(
+        (i) => i !== permission,
+      );
       setValue('permissions', filteredFormPermissions);
       return;
     }
@@ -100,7 +114,11 @@ export const UserPage = () => {
                         <FormItem>
                           <FormLabel requiredField>First name</FormLabel>
                           <FormControl>
-                            <Input id="firstName" placeholder="First name" {...field} />
+                            <Input
+                              id="firstName"
+                              placeholder="First name"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -113,7 +131,11 @@ export const UserPage = () => {
                         <FormItem>
                           <FormLabel requiredField>Last name</FormLabel>
                           <FormControl>
-                            <Input id="lastName" placeholder="Last name" {...field} />
+                            <Input
+                              id="lastName"
+                              placeholder="Last name"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -142,16 +164,24 @@ export const UserPage = () => {
                   />
                   {userData?.role === UserRole.User && (
                     <div className="flex flex-col gap-3">
-                      <div className="text-sm font-medium leading-none">Permissions</div>
+                      <div className="text-sm font-medium leading-none">
+                        Permissions
+                      </div>
                       <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                         <Checkbox
                           className="shadow-none"
-                          checked={currentFormPermissions?.includes('deduplication')}
-                          onCheckedChange={() => onPermissionClick('deduplication')}
+                          checked={currentFormPermissions?.includes(
+                            'deduplication',
+                          )}
+                          onCheckedChange={() =>
+                            onPermissionClick('deduplication')
+                          }
                         />
                         <div className="space-y-1 leading-3">
                           <FormLabel>Deduplication</FormLabel>
-                          <FormDescription>User can use deduplication.</FormDescription>
+                          <FormDescription>
+                            User can use deduplication.
+                          </FormDescription>
                         </div>
                       </div>
                       <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -162,7 +192,9 @@ export const UserPage = () => {
                         />
                         <div className="space-y-1 leading-3">
                           <FormLabel>Referrals</FormLabel>
-                          <FormDescription>User can use referrals.</FormDescription>
+                          <FormDescription>
+                            User can use referrals.
+                          </FormDescription>
                         </div>
                       </div>
                     </div>

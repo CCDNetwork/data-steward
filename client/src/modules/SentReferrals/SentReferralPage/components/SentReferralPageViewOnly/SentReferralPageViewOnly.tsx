@@ -9,7 +9,10 @@ import { StatusTimeline } from '@/components/StatusTimeline';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/helpers/utils';
-import { HOUSEHOLDS_VULNERABILITY_CRITERIA, ReferralStatus } from '@/services/referrals/const';
+import {
+  HOUSEHOLDS_VULNERABILITY_CRITERIA,
+  ReferralStatus,
+} from '@/services/referrals/const';
 import { Referral } from '@/services/referrals';
 import { serviceCategoryToLabel } from '@/modules/ReceivedReferrals';
 
@@ -20,11 +23,14 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
       isUrgent: receivedReferralData?.isUrgent || false,
       serviceCategory: receivedReferralData?.serviceCategory || 'N/A',
       subactivities: receivedReferralData?.subactivities || [],
-      sendingOrganizationName: receivedReferralData?.organizationCreated?.name || 'N/A',
+      sendingOrganizationName:
+        receivedReferralData?.organizationCreated?.name || 'N/A',
       displacementStatus: receivedReferralData?.displacementStatus || 'N/A',
       householdSize: receivedReferralData?.householdSize || 'N/A',
-      householdMonthlyIncome: receivedReferralData?.householdMonthlyIncome || 'N/A',
-      householdVulnerabilityCriteria: receivedReferralData?.householdsVulnerabilityCriteria || [],
+      householdMonthlyIncome:
+        receivedReferralData?.householdMonthlyIncome || 'N/A',
+      householdVulnerabilityCriteria:
+        receivedReferralData?.householdsVulnerabilityCriteria || [],
       firstName: receivedReferralData?.firstName || 'N/A',
       patronymicName: receivedReferralData?.patronymicName || 'N/A',
       surname: receivedReferralData?.surname || 'N/A',
@@ -50,7 +56,8 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
       relationshipToChild: receivedReferralData?.relationshipToChild || 'N/A',
       caregiverEmail: receivedReferralData?.caregiverEmail || 'N/A',
       caregiverPhone: receivedReferralData?.caregiverPhone || 'N/A',
-      caregiverContactPreference: receivedReferralData?.caregiverContactPreference || 'N/A',
+      caregiverContactPreference:
+        receivedReferralData?.caregiverContactPreference || 'N/A',
       isCaregiverInformed: receivedReferralData?.isCaregiverInformed || 'false',
       caregiverExplanation: receivedReferralData?.caregiverExplanation || 'N/A',
       caregiverNote: receivedReferralData?.caregiverNote || 'N/A',
@@ -58,9 +65,11 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
       status: receivedReferralData?.status || ReferralStatus.Submission,
       isDraft: receivedReferralData?.isDraft || false,
       isRejected: receivedReferralData?.isRejected || false,
-      organizationCreated: receivedReferralData?.organizationCreated?.name || 'N/A',
+      organizationCreated:
+        receivedReferralData?.organizationCreated?.name || 'N/A',
       userCreated:
-        `${receivedReferralData?.userCreated?.firstName} ${receivedReferralData?.userCreated?.lastName}` || 'N/A',
+        `${receivedReferralData?.userCreated?.firstName} ${receivedReferralData?.userCreated?.lastName}` ||
+        'N/A',
       files: receivedReferralData?.files || [],
     }),
     [receivedReferralData],
@@ -81,7 +90,10 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
                 'mt-5': receivingReferral?.isUrgent,
               })}
             >
-              <StatusTimeline currentStatus={receivingReferral.status} isRejected={receivingReferral.isRejected} />
+              <StatusTimeline
+                currentStatus={receivingReferral.status}
+                isRejected={receivingReferral.isRejected}
+              />
             </div>
             <Separator />
           </>
@@ -90,7 +102,9 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
           <>
             <CardContent className="pt-6">
               <div className="sm:col-span-1">
-                <dt className="text-sm font-bold tracking-tight leading-6">Focal Point</dt>
+                <dt className="text-sm font-bold tracking-tight leading-6">
+                  Focal Point
+                </dt>
                 <dd className="mt-1 text-sm leading-6 sm:mt-2">
                   {`${receivingReferral.focalPoint.firstName} ${receivingReferral?.focalPoint?.lastName}`}
                 </dd>
@@ -105,25 +119,36 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
         <CardContent>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Sending organisation</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.sendingOrganizationName}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Sending organisation
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.sendingOrganizationName}
+              </dd>
             </div>
             {receivingReferral?.serviceCategory && (
               <div className="sm:col-span-1">
-                <dt className="text-sm font-bold tracking-tight leading-6">Service category</dt>
+                <dt className="text-sm font-bold tracking-tight leading-6">
+                  Service category
+                </dt>
                 <dd className="mt-1 text-sm leading-6 sm:mt-2">
                   {serviceCategoryToLabel(receivingReferral.serviceCategory)}
                 </dd>
               </div>
             )}
-            {receivingReferral?.subactivities && receivingReferral?.subactivities.length > 0 && (
-              <div className="col-span-1">
-                <dt className="text-sm font-bold tracking-tightleading-6">Subactivites</dt>
-                <dd className="mt-1 text-sm leading-6 capitalize sm:mt-2">
-                  {receivingReferral.subactivities.map((i) => i.title).join(', ')}
-                </dd>
-              </div>
-            )}
+            {receivingReferral?.subactivities &&
+              receivingReferral?.subactivities.length > 0 && (
+                <div className="col-span-1">
+                  <dt className="text-sm font-bold tracking-tightleading-6">
+                    Subactivites
+                  </dt>
+                  <dd className="mt-1 text-sm leading-6 capitalize sm:mt-2">
+                    {receivingReferral.subactivities
+                      .map((i) => i.title)
+                      .join(', ')}
+                  </dd>
+                </div>
+              )}
           </dl>
         </CardContent>
         {receivingReferral?.serviceCategory === 'mpca' && (
@@ -135,25 +160,39 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
             <CardContent>
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="sm:col-span-1">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Displacement status</dt>
-                  <dd className="mt-1 text-sm leading sm:mt-2 uppercase">{receivingReferral.displacementStatus}</dd>
+                  <dt className="text-sm font-bold tracking-tight leading-6">
+                    Displacement status
+                  </dt>
+                  <dd className="mt-1 text-sm leading sm:mt-2 uppercase">
+                    {receivingReferral.displacementStatus}
+                  </dd>
                 </div>
                 <div className="sm:col-span-1">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Household size</dt>
-                  <dd className="mt-1 text-sm leading sm:mt-2 capitalize">{receivingReferral.householdSize}</dd>
+                  <dt className="text-sm font-bold tracking-tight leading-6">
+                    Household size
+                  </dt>
+                  <dd className="mt-1 text-sm leading sm:mt-2 capitalize">
+                    {receivingReferral.householdSize}
+                  </dd>
                 </div>
                 <div className="sm:col-span-1">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Household monthly income</dt>
+                  <dt className="text-sm font-bold tracking-tight leading-6">
+                    Household monthly income
+                  </dt>
                   <dd className="mt-1 text-sm leading sm:mt-2 capitalize">
                     {receivingReferral.householdMonthlyIncome}
                   </dd>
                 </div>
                 <div className="sm:col-span-2">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Household vulnerability criteria</dt>
+                  <dt className="text-sm font-bold tracking-tight leading-6">
+                    Household vulnerability criteria
+                  </dt>
                   <dd className="mt-1 text-sm leading sm:mt-2 whitespace-pre-line">
                     <ul className="list-disc px-4">
                       {HOUSEHOLDS_VULNERABILITY_CRITERIA.filter((i) =>
-                        receivingReferral.householdVulnerabilityCriteria.some((j) => i.id === j),
+                        receivingReferral.householdVulnerabilityCriteria.some(
+                          (j) => i.id === j,
+                        ),
                       ).map((k) => (
                         <li key={k.id}>{k.label}</li>
                       ))}
@@ -171,68 +210,131 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
         <CardContent>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">First name</dt>
-              <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.firstName}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                First name
+              </dt>
+              <dd className="mt-1 text-sm leading sm:mt-2">
+                {receivingReferral.firstName}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Surname</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.surname}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Surname
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.surname}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Patronymic name</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.patronymicName}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Patronymic name
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.patronymicName}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Gender</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2 capitalize">{receivingReferral.gender}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Gender
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2 capitalize">
+                {receivingReferral.gender}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Date of birth</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.dateOfBirth}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Date of birth
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.dateOfBirth}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Tax ID</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.taxId}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Tax ID
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.taxId}
+              </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-sm font-bold tracking-tight leading-6">Address</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.address}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Address
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.address}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Oblast</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.oblast}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Oblast
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.oblast}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Raion</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.ryon}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Raion
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.ryon}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Hromada</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.hromada}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Hromada
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.hromada}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Settlement</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.settlement}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Settlement
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.settlement}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Email</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.email}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Email
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.email}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Phone</dt>
-              <dd className="mt-1 text-sm leading-6 sm:mt-2">{receivingReferral.phone}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Phone
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {receivingReferral.phone}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Contact preference</dt>
-              <dd className="mt-1 text-sm leading sm:mt-2 capitalize">{receivingReferral.contactPreference}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Contact preference
+              </dt>
+              <dd className="mt-1 text-sm leading sm:mt-2 capitalize">
+                {receivingReferral.contactPreference}
+              </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-bold tracking-tight leading-6">Consent given?</dt>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Consent given?
+              </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
                 <Badge
                   className={cn(
-                    { 'bg-green-600 hover:bg-green-600': receivingReferral.consent },
-                    { 'bg-red-600 hover:bg-red-600': !receivingReferral.consent },
+                    {
+                      'bg-green-600 hover:bg-green-600':
+                        receivingReferral.consent,
+                    },
+                    {
+                      'bg-red-600 hover:bg-red-600': !receivingReferral.consent,
+                    },
                   )}
                 >
                   {receivingReferral.consent ? 'Yes' : 'No'}
@@ -240,81 +342,130 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
               </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-sm font-bold tracking-tight leading-6">Restrictions</dt>
-              <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.restrictions}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Restrictions
+              </dt>
+              <dd className="mt-1 text-sm leading sm:mt-2">
+                {receivingReferral.restrictions}
+              </dd>
             </div>
           </dl>
         </CardContent>
-        {receivingReferral?.caregiver && receivingReferral.caregiver !== 'N/A' && (
-          <div className="sm:bg-muted/40">
-            <Separator />
-            <CardHeader>
-              <CardTitle>Minor Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="sm:col-span-2">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Is child separated or unaccompanied?</dt>
-                  <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                    <Badge
-                      className={cn(
-                        { 'bg-green-600 hover:bg-green-600': receivingReferral.isSeparated },
-                        { 'bg-red-600 hover:bg-red-600': !receivingReferral.isSeparated },
-                      )}
-                    >
-                      {receivingReferral.isSeparated ? 'Yes' : 'No'}
-                    </Badge>
-                  </dd>
-                </div>
-                <div className="sm:col-span-1">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Caregiver name</dt>
-                  <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.caregiver}</dd>
-                </div>
-                <div className="sm:col-span-1">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Relationship to child</dt>
-                  <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.relationshipToChild}</dd>
-                </div>
-                <div className="sm:col-span-1">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Caregiver email</dt>
-                  <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.caregiverEmail}</dd>
-                </div>
-                <div className="sm:col-span-1">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Caregiver phone</dt>
-                  <dd className="mt-1 text-sm leading sm:mt-2 capitalize">{receivingReferral.caregiverPhone}</dd>
-                </div>
-                <div className="sm:col-span-1">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Caregiver contact preference</dt>
-                  <dd className="mt-1 text-sm leading sm:mt-2 capitalize">
-                    {receivingReferral.caregiverContactPreference}
-                  </dd>
-                </div>
-                <div className="sm:col-span-2">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Is caregiver informed of referral?</dt>
-                  <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                    <Badge
-                      className={cn(
-                        { 'bg-green-600 hover:bg-green-600': receivingReferral.isCaregiverInformed === 'true' },
-                        { 'bg-red-600 hover:bg-red-600': receivingReferral.isCaregiverInformed === 'false' },
-                      )}
-                    >
-                      {receivingReferral.isCaregiverInformed === 'true' ? 'Yes' : 'No'}
-                    </Badge>
-                  </dd>
-                </div>
-                {receivingReferral.isCaregiverInformed === 'false' && (
+        {receivingReferral?.caregiver &&
+          receivingReferral.caregiver !== 'N/A' && (
+            <div className="sm:bg-muted/40">
+              <Separator />
+              <CardHeader>
+                <CardTitle>Minor Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="sm:col-span-2">
-                    <dt className="text-sm font-bold tracking-tight leading-6">Caregiver explanation</dt>
-                    <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.caregiverExplanation}</dd>
+                    <dt className="text-sm font-bold tracking-tight leading-6">
+                      Is child separated or unaccompanied?
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                      <Badge
+                        className={cn(
+                          {
+                            'bg-green-600 hover:bg-green-600':
+                              receivingReferral.isSeparated,
+                          },
+                          {
+                            'bg-red-600 hover:bg-red-600':
+                              !receivingReferral.isSeparated,
+                          },
+                        )}
+                      >
+                        {receivingReferral.isSeparated ? 'Yes' : 'No'}
+                      </Badge>
+                    </dd>
                   </div>
-                )}
-                <div className="sm:col-span-2">
-                  <dt className="text-sm font-bold tracking-tight leading-6">Special note or need</dt>
-                  <dd className="mt-1 text-sm leading sm:mt-2 capitalize">{receivingReferral.caregiverNote}</dd>
-                </div>
-              </dl>
-            </CardContent>
-          </div>
-        )}
+                  <div className="sm:col-span-1">
+                    <dt className="text-sm font-bold tracking-tight leading-6">
+                      Caregiver name
+                    </dt>
+                    <dd className="mt-1 text-sm leading sm:mt-2">
+                      {receivingReferral.caregiver}
+                    </dd>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <dt className="text-sm font-bold tracking-tight leading-6">
+                      Relationship to child
+                    </dt>
+                    <dd className="mt-1 text-sm leading sm:mt-2">
+                      {receivingReferral.relationshipToChild}
+                    </dd>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <dt className="text-sm font-bold tracking-tight leading-6">
+                      Caregiver email
+                    </dt>
+                    <dd className="mt-1 text-sm leading sm:mt-2">
+                      {receivingReferral.caregiverEmail}
+                    </dd>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <dt className="text-sm font-bold tracking-tight leading-6">
+                      Caregiver phone
+                    </dt>
+                    <dd className="mt-1 text-sm leading sm:mt-2 capitalize">
+                      {receivingReferral.caregiverPhone}
+                    </dd>
+                  </div>
+                  <div className="sm:col-span-1">
+                    <dt className="text-sm font-bold tracking-tight leading-6">
+                      Caregiver contact preference
+                    </dt>
+                    <dd className="mt-1 text-sm leading sm:mt-2 capitalize">
+                      {receivingReferral.caregiverContactPreference}
+                    </dd>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <dt className="text-sm font-bold tracking-tight leading-6">
+                      Is caregiver informed of referral?
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                      <Badge
+                        className={cn(
+                          {
+                            'bg-green-600 hover:bg-green-600':
+                              receivingReferral.isCaregiverInformed === 'true',
+                          },
+                          {
+                            'bg-red-600 hover:bg-red-600':
+                              receivingReferral.isCaregiverInformed === 'false',
+                          },
+                        )}
+                      >
+                        {receivingReferral.isCaregiverInformed === 'true'
+                          ? 'Yes'
+                          : 'No'}
+                      </Badge>
+                    </dd>
+                  </div>
+                  {receivingReferral.isCaregiverInformed === 'false' && (
+                    <div className="sm:col-span-2">
+                      <dt className="text-sm font-bold tracking-tight leading-6">
+                        Caregiver explanation
+                      </dt>
+                      <dd className="mt-1 text-sm leading sm:mt-2">
+                        {receivingReferral.caregiverExplanation}
+                      </dd>
+                    </div>
+                  )}
+                  <div className="sm:col-span-2">
+                    <dt className="text-sm font-bold tracking-tight leading-6">
+                      Special note or need
+                    </dt>
+                    <dd className="mt-1 text-sm leading sm:mt-2 capitalize">
+                      {receivingReferral.caregiverNote}
+                    </dd>
+                  </div>
+                </dl>
+              </CardContent>
+            </div>
+          )}
         <Separator />
         <CardHeader>
           <CardTitle>Other Information</CardTitle>
@@ -322,15 +473,25 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
         <CardContent>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="sm:col-span-2">
-              <dt className="text-sm font-bold tracking-tight leading-6">Reason</dt>
-              <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.required}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Reason
+              </dt>
+              <dd className="mt-1 text-sm leading sm:mt-2">
+                {receivingReferral.required}
+              </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-sm font-bold tracking-tight leading-6">Service explanation</dt>
-              <dd className="mt-1 text-sm leading sm:mt-2">{receivingReferral.needForService}</dd>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Service explanation
+              </dt>
+              <dd className="mt-1 text-sm leading sm:mt-2">
+                {receivingReferral.needForService}
+              </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-sm font-bold tracking-tight leading-6">Attachments</dt>
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Attachments
+              </dt>
               <dd className="text-sm">
                 <ul
                   role="list"
@@ -340,10 +501,16 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
                 >
                   {receivingReferral.files.length > 0 ? (
                     receivingReferral.files.map((file) => (
-                      <li key={file.id} className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                      <li
+                        key={file.id}
+                        className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6"
+                      >
                         <div className="flex w-0 flex-1 items-center">
                           {isImageUrl(file.url) ? (
-                            <img src={file.url} className="rounded-md h-10 w-10 object-cover" />
+                            <img
+                              src={file.url}
+                              className="rounded-md h-10 w-10 object-cover"
+                            />
                           ) : (
                             <PaperclipIcon
                               className="h-6 w-10 flex-shrink-0 text-muted-foreground"
@@ -351,18 +518,27 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
                             />
                           )}
                           <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                            <span className="truncate font-medium">{file.name}</span>
+                            <span className="truncate font-medium">
+                              {file.name}
+                            </span>
                           </div>
                         </div>
                         <div className="ml-4 flex-shrink-0">
-                          <Button variant="outline" onClick={() => createDownloadLink(file.url, file.name)}>
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              createDownloadLink(file.url, file.name)
+                            }
+                          >
                             Download
                           </Button>
                         </div>
                       </li>
                     ))
                   ) : (
-                    <div className="text-muted-foreground italic leading-6">No attachments</div>
+                    <div className="text-muted-foreground italic leading-6">
+                      No attachments
+                    </div>
                   )}
                 </ul>
               </dd>

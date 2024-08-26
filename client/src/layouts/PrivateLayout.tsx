@@ -35,7 +35,10 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
     <div className="relative flex overflow-hidden h-[100svh]">
       {/* DESKTOP */}
       <div className="hidden md:flex w-[300px] z-10">
-        <SidebarContent navigationItems={roleBasedNavigationItems} showHandbookRoute={user.role === UserRole.User} />
+        <SidebarContent
+          navigationItems={roleBasedNavigationItems}
+          showHandbookRoute={user.role === UserRole.User}
+        />
       </div>
 
       {/* MOBILE */}
@@ -46,7 +49,11 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
         >
           <HamburgerMenuIcon className="w-5 h-5 text-muted-foreground" />
         </SheetTrigger>
-        <SheetContent onOverlayClick={() => setMobileSidebarOpen(false)} className="p-0 w-[300px] z-50" side="left">
+        <SheetContent
+          onOverlayClick={() => setMobileSidebarOpen(false)}
+          className="p-0 w-[300px] z-50"
+          side="left"
+        >
           <SidebarContent
             closeSidebar={() => setMobileSidebarOpen(false)}
             navigationItems={roleBasedNavigationItems}
@@ -56,9 +63,13 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
       </Sheet>
 
       <div className="divide-y divide-border flex-1 flex flex-col overflow-hidden">
-        <div className="px-4 pt-2 pb-4 flex-1 overflow-y-auto md:mt-0 mt-10 border-t md:border-t-0">{children}</div>
+        <div className="px-4 pt-2 pb-4 flex-1 overflow-y-auto md:mt-0 mt-10 border-t md:border-t-0">
+          {children}
+        </div>
         <div className="px-4 py-4 sm:px-6 min-h-[69px] flex items-center justify-center">
-          <p className="font-medium tracking-tight text-muted-foreground">Footer Content</p>
+          <p className="font-medium tracking-tight text-muted-foreground">
+            Footer Content
+          </p>
         </div>
       </div>
     </div>

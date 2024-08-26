@@ -20,17 +20,27 @@ const OrganizationSchema = z.object(
       }),
     ),
   },
-  { invalid_type_error: 'Organization is required', required_error: 'Organization is required' },
+  {
+    invalid_type_error: 'Organization is required',
+    required_error: 'Organization is required',
+  },
 );
 
 const FocalPointSchema = z
   .object(
     {
       id: z.string().min(1, { message: 'Focal Point Id is required' }),
-      firstName: z.string().min(1, { message: 'Focal Point first name is required' }),
-      lastName: z.string().min(1, { message: 'Focal Point last name is required' }),
+      firstName: z
+        .string()
+        .min(1, { message: 'Focal Point first name is required' }),
+      lastName: z
+        .string()
+        .min(1, { message: 'Focal Point last name is required' }),
     },
-    { invalid_type_error: 'Focal point is required', required_error: 'Focal point is required' },
+    {
+      invalid_type_error: 'Focal point is required',
+      required_error: 'Focal point is required',
+    },
   )
   .nullable()
   .optional();
@@ -38,7 +48,9 @@ const FocalPointSchema = z
 export const SentReferralSchema = z
   .object({
     isUrgent: z.boolean(),
-    serviceCategory: z.string().min(1, { message: 'Service category required' }),
+    serviceCategory: z
+      .string()
+      .min(1, { message: 'Service category required' }),
     subactivities: z.array(
       z.object({
         id: z.string(),
@@ -55,7 +67,10 @@ export const SentReferralSchema = z
     patronymicName: requiredSafeHtmlString('Patronymic name required'),
     surname: requiredSafeHtmlString('Surname required'),
     dateOfBirth: z
-      .date({ required_error: 'Date of birth required', invalid_type_error: 'Date of birth required' })
+      .date({
+        required_error: 'Date of birth required',
+        invalid_type_error: 'Date of birth required',
+      })
       .optional(),
     gender: z.string().min(1, { message: 'Gender required' }),
     taxId: safeHtmlString.optional(),
@@ -68,7 +83,9 @@ export const SentReferralSchema = z
     phone: safeHtmlString.optional(),
     contactPreference: z.string(),
     restrictions: safeHtmlString,
-    consent: z.literal<boolean>(true, { errorMap: () => ({ message: 'Consent is required' }) }),
+    consent: z.literal<boolean>(true, {
+      errorMap: () => ({ message: 'Consent is required' }),
+    }),
     required: requiredSafeHtmlString('Reason is required'),
     needForService: safeHtmlString,
     isSeparated: z.boolean(),
@@ -101,7 +118,11 @@ export const SentReferralSchema = z
         });
       }
 
-      if (data.caregiverContactPreference && data.caregiverContactPreference === 'email' && !data.caregiverEmail) {
+      if (
+        data.caregiverContactPreference &&
+        data.caregiverContactPreference === 'email' &&
+        !data.caregiverEmail
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Caregiver email required',
@@ -109,7 +130,11 @@ export const SentReferralSchema = z
         });
       }
 
-      if (data.caregiverContactPreference && data.caregiverContactPreference === 'phone' && !data.caregiverPhone) {
+      if (
+        data.caregiverContactPreference &&
+        data.caregiverContactPreference === 'phone' &&
+        !data.caregiverPhone
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Caregiver phone required',

@@ -1,6 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
-import { DownloadIcon, LucideLoader2, Paperclip, PlusIcon, Trash2Icon, UploadCloudIcon } from 'lucide-react';
+import {
+  DownloadIcon,
+  LucideLoader2,
+  Paperclip,
+  PlusIcon,
+  Trash2Icon,
+  UploadCloudIcon,
+} from 'lucide-react';
 import { useDropzone, FileRejection } from 'react-dropzone';
 
 import { Button } from '@/components/ui/button';
@@ -28,7 +35,12 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
 
   const onDrop = useCallback(
     async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-      if (maxFiles === 1 && rejectedFiles.find((file) => file.errors.find((err) => err.code === 'too-many-files'))) {
+      if (
+        maxFiles === 1 &&
+        rejectedFiles.find((file) =>
+          file.errors.find((err) => err.code === 'too-many-files'),
+        )
+      ) {
         toast({
           title: 'Files limit error!',
           variant: 'destructive',
@@ -53,7 +65,10 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
 
         await Promise.all(
           files.map(async (file) => {
-            const res = await addStorageFile.mutateAsync({ file, type: StorageTypeId.Assets });
+            const res = await addStorageFile.mutateAsync({
+              file,
+              type: StorageTypeId.Assets,
+            });
 
             filesToUpload.push(res);
           }),
@@ -94,7 +109,10 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
   const removeClicked = (ev: any, index: number) => {
     ev.preventDefault();
 
-    field.onChange([...field.value.slice(0, index), ...field.value.slice(index + 1)]);
+    field.onChange([
+      ...field.value.slice(0, index),
+      ...field.value.slice(index + 1),
+    ]);
   };
 
   const singleImageRemoveClicked = () => {
@@ -108,7 +126,9 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
         className={cn(
           'border-2 border-dashed bg-muted/20 rounded-xl flex items-center justify-center p-6 text-center transition-colors duration-300  hover:cursor-pointer',
           { 'bg-primary/5': isDragActive },
-          { 'hover:duration-0 hover:cursor-not-allowed text-gray-400': disabled },
+          {
+            'hover:duration-0 hover:cursor-not-allowed text-gray-400': disabled,
+          },
           { 'hover:border-primary': !disabled },
         )}
       >
@@ -139,18 +159,33 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
         )}
       </div>
     ),
-    [getRootProps, isDragActive, disabled, getInputProps, addStorageFile.isLoading, field.value.length],
+    [
+      getRootProps,
+      isDragActive,
+      disabled,
+      getInputProps,
+      addStorageFile.isLoading,
+      field.value.length,
+    ],
   );
 
   return (
     <div
-      className={cn('grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 rounded-md relative gap-4', {
-        'grid-cols-1 sm:grid-cols-1 lg:grid-cols-1': (!maxFiles || maxFiles > 1) && field.value?.length === 0,
-      })}
+      className={cn(
+        'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 rounded-md relative gap-4',
+        {
+          'grid-cols-1 sm:grid-cols-1 lg:grid-cols-1':
+            (!maxFiles || maxFiles > 1) && field.value?.length === 0,
+        },
+      )}
     >
       {maxFiles && maxFiles === 1 && field.value && (
         <div className="relative rounded-lg aspect-square overflow-hidden primary-500 flex-shrink-0 group">
-          <img src={field.value?.url} className="object-cover h-full w-full" alt={field.value?.alt} />
+          <img
+            src={field.value?.url}
+            className="object-cover h-full w-full"
+            alt={field.value?.alt}
+          />
           <div className="absolute top-1 right-1 hidden group-hover:block group">
             <Button
               className="w-8 h-8 p-0 rounded-3xl"
@@ -174,7 +209,12 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
               key={file.id}
             >
               {fileType === 'image' ? (
-                <img src={file?.url} className="object-cover h-full w-full" alt={file?.alt} loading="lazy" />
+                <img
+                  src={file?.url}
+                  className="object-cover h-full w-full"
+                  alt={file?.alt}
+                  loading="lazy"
+                />
               ) : (
                 <div className="p-6 w-full h-full text-center items-center justify-center flex flex-col break-word text-xs">
                   <Paperclip className="w-5 h-5 mb-2 shrink-0" />
@@ -183,8 +223,17 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
               )}
               <div className="absolute top-1 right-1 hidden group-hover:block group w-[93%]">
                 <div className="inline-flex justify-between w-full">
-                  <a href={file.url} download={file.name} target="_blank" rel="noopener noreferrer">
-                    <Button className="w-6 h-6 rounded-full" type="button" size="icon">
+                  <a
+                    href={file.url}
+                    download={file.name}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      className="w-6 h-6 rounded-full"
+                      type="button"
+                      size="icon"
+                    >
                       <DownloadIcon className="w-4 h-4" />
                     </Button>
                   </a>

@@ -25,7 +25,13 @@ const formVariants = {
 
 export const AnimationWrapper = ({ children }: Props) => {
   return (
-    <motion.div variants={formVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.2 }}>
+    <motion.div
+      variants={formVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      transition={{ duration: 0.2 }}
+    >
       {children}
     </motion.div>
   );

@@ -48,7 +48,9 @@ export const PublicPage = ({
       <main className="grid min-h-[100svh] place-items-center px-6 py-24 sm:py-32 lg:px-8">
         <div className="text-center">
           <p className="font-semibold text-destructive">Error</p>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Oops, something went wrong</h1>
+          <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+            Oops, something went wrong
+          </h1>
           <p className="mt-6 text-base leading-7 text-muted-foreground">
             An unexpected error has occured, please try again.
           </p>
@@ -72,8 +74,22 @@ export const PublicPage = ({
             loading="lazy"
             className="mx-auto mb-2 w-fit h-20 object-contain grayscale dark:brightness-[10]"
           />
-          <h1 className={cn('text-2xl font-semibold tracking-tight', titleClassName)}>{title}</h1>
-          <p className={cn('text-sm text-muted-foreground whitespace-pre-line', subtitleClassName)}>{subtitle}</p>
+          <h1
+            className={cn(
+              'text-2xl font-semibold tracking-tight',
+              titleClassName,
+            )}
+          >
+            {title}
+          </h1>
+          <p
+            className={cn(
+              'text-sm text-muted-foreground whitespace-pre-line',
+              subtitleClassName,
+            )}
+          >
+            {subtitle}
+          </p>
         </div>
         {children}
       </div>

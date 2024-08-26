@@ -14,11 +14,24 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
 import { useTemplateMutation } from '@/services/templates/api';
-import { TemplateForm, TemplateFormSchema } from '@/modules/Templates/validation';
-import { STANDARDIZED_TEMPLATE_FIELDS, defaultTemplateFormValues } from '@/modules/Templates/const';
+import {
+  TemplateForm,
+  TemplateFormSchema,
+} from '@/modules/Templates/validation';
+import {
+  STANDARDIZED_TEMPLATE_FIELDS,
+  defaultTemplateFormValues,
+} from '@/modules/Templates/const';
 
 export const CreateTemplateModal = () => {
   const uniqueId = useId();
@@ -45,7 +58,9 @@ export const CreateTemplateModal = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'An error occured while creating template.',
+        description:
+          error.response?.data?.errorMessage ||
+          'An error occured while creating template.',
       });
     }
   });
@@ -66,7 +81,9 @@ export const CreateTemplateModal = () => {
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Create new template</DialogTitle>
-          <DialogDescription>Map the column labels from your data to the standard fields.</DialogDescription>
+          <DialogDescription>
+            Map the column labels from your data to the standard fields.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={onSubmit}>
@@ -88,24 +105,33 @@ export const CreateTemplateModal = () => {
                 <p className="w-full">Standard Field</p>
                 <p className="pl-14 w-full">Your Label</p>
               </div>
-              {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(([fieldName, fieldType]) => (
-                <div className="flex justify-between items-center gap-4" key={`${fieldName}-${uniqueId}`}>
-                  <span className="capitalize text-sm w-44">{`${fieldName} (${fieldType})`}</span>
-                  <p className="text-xl font-light">&rarr;</p>
-                  <FormField
-                    control={control}
-                    name={`${fieldName}` as any}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input id={fieldName} placeholder="Column label" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              ))}
+              {Object.entries(STANDARDIZED_TEMPLATE_FIELDS).map(
+                ([fieldName, fieldType]) => (
+                  <div
+                    className="flex justify-between items-center gap-4"
+                    key={`${fieldName}-${uniqueId}`}
+                  >
+                    <span className="capitalize text-sm w-44">{`${fieldName} (${fieldType})`}</span>
+                    <p className="text-xl font-light">&rarr;</p>
+                    <FormField
+                      control={control}
+                      name={`${fieldName}` as any}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id={fieldName}
+                              placeholder="Column label"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                ),
+              )}
             </div>
             <DialogFooter className="pt-4">
               <div className="w-full">

@@ -18,7 +18,9 @@ const resToUserCreated = (res: any): UserCreated => {
     firstName: res.firstName ?? '',
     language: res.language ?? '',
     lastName: res.lastName ?? '',
-    organizations: res.organizations ? res.organizations(resToOrganization) : [],
+    organizations: res.organizations
+      ? res.organizations(resToOrganization)
+      : [],
     role: res.role ?? '',
   };
 };
@@ -34,7 +36,10 @@ export const resToDeduplicationListing = (res: any): DeduplicationListing => {
   };
 };
 
-export const dataToDatasetRequest = (data: { file: File; templateId: string }): FormData => {
+export const dataToDatasetRequest = (data: {
+  file: File;
+  templateId: string;
+}): FormData => {
   const formData = new FormData();
   formData.append('file', data.file);
   formData.append('templateId', data.templateId);
@@ -57,10 +62,14 @@ export const resToSameOrgDedupResponse = (res: any): SameOrgDedupeResponse => {
   };
 };
 
-export const resToSystemDedupeResponse = (res: any): SystemOrgDedupeResponse => {
+export const resToSystemDedupeResponse = (
+  res: any,
+): SystemOrgDedupeResponse => {
   return {
     duplicates: res.duplicates ?? 0,
-    duplicateBeneficiaries: res.duplicateBeneficiaries ? res.duplicateBeneficiaries.map(resToBeneficiary) : [],
+    duplicateBeneficiaries: res.duplicateBeneficiaries
+      ? res.duplicateBeneficiaries.map(resToBeneficiary)
+      : [],
     ruleFields: res.ruleFields,
   };
 };

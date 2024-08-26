@@ -11,7 +11,10 @@ interface TimelineProps {
   isRejected: boolean;
 }
 
-export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus, isRejected }) => {
+export const StatusTimeline: React.FC<TimelineProps> = ({
+  currentStatus,
+  isRejected,
+}) => {
   const referralStatusesList = [...Object.values(ReferralStatus)];
 
   const currentStatusIndex = referralStatusesList.indexOf(currentStatus);
@@ -22,9 +25,12 @@ export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus, isRejec
         <React.Fragment key={status}>
           <div className={cn('flex flex-col items-center')}>
             <div
-              className={cn('w-8 h-8 rounded-full flex relative items-center justify-center', {
-                'bg-background': index > currentStatusIndex,
-              })}
+              className={cn(
+                'w-8 h-8 rounded-full flex relative items-center justify-center',
+                {
+                  'bg-background': index > currentStatusIndex,
+                },
+              )}
             >
               {index < currentStatusIndex && (
                 <Check className="w-full h-full rounded-full bg-green-900/20 border border-green-800 p-1.5 text-green-800" />
@@ -56,9 +62,12 @@ export const StatusTimeline: React.FC<TimelineProps> = ({ currentStatus, isRejec
           </div>
           {index < referralStatusesList.length - 1 && (
             <Separator
-              className={cn('w-14 border-muted-foreground/60 rounded-xl border', {
-                'border-border': index >= currentStatusIndex,
-              })}
+              className={cn(
+                'w-14 border-muted-foreground/60 rounded-xl border',
+                {
+                  'border-border': index >= currentStatusIndex,
+                },
+              )}
             />
           )}
         </React.Fragment>

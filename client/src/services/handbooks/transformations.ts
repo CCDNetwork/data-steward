@@ -10,7 +10,9 @@ export const resToHandbook = (res: any): Handbook => {
   };
 };
 
-export const handbookToReq = (data: any): Omit<Handbook, 'id' | 'createdAt' | 'updatedAt'> => {
+export const handbookToReq = (
+  data: any,
+): Omit<Handbook, 'id' | 'createdAt' | 'updatedAt'> => {
   const req: any = {
     title: data.title,
     content: data.content,

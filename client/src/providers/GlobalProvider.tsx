@@ -42,11 +42,15 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!LocalStorage.getToken());
   const [user, setUser] = useState<User>(LocalStorage.getUser());
   const [hdxHapiAppIdentifier, setHdxHapiAppIdentifier] = useState<string>('');
-  const [organization, setOrganization] = useState<Organization | null>(LocalStorage.getOrganization());
+  const [organization, setOrganization] = useState<Organization | null>(
+    LocalStorage.getOrganization(),
+  );
   const [token, setToken] = useState<string | null>(LocalStorage.getToken());
   const [collectionNotFound, setCollectionNotFound] = useState(false);
 
-  const { refetch: getLoggedInUser, data: loggedInUser } = useUserMe({ queryEnabled: false });
+  const { refetch: getLoggedInUser, data: loggedInUser } = useUserMe({
+    queryEnabled: false,
+  });
   const {
     refetch: getLoggedInOrganization,
     data: loggedInOrganization,
@@ -81,13 +85,19 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     setUser(updatedUser);
   }, []);
 
-  const updateOrganization = useCallback((updatedOrganization: Organization) => {
-    setOrganization(updatedOrganization);
-  }, []);
+  const updateOrganization = useCallback(
+    (updatedOrganization: Organization) => {
+      setOrganization(updatedOrganization);
+    },
+    [],
+  );
 
   // Handle when server returns 401
   useEffect(() => {
-    const interceptor = api.interceptors.response.use((config) => config, unauthorizedHandler(logoutUser));
+    const interceptor = api.interceptors.response.use(
+      (config) => config,
+      unauthorizedHandler(logoutUser),
+    );
     return () => {
       api.interceptors.request.eject(interceptor);
     };
@@ -102,7 +112,8 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     }
 
     if (organization) {
-      api.defaults.headers.common['organization-id'] = organization.id.toString();
+      api.defaults.headers.common['organization-id'] =
+        organization.id.toString();
       LocalStorage.setOrganization(organization);
     } else {
       api.defaults.headers.common['organization-id'] = '';
@@ -170,7 +181,9 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     ],
   );
 
-  return <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>;
+  return (
+    <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>
+  );
 };
 
 export const useGlobalProvider = () => {

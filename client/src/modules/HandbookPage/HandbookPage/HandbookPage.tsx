@@ -17,9 +17,17 @@ import { useHandbookProvider } from '../HandbookProvider';
 export const HandbookPage = () => {
   const navigate = useNavigate();
   const { pagination } = useHandbookProvider();
-  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
+  const {
+    currentPage,
+    onPageChange,
+    onPageSizeChange,
+    onSortChange,
+    onSearchChange,
+  } = pagination;
 
-  const [handbookToDelete, setHandbookToDelete] = useState<Handbook | null>(null);
+  const [handbookToDelete, setHandbookToDelete] = useState<Handbook | null>(
+    null,
+  );
 
   const { data: handbooksData, isLoading } = useHandbooks(pagination);
   const { deleteHandbook } = useHandbookMutation();
@@ -38,25 +46,33 @@ export const HandbookPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Failed to delete handbook.',
+        description:
+          error.response?.data?.errorMessage || 'Failed to delete handbook.',
       });
     }
     setHandbookToDelete(null);
   };
 
-  const onHandbookRowClick = (handbookRow: Handbook) => navigate(`${APP_ROUTE.Handbook}/${handbookRow.id}`);
+  const onHandbookRowClick = (handbookRow: Handbook) =>
+    navigate(`${APP_ROUTE.Handbook}/${handbookRow.id}`);
 
   return (
     <PageContainer
       pageTitle="Handbook"
       pageSubtitle="Handbook entries"
       headerNode={
-        <Button type="button" variant="outline" onClick={() => navigate(`${APP_ROUTE.Handbook}/new`)}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => navigate(`${APP_ROUTE.Handbook}/new`)}
+        >
           <PlusSquareIcon className="w-5 h-5 mr-2" />
           Create Handbook
         </Button>
       }
-      breadcrumbs={[{ href: `${APP_ROUTE.Handbook}`, name: 'Handbook entries' }]}
+      breadcrumbs={[
+        { href: `${APP_ROUTE.Handbook}`, name: 'Handbook entries' },
+      ]}
     >
       <DataTable
         data={handbooksData?.data ?? []}

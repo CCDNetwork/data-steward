@@ -16,9 +16,18 @@ export enum ReferralTab {
   Discussion = 'discussion',
 }
 
-export const HOUSEHOLDS_VULNERABILITY_CRITERIA: { id: string; label: string }[] = [
-  { id: 'householdWithPregnantPersons', label: 'Households with pregnant persons' },
-  { id: 'householdOfElderly', label: 'Households of elderly, including single elderly people' },
+export const HOUSEHOLDS_VULNERABILITY_CRITERIA: {
+  id: string;
+  label: string;
+}[] = [
+  {
+    id: 'householdWithPregnantPersons',
+    label: 'Households with pregnant persons',
+  },
+  {
+    id: 'householdOfElderly',
+    label: 'Households of elderly, including single elderly people',
+  },
   {
     id: 'householdAffectedByConflict',
     label:

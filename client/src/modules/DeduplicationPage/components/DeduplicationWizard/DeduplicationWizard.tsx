@@ -28,8 +28,15 @@ import { useAuth } from '@/providers/GlobalProvider';
 import { cn } from '@/helpers/utils';
 import { appendStringToFilename, createDownloadLink } from '@/helpers/common';
 
-import { DeduplicationUploadForm, DeduplicationUploadFormSchema } from './validation';
-import { AnimationWrapper, DeduplicationError, DeduplicationSteps } from './components';
+import {
+  DeduplicationUploadForm,
+  DeduplicationUploadFormSchema,
+} from './validation';
+import {
+  AnimationWrapper,
+  DeduplicationError,
+  DeduplicationSteps,
+} from './components';
 import { WIZARD_STEP } from './const';
 import { useDeduplicationProvider } from '../../DeduplicationPageProvider';
 
@@ -41,15 +48,25 @@ interface Props {
 // TODO: Ivan -> Clean the wizard-mvp up and separate each step inside their own components
 export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
   const { organization } = useAuth();
-  const { deduplicationWizardError, setDeduplicationWizardError } = useDeduplicationProvider();
-  const [currentStep, setCurrentStep] = useState<number>(WIZARD_STEP.FILE_UPLOAD);
+  const { deduplicationWizardError, setDeduplicationWizardError } =
+    useDeduplicationProvider();
+  const [currentStep, setCurrentStep] = useState<number>(
+    WIZARD_STEP.FILE_UPLOAD,
+  );
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
-  const [internalFileDedupResponse, setInternalFileDedupResponse] = useState<DeduplicationDataset | null>(null);
-  const [sameOrgDedupResponse, setSameOrgDedupResponse] = useState<SameOrgDedupeResponse | null>(null);
-  const [systemOrgDedupResponse, setSystemOrgDedupResponse] = useState<SystemOrgDedupeResponse | null>(null);
+  const [internalFileDedupResponse, setInternalFileDedupResponse] =
+    useState<DeduplicationDataset | null>(null);
+  const [sameOrgDedupResponse, setSameOrgDedupResponse] =
+    useState<SameOrgDedupeResponse | null>(null);
+  const [systemOrgDedupResponse, setSystemOrgDedupResponse] =
+    useState<SystemOrgDedupeResponse | null>(null);
 
-  const { deduplicateFile, deduplicateSameOrganization, deduplicateSystemOrganizations, deduplicateFinish } =
-    useDeduplicationMutation();
+  const {
+    deduplicateFile,
+    deduplicateSameOrganization,
+    deduplicateSystemOrganizations,
+    deduplicateFinish,
+  } = useDeduplicationMutation();
 
   const form = useForm<DeduplicationUploadForm>({
     defaultValues: {
@@ -67,7 +84,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
       const isFormValid = await form.trigger('template');
       if (!isFormValid) return;
 
-      const fileInput = document.getElementById('file-input') as HTMLInputElement;
+      const fileInput = document.getElementById(
+        'file-input',
+      ) as HTMLInputElement;
       fileInput.click();
     } catch {
       toast({
@@ -101,13 +120,18 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
     if (!fileToUpload) return;
 
     try {
-      const resp = await deduplicateFile.mutateAsync({ file: fileToUpload, templateId: currentTemplate.id });
+      const resp = await deduplicateFile.mutateAsync({
+        file: fileToUpload,
+        templateId: currentTemplate.id,
+      });
       setInternalFileDedupResponse(resp);
     } catch (error: any) {
       toast({
         title: 'An error has occured!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Something went wrong, please try again.',
+        description:
+          error.response?.data?.errorMessage ||
+          'Something went wrong, please try again.',
       });
     }
   };
@@ -123,7 +147,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
       toast({
         title: 'An error has occured!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Something went wrong, please try again.',
+        description:
+          error.response?.data?.errorMessage ||
+          'Something went wrong, please try again.',
       });
     }
   };
@@ -139,7 +165,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
       toast({
         title: 'An error has occured!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Something went wrong, please try again.',
+        description:
+          error.response?.data?.errorMessage ||
+          'Something went wrong, please try again.',
       });
     }
   };
@@ -155,7 +183,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
       toast({
         title: 'An error has occured!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Something went wrong, please try again.',
+        description:
+          error.response?.data?.errorMessage ||
+          'Something went wrong, please try again.',
       });
     }
   };
@@ -182,11 +212,17 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
   };
 
   const isContinueButtonDisabled = useMemo(() => {
-    if (currentStep === WIZARD_STEP.FILE_UPLOAD && (!fileToUpload || !currentTemplate)) {
+    if (
+      currentStep === WIZARD_STEP.FILE_UPLOAD &&
+      (!fileToUpload || !currentTemplate)
+    ) {
       return true;
     }
 
-    if (currentStep === WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION && internalFileDedupResponse?.duplicates) {
+    if (
+      currentStep === WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION &&
+      internalFileDedupResponse?.duplicates
+    ) {
       return true;
     }
 
@@ -203,7 +239,10 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
     createDownloadLink(url, filename);
   };
 
-  const duplicateFileName = appendStringToFilename(internalFileDedupResponse?.file.name ?? '-', '-duplicates');
+  const duplicateFileName = appendStringToFilename(
+    internalFileDedupResponse?.file.name ?? '-',
+    '-duplicates',
+  );
 
   const sameOrgDedupUploadCount =
     (sameOrgDedupResponse?.totalRecords ?? 0) -
@@ -212,17 +251,27 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl p-4" showCloseButton={false} disableBackdropClose>
+      <DialogContent
+        className="sm:max-w-4xl p-4"
+        showCloseButton={false}
+        disableBackdropClose
+      >
         {deduplicationWizardError ? (
-          <DeduplicationError onOpenChange={onOpenChange} errorMessage={deduplicationWizardError.message} />
+          <DeduplicationError
+            onOpenChange={onOpenChange}
+            errorMessage={deduplicationWizardError.message}
+          />
         ) : (
           <>
             <div className="border rounded-lg flex flex-col">
               <DeduplicationSteps currentStep={currentStep} />
               <div
-                className={cn('flex flex-col items-center p-4 py-8 min-h-[410px]', {
-                  'pt-0': currentStep !== WIZARD_STEP.FILE_UPLOAD,
-                })}
+                className={cn(
+                  'flex flex-col items-center p-4 py-8 min-h-[410px]',
+                  {
+                    'pt-0': currentStep !== WIZARD_STEP.FILE_UPLOAD,
+                  },
+                )}
               >
                 {currentStep !== WIZARD_STEP.FILE_UPLOAD && (
                   <div className="flex w-full flex-col justify-center items-center mx-auto text-sm py-4 mb-6 border-b max-w-[500px]">
@@ -236,7 +285,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       </div>
                       <div className="flex justify-between">
                         <span>Selected template:</span>
-                        <p className="flex rounded-md px-2 py-0.5 bg-muted">{currentTemplate.name ?? ''}</p>
+                        <p className="flex rounded-md px-2 py-0.5 bg-muted">
+                          {currentTemplate.name ?? ''}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -264,22 +315,30 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                   name="template"
                                   requiredField
                                   control={control}
-                                  useInfiniteQueryFunction={useTemplatesInfinite}
+                                  useInfiniteQueryFunction={
+                                    useTemplatesInfinite
+                                  }
                                   labelKey="name"
                                   valueKey="id"
                                 />
                                 <p className="text-xs text-muted-foreground pt-1.5">
-                                  Templates map column header names to the platform’s data standard. If you are unsure
-                                  which template applies to you, ask your colleagues or contact the platform admin.
+                                  Templates map column header names to the
+                                  platform’s data standard. If you are unsure
+                                  which template applies to you, ask your
+                                  colleagues or contact the platform admin.
                                 </p>
                               </div>
                               <div className="pt-4 w-full">
                                 {fileToUpload ? (
                                   <div className="flex flex-col items-center justify-center border bg-muted py-3.5 rounded-lg transition-all duration-150 animate-appear">
-                                    <p className="text-xs text-muted-foreground font-medium">Selected file</p>
+                                    <p className="text-xs text-muted-foreground font-medium">
+                                      Selected file
+                                    </p>
                                     <div className="flex gap-2 items-center">
                                       <FileSpreadsheetIcon className="w-5 h-5" />
-                                      <p className="font-medium">{fileToUpload.name}</p>
+                                      <p className="font-medium">
+                                        {fileToUpload.name}
+                                      </p>
                                     </div>
                                     <Button
                                       onClick={() => setFileToUpload(undefined)}
@@ -303,9 +362,12 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                       Choose a file
                                     </Button>
                                     <p className="text-xs text-muted-foreground pt-1.5">
-                                      Make sure you’re uploading an Excel file (.xlsx, .xls), and that the file is a
-                                      simple spreadsheet with a single page of column headers and rows. (Maximum of
-                                      4,000 rows) The file should not have images, charts, or custom formatting.
+                                      Make sure you’re uploading an Excel file
+                                      (.xlsx, .xls), and that the file is a
+                                      simple spreadsheet with a single page of
+                                      column headers and rows. (Maximum of 4,000
+                                      rows) The file should not have images,
+                                      charts, or custom formatting.
                                     </p>
                                   </>
                                 )}
@@ -315,22 +377,28 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                         </Form>
                       </AnimationWrapper>
                     )}
-                    {currentStep === WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION && (
-                      <AnimationWrapper key={WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION}>
+                    {currentStep ===
+                      WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION && (
+                      <AnimationWrapper
+                        key={WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION}
+                      >
                         {deduplicateFile.isLoading ? (
                           <div className="flex flex-col items-center justify-center gap-4 max-w-[400px] mx-auto">
                             <Loader2 className="w-16 h-16 animate-spin" />
                             <p className="text-center text-sm">
-                              The platform is checking the uploaded file for double entries...
+                              The platform is checking the uploaded file for
+                              double entries...
                             </p>
                             <span className="flex flex-col gap-1">
                               <p className="text-sm text-center text-red-500 font-medium">
                                 Warning: Do Not Refresh the Page
                               </p>
                               <p className="text-xs text-center text-muted-foreground">
-                                Please do not refresh the wizard until the check process of the file is complete.
-                                Refreshing the page will interrupt the process and you will need to start over from the
-                                beginning. Thank you for your patience.
+                                Please do not refresh the wizard until the check
+                                process of the file is complete. Refreshing the
+                                page will interrupt the process and you will
+                                need to start over from the beginning. Thank you
+                                for your patience.
                               </p>
                             </span>
                           </div>
@@ -339,18 +407,25 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                             {!internalFileDedupResponse?.duplicates ? (
                               <div className="flex flex-col items-center justify-center gap-4 text-sm">
                                 <CheckCircleIcon className="w-16 h-16 text-green-600" />
-                                <p className="pb-4">The platform has found no duplicate records within this file.</p>
+                                <p className="pb-4">
+                                  The platform has found no duplicate records
+                                  within this file.
+                                </p>
                                 <p>
-                                  Next, we will check data from the uploaded file against records previously uploaded by{' '}
+                                  Next, we will check data from the uploaded
+                                  file against records previously uploaded by{' '}
                                   <span className="px-1 border border-border rounded py-0.5 bg-muted font-semibold">
                                     {organization?.name ?? '-'}
                                   </span>
-                                  , to see if there are “organisational duplicates“.
+                                  , to see if there are “organisational
+                                  duplicates“.
                                 </p>
                                 <p className="text-xs text-muted-foreground max-w-[500px] pt-6">
                                   <strong>Note: </strong>
-                                  Organisational duplicates are beneficiary data uploaded by your organisation that
-                                  matches data in your file. We check for that before adding your data to the registry.
+                                  Organisational duplicates are beneficiary data
+                                  uploaded by your organisation that matches
+                                  data in your file. We check for that before
+                                  adding your data to the registry.
                                 </p>
                               </div>
                             ) : (
@@ -361,11 +436,13 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                   <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
                                     {internalFileDedupResponse.duplicates}
                                   </span>{' '}
-                                  duplicate records within this file. Please make sure there are no duplicate records
-                                  and start the wizard again.
+                                  duplicate records within this file. Please
+                                  make sure there are no duplicate records and
+                                  start the wizard again.
                                 </p>
                                 <p className="text-sm">
-                                  To assist you, we created a version of your file with a “Duplicate” column. You can
+                                  To assist you, we created a version of your
+                                  file with a “Duplicate” column. You can
                                   download it below.
                                 </p>
 
@@ -373,13 +450,16 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                   <div className="flex gap-2">
                                     <p className="px-2 py-1 rounded-md bg-muted w-full flex items-center justify-center border border-border">
                                       <FileSpreadsheetIcon className="w-4 h-4 mr-1.5" />
-                                      <p className="max-w-[250px] truncate text-sm">{duplicateFileName}</p>
+                                      <p className="max-w-[250px] truncate text-sm">
+                                        {duplicateFileName}
+                                      </p>
                                     </p>
                                     <Button
                                       variant="destructive"
                                       onClick={() =>
                                         handleDownloadDuplicatesFile(
-                                          internalFileDedupResponse?.file.url ?? '',
+                                          internalFileDedupResponse?.file.url ??
+                                            '',
                                           duplicateFileName,
                                         )
                                       }
@@ -389,7 +469,8 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                     </Button>
                                   </div>
                                   <p className="text-xs text-muted-foreground">
-                                    For privacy reasons, the platform will not keep any information about the file you
+                                    For privacy reasons, the platform will not
+                                    keep any information about the file you
                                     uploaded once you exit the wizard.
                                   </p>
                                 </div>
@@ -400,21 +481,26 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       </AnimationWrapper>
                     )}
                     {currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION && (
-                      <AnimationWrapper key={WIZARD_STEP.ORGANIZATION_DEDUPLICATION}>
+                      <AnimationWrapper
+                        key={WIZARD_STEP.ORGANIZATION_DEDUPLICATION}
+                      >
                         {deduplicateSameOrganization.isLoading ? (
                           <div className="flex flex-col items-center justify-center gap-4 max-w-[400px] mx-auto">
                             <Loader2 className="w-16 h-16 animate-spin" />
                             <p className="text-center text-sm">
-                              The platform is checking the uploaded file for organisational duplicates...
+                              The platform is checking the uploaded file for
+                              organisational duplicates...
                             </p>
                             <span className="flex flex-col gap-1">
                               <p className="text-sm text-center text-red-500 font-medium">
                                 Warning: Do Not Refresh the Page
                               </p>
                               <p className="text-xs text-center text-muted-foreground">
-                                Please do not refresh the wizard until the check process of the file is complete.
-                                Refreshing the page will interrupt the process and you will need to start over from the
-                                beginning. Thank you for your patience.
+                                Please do not refresh the wizard until the check
+                                process of the file is complete. Refreshing the
+                                page will interrupt the process and you will
+                                need to start over from the beginning. Thank you
+                                for your patience.
                               </p>
                             </span>
                           </div>
@@ -433,7 +519,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                 </span>{' '}
                                 identical records,{' '}
                                 <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
-                                  {sameOrgDedupResponse?.potentialDuplicateRecords}
+                                  {
+                                    sameOrgDedupResponse?.potentialDuplicateRecords
+                                  }
                                 </span>{' '}
                                 potential duplicates and will upload{' '}
                                 <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
@@ -443,13 +531,15 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                               </p>
                               {sameOrgDedupUploadCount === 0 ? (
                                 <p className="font-medium">
-                                  Since there are no new beneficiaries to be added, the wizard will now exit. No new
+                                  Since there are no new beneficiaries to be
+                                  added, the wizard will now exit. No new
                                   beneficiaries will be added to the platform.
                                 </p>
                               ) : (
                                 <p>
-                                  Next, we will add your data to the registry and check for potential duplicates with
-                                  other organisations’ records.
+                                  Next, we will add your data to the registry
+                                  and check for potential duplicates with other
+                                  organisations’ records.
                                 </p>
                               )}
                             </div>
@@ -458,21 +548,26 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       </AnimationWrapper>
                     )}
                     {currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION && (
-                      <AnimationWrapper key={WIZARD_STEP.REGISTRY_DEDUPLICATION}>
+                      <AnimationWrapper
+                        key={WIZARD_STEP.REGISTRY_DEDUPLICATION}
+                      >
                         {deduplicateSystemOrganizations.isLoading ? (
                           <div className="flex flex-col items-center justify-center gap-4 max-w-[400px] mx-auto">
                             <Loader2 className="w-16 h-16 animate-spin" />
                             <p className="text-center text-sm">
-                              The platform is adding the uploaded data to the registry and checking for duplicates...
+                              The platform is adding the uploaded data to the
+                              registry and checking for duplicates...
                             </p>
                             <span className="flex flex-col gap-1">
                               <p className="text-sm text-center text-red-500 font-medium">
                                 Warning: Do Not Refresh the Page
                               </p>
                               <p className="text-xs text-center text-muted-foreground">
-                                Please do not refresh the wizard until the check process of the file is complete.
-                                Refreshing the page will interrupt the process and you will need to start over from the
-                                beginning. Thank you for your patience.
+                                Please do not refresh the wizard until the check
+                                process of the file is complete. Refreshing the
+                                page will interrupt the process and you will
+                                need to start over from the beginning. Thank you
+                                for your patience.
                               </p>
                             </span>
                           </div>
@@ -481,9 +576,17 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                             {!systemOrgDedupResponse?.duplicates ? (
                               <div className="flex flex-col items-center justify-center gap-4 text-sm">
                                 <CheckCircleIcon className="w-16 h-16 text-green-600" />
-                                <p className="pb-4">The platform has found no duplicates in the registry.</p>
-                                <p>Your beneficiary data has been successfully added to the registry.</p>
-                                <p className="text-muted-foreground">Finish the wizard to import the beneficiaries.</p>
+                                <p className="pb-4">
+                                  The platform has found no duplicates in the
+                                  registry.
+                                </p>
+                                <p>
+                                  Your beneficiary data has been successfully
+                                  added to the registry.
+                                </p>
+                                <p className="text-muted-foreground">
+                                  Finish the wizard to import the beneficiaries.
+                                </p>
                               </div>
                             ) : (
                               <div className="flex flex-col text-sm items-center justify-center gap-4">
@@ -493,12 +596,17 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                   <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
                                     {systemOrgDedupResponse.duplicates}
                                   </span>{' '}
-                                  potential duplicates between your upload and the registry.
+                                  potential duplicates between your upload and
+                                  the registry.
                                 </p>
                                 <p className="text-center">
-                                  {'You can view and manage these duplicates on the "Manage Duplicates" page.'}
+                                  {
+                                    'You can view and manage these duplicates on the "Manage Duplicates" page.'
+                                  }
                                 </p>
-                                <p className="text-muted-foreground">This concludes the upload wizard</p>
+                                <p className="text-muted-foreground">
+                                  This concludes the upload wizard
+                                </p>
                               </div>
                             )}
                           </div>
@@ -510,22 +618,32 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
               </div>
             </div>
             <div className="flex justify-between">
-              <Button variant="outline" type="button" disabled={isWizardProcessing} onClick={onOpenChange}>
+              <Button
+                variant="outline"
+                type="button"
+                disabled={isWizardProcessing}
+                onClick={onOpenChange}
+              >
                 Close
               </Button>
               <Button
                 variant="default"
                 type="button"
-                isLoading={currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION && deduplicateFinish.isLoading}
+                isLoading={
+                  currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION &&
+                  deduplicateFinish.isLoading
+                }
                 disabled={isContinueButtonDisabled || isWizardProcessing}
                 onClick={
-                  currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION && sameOrgDedupUploadCount === 0
+                  currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION &&
+                  sameOrgDedupUploadCount === 0
                     ? onOpenChange
                     : handleContinueClick
                 }
               >
                 {currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION ||
-                (currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION && sameOrgDedupUploadCount === 0)
+                (currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION &&
+                  sameOrgDedupUploadCount === 0)
                   ? 'Finish'
                   : 'Continue'}
               </Button>
@@ -537,7 +655,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
           className="hidden"
           id="file-input"
           accept=".xlsx,.xls"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFileChange(e)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleFileChange(e)
+          }
         />
       </DialogContent>
     </Dialog>

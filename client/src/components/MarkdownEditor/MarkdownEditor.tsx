@@ -11,7 +11,14 @@ interface Props extends MDEditorProps {
   control: Control<any, any>;
 }
 
-export const MarkdownEditor: React.FC<Props> = ({ name, control, className, label, labelClassName, ...props }) => {
+export const MarkdownEditor: React.FC<Props> = ({
+  name,
+  control,
+  className,
+  label,
+  labelClassName,
+  ...props
+}) => {
   const { theme } = useTheme();
 
   const { field, fieldState } = useController({ name, control });
@@ -19,7 +26,10 @@ export const MarkdownEditor: React.FC<Props> = ({ name, control, className, labe
   return (
     <div data-color-mode={theme}>
       {label && (
-        <label htmlFor={name} className={cn('block text-sm mb-2 font-medium', labelClassName)}>
+        <label
+          htmlFor={name}
+          className={cn('block text-sm mb-2 font-medium', labelClassName)}
+        >
           {label}
         </label>
       )}
@@ -32,7 +42,9 @@ export const MarkdownEditor: React.FC<Props> = ({ name, control, className, labe
         {...props}
       />
       {!!fieldState.error && (
-        <p className="text-destructive text-[0.8rem] mt-2 font-medium">{fieldState.error.message}</p>
+        <p className="text-destructive text-[0.8rem] mt-2 font-medium">
+          {fieldState.error.message}
+        </p>
       )}
     </div>
   );

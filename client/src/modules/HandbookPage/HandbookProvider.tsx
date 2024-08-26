@@ -14,7 +14,11 @@ export const HandbookProvider = ({ children = <Outlet /> }: Props) => {
 
   const value = useMemo(() => ({ pagination }), [pagination]);
 
-  return <HandbookContext.Provider value={value}>{children}</HandbookContext.Provider>;
+  return (
+    <HandbookContext.Provider value={value}>
+      {children}
+    </HandbookContext.Provider>
+  );
 };
 
 export const useHandbookProvider = () => {

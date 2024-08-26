@@ -6,7 +6,9 @@ import { formatDate } from 'date-fns';
 import { Tooltip } from '@/components/Tooltip';
 
 export const columns = (
-  setOrganizationToDelete: React.Dispatch<React.SetStateAction<Organization | null>>,
+  setOrganizationToDelete: React.Dispatch<
+    React.SetStateAction<Organization | null>
+  >,
   onOrganizationTableRowClick: (organizationRow: Organization) => void,
 ): TableColumn<Organization>[] => [
   {

@@ -1,4 +1,10 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export const PAGE_SIZES = [10, 20, 50];
 
@@ -10,7 +16,10 @@ interface Props {
 export const PageSize = ({ pageSize, pageSizeClicked }: Props) => {
   return (
     <div className="relative">
-      <Select onValueChange={(val) => pageSizeClicked(parseInt(val, 10))} value={pageSize.toString()}>
+      <Select
+        onValueChange={(val) => pageSizeClicked(parseInt(val, 10))}
+        value={pageSize.toString()}
+      >
         <SelectTrigger>
           <SelectValue />
         </SelectTrigger>

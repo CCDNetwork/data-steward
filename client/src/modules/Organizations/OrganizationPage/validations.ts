@@ -18,4 +18,6 @@ export const OrganizationEditFormSchema = z.object({
   ),
 });
 
-export type OrganizationEditFormData = z.infer<typeof OrganizationEditFormSchema>;
+export type OrganizationEditFormData = z.infer<
+  typeof OrganizationEditFormSchema
+>;

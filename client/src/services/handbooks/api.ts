@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
+import {
+  DataWithMeta,
+  PaginationRequest,
+  paginationRequestToUrl,
+} from '@/helpers/pagination';
 import { useGlobalErrors } from '@/providers/GlobalProvider';
 
 import { api } from '../api';
@@ -16,7 +20,9 @@ enum QueryKeys {
 //
 // API calls
 //
-export const fetchHandbooks = async (pagination: PaginationRequest): Promise<DataWithMeta<Handbook>> => {
+export const fetchHandbooks = async (
+  pagination: PaginationRequest,
+): Promise<DataWithMeta<Handbook>> => {
   const url = paginationRequestToUrl('handbooks', pagination);
 
   const resp = await api.get(url);
@@ -36,7 +42,13 @@ const postHandbook = async (data: HandbookForm): Promise<Handbook> => {
   return resToHandbook(resp.data);
 };
 
-const putHandbook = async ({ data, handbookId }: { data: HandbookForm; handbookId: string }): Promise<Handbook> => {
+const putHandbook = async ({
+  data,
+  handbookId,
+}: {
+  data: HandbookForm;
+  handbookId: string;
+}): Promise<Handbook> => {
   const resp = await api.put(`/handbooks/${handbookId}`, handbookToReq(data));
   return resToHandbook(resp.data);
 };
@@ -50,13 +62,40 @@ const deleteHandbook = async (handbookId: string): Promise<Handbook> => {
 // GET hooks
 //
 
-export const useHandbooks = ({ currentPage, pageSize, sortBy, sortDirection, debouncedSearch }: any) => {
-  return useQuery([QueryKeys.Handbook, currentPage, pageSize, sortBy, sortDirection, debouncedSearch], () =>
-    fetchHandbooks({ page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch }),
+export const useHandbooks = ({
+  currentPage,
+  pageSize,
+  sortBy,
+  sortDirection,
+  debouncedSearch,
+}: any) => {
+  return useQuery(
+    [
+      QueryKeys.Handbook,
+      currentPage,
+      pageSize,
+      sortBy,
+      sortDirection,
+      debouncedSearch,
+    ],
+    () =>
+      fetchHandbooks({
+        page: currentPage,
+        pageSize,
+        sortBy,
+        sortDirection,
+        search: debouncedSearch,
+      }),
   );
 };
 
-export const useHandbook = ({ id, isCreate }: { id: string; isCreate: boolean }) => {
+export const useHandbook = ({
+  id,
+  isCreate,
+}: {
+  id: string;
+  isCreate: boolean;
+}) => {
   const { onSetCollectionNotFound } = useGlobalErrors();
 
   return useQuery([QueryKeys.SingleHandbook, id], () => fetchHandbook(id), {
@@ -77,7 +116,8 @@ export const useHandbookMutation = () => {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Handbook]),
     }),
     editHandbook: useMutation(putHandbook, {
-      onSuccess: () => queryClient.invalidateQueries([QueryKeys.SingleHandbook]),
+      onSuccess: () =>
+        queryClient.invalidateQueries([QueryKeys.SingleHandbook]),
     }),
     deleteHandbook: useMutation(deleteHandbook, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Handbook]),

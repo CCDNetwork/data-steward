@@ -9,7 +9,9 @@ import { ReferralStatus } from '@/services/referrals/const';
 import { Tooltip } from '@/components/Tooltip';
 
 export const columns = (
-  setSentReferralToDelete: React.Dispatch<React.SetStateAction<Referral | null>>,
+  setSentReferralToDelete: React.Dispatch<
+    React.SetStateAction<Referral | null>
+  >,
   onEditSentReferralClick: (referralRow: Referral) => Promise<void>,
 ): TableColumn<Referral>[] => [
   {
@@ -18,7 +20,13 @@ export const columns = (
     header: '',
     headerClassName: 'w-0',
     cellClassName: 'pl-0 pt-0 pb-0',
-    cell: ({ row }) => <div className={cn('w-1.5 bg-red-500 h-[53px]', { hidden: !row.original.isUrgent })} />,
+    cell: ({ row }) => (
+      <div
+        className={cn('w-1.5 bg-red-500 h-[53px]', {
+          hidden: !row.original.isUrgent,
+        })}
+      />
+    ),
   },
   {
     accessorKey: 'status',
@@ -34,9 +42,12 @@ export const columns = (
       return (
         <Badge
           className={cn('bg-primary capitalize', {
-            'bg-green-600 hover:bg-green-600': status === ReferralStatus.Enrolment,
-            'bg-yellow-500 hover:bg-yellow-500': status === ReferralStatus.Evaluation,
-            'bg-orange-500 hover:bg-orange-500': status === ReferralStatus.Acceptance,
+            'bg-green-600 hover:bg-green-600':
+              status === ReferralStatus.Enrolment,
+            'bg-yellow-500 hover:bg-yellow-500':
+              status === ReferralStatus.Evaluation,
+            'bg-orange-500 hover:bg-orange-500':
+              status === ReferralStatus.Acceptance,
           })}
         >
           {status}

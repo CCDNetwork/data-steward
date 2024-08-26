@@ -23,7 +23,12 @@ interface PaginationProps {
   pageSizeClicked: (newPageSize: number) => void;
 }
 
-export const Pagination = ({ pagination, currentPage, pageClicked, pageSizeClicked }: PaginationProps) => {
+export const Pagination = ({
+  pagination,
+  currentPage,
+  pageClicked,
+  pageSizeClicked,
+}: PaginationProps) => {
   const { totalRows, totalPages, pageSize } = pagination;
 
   const { range } = usePagination({
@@ -55,10 +60,16 @@ export const Pagination = ({ pagination, currentPage, pageClicked, pageSizeClick
         <PaginationContainer>
           <PaginationContent>
             <PaginationItem className="md:block hidden">
-              <PaginationFirstPage onClick={() => pageClicked(1)} disabled={currentPage === 1} />
+              <PaginationFirstPage
+                onClick={() => pageClicked(1)}
+                disabled={currentPage === 1}
+              />
             </PaginationItem>
             <PaginationItem>
-              <PaginationPrevious onClick={() => pageClicked(currentPage - 1)} disabled={currentPage === 1} />
+              <PaginationPrevious
+                onClick={() => pageClicked(currentPage - 1)}
+                disabled={currentPage === 1}
+              />
             </PaginationItem>
             {range.map((pageNumber, index) => {
               if (pageNumber === 'dots') {
@@ -69,16 +80,27 @@ export const Pagination = ({ pagination, currentPage, pageClicked, pageSizeClick
                 );
               }
               return (
-                <PaginationItem key={pageNumber} onClick={() => pageClicked(pageNumber)}>
-                  <PaginationLink isActive={pageNumber === currentPage}>{pageNumber}</PaginationLink>
+                <PaginationItem
+                  key={pageNumber}
+                  onClick={() => pageClicked(pageNumber)}
+                >
+                  <PaginationLink isActive={pageNumber === currentPage}>
+                    {pageNumber}
+                  </PaginationLink>
                 </PaginationItem>
               );
             })}
             <PaginationItem>
-              <PaginationNext onClick={() => pageClicked(currentPage + 1)} disabled={currentPage === totalPages} />
+              <PaginationNext
+                onClick={() => pageClicked(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              />
             </PaginationItem>
             <PaginationItem className="md:block hidden">
-              <PaginationLastPage onClick={() => pageClicked(totalPages)} disabled={currentPage === totalPages} />
+              <PaginationLastPage
+                onClick={() => pageClicked(totalPages)}
+                disabled={currentPage === totalPages}
+              />
             </PaginationItem>
           </PaginationContent>
         </PaginationContainer>

@@ -63,7 +63,9 @@ export const AsyncSelect = <T,>({
   }, [propsOptions, value, useValue, valueKey, useInfiniteQueryFunction]);
 
   const options = useMemo(() => {
-    return useInfiniteQueryFunction ? query?.data?.pages.flatMap((page) => page.data) ?? [] : propsOptions;
+    return useInfiniteQueryFunction
+      ? query?.data?.pages.flatMap((page) => page.data) ?? []
+      : propsOptions;
   }, [query?.data?.pages, propsOptions, useInfiniteQueryFunction]);
 
   const handleChange = (newValue: MultiValue<T> | SingleValue<T>) => {
@@ -93,7 +95,9 @@ export const AsyncSelect = <T,>({
   };
 
   return (
-    <div className={cn('relative w-full react-select-container', wrapperClassName)}>
+    <div
+      className={cn('relative w-full react-select-container', wrapperClassName)}
+    >
       {label && (
         <label
           htmlFor={name}
@@ -155,15 +159,25 @@ export const AsyncSelect = <T,>({
           input: () => 'text-sm',
           indicatorSeparator: () => 'bg-muted-foreground',
           dropdownIndicator: (state) =>
-            state.selectProps.menuIsOpen ? 'rotate-180' : disabled ? 'text-muted-foreground' : '',
-          singleValue: () => (disabled ? 'text-sm text-muted-foreground' : 'text-sm'),
+            state.selectProps.menuIsOpen
+              ? 'rotate-180'
+              : disabled
+                ? 'text-muted-foreground'
+                : '',
+          singleValue: () =>
+            disabled ? 'text-sm text-muted-foreground' : 'text-sm',
           placeholder: () => 'text-sm text-muted-foreground',
           menu: () => 'text-sm bg-background border border-border',
-          option: (state) => (state.isSelected ? 'text-primary font-bold hover:bg-muted' : 'bg-muted'),
+          option: (state) =>
+            state.isSelected
+              ? 'text-primary font-bold hover:bg-muted'
+              : 'bg-muted',
         }}
       />
       {!!fieldState.error && (
-        <p className="text-destructive text-[0.8rem] mt-2 font-medium">{fieldState.error.message}</p>
+        <p className="text-destructive text-[0.8rem] mt-2 font-medium">
+          {fieldState.error.message}
+        </p>
       )}
     </div>
   );

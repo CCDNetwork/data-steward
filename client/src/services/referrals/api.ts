@@ -1,9 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { DataWithMeta, PaginationRequest, paginationRequestToUrl } from '@/helpers/pagination';
+import {
+  DataWithMeta,
+  PaginationRequest,
+  paginationRequestToUrl,
+} from '@/helpers/pagination';
 import { useGlobalErrors } from '@/providers/GlobalProvider';
 
-import { referralPatchToReq, referralPostToReq, resToReferral, resToReferralUser } from './transformations';
+import {
+  referralPatchToReq,
+  referralPostToReq,
+  resToReferral,
+  resToReferralUser,
+} from './transformations';
 import { Referral, ReferralUser } from './types';
 import { api } from '../api';
 import { SentReferralFormData } from '@/modules/SentReferrals/SentReferralPage/validations';
@@ -33,7 +42,9 @@ export const fetchReferrals = async ({
   };
 };
 
-export const fetchReferralUsers = async (pagination: PaginationRequest): Promise<DataWithMeta<ReferralUser>> => {
+export const fetchReferralUsers = async (
+  pagination: PaginationRequest,
+): Promise<DataWithMeta<ReferralUser>> => {
   const url = paginationRequestToUrl('referrals/focal-point/users', pagination);
 
   const resp = await api.get(url);
@@ -58,7 +69,10 @@ const patchReferralReason = async (data: {
   referralType: string;
   text: string;
 }): Promise<Referral> => {
-  const resp = await api.patch(`/referrals/${data.referralId}/${data.referralType}`, { text: data.text });
+  const resp = await api.patch(
+    `/referrals/${data.referralId}/${data.referralType}`,
+    { text: data.text },
+  );
   return resToReferral(resp.data);
 };
 
@@ -69,7 +83,10 @@ const patchReferral = async ({
   referralId: string;
   data: Partial<SentReferralFormData>;
 }): Promise<Referral> => {
-  const resp = await api.patch(`/referrals/${referralId}`, referralPatchToReq(data));
+  const resp = await api.patch(
+    `/referrals/${referralId}`,
+    referralPatchToReq(data),
+  );
   return resToReferral(resp.data);
 };
 
@@ -92,10 +109,26 @@ export const useReferrals = ({
   received,
 }: any) => {
   return useQuery(
-    [QueryKeys.Referrals, currentPage, pageSize, sortBy, sortDirection, debouncedSearch, filters, received],
+    [
+      QueryKeys.Referrals,
+      currentPage,
+      pageSize,
+      sortBy,
+      sortDirection,
+      debouncedSearch,
+      filters,
+      received,
+    ],
     () =>
       fetchReferrals({
-        pagination: { page: currentPage, pageSize, sortBy, sortDirection, search: debouncedSearch, filters },
+        pagination: {
+          page: currentPage,
+          pageSize,
+          sortBy,
+          sortDirection,
+          search: debouncedSearch,
+          filters,
+        },
         received,
       }),
   );
@@ -111,7 +144,16 @@ export const useReferralUsers = ({
   queryFilters,
 }: any) => {
   return useQuery(
-    [QueryKeys.ReferralUsers, currentPage, pageSize, sortBy, sortDirection, debouncedSearch, filters, queryFilters],
+    [
+      QueryKeys.ReferralUsers,
+      currentPage,
+      pageSize,
+      sortBy,
+      sortDirection,
+      debouncedSearch,
+      filters,
+      queryFilters,
+    ],
     () =>
       fetchReferralUsers({
         page: currentPage,
@@ -125,7 +167,13 @@ export const useReferralUsers = ({
   );
 };
 
-export const useReferral = ({ id, isCreate }: { id: string; isCreate: boolean }) => {
+export const useReferral = ({
+  id,
+  isCreate,
+}: {
+  id: string;
+  isCreate: boolean;
+}) => {
   const { onSetCollectionNotFound } = useGlobalErrors();
 
   return useQuery([QueryKeys.SingleReferral, id], () => fetchReferral(id), {

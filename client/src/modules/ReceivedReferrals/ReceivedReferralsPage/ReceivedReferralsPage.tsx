@@ -7,7 +7,11 @@ import { usePagination } from '@/helpers/pagination';
 import { APP_ROUTE } from '@/helpers/constants';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { toast } from '@/components/ui/use-toast';
-import { useReferralMutation, useReferrals, useReferralUsers } from '@/services/referrals/api';
+import {
+  useReferralMutation,
+  useReferrals,
+  useReferralUsers,
+} from '@/services/referrals/api';
 import { Referral } from '@/services/referrals';
 import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
 import { ReferralStatus } from '@/services/referrals/const';
@@ -22,19 +26,33 @@ import { UserPermission } from '@/services/users';
 export const ReceivedReferralsPage = () => {
   const navigate = useNavigate();
   const pagination = usePagination();
-  const { currentPage, onPageChange, onPageSizeChange, onSortChange, onSearchChange } = pagination;
+  const {
+    currentPage,
+    onPageChange,
+    onPageSizeChange,
+    onSortChange,
+    onSearchChange,
+  } = pagination;
 
-  const [receivedReferralToDelete, setReceivedReferralToDelete] = useState<Referral | null>(null);
-  const [receivedReferralsFilters, setReceivedReferralsFilters] = useState<Record<string, string>>({
+  const [receivedReferralToDelete, setReceivedReferralToDelete] =
+    useState<Referral | null>(null);
+  const [receivedReferralsFilters, setReceivedReferralsFilters] = useState<
+    Record<string, string>
+  >({
     isDraft: 'false',
   });
 
-  const { data: receivedReferralsData, isLoading: queryLoading } = useReferrals({
-    ...pagination,
-    received: true,
-    filters: receivedReferralsFilters,
+  const { data: receivedReferralsData, isLoading: queryLoading } = useReferrals(
+    {
+      ...pagination,
+      received: true,
+      filters: receivedReferralsFilters,
+    },
+  );
+  const { data: organizations, isFetched } = useOrganizations({
+    currentPage: 1,
+    pageSize: 999,
   });
-  const { data: organizations, isFetched } = useOrganizations({ currentPage: 1, pageSize: 999 });
 
   const { data: users, isFetched: usersFetched } = useReferralUsers({
     currentPage: 1,
@@ -57,7 +75,8 @@ export const ReceivedReferralsPage = () => {
       toast({
         title: 'Something went wrong!',
         variant: 'destructive',
-        description: error.response?.data?.errorMessage || 'Failed to delete referral.',
+        description:
+          error.response?.data?.errorMessage || 'Failed to delete referral.',
       });
     }
     setReceivedReferralToDelete(null);
@@ -70,7 +89,9 @@ export const ReceivedReferralsPage = () => {
     <PageContainer
       pageTitle="Manage Received Referrals"
       pageSubtitle="On this page you can view the referrals that you have received from other organisations. You should review each referral and decide whether to accept or reject it."
-      breadcrumbs={[{ href: `${APP_ROUTE.ReceivedReferrals}`, name: 'Received Referrals' }]}
+      breadcrumbs={[
+        { href: `${APP_ROUTE.ReceivedReferrals}`, name: 'Received Referrals' },
+      ]}
     >
       <DataTable
         data={receivedReferralsData?.data ?? []}
@@ -120,16 +141,28 @@ export const ReceivedReferralsPage = () => {
               filterName="organizationCreatedId[in]"
               setCurrentFilters={setReceivedReferralsFilters}
               title="Filter by Sender"
-              options={isFetched ? organizations!.data.map((org) => ({ label: org.name, value: org.id })) : []}
+              options={
+                isFetched
+                  ? organizations!.data.map((org) => ({
+                      label: org.name,
+                      value: org.id,
+                    }))
+                  : []
+              }
             />
             <FilterDropdown
               currentFilters={receivedReferralsFilters}
               filterName="serviceCategory[in]"
               setCurrentFilters={setReceivedReferralsFilters}
               title="Filter by Activity"
-              options={Object.entries(OrgActivityFilterMap).map(([label, value]) => ({ label, value }))}
+              options={Object.entries(OrgActivityFilterMap).map(
+                ([label, value]) => ({ label, value }),
+              )}
             />
-            <DateRangePickerFilter setCurrentFilters={setReceivedReferralsFilters} placeholder="Filter by Date" />
+            <DateRangePickerFilter
+              setCurrentFilters={setReceivedReferralsFilters}
+              placeholder="Filter by Date"
+            />
           </div>
         }
       />
