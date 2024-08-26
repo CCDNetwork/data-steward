@@ -22,6 +22,7 @@ import { SentReferralsPage, SentReferralsProvider, SentReferralPage } from './mo
 import { ReceivedReferralPage, ReceivedReferralsPage, ReceivedReferralsProvider } from './modules/ReceivedReferrals';
 import { BeneficiaryReferralDataPage } from './modules/Public/BeneficiaryReferralDataPage';
 import { BeneficiaryListPage, SingleBeneficiaryPage } from './modules/BeneficiaryList';
+import { DashboardPage } from './modules/DashboardPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -99,18 +100,7 @@ export const router = createBrowserRouter(
         </Route>
 
         {/* OTHER */}
-        {/* For testing purposes, later make a proper page component for this */}
-        <Route
-          path={APP_ROUTE.Dashboard}
-          element={
-            <iframe
-              className="dark:invert dark:hue-rotate-180"
-              src="https://ccd-meta.initdevelopment.com/public/dashboard/be49c8cb-7a6b-4503-b888-3cf63e51c73b"
-              width="100%"
-              height="100%"
-            />
-          }
-        />
+        <Route path={APP_ROUTE.Dashboard} element={<DashboardPage />} />
         <Route path={APP_ROUTE.UserHandbookList} element={<UserHandbookListPage />} />
         <Route path={APP_ROUTE.MyProfile} element={<DynamicRoute component={<MyProfilePage />} />} />
       </Route>

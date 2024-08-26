@@ -71,12 +71,17 @@ module.exports = {
           from: { scale: 0 },
           to: { scale: '100%' },
         },
+        opacity: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'grow-right': 'grow-right 0.2s ease-in-out forwards',
         appear: 'appear 0.2s ease-out',
+        opacity: 'opacity 0.2s ease-in-out',
       },
     },
   },

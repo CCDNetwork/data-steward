@@ -29,7 +29,7 @@ export const PageContainer = ({
       <Loader2 className="w-10 h-10 lg:w-20 lg:h-20 animate-spin" />
     </div>
   ) : (
-    <div className={cn('space-y-4', containerClassName)}>
+    <div className={cn('space-y-4 animate-opacity', containerClassName)}>
       {breadcrumbs && (
         <div className="pt-2">
           <Breadcrumb breadcrumbs={breadcrumbs} />
