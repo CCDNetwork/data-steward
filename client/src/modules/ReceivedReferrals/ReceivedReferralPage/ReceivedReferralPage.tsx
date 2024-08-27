@@ -143,7 +143,7 @@ export const ReceivedReferralPage = () => {
     setIsUserAssigning(true);
     try {
       await patchReferral.mutateAsync({
-        data: { focalPoint, status: ReferralStatus.InAssessment },
+        data: { focalPoint },
         referralId: receivedReferralId,
       });
       toast({
@@ -241,13 +241,13 @@ export const ReceivedReferralPage = () => {
               <SelectValue placeholder="Select step" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(ReferralStatusDisplayNames)
-                .filter(([key]) => key !== ReferralStatus.UnderReview)
-                .map(([value, key]) => (
+              {Object.entries(ReferralStatusDisplayNames).map(
+                ([value, key]) => (
                   <SelectItem key={key} value={value}>
                     {key}
                   </SelectItem>
-                ))}
+                )
+              )}
             </SelectContent>
           </Select>
           <Button
