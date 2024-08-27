@@ -72,7 +72,7 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
         'N/A',
       files: receivedReferralData?.files || [],
     }),
-    [receivedReferralData],
+    [receivedReferralData]
   );
 
   return (
@@ -191,8 +191,8 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
                     <ul className="list-disc px-4">
                       {HOUSEHOLDS_VULNERABILITY_CRITERIA.filter((i) =>
                         receivingReferral.householdVulnerabilityCriteria.some(
-                          (j) => i.id === j,
-                        ),
+                          (j) => i.id === j
+                        )
                       ).map((k) => (
                         <li key={k.id}>{k.label}</li>
                       ))}
@@ -334,7 +334,7 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
                     },
                     {
                       'bg-red-600 hover:bg-red-600': !receivingReferral.consent,
-                    },
+                    }
                   )}
                 >
                   {receivingReferral.consent ? 'Yes' : 'No'}
@@ -374,7 +374,7 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
                           {
                             'bg-red-600 hover:bg-red-600':
                               !receivingReferral.isSeparated,
-                          },
+                          }
                         )}
                       >
                         {receivingReferral.isSeparated ? 'Yes' : 'No'}
@@ -435,7 +435,7 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
                           {
                             'bg-red-600 hover:bg-red-600':
                               receivingReferral.isCaregiverInformed === 'false',
-                          },
+                          }
                         )}
                       >
                         {receivingReferral.isCaregiverInformed === 'true'

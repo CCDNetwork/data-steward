@@ -38,7 +38,7 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
       if (
         maxFiles === 1 &&
         rejectedFiles.find((file) =>
-          file.errors.find((err) => err.code === 'too-many-files'),
+          file.errors.find((err) => err.code === 'too-many-files')
         )
       ) {
         toast({
@@ -58,7 +58,7 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
               url: URL.createObjectURL(file),
               buffer: await file.arrayBuffer(),
             };
-          }),
+          })
         );
 
         const filesToUpload = [] as any[];
@@ -71,7 +71,7 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
             });
 
             filesToUpload.push(res);
-          }),
+          })
         );
 
         if (maxFiles && maxFiles === 1 && filesToUpload.length === 1) {
@@ -94,7 +94,7 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
         });
       }
     },
-    [addStorageFile, field, maxFiles],
+    [addStorageFile, field, maxFiles]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -129,7 +129,7 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
           {
             'hover:duration-0 hover:cursor-not-allowed text-gray-400': disabled,
           },
-          { 'hover:border-primary': !disabled },
+          { 'hover:border-primary': !disabled }
         )}
       >
         <input {...getInputProps()} />
@@ -166,7 +166,7 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
       getInputProps,
       addStorageFile.isLoading,
       field.value.length,
-    ],
+    ]
   );
 
   return (
@@ -176,7 +176,7 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
         {
           'grid-cols-1 sm:grid-cols-1 lg:grid-cols-1':
             (!maxFiles || maxFiles > 1) && field.value?.length === 0,
-        },
+        }
       )}
     >
       {maxFiles && maxFiles === 1 && field.value && (

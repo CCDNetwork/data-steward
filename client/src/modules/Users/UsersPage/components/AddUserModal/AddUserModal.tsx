@@ -82,7 +82,7 @@ export const AddUserModal = () => {
   const onPermissionClick = (permission: string) => {
     if (currentFormPermissions?.includes(permission)) {
       const filteredFormPermissions = currentFormPermissions?.filter(
-        (i) => i !== permission,
+        (i) => i !== permission
       );
       setValue('permissions', filteredFormPermissions);
       return;

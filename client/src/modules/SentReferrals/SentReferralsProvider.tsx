@@ -10,7 +10,7 @@ interface SentReferralsContextInterface {
 }
 
 const SentReferralsContext = createContext<SentReferralsContextInterface>(
-  undefined!,
+  undefined!
 );
 
 export const SentReferralsProvider = ({ children = <Outlet /> }: Props) => {
@@ -19,7 +19,7 @@ export const SentReferralsProvider = ({ children = <Outlet /> }: Props) => {
 
   const value = useMemo(
     () => ({ pagination, viewOnlyEnabled, setViewOnlyEnabled }),
-    [pagination, viewOnlyEnabled, setViewOnlyEnabled],
+    [pagination, viewOnlyEnabled, setViewOnlyEnabled]
   );
 
   return (

@@ -14,7 +14,7 @@ export const OrganizationEditFormSchema = z.object({
       id: z.string().optional(),
       title: safeHtmlString,
       serviceType: z.string(),
-    }),
+    })
   ),
 });
 

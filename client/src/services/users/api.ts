@@ -28,7 +28,7 @@ enum QueryKeys {
 //
 export const fetchUsers = async (
   pagination: PaginationRequest,
-  customEndpoint?: string,
+  customEndpoint?: string
 ): Promise<DataWithMeta<User>> => {
   const url = paginationRequestToUrl(customEndpoint ?? 'users', pagination);
 
@@ -129,7 +129,7 @@ export const useUsers = ({
         search: debouncedSearch,
         filters,
         queryFilters,
-      }),
+      })
   );
 };
 
@@ -151,7 +151,7 @@ export const useUser = ({
 export const useUsersInfinite = (
   pagination: PaginationRequest,
   enabled: boolean,
-  customEndpoint?: string,
+  customEndpoint?: string
 ) => {
   return useInfiniteQuery(
     [QueryKeys.Users, 'infinite', pagination],
@@ -168,7 +168,7 @@ export const useUsersInfinite = (
       },
       enabled,
       cacheTime: 20000,
-    },
+    }
   );
 };
 

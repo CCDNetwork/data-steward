@@ -74,7 +74,7 @@ export const ServiceActivities = ({
   };
 
   const filteredActivities = activities.filter(
-    (activity) => activity.serviceType === serviceType,
+    (activity) => activity.serviceType === serviceType
   );
 
   return (

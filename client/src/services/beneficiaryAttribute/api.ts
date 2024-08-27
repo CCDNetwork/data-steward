@@ -30,14 +30,14 @@ export const patchBeneficiaryAttribute = async ({
 
 // query
 export const useBeneficiaryAttributes = (
-  { queryEnabled }: { queryEnabled?: boolean } = { queryEnabled: false },
+  { queryEnabled }: { queryEnabled?: boolean } = { queryEnabled: false }
 ) => {
   return useQuery(
     [QueryKeys.BeneficiaryAttributes],
     () => fetchBeneficiaryAttributes(),
     {
       enabled: queryEnabled,
-    },
+    }
   );
 };
 

@@ -8,7 +8,7 @@ import { Tooltip } from '@/components/Tooltip';
 
 export const columns = (
   setTemplateToDelete: React.Dispatch<React.SetStateAction<Template | null>>,
-  onTemplateRowClick: (templateRow: Template) => void,
+  onTemplateRowClick: (templateRow: Template) => void
 ): TableColumn<Template>[] => [
   {
     accessorKey: 'name',

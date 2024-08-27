@@ -12,7 +12,7 @@ enum QueryKeys {
 // API calls
 //
 export const fetchReferralDiscussion = async (
-  referralId: string,
+  referralId: string
 ): Promise<ReferralDiscussion[]> => {
   const resp = await api.get(`/referrals/${referralId}/discussions`);
 
@@ -45,7 +45,7 @@ export const useReferralDiscussion = ({
     () => fetchReferralDiscussion(referralId),
     {
       enabled: !!referralId,
-    },
+    }
   );
 };
 

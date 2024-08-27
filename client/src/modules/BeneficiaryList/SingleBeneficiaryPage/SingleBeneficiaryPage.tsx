@@ -43,15 +43,15 @@ export const SingleBeneficiaryPage = () => {
 
   const beneficiary = useMemo(
     () => beneficiaryDataToSingleBeneficiary(beneficiaryData),
-    [beneficiaryData],
+    [beneficiaryData]
   );
   const isPrimaryDuplicate = useMemo(
     () => beneficiary.duplicates.find((el) => el.isPrimary),
-    [beneficiary],
+    [beneficiary]
   );
   const notPrimaryDuplicates = useMemo(
     () => beneficiary.duplicates.filter((el) => !el.isPrimary),
-    [beneficiary],
+    [beneficiary]
   );
 
   const handleStatusChange = async ({

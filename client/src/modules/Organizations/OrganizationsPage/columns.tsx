@@ -9,7 +9,7 @@ export const columns = (
   setOrganizationToDelete: React.Dispatch<
     React.SetStateAction<Organization | null>
   >,
-  onOrganizationTableRowClick: (organizationRow: Organization) => void,
+  onOrganizationTableRowClick: (organizationRow: Organization) => void
 ): TableColumn<Organization>[] => [
   {
     accessorKey: 'name',

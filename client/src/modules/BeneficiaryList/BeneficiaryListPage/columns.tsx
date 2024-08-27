@@ -47,7 +47,7 @@ export const columns: TableColumn<Beneficiary>[] = [
             {
               'bg-destructive dark:text-white hover:bg-destructive':
                 status === 'rejectedDuplicate',
-            },
+            }
           )}
         >
           {statuses[status]}

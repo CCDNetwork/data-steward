@@ -21,11 +21,11 @@ enum QueryKeys {
 // API calls
 //
 export const fetchAttributeGroups = async (
-  pagination: PaginationRequest,
+  pagination: PaginationRequest
 ): Promise<DataWithMeta<AttributeGroup>> => {
   const url = paginationRequestToUrl(
     'beneficiary-attribute/groups',
-    pagination,
+    pagination
   );
   const resp = await api.get(url);
 
@@ -41,11 +41,11 @@ const fetchAttributeGroup = async (id: string): Promise<AttributeGroup> => {
 };
 
 const postAttributeGroup = async (
-  attributeFormData: RulesForm,
+  attributeFormData: RulesForm
 ): Promise<AttributeGroup> => {
   const resp = await api.post(
     `/beneficiary-attribute/groups`,
-    attributeGroupToReq(attributeFormData),
+    attributeGroupToReq(attributeFormData)
   );
   return resToAttributeGroup(resp.data);
 };
@@ -70,17 +70,17 @@ const patchAttributeGroup = async ({
 }): Promise<AttributeGroup> => {
   const resp = await api.patch(
     `/beneficiary-attribute/groups/${attributeGroupId}`,
-    attributeGroupToReq(attributeFormData),
+    attributeGroupToReq(attributeFormData)
   );
 
   return resToAttributeGroup(resp.data);
 };
 
 const deleteAttributeGroup = async (
-  attributeGroupId: string,
+  attributeGroupId: string
 ): Promise<AttributeGroup> => {
   const resp = await api.delete(
-    `/beneficiary-attribute/groups/${attributeGroupId}`,
+    `/beneficiary-attribute/groups/${attributeGroupId}`
   );
   return resToAttributeGroup(resp.data);
 };
@@ -112,7 +112,7 @@ export const useAttributeGroups = ({
         sortBy,
         sortDirection,
         search: debouncedSearch,
-      }),
+      })
   );
 };
 
@@ -131,7 +131,7 @@ export const useAttributeGroup = ({
     {
       onError: () => onSetCollectionNotFound(true),
       enabled: queryEnabled,
-    },
+    }
   );
 };
 

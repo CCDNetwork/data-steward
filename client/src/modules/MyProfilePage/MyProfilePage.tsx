@@ -30,7 +30,7 @@ export const MyProfilePage = () => {
       headerNode={role === UserRole.Admin && <WipeDataDialog />}
       breadcrumbs={[{ href: `${APP_ROUTE.MyProfile}`, name: 'My Profile' }]}
     >
-      <div className="space-y-8 max-w-3xl">
+      <div className="space-y-8 max-w-xl">
         <Card className="sm:bg-secondary/10 border-0 sm:border sm:dark:bg-secondary/10 shadow-none">
           <CardHeader>
             <CardTitle>Account Information</CardTitle>

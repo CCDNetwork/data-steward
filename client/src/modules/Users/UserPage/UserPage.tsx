@@ -72,7 +72,7 @@ export const UserPage = () => {
   const onPermissionClick = (permission: string) => {
     if (currentFormPermissions?.includes(permission)) {
       const filteredFormPermissions = currentFormPermissions?.filter(
-        (i) => i !== permission,
+        (i) => i !== permission
       );
       setValue('permissions', filteredFormPermissions);
       return;
@@ -171,7 +171,7 @@ export const UserPage = () => {
                         <Checkbox
                           className="shadow-none"
                           checked={currentFormPermissions?.includes(
-                            'deduplication',
+                            'deduplication'
                           )}
                           onCheckedChange={() =>
                             onPermissionClick('deduplication')

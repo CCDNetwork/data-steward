@@ -38,7 +38,7 @@ export const PageContainer = ({
       <div
         className={cn(
           'flex items-start justify-between space-y-2',
-          headerClassName,
+          headerClassName
         )}
       >
         <div className="flex">

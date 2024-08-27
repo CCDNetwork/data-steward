@@ -34,7 +34,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
                 !field.value && 'text-muted-foreground',
                 disabled &&
                   '!cursor-not-allowed !disabled:pointer-events-auto pointer-events-auto',
-                btnclass,
+                btnclass
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
@@ -60,7 +60,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         </Popover>
       </div>
     );
-  },
+  }
 );
 
 DatePicker.displayName = 'DatePicker';

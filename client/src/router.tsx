@@ -211,6 +211,6 @@ export const router = createBrowserRouter(
       />
       <Route path={APP_ROUTE.SignIn} element={<SignInPage />} />
       <Route path="*" element={<NotFoundPage />} />
-    </Route>,
-  ),
+    </Route>
+  )
 );

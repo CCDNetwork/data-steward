@@ -26,7 +26,7 @@ enum QueryKeys {
 // API calls
 //
 export const fetchTemplates = async (
-  pagination: PaginationRequest,
+  pagination: PaginationRequest
 ): Promise<DataWithMeta<Template>> => {
   const url = paginationRequestToUrl('templates', pagination);
 
@@ -90,7 +90,7 @@ export const useTemplates = ({
         sortBy,
         sortDirection,
         search: debouncedSearch,
-      }),
+      })
   );
 };
 
@@ -111,7 +111,7 @@ export const useTemplate = ({
 
 export const useTemplatesInfinite = (
   pagination: PaginationRequest,
-  enabled: boolean,
+  enabled: boolean
 ) => {
   return useInfiniteQuery(
     [QueryKeys.Templates, 'infinite', pagination],
@@ -128,7 +128,7 @@ export const useTemplatesInfinite = (
       },
       enabled,
       cacheTime: 20000,
-    },
+    }
   );
 };
 

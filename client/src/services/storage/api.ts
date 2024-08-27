@@ -28,7 +28,7 @@ const postStorageFile = async (data: any): Promise<StorageFile> => {
     data.type ? fileToFormData(data) : imageToFormData(data.file),
     {
       headers: { 'Content-Type': 'multipart/form-data' },
-    },
+    }
   );
   return resToStorageFile(resp.data);
 };
@@ -43,7 +43,7 @@ const putStorageFileAlt = async (data: any): Promise<StorageFile> => {
 //
 export const useStorageFile = ({ fileName }: { fileName: string }) => {
   return useQuery([QueryKeys.StorageFileSingle, fileName], () =>
-    fetchStorageFile(fileName),
+    fetchStorageFile(fileName)
   );
 };
 

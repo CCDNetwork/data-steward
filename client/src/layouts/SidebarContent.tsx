@@ -42,9 +42,9 @@ export const SidebarContent = ({
               },
               {
                 'hover:border-primary/30': !pathname.includes(
-                  APP_ROUTE.UserHandbookList,
+                  APP_ROUTE.UserHandbookList
                 ),
-              },
+              }
             )}
           >
             <BookOpenTextIcon className="h-6 w-6 shrink-0" />
@@ -64,9 +64,9 @@ export const SidebarContent = ({
             },
             {
               'hover:border-primary/30': !pathname.includes(
-                APP_ROUTE.Dashboard,
+                APP_ROUTE.Dashboard
               ),
-            },
+            }
           )}
         >
           <LayoutDashboardIcon className="h-6 w-6 shrink-0" />
@@ -95,9 +95,9 @@ export const SidebarContent = ({
                         },
                         {
                           'hover:border-primary/40': !pathname.includes(
-                            item.to,
+                            item.to
                           ),
-                        },
+                        }
                       )}
                     >
                       <item.icon

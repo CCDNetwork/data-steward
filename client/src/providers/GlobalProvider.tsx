@@ -43,7 +43,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
   const [user, setUser] = useState<User>(LocalStorage.getUser());
   const [hdxHapiAppIdentifier, setHdxHapiAppIdentifier] = useState<string>('');
   const [organization, setOrganization] = useState<Organization | null>(
-    LocalStorage.getOrganization(),
+    LocalStorage.getOrganization()
   );
   const [token, setToken] = useState<string | null>(LocalStorage.getToken());
   const [collectionNotFound, setCollectionNotFound] = useState(false);
@@ -89,14 +89,14 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     (updatedOrganization: Organization) => {
       setOrganization(updatedOrganization);
     },
-    [],
+    []
   );
 
   // Handle when server returns 401
   useEffect(() => {
     const interceptor = api.interceptors.response.use(
       (config) => config,
-      unauthorizedHandler(logoutUser),
+      unauthorizedHandler(logoutUser)
     );
     return () => {
       api.interceptors.request.eject(interceptor);
@@ -178,7 +178,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
       logoutUser,
       updateUser,
       updateOrganization,
-    ],
+    ]
   );
 
   return (

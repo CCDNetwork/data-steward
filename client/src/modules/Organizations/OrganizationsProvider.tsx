@@ -8,7 +8,7 @@ interface OrganizationsContextInterface {
 }
 
 const OrganizationsContext = createContext<OrganizationsContextInterface>(
-  undefined!,
+  undefined!
 );
 
 export const OrganizationsProvider = ({ children = <Outlet /> }: Props) => {

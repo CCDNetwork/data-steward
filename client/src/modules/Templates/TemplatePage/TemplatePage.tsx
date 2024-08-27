@@ -142,7 +142,7 @@ export const TemplatePage = () => {
                             )}
                           />
                         </div>
-                      ),
+                      )
                     )}
                   </div>
                 </div>

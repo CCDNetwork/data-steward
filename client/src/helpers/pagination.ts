@@ -75,27 +75,27 @@ export const usePagination = (
   props: UsePaginationHookProps = {
     initialPagination: undefined,
     useUrlParams: true,
-  },
+  }
 ) => {
   const { initialPagination, useUrlParams } = props;
 
   const [searchParams, setSearchParams] = useSearchParams({});
   const [currentPage, setCurrentPage] = useState(
-    Number(searchParams.get('page')) || initialPagination?.currentPage || 1,
+    Number(searchParams.get('page')) || initialPagination?.currentPage || 1
   );
   const [pageSize, setPageSize] = useState(
-    Number(searchParams.get('pageSize')) || initialPagination?.pageSize || 10,
+    Number(searchParams.get('pageSize')) || initialPagination?.pageSize || 10
   );
   const [sortBy, setSortBy] = useState(
-    searchParams.get('sortBy') || initialPagination?.sortBy || '',
+    searchParams.get('sortBy') || initialPagination?.sortBy || ''
   );
   const [sortDirection, setSortDirection] = useState<SortDirection>(
     (searchParams.get('sortDirection') as SortDirection) ||
       initialPagination?.sortDirection ||
-      SortDirection.None,
+      SortDirection.None
   );
   const [filters, setFilters] = useState<PaginationFilters>(
-    initialPagination?.filters ?? {},
+    initialPagination?.filters ?? {}
   );
   const [queryFilters, setQueryFilters] = useState<PaginationFilters>({});
   const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -251,7 +251,7 @@ export const paginationRequestToUrl = (
   pagination: PaginationRequest,
   filtersTransformation?: (filters: PaginationFilters) => {
     [key: string]: any;
-  },
+  }
 ) => {
   const separator = url.indexOf('?') === -1 ? '?' : '&';
   let newUrl = `${url}${separator}page=${pagination.page}&pageSize=${pagination.pageSize}`;
@@ -278,7 +278,7 @@ export const paginationRequestToUrl = (
 
         return acc;
       },
-      {},
+      {}
     );
 
     // filters are encoded as query params
@@ -306,7 +306,7 @@ export const paginationRequestToUrl = (
 
         return acc;
       },
-      {},
+      {}
     );
 
     // queryFilters are encoded as query params

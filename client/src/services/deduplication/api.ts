@@ -25,7 +25,7 @@ enum QueryKeys {
 }
 
 export const fetchDeduplicationListings = async (
-  pagination: PaginationRequest,
+  pagination: PaginationRequest
 ): Promise<DataWithMeta<DeduplicationListing>> => {
   const url = paginationRequestToUrl('deduplication/listings', pagination);
 
@@ -50,7 +50,7 @@ const postDeduplicationDataset = async (data: {
     dataToDatasetRequest(data),
     {
       headers: { 'Content-Type': 'multipart/form-data' },
-    },
+    }
   );
 
   return resToDatasetResponse(resp.data);
@@ -106,7 +106,7 @@ export const useDeduplicationListings = ({
         sortBy,
         sortDirection,
         search: debouncedSearch,
-      }),
+      })
   );
 };
 
@@ -122,13 +122,13 @@ export const useDeduplicationMutation = () => {
       postDeduplicationSameOrganization,
       {
         onError: (error) => setDeduplicationWizardError(error),
-      },
+      }
     ),
     deduplicateSystemOrganizations: useMutation(
       postDeduplicationSystemOrganizations,
       {
         onError: (error) => setDeduplicationWizardError(error),
-      },
+      }
     ),
     deduplicateFinish: useMutation(postDeduplicationFinish, {
       onSuccess: () =>

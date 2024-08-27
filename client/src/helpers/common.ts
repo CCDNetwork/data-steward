@@ -66,7 +66,7 @@ export const shortenId = (id: string | undefined) => {
 
 export const appendStringToFilename = (
   filename: string,
-  appendString: string,
+  appendString: string
 ) => {
   const lastDotIndex = filename.lastIndexOf('.');
 

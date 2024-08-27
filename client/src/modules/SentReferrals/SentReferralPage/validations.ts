@@ -17,13 +17,13 @@ const OrganizationSchema = z.object(
         id: z.string(),
         title: z.string(),
         serviceType: z.string(),
-      }),
+      })
     ),
   },
   {
     invalid_type_error: 'Organization is required',
     required_error: 'Organization is required',
-  },
+  }
 );
 
 const FocalPointSchema = z
@@ -40,7 +40,7 @@ const FocalPointSchema = z
     {
       invalid_type_error: 'Focal point is required',
       required_error: 'Focal point is required',
-    },
+    }
   )
   .nullable()
   .optional();
@@ -56,7 +56,7 @@ export const SentReferralSchema = z
         id: z.string(),
         title: z.string(),
         serviceType: z.string(),
-      }),
+      })
     ),
     organizationReferredTo: OrganizationSchema,
     displacementStatus: z.string().optional(),

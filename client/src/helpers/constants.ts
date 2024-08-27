@@ -6,7 +6,6 @@ import {
   BookUserIcon,
   Building2Icon,
   FilesIcon,
-  HeartHandshakeIcon,
   LogInIcon,
   LogOutIcon,
   TextSelectIcon,
@@ -79,12 +78,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
         icon: LogOutIcon,
         userPermissions: [UserPermission.Referrals],
       },
-      {
-        name: 'Service List',
-        to: APP_ROUTE.ServiceList,
-        icon: HeartHandshakeIcon,
-        userPermissions: [UserPermission.Referrals],
-      },
+      // {
+      //   name: 'Service List',
+      //   to: APP_ROUTE.ServiceList,
+      //   icon: HeartHandshakeIcon,
+      //   userPermissions: [UserPermission.Referrals],
+      // },
     ],
   },
   {

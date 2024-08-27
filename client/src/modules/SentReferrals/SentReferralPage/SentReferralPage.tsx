@@ -124,7 +124,7 @@ export const SentReferralPage = () => {
   const currentFormNoTaxId = watch('noTaxId');
   const currentFormContactPreference = watch('contactPreference');
   const currentFormCaregiverContactPreference = watch(
-    'caregiverContactPreference',
+    'caregiverContactPreference'
   );
 
   useEffect(() => {
@@ -174,7 +174,7 @@ export const SentReferralPage = () => {
 
     return (
       currentFormSelectedOrganization?.activities.filter(
-        (i) => i.serviceType === currentFormServiceCategory,
+        (i) => i.serviceType === currentFormServiceCategory
       ) ?? []
     );
   }, [currentFormServiceCategory, currentFormSelectedOrganization]);
@@ -207,7 +207,7 @@ export const SentReferralPage = () => {
     }
 
     const changedFields: Partial<any> = Object.keys(
-      formState.dirtyFields,
+      formState.dirtyFields
     ).reduce((acc: Partial<any>, key: string) => {
       const value = values[key as keyof SentReferralFormData];
       if (value !== null && value !== undefined) {
@@ -301,7 +301,7 @@ export const SentReferralPage = () => {
           <Button
             type="submit"
             onClick={handleSubmit((values) =>
-              onSubmit({ values, isDraft: undefined }),
+              onSubmit({ values, isDraft: undefined })
             )}
             isLoading={patchReferral.isLoading}
             disabled={
@@ -532,7 +532,7 @@ export const SentReferralPage = () => {
                                             disabled={viewOnlyEnabled}
                                             checked={
                                               !!field.value?.find(
-                                                (i) => i.id === item.id,
+                                                (i) => i.id === item.id
                                               )
                                             }
                                             onCheckedChange={(checked) => {
@@ -544,8 +544,8 @@ export const SentReferralPage = () => {
                                                 : field.onChange(
                                                     field.value?.filter(
                                                       (value: any) =>
-                                                        value.id !== item.id,
-                                                    ),
+                                                        value.id !== item.id
+                                                    )
                                                   );
                                             }}
                                           />
@@ -1098,7 +1098,7 @@ export const SentReferralPage = () => {
                           type="submit"
                           variant="default"
                           onClick={handleSubmit((values) =>
-                            onSubmit({ values, isDraft: false }),
+                            onSubmit({ values, isDraft: false })
                           )}
                           disabled={createReferral.isLoading}
                         >

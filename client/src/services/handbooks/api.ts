@@ -21,7 +21,7 @@ enum QueryKeys {
 // API calls
 //
 export const fetchHandbooks = async (
-  pagination: PaginationRequest,
+  pagination: PaginationRequest
 ): Promise<DataWithMeta<Handbook>> => {
   const url = paginationRequestToUrl('handbooks', pagination);
 
@@ -85,7 +85,7 @@ export const useHandbooks = ({
         sortBy,
         sortDirection,
         search: debouncedSearch,
-      }),
+      })
   );
 };
 

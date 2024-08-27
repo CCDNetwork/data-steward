@@ -12,7 +12,7 @@ export const columns = (
   setSentReferralToDelete: React.Dispatch<
     React.SetStateAction<Referral | null>
   >,
-  onEditSentReferralClick: (referralRow: Referral) => Promise<void>,
+  onEditSentReferralClick: (referralRow: Referral) => Promise<void>
 ): TableColumn<Referral>[] => [
   {
     accessorKey: 'urgencyFlag',

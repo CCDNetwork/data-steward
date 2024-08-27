@@ -21,7 +21,7 @@ export const columns = ({
     cell: ({ row }) => {
       const { id: beneficiaryAttributeId } = row.original;
       const isChecked = ruleBeneficiaryAttributeIds.includes(
-        beneficiaryAttributeId,
+        beneficiaryAttributeId
       );
 
       return (

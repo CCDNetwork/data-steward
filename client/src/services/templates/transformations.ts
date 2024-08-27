@@ -34,7 +34,7 @@ export const resToTemplate = (res: any): Template => {
 };
 
 export const templateToReq = (
-  data: any,
+  data: any
 ): Omit<Template, 'id' | 'userCreated' | 'createdAt' | 'updatedAt'> => {
   const req: any = {
     name: data.name,

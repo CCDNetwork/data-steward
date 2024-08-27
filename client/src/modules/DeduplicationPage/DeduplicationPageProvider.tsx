@@ -7,7 +7,7 @@ interface DeduplicationContextInterface {
 }
 
 const DeduplicationContext = createContext<DeduplicationContextInterface>(
-  undefined!,
+  undefined!
 );
 
 export const DeduplicationProvider = ({ children = <Outlet /> }: Props) => {
@@ -16,7 +16,7 @@ export const DeduplicationProvider = ({ children = <Outlet /> }: Props) => {
 
   const value = useMemo(
     () => ({ deduplicationWizardError, setDeduplicationWizardError }),
-    [deduplicationWizardError, setDeduplicationWizardError],
+    [deduplicationWizardError, setDeduplicationWizardError]
   );
 
   return (

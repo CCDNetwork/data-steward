@@ -7,7 +7,7 @@ import { Tooltip } from '@/components/Tooltip';
 
 export const columns = (
   setUserToDelete: React.Dispatch<React.SetStateAction<User | null>>,
-  onUserTableRowClick: (userRow: User) => void,
+  onUserTableRowClick: (userRow: User) => void
 ): TableColumn<User>[] => [
   {
     accessorKey: 'firstName',

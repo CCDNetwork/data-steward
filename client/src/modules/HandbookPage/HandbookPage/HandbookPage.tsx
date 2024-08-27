@@ -26,7 +26,7 @@ export const HandbookPage = () => {
   } = pagination;
 
   const [handbookToDelete, setHandbookToDelete] = useState<Handbook | null>(
-    null,
+    null
   );
 
   const { data: handbooksData, isLoading } = useHandbooks(pagination);

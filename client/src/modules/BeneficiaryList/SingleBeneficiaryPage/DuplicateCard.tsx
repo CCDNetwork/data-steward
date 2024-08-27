@@ -19,7 +19,7 @@ export const DuplicateCard = ({
       <dl
         className={cn(
           'grid grid-cols-1 sm:grid-cols-2 gap-6 p-2',
-          evenItem && 'sm:bg-muted/40',
+          evenItem && 'sm:bg-muted/40'
         )}
       >
         {item.organization && (

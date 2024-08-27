@@ -27,7 +27,7 @@ enum QueryKeys {
 }
 
 export const fetchOrganizations = async (
-  pagination: PaginationRequest,
+  pagination: PaginationRequest
 ): Promise<DataWithMeta<Organization>> => {
   const url = paginationRequestToUrl('organizations', pagination);
 
@@ -52,7 +52,7 @@ const putOrganization = async ({
 }): Promise<Organization> => {
   const resp = await api.put(
     `/organizations/${organizationId}`,
-    organizationToReq(payload),
+    organizationToReq(payload)
   );
   return resToOrganization(resp.data);
 };
@@ -70,7 +70,7 @@ const postOrganization = async (data: {
 };
 
 const putOrganizationMe = async (
-  data: OrganizationMeRequestPayload,
+  data: OrganizationMeRequestPayload
 ): Promise<Organization> => {
   const resp = await api.put('/organizations/me', organizationMeToReq(data));
   return resToOrganization(resp.data);
@@ -118,7 +118,7 @@ export const useOrganizations = ({
         sortBy,
         sortDirection,
         search: debouncedSearch,
-      }),
+      })
   );
 };
 
@@ -139,7 +139,7 @@ export const useOrganization = ({
 
 export const useOrganizationsInfinite = (
   pagination: PaginationRequest,
-  enabled: boolean,
+  enabled: boolean
 ) => {
   return useInfiniteQuery(
     [QueryKeys.Organizations, 'infinite', pagination],
@@ -156,7 +156,7 @@ export const useOrganizationsInfinite = (
       },
       enabled,
       cacheTime: 20000,
-    },
+    }
   );
 };
 

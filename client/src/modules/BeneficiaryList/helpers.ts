@@ -3,7 +3,7 @@ import { MATCHED_FIELDS, SingleBeneficiary } from './types';
 import { BENEFICIARY_STATUS } from '@/components/BeneficiaryStatus/const';
 
 export const beneficiaryDataToSingleBeneficiary = (
-  res: Beneficiary | undefined,
+  res: Beneficiary | undefined
 ): SingleBeneficiary => {
   return {
     id: res?.id || '',

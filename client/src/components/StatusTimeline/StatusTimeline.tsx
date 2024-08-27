@@ -29,7 +29,7 @@ export const StatusTimeline: React.FC<TimelineProps> = ({
                 'w-8 h-8 rounded-full flex relative items-center justify-center',
                 {
                   'bg-background': index > currentStatusIndex,
-                },
+                }
               )}
             >
               {index < currentStatusIndex && (
@@ -66,7 +66,7 @@ export const StatusTimeline: React.FC<TimelineProps> = ({
                 'w-14 border-muted-foreground/60 rounded-xl border',
                 {
                   'border-border': index >= currentStatusIndex,
-                },
+                }
               )}
             />
           )}

@@ -130,7 +130,7 @@ export const CreateTemplateModal = () => {
                       )}
                     />
                   </div>
-                ),
+                )
               )}
             </div>
             <DialogFooter className="pt-4">

@@ -51,7 +51,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
   const { deduplicationWizardError, setDeduplicationWizardError } =
     useDeduplicationProvider();
   const [currentStep, setCurrentStep] = useState<number>(
-    WIZARD_STEP.FILE_UPLOAD,
+    WIZARD_STEP.FILE_UPLOAD
   );
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [internalFileDedupResponse, setInternalFileDedupResponse] =
@@ -85,7 +85,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
       if (!isFormValid) return;
 
       const fileInput = document.getElementById(
-        'file-input',
+        'file-input'
       ) as HTMLInputElement;
       fileInput.click();
     } catch {
@@ -241,7 +241,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
 
   const duplicateFileName = appendStringToFilename(
     internalFileDedupResponse?.file.name ?? '-',
-    '-duplicates',
+    '-duplicates'
   );
 
   const sameOrgDedupUploadCount =
@@ -270,7 +270,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                   'flex flex-col items-center p-4 py-8 min-h-[410px]',
                   {
                     'pt-0': currentStep !== WIZARD_STEP.FILE_UPLOAD,
-                  },
+                  }
                 )}
               >
                 {currentStep !== WIZARD_STEP.FILE_UPLOAD && (
@@ -460,7 +460,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                                         handleDownloadDuplicatesFile(
                                           internalFileDedupResponse?.file.url ??
                                             '',
-                                          duplicateFileName,
+                                          duplicateFileName
                                         )
                                       }
                                     >

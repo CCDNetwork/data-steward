@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
       isQueryLoading
         ? Array(Number(currentQueryPageSize) || 10).fill({})
         : data,
-    [isQueryLoading, currentQueryPageSize, data],
+    [isQueryLoading, currentQueryPageSize, data]
   );
 
   const tableColumns = useMemo(
@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
             cell: () => <Skeleton className="w-[100%] h-10" />,
           }))
         : columns,
-    [isQueryLoading, columns],
+    [isQueryLoading, columns]
   );
 
   const table = useReactTable({
@@ -141,7 +141,7 @@ export function DataTable<TData, TValue>({
                           variant="ghost"
                           className={cn(
                             'p-0 hover:bg-transparent',
-                            columns[index]?.headerClassName,
+                            columns[index]?.headerClassName
                           )}
                           onClick={() =>
                             table.getRowModel().rows.length > 0
@@ -153,7 +153,7 @@ export function DataTable<TData, TValue>({
                             ? null
                             : flexRender(
                                 header.column.columnDef.header,
-                                header.getContext(),
+                                header.getContext()
                               )}
                           <ChevronsUpDown className="ml-2 h-4 w-4" />
                         </Button>
@@ -168,7 +168,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -192,7 +192,7 @@ export function DataTable<TData, TValue>({
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}

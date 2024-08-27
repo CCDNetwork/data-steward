@@ -11,7 +11,7 @@ import { Tooltip } from '@/components/Tooltip';
 export const columns = (
   setReceivedReferralToDelete: React.Dispatch<
     React.SetStateAction<Referral | null>
-  >,
+  >
 ): TableColumn<Referral>[] => [
   {
     accessorKey: 'urgencyFlag',

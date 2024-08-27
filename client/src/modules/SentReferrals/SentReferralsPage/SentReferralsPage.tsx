@@ -95,7 +95,7 @@ export const SentReferralsPage = () => {
       setViewOnlyEnabled(true);
       navigate(`${APP_ROUTE.SentReferrals}/${referralRow.id}`);
     },
-    [navigate, setViewOnlyEnabled],
+    [navigate, setViewOnlyEnabled]
   );
 
   const onNewCaseClick = () => navigate(`${APP_ROUTE.SentReferrals}/new`);
@@ -105,7 +105,7 @@ export const SentReferralsPage = () => {
       setViewOnlyEnabled(false);
       navigate(`${APP_ROUTE.SentReferrals}/${referralRow.id}`);
     },
-    [navigate, setViewOnlyEnabled],
+    [navigate, setViewOnlyEnabled]
   );
 
   return (
@@ -214,7 +214,7 @@ export const SentReferralsPage = () => {
               setCurrentFilters={setSentReferralsFilters}
               title="Filter by Activity"
               options={Object.entries(OrgActivityFilterMap).map(
-                ([label, value]) => ({ label, value }),
+                ([label, value]) => ({ label, value })
               )}
             />
             <DateRangePickerFilter

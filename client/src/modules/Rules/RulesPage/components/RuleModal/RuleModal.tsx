@@ -63,7 +63,7 @@ export const RuleModal = ({
   const { control, handleSubmit, reset, watch, setValue } = form;
 
   const currentBeneficiaryAttributeIdsFormValue = watch(
-    'beneficiaryAttributeIds',
+    'beneficiaryAttributeIds'
   );
 
   useEffect(() => {
@@ -123,8 +123,8 @@ export const RuleModal = ({
       setValue(
         'beneficiaryAttributeIds',
         currentBeneficiaryAttributeIdsFormValue.filter(
-          (i) => i !== beneficiaryAttributeId,
-        ),
+          (i) => i !== beneficiaryAttributeId
+        )
       );
     } else {
       setValue('beneficiaryAttributeIds', [

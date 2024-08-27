@@ -17,7 +17,7 @@ export const UserProfileFormSchema = z
           }
           return true;
         },
-        { message: 'Password must contain at least 8 characters' },
+        { message: 'Password must contain at least 8 characters' }
       ),
     confirmPassword: z.string().optional(),
   })
@@ -28,7 +28,7 @@ export const UserProfileFormSchema = z
       }
       return true;
     },
-    { message: 'Passwords must match', path: ['confirmPassword'] },
+    { message: 'Passwords must match', path: ['confirmPassword'] }
   );
 
 export type UserProfileFormData = z.infer<typeof UserProfileFormSchema>;

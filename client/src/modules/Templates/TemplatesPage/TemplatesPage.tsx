@@ -25,7 +25,7 @@ export const TemplatesPage = () => {
   } = pagination;
 
   const [templateToDelete, setTemplateToDelete] = useState<Template | null>(
-    null,
+    null
   );
 
   const { data: templates, isLoading } = useTemplates(pagination);

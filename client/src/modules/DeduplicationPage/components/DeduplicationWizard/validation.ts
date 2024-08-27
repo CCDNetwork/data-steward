@@ -9,7 +9,7 @@ export const DeduplicationUploadFormSchema = z.object({
     {
       invalid_type_error: 'Template is required',
       required_error: 'Template is required',
-    },
+    }
   ),
 });
 

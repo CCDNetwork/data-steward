@@ -132,8 +132,8 @@ export const MpcaSpecificForm = ({ control, disabled }: Props) => {
                                 ? field.onChange([...field.value, item.id])
                                 : field.onChange(
                                     field.value?.filter(
-                                      (value: any) => value !== item.id,
-                                    ),
+                                      (value: any) => value !== item.id
+                                    )
                                   );
                             }}
                           />

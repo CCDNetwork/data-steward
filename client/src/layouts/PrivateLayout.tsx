@@ -20,7 +20,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
   const roleBasedNavigationItems = useMemo(() => {
     if (user.role === UserRole.User) {
       return NAVIGATION_ITEMS.filter((permissions) =>
-        permissions?.userPermissions?.some((p) => user.permissions.includes(p)),
+        permissions?.userPermissions?.some((p) => user.permissions.includes(p))
       );
     }
 
@@ -66,11 +66,11 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
         <div className="px-4 pt-2 pb-4 flex-1 overflow-y-auto md:mt-0 mt-10 border-t md:border-t-0">
           {children}
         </div>
-        <div className="px-4 py-4 sm:px-6 min-h-[69px] flex items-center justify-center">
+        {/* <div className="px-4 py-4 sm:px-6 min-h-[69px] flex items-center justify-center">
           <p className="font-medium tracking-tight text-muted-foreground">
             Footer Content
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

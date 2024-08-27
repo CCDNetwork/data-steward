@@ -47,7 +47,7 @@ export const ReceivedReferralsPage = () => {
       ...pagination,
       received: true,
       filters: receivedReferralsFilters,
-    },
+    }
   );
   const { data: organizations, isFetched } = useOrganizations({
     currentPage: 1,
@@ -156,7 +156,7 @@ export const ReceivedReferralsPage = () => {
               setCurrentFilters={setReceivedReferralsFilters}
               title="Filter by Activity"
               options={Object.entries(OrgActivityFilterMap).map(
-                ([label, value]) => ({ label, value }),
+                ([label, value]) => ({ label, value })
               )}
             />
             <DateRangePickerFilter

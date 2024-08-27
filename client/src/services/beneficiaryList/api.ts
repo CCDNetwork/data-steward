@@ -16,7 +16,7 @@ enum QueryKeys {
 }
 
 export const fetchBeneficiaryList = async (
-  pagination: PaginationRequest,
+  pagination: PaginationRequest
 ): Promise<DataWithMeta<Beneficiary>> => {
   const url = paginationRequestToUrl('/beneficiaries', pagination);
 
@@ -82,7 +82,7 @@ export const useBeneficiaryList = ({
         sortDirection,
         search: debouncedSearch,
         filters,
-      }),
+      })
   );
 };
 

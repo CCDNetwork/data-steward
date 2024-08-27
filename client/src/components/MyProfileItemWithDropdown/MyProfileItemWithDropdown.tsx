@@ -41,7 +41,7 @@ export const MyProfileItemWithDropdown = ({
               {
                 'bg-primary/90 text-gray-50 hover:bg-primary/90':
                   pathname.includes(APP_ROUTE.MyProfile),
-              },
+              }
             )}
           >
             <Avatar>
@@ -51,9 +51,9 @@ export const MyProfileItemWithDropdown = ({
                   'bg-foreground/30 text-gray-50 tracking-tight text-lg uppercase',
                   {
                     'dark:bg-background/30': pathname.includes(
-                      APP_ROUTE.MyProfile,
+                      APP_ROUTE.MyProfile
                     ),
-                  },
+                  }
                 )}
               >
                 {userInitials}

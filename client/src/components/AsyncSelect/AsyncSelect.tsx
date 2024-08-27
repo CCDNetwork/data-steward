@@ -43,7 +43,7 @@ export const AsyncSelect = <T,>({
       queryFilters,
     },
     wasOpened,
-    customEndpoint,
+    customEndpoint
   );
 
   const { field, fieldState } = useController({ control, name });
@@ -104,7 +104,7 @@ export const AsyncSelect = <T,>({
           className={cn(
             'block text-sm pb-3 font-bold tracking-tight leading-6',
             { 'after:content-["_*"] after:text-red-500': requiredField },
-            labelClassName,
+            labelClassName
           )}
         >
           {label}
@@ -198,7 +198,7 @@ export type AsyncSelectProps<T> = {
   useInfiniteQueryFunction?: (
     pagination: PaginationRequest,
     enabled: boolean,
-    customEndpoint?: string,
+    customEndpoint?: string
   ) => ReturnType<typeof useInfiniteQuery<DataWithMeta<T>>>;
   options?: T[];
   getOptionLabel?: (option: T) => string;

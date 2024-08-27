@@ -10,7 +10,7 @@ const OrganizationSchema = z.object(
   {
     invalid_type_error: 'Organization is required',
     required_error: 'Organization is required',
-  },
+  }
 );
 
 export const UserEditFormSchema = z
@@ -28,7 +28,7 @@ export const UserEditFormSchema = z
           }
           return true;
         },
-        { message: 'Password must contain at least 8 characters' },
+        { message: 'Password must contain at least 8 characters' }
       ),
     confirmPassword: safeHtmlString.optional(),
     organization: OrganizationSchema,
@@ -41,7 +41,7 @@ export const UserEditFormSchema = z
       }
       return true;
     },
-    { message: 'Passwords must match', path: ['confirmPassword'] },
+    { message: 'Passwords must match', path: ['confirmPassword'] }
   );
 
 export type UserEditFormData = z.infer<typeof UserEditFormSchema>;

@@ -18,7 +18,7 @@ export const resToAttributeGroup = (res: any): AttributeGroup => {
 };
 
 export const attributeGroupToReq = (
-  data: any,
+  data: any
 ): Omit<AttributeGroup, 'id' | 'createdAt' | 'updatedAt'> => {
   const req: any = {
     title: data.title,

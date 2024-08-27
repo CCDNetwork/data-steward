@@ -18,7 +18,7 @@ const generateAppIdentifier = async ({
   email: string;
 }): Promise<{ encoded_app_identifier: string }> => {
   const resp = await axios.get(
-    `https://hapi.humdata.org/api/v1/encode_app_identifier?application=${application}&email=${email}`,
+    `https://hapi.humdata.org/api/v1/encode_app_identifier?application=${application}&email=${email}`
   );
 
   return resp.data;
@@ -30,7 +30,7 @@ const getUkraineAdminLvl1Data = async ({
   APP_IDENTIFIER: string;
 }): Promise<AdminLevel1[]> => {
   const resp = await axios.get(
-    `https://hapi.humdata.org/api/v1/metadata/admin1?location_code=UKR&output_format=json&app_identifier=${APP_IDENTIFIER}`,
+    `https://hapi.humdata.org/api/v1/metadata/admin1?location_code=UKR&output_format=json&app_identifier=${APP_IDENTIFIER}`
   );
 
   return resp.data.data.map(resToAdminLevel1);
@@ -42,7 +42,7 @@ const getUkraineAdminLvl2Data = async ({
   APP_IDENTIFIER: string;
 }): Promise<AdminLevel2[]> => {
   const resp = await axios.get(
-    `https://hapi.humdata.org/api/v1/metadata/admin2?location_code=UKR&output_format=json&app_identifier=${APP_IDENTIFIER}`,
+    `https://hapi.humdata.org/api/v1/metadata/admin2?location_code=UKR&output_format=json&app_identifier=${APP_IDENTIFIER}`
   );
 
   return resp.data.data.map(resToAdminLevel2);
@@ -56,7 +56,7 @@ export const useHdxHapiGenerateAppIdentifier = ({
   email: string;
 }) => {
   return useQuery([QueryKeys.HdxHapiAppIdentifier, application, email], () =>
-    generateAppIdentifier({ application, email }),
+    generateAppIdentifier({ application, email })
   );
 };
 
@@ -70,7 +70,7 @@ export const useUkraineAdminLevel1Data = ({
     () => getUkraineAdminLvl1Data({ APP_IDENTIFIER }),
     {
       enabled: !!APP_IDENTIFIER,
-    },
+    }
   );
 };
 
@@ -84,6 +84,6 @@ export const useUkraineAdminLevel2Data = ({
     () => getUkraineAdminLvl2Data({ APP_IDENTIFIER }),
     {
       enabled: !!APP_IDENTIFIER,
-    },
+    }
   );
 };

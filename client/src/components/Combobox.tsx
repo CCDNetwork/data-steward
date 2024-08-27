@@ -57,7 +57,7 @@ const Combobox = ({
         className={cn(
           'block mb-2 text-sm font-bold tracking-tight leading-6',
           { 'after:content-["_*"] after:text-red-500': requiredField },
-          labelClassName,
+          labelClassName
         )}
       >
         {label}
@@ -71,7 +71,7 @@ const Combobox = ({
               role="combobox"
               className={cn(
                 'justify-between',
-                !field.value && 'text-muted-foreground',
+                !field.value && 'text-muted-foreground'
               )}
             >
               {field.value &&
@@ -106,7 +106,7 @@ const Combobox = ({
                         'ml-auto h-4 w-4',
                         option.value === field.value
                           ? 'opacity-100'
-                          : 'opacity-0',
+                          : 'opacity-0'
                       )}
                     />
                   </CommandItem>

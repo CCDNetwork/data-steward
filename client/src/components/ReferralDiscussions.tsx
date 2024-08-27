@@ -105,7 +105,7 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
                       'px-3 py-2 rounded-md bg-muted flex flex-col',
                       {
                         'bg-primary text-white': !isBot,
-                      },
+                      }
                     )}
                   >
                     <div className="flex justify-between text-xs font-medium">

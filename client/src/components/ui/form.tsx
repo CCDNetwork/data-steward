@@ -23,7 +23,7 @@ type FormFieldContextValue<
 };
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue,
+  {} as FormFieldContextValue
 );
 
 const FormField = <
@@ -67,7 +67,7 @@ type FormItemContextValue = {
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
+  {} as FormItemContextValue
 );
 
 const FormItem = React.forwardRef<
@@ -101,7 +101,7 @@ const FormLabel = React.forwardRef<
       className={cn(
         'text-sm font-bold tracking-tight leading-6',
         { "after:content-['_*'] after:text-red-500": requiredField },
-        className,
+        className
       )}
       htmlFor={formItemId}
       {...props}

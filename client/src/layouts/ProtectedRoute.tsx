@@ -13,7 +13,7 @@ export const ProtectedRoute = ({
   if (
     user.role === UserRole.User &&
     !user.permissions.some((p) =>
-      userPermissions?.includes(p as UserPermission),
+      userPermissions?.includes(p as UserPermission)
     )
   ) {
     return <Navigate to="/permission-denied" replace />;

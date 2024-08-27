@@ -88,7 +88,7 @@ export const RulesPage = () => {
           }),
         };
         return updatedData;
-      },
+      }
     );
 
     try {
@@ -152,7 +152,7 @@ export const RulesPage = () => {
                           <tr
                             className={cn(
                               'flex transition-colors whitespace-nowrap duration-500 items-center border py-1 rounded-lg px-4 no-scrollbar mb-2 text-sm',
-                              { 'bg-muted': snapshot.isDragging },
+                              { 'bg-muted': snapshot.isDragging }
                             )}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
@@ -174,7 +174,7 @@ export const RulesPage = () => {
                                   {
                                     'bg-primary dark:text-white hover:bg-primary':
                                       attributeGroup.isActive,
-                                  },
+                                  }
                                 )}
                               >
                                 {attributeGroup.isActive
@@ -193,7 +193,7 @@ export const RulesPage = () => {
                                   {
                                     'bg-primary dark:text-white hover:bg-primary':
                                       attributeGroup.useFuzzyMatch,
-                                  },
+                                  }
                                 )}
                               >
                                 {attributeGroup.useFuzzyMatch

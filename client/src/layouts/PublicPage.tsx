@@ -64,7 +64,7 @@ export const PublicPage = ({
       <div
         className={cn(
           'mx-auto flex w-full my-4 h-full flex-col items-center justify-center space-y-6 sm:px-0 px-6',
-          boxClassName,
+          boxClassName
         )}
       >
         <div className="flex flex-col space-y-2 text-center">
@@ -77,7 +77,7 @@ export const PublicPage = ({
           <h1
             className={cn(
               'text-2xl font-semibold tracking-tight',
-              titleClassName,
+              titleClassName
             )}
           >
             {title}
@@ -85,7 +85,7 @@ export const PublicPage = ({
           <p
             className={cn(
               'text-sm text-muted-foreground whitespace-pre-line',
-              subtitleClassName,
+              subtitleClassName
             )}
           >
             {subtitle}

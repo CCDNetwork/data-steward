@@ -42,7 +42,7 @@ export const DeduplicationSteps = ({
             'relative px-2 text-sm pb-2 pt-1 rounded-md w-full transition-opacity duration-300',
             {
               'opacity-60': stepIndex + 1 < currentStep,
-            },
+            }
           )}
         >
           <span className="font-medium flex items-center">

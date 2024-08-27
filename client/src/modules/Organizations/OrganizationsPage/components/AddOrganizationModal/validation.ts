@@ -16,7 +16,7 @@ export const AddOrganizationModalFormSchema = z.object({
         id: z.string().optional(),
         title: safeHtmlString,
         serviceType: z.string(),
-      }),
+      })
     )
     .default([]),
 });

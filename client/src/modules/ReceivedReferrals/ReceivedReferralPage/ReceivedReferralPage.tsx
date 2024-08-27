@@ -63,7 +63,7 @@ export const ReceivedReferralPage = () => {
       defaultValues: {
         focalPoint: null,
       },
-    },
+    }
   );
 
   const { patchReferral, updateReferralReason } = useReferralMutation();
@@ -217,7 +217,7 @@ export const ReceivedReferralPage = () => {
         'N/A',
       files: receivedReferralData?.files || [],
     }),
-    [receivedReferralData],
+    [receivedReferralData]
   );
 
   return (
@@ -372,7 +372,7 @@ export const ReceivedReferralPage = () => {
                     </dt>
                     <dd className="mt-1 text-sm leading-6 sm:mt-2">
                       {serviceCategoryToLabel(
-                        receivingReferral.serviceCategory,
+                        receivingReferral.serviceCategory
                       )}
                     </dd>
                   </div>
@@ -432,8 +432,8 @@ export const ReceivedReferralPage = () => {
                         <ul className="list-disc px-4">
                           {HOUSEHOLDS_VULNERABILITY_CRITERIA.filter((i) =>
                             receivingReferral.householdVulnerabilityCriteria.some(
-                              (j) => i.id === j,
-                            ),
+                              (j) => i.id === j
+                            )
                           ).map((k) => (
                             <li key={k.id}>{k.label}</li>
                           ))}
@@ -576,7 +576,7 @@ export const ReceivedReferralPage = () => {
                         {
                           'bg-red-600 hover:bg-red-600':
                             !receivingReferral.consent,
-                        },
+                        }
                       )}
                     >
                       {receivingReferral.consent ? 'Yes' : 'No'}
@@ -616,7 +616,7 @@ export const ReceivedReferralPage = () => {
                               {
                                 'bg-red-600 hover:bg-red-600':
                                   !receivingReferral.isSeparated,
-                              },
+                              }
                             )}
                           >
                             {receivingReferral.isSeparated ? 'Yes' : 'No'}
@@ -679,7 +679,7 @@ export const ReceivedReferralPage = () => {
                                 'bg-red-600 hover:bg-red-600':
                                   receivingReferral.isCaregiverInformed ===
                                   'false',
-                              },
+                              }
                             )}
                           >
                             {receivingReferral.isCaregiverInformed === 'true'

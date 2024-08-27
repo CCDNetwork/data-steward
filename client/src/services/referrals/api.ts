@@ -43,7 +43,7 @@ export const fetchReferrals = async ({
 };
 
 export const fetchReferralUsers = async (
-  pagination: PaginationRequest,
+  pagination: PaginationRequest
 ): Promise<DataWithMeta<ReferralUser>> => {
   const url = paginationRequestToUrl('referrals/focal-point/users', pagination);
 
@@ -71,7 +71,7 @@ const patchReferralReason = async (data: {
 }): Promise<Referral> => {
   const resp = await api.patch(
     `/referrals/${data.referralId}/${data.referralType}`,
-    { text: data.text },
+    { text: data.text }
   );
   return resToReferral(resp.data);
 };
@@ -85,7 +85,7 @@ const patchReferral = async ({
 }): Promise<Referral> => {
   const resp = await api.patch(
     `/referrals/${referralId}`,
-    referralPatchToReq(data),
+    referralPatchToReq(data)
   );
   return resToReferral(resp.data);
 };
@@ -130,7 +130,7 @@ export const useReferrals = ({
           filters,
         },
         received,
-      }),
+      })
   );
 };
 
@@ -163,7 +163,7 @@ export const useReferralUsers = ({
         search: debouncedSearch,
         filters,
         queryFilters,
-      }),
+      })
   );
 };
 

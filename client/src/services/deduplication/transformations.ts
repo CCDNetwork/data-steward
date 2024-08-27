@@ -63,7 +63,7 @@ export const resToSameOrgDedupResponse = (res: any): SameOrgDedupeResponse => {
 };
 
 export const resToSystemDedupeResponse = (
-  res: any,
+  res: any
 ): SystemOrgDedupeResponse => {
   return {
     duplicates: res.duplicates ?? 0,

@@ -178,7 +178,7 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
 
   if (data.subactivities && data.subactivities.length > 0) {
     req.subactivitiesIds = data.subactivities.map(
-      (i: OrganizationActivity) => i.id,
+      (i: OrganizationActivity) => i.id
     );
   }
 

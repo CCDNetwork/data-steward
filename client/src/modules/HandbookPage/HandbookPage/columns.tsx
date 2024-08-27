@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Handbook } from '@/services/handbooks';
 
 export const columns = (
-  setHandbookToDelete: React.Dispatch<React.SetStateAction<Handbook | null>>,
+  setHandbookToDelete: React.Dispatch<React.SetStateAction<Handbook | null>>
 ): TableColumn<Handbook>[] => [
   {
     accessorKey: 'title',

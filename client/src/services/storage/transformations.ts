@@ -23,7 +23,7 @@ export const imageToFormData = (image: Image): FormData => {
   const formData = new FormData();
   formData.append(
     'file',
-    new File([image.buffer], image.name, { type: 'image/*' }),
+    new File([image.buffer], image.name, { type: 'image/*' })
   );
   formData.append('storageTypeId', StorageTypeId.Assets.toString());
   return formData;

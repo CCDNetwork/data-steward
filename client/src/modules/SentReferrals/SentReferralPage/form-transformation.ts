@@ -5,7 +5,7 @@ import { SentReferralFormData } from './validations';
 import { User } from '@/services/users';
 
 export const dataToSentReferralFormData = (
-  data: Referral,
+  data: Referral
 ): SentReferralFormData & { noTaxId: boolean; isMinor: boolean } => {
   return {
     isUrgent: data.isUrgent,
