@@ -374,7 +374,7 @@ export const SentReferralPage = () => {
       {sentReferralData &&
         viewOnlyEnabled &&
         activeTab === ReferralTab.Referral && (
-          <SentReferralPageViewOnly receivedReferralData={sentReferralData} />
+          <SentReferralPageViewOnly sentReferralData={sentReferralData} />
         )}
 
       {!viewOnlyEnabled && activeTab === ReferralTab.Referral && (
