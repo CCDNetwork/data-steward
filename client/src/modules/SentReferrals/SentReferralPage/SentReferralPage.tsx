@@ -272,7 +272,7 @@ export const SentReferralPage = () => {
 
   const headerNodeButtons = () => {
     if (
-      sentReferralData?.status !== ReferralStatus.Enrolment &&
+      sentReferralData?.status !== ReferralStatus.Delivered &&
       !isCreate &&
       !sentReferralData?.isDraft
     ) {
@@ -393,7 +393,7 @@ export const SentReferralPage = () => {
                         <StatusTimeline
                           currentStatus={
                             sentReferralData?.status ??
-                            ReferralStatus.Submission
+                            ReferralStatus.UnderReview
                           }
                           isRejected={sentReferralData?.isRejected ?? false}
                         />

@@ -1,8 +1,15 @@
 export const ReferralStatus = {
-  Submission: 'submission',
-  Evaluation: 'evaluation',
-  Acceptance: 'acceptance',
-  Enrolment: 'enrolment',
+  UnderReview: 'underReview',
+  InAssessment: 'inAssessment',
+  Registered: 'registered',
+  Delivered: 'delivered',
+};
+
+export const ReferralStatusDisplayNames = {
+  [ReferralStatus.UnderReview]: 'Under Review',
+  [ReferralStatus.InAssessment]: 'In Assessment',
+  [ReferralStatus.Registered]: 'Registered',
+  [ReferralStatus.Delivered]: 'Delivered',
 };
 
 export enum OrgServiceCategory {

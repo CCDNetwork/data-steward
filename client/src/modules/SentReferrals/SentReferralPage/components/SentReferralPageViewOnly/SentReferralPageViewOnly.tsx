@@ -62,7 +62,7 @@ export const SentReferralPageViewOnly = ({ receivedReferralData }: Props) => {
       caregiverExplanation: receivedReferralData?.caregiverExplanation || 'N/A',
       caregiverNote: receivedReferralData?.caregiverNote || 'N/A',
       focalPoint: receivedReferralData?.focalPoint || null,
-      status: receivedReferralData?.status || ReferralStatus.Submission,
+      status: receivedReferralData?.status || ReferralStatus.UnderReview,
       isDraft: receivedReferralData?.isDraft || false,
       isRejected: receivedReferralData?.isRejected || false,
       organizationCreated:

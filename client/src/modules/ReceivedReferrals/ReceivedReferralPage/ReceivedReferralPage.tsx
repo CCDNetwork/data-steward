@@ -30,6 +30,7 @@ import { toast } from '@/components/ui/use-toast';
 import {
   HOUSEHOLDS_VULNERABILITY_CRITERIA,
   ReferralStatus,
+  ReferralStatusDisplayNames,
   ReferralTab,
 } from '@/services/referrals/const';
 import { AsyncSelect } from '@/components/AsyncSelect';
@@ -44,7 +45,7 @@ export const ReceivedReferralPage = () => {
   const navigate = useNavigate();
   const { id: receivedReferralId } = useIdFromParams();
   const [referralAction, setReferralAction] = useState<
-    'evaluation' | 'acceptance' | 'enrolment' | undefined
+    'inAssessment' | 'registered' | 'delivered' | undefined
   >(undefined);
   const [isUserAssigning, setIsUserAssigning] = useState<boolean>(false);
   const [isStatusReasonModal, setOpenStatusReasonModal] =
@@ -142,7 +143,7 @@ export const ReceivedReferralPage = () => {
     setIsUserAssigning(true);
     try {
       await patchReferral.mutateAsync({
-        data: { focalPoint, status: ReferralStatus.Evaluation },
+        data: { focalPoint, status: ReferralStatus.InAssessment },
         referralId: receivedReferralId,
       });
       toast({
@@ -207,7 +208,7 @@ export const ReceivedReferralPage = () => {
       caregiverExplanation: receivedReferralData?.caregiverExplanation || 'N/A',
       caregiverNote: receivedReferralData?.caregiverNote || 'N/A',
       focalPoint: receivedReferralData?.focalPoint || null,
-      status: receivedReferralData?.status || ReferralStatus.Submission,
+      status: receivedReferralData?.status || ReferralStatus.UnderReview,
       isDraft: receivedReferralData?.isDraft || false,
       isRejected: receivedReferralData?.isRejected || false,
       organizationCreated:
@@ -237,12 +238,12 @@ export const ReceivedReferralPage = () => {
             value={referralAction}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Move to step" />
+              <SelectValue placeholder="Select step" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(ReferralStatus)
-                .filter(([, value]) => value !== ReferralStatus.Submission)
-                .map(([key, value]) => (
+              {Object.entries(ReferralStatusDisplayNames)
+                .filter(([key]) => key !== ReferralStatus.UnderReview)
+                .map(([value, key]) => (
                   <SelectItem key={key} value={value}>
                     {key}
                   </SelectItem>
@@ -255,7 +256,7 @@ export const ReceivedReferralPage = () => {
             isLoading={patchReferral.isLoading}
             disabled={patchReferral.isLoading || !referralAction}
           >
-            Submit
+            Move to step
           </Button>
           <Button
             type="button"
@@ -315,7 +316,7 @@ export const ReceivedReferralPage = () => {
             <Separator />
             <CardContent className="pt-6">
               {receivingReferral.focalPoint &&
-              (receivingReferral.status === ReferralStatus.Enrolment ||
+              (receivingReferral.status === ReferralStatus.Delivered ||
                 receivingReferral.isRejected) ? (
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-bold tracking-tight leading-6">

@@ -5,7 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Referral } from '@/services/referrals';
 import { cn } from '@/helpers/utils';
-import { ReferralStatus } from '@/services/referrals/const';
+import {
+  ReferralStatus,
+  ReferralStatusDisplayNames,
+} from '@/services/referrals/const';
 import { Tooltip } from '@/components/Tooltip';
 
 export const columns = (
@@ -42,14 +45,14 @@ export const columns = (
         <Badge
           className={cn('bg-primary capitalize', {
             'bg-green-600 hover:bg-green-600':
-              status === ReferralStatus.Enrolment,
+              status === ReferralStatus.Delivered,
             'bg-yellow-500 hover:bg-yellow-500':
-              status === ReferralStatus.Evaluation,
+              status === ReferralStatus.InAssessment,
             'bg-orange-500 hover:bg-orange-500':
-              status === ReferralStatus.Acceptance,
+              status === ReferralStatus.Registered,
           })}
         >
-          {status}
+          {ReferralStatusDisplayNames[status]}
         </Badge>
       );
     },

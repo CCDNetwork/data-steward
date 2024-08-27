@@ -76,13 +76,13 @@ public class Referral : UserChangeTracked
 
 public class ReferralStatus
 {
-    public const string Submission = "submission";
-    public const string Enrolment = "enrolment";
-    public const string Evaluation = "evaluation";
-    public const string Acceptance = "acceptance";
+    public const string UnderReview = "underReview";
+    public const string Delivered = "delivered";
+    public const string InAssessment = "inAssessment";
+    public const string Registered = "registered";
 
     public static bool IsValid(string status)
     {
-        return status == Submission || status == Enrolment || status == Evaluation || status == Acceptance;
+        return status == UnderReview || status == Delivered || status == InAssessment || status == Registered;
     }
 }

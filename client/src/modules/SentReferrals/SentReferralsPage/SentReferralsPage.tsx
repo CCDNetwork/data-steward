@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
 import { useOrganizations } from '@/services/organizations/api';
-import { ReferralStatus } from '@/services/referrals/const';
+import { ReferralStatusDisplayNames } from '@/services/referrals/const';
 import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
 import { OrgActivityFilterMap } from '@/services/organizations';
 import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
@@ -189,10 +189,12 @@ export const SentReferralsPage = () => {
               filterName="isRejected=false,status[in]"
               setCurrentFilters={setSentReferralsFilters}
               title="Filter by Step"
-              options={Object.entries(ReferralStatus).map(([label, value]) => ({
-                value,
-                label,
-              }))}
+              options={Object.entries(ReferralStatusDisplayNames).map(
+                ([value, label]) => ({
+                  label,
+                  value,
+                })
+              )}
             />
             <FilterDropdown
               currentFilters={sentReferralsFilters}

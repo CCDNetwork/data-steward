@@ -110,7 +110,7 @@ public class ReferralService
         var referral = _mapper.Map<Referral>(model);
         referral.OrganizationCreatedId = organizationId;
         referral.CaseNumber = GuidHelper.ToShortString(Guid.NewGuid());
-        referral.Status = ReferralStatus.Submission;
+        referral.Status = ReferralStatus.UnderReview;
 
         var newReferral = _context.Referrals.Add(referral).Entity;
         await _context.SaveChangesAsync();

@@ -1,7 +1,10 @@
 import React from 'react';
 import { Check, EllipsisIcon, PlayIcon, XIcon } from 'lucide-react';
 
-import { ReferralStatus } from '@/services/referrals/const';
+import {
+  ReferralStatus,
+  ReferralStatusDisplayNames,
+} from '@/services/referrals/const';
 import { cn } from '@/helpers/utils';
 
 import { Separator } from '../ui/separator';
@@ -56,7 +59,7 @@ export const StatusTimeline: React.FC<TimelineProps> = ({
                   'absolute capitalize text-xs top-9 font-medium tracking-tight text-muted-foreground whitespace-nowrap'
                 }
               >
-                {status}
+                {ReferralStatusDisplayNames[status]}
               </p>
             </div>
           </div>
