@@ -9,8 +9,7 @@ import { Button } from '@/components/ui/button';
 import { DeduplicationDataset } from '@/services/deduplication';
 import { appendStringToFilename, createDownloadLink } from '@/helpers/common';
 import { useAuth } from '@/providers/GlobalProvider';
-
-import { StepLoadingComponent } from '../../StepLoadingComponent';
+import { StepLoadingComponent } from '../../StepLoadingComponent/StepLoadingComponent';
 
 interface Props {
   isStepLoading: boolean;

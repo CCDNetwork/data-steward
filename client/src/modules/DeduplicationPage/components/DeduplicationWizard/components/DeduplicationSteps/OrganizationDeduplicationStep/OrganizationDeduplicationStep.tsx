@@ -2,7 +2,7 @@ import { CheckCircleIcon } from 'lucide-react';
 
 import { SameOrgDedupeResponse } from '@/services/deduplication';
 
-import { StepLoadingComponent } from '../../StepLoadingComponent';
+import { StepLoadingComponent } from '../../StepLoadingComponent/StepLoadingComponent';
 
 interface Props {
   isStepLoading: boolean;

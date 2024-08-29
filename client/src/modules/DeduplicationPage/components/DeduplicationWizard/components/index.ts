@@ -3,3 +3,4 @@ export * from './AnimationWrapper';
 export * from './DeduplicationError';
 export * from './SetupInformation';
 export * from './DeduplicationSteps';
+export * from './StepLoadingComponent';

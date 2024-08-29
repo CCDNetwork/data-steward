@@ -74,7 +74,6 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
 
     setTimeout(() => {
       reset();
-      // check these 3
       setFileToUpload(undefined);
       setInternalFileDedupResponse(null);
       setCurrentStep(WIZARD_STEP.FILE_UPLOAD);

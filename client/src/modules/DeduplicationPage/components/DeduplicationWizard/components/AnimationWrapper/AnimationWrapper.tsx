@@ -31,10 +31,9 @@ export const AnimationWrapper = ({ children }: Props) => {
       animate="visible"
       exit="exit"
       transition={{ duration: 0.2 }}
+      className="flex items-center justify-center gap-2 max-w-[500px] mx-auto"
     >
-      <div className="flex items-center justify-center gap-2 max-w-[500px] mx-auto">
-        {children}
-      </div>
+      {children}
     </motion.div>
   );
 };
