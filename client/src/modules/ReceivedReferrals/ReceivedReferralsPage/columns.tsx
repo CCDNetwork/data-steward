@@ -119,7 +119,7 @@ export const columns = (
               }}
               size="icon"
             >
-              <Trash2Icon className="w-5 h-5 text-destructive" />
+              <Trash2Icon className="size-5 text-destructive" />
             </Button>
           </Tooltip>
         </div>

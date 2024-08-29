@@ -9,7 +9,7 @@ const DEDUPLICATION_STEPS: { step: string }[] = [
   { step: 'Registry deduplication' },
 ];
 
-export const DeduplicationSteps = ({
+export const DeduplicationWizardHeader = ({
   currentStep,
 }: {
   currentStep: number;

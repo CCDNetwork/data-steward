@@ -145,7 +145,7 @@ export const RuleModal = ({
         {!attributeGroupId ? (
           <Button variant="outline">
             <>
-              <PlusSquareIcon className="mr-2 w-5 h-5" />
+              <PlusSquareIcon className="mr-2 size-5" />
               Create Rule
             </>
           </Button>
@@ -155,7 +155,7 @@ export const RuleModal = ({
             className={showTooltip ? '' : 'hidden'}
           >
             <Button variant="ghost" size="icon" onClick={onOpenChange}>
-              <EditIcon className="w-5 h-5" />
+              <EditIcon className="size-5" />
             </Button>
           </Tooltip>
         )}

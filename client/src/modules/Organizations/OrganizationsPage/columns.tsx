@@ -60,7 +60,7 @@ export const columns = (
                 onOrganizationTableRowClick(organization);
               }}
             >
-              <EditIcon className="w-5 h-5" />
+              <EditIcon className="size-5" />
             </Button>
           </Tooltip>
           <Tooltip tooltipContent={'Delete'}>
@@ -72,7 +72,7 @@ export const columns = (
               }}
               size="icon"
             >
-              <Trash2Icon className="w-5 h-5 text-destructive" />
+              <Trash2Icon className="size-5 text-destructive" />
             </Button>
           </Tooltip>
         </div>

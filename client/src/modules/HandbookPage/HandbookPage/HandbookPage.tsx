@@ -66,7 +66,7 @@ export const HandbookPage = () => {
           variant="outline"
           onClick={() => navigate(`${APP_ROUTE.Handbook}/new`)}
         >
-          <PlusSquareIcon className="w-5 h-5 mr-2" />
+          <PlusSquareIcon className="size-5 mr-2" />
           Create Handbook
         </Button>
       }

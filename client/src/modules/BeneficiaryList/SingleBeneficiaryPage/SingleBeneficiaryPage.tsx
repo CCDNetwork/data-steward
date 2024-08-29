@@ -114,7 +114,7 @@ export const SingleBeneficiaryPage = () => {
               <Button variant="outline">
                 <span className="sr-only">Open menu</span>
                 Actions
-                <ChevronDown className="ml-1 w-5 h-5" />
+                <ChevronDown className="ml-1 size-5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

@@ -74,7 +74,7 @@ export const CreateTemplateModal = () => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <FilePlus2Icon className="mr-2 w-5 h-5" />
+          <FilePlus2Icon className="mr-2 size-5" />
           Create Template
         </Button>
       </DialogTrigger>

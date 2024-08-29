@@ -100,7 +100,7 @@ export const AddUserModal = () => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <UserPlus2 className="mr-2 w-5 h-5" />
+          <UserPlus2 className="mr-2 size-5" />
           Add new
         </Button>
       </DialogTrigger>
@@ -270,7 +270,7 @@ export const AddUserModal = () => {
                     size="icon"
                     className="w-full mt-2"
                   >
-                    <SendHorizonal className="w-5 h-5 mr-2" />
+                    <SendHorizonal className="size-5 mr-2" />
                     Create User
                   </Button>
                 </div>

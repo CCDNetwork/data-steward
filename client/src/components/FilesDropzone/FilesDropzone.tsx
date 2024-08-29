@@ -217,7 +217,7 @@ export const FilesDropzone = ({ name, control, maxFiles, disabled }: Props) => {
                 />
               ) : (
                 <div className="p-6 w-full h-full text-center items-center justify-center flex flex-col break-word text-xs">
-                  <Paperclip className="w-5 h-5 mb-2 shrink-0" />
+                  <Paperclip className="size-5 mb-2 shrink-0" />
                   <span>{file.name}</span>
                 </div>
               )}

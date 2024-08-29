@@ -47,7 +47,7 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
           onClick={() => setMobileSidebarOpen((old) => !old)}
           className="absolute top-1.5 left-3 bg-muted/50 p-1 rounded-md hover:bg-muted transition-colors duration-300 ease-in-out block md:hidden focus:outline-primary outline-none"
         >
-          <HamburgerMenuIcon className="w-5 h-5 text-muted-foreground" />
+          <HamburgerMenuIcon className="size-5 text-muted-foreground" />
         </SheetTrigger>
         <SheetContent
           onOverlayClick={() => setMobileSidebarOpen(false)}

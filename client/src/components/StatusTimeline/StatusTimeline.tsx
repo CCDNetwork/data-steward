@@ -44,7 +44,7 @@ export const StatusTimeline: React.FC<TimelineProps> = ({
                   <XIcon className="w-full h-full rounded-full bg-red-900/20 border border-red-800 p-1.5 text-muted-foreground text-red-800" />
                 ) : (
                   <div className="w-full h-full flex justify-center items-center rounded-full border border-yellow-500 bg-yellow-500/20">
-                    <span className="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center">
+                    <span className="size-5 rounded-full bg-yellow-500 flex items-center justify-center">
                       <PlayIcon className="p-1.5 text-yellow-100 fill-yellow-100" />
                     </span>
                   </div>

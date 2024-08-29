@@ -103,7 +103,7 @@ export const AddOrganizationModal = () => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <Building2 className="mr-2 w-5 h-5" />
+          <Building2 className="mr-2 size-5" />
           Add new
         </Button>
       </DialogTrigger>
@@ -323,7 +323,7 @@ export const AddOrganizationModal = () => {
                     size="icon"
                     className="w-full mt-2"
                   >
-                    <SendHorizonal className="w-5 h-5 mr-2" />
+                    <SendHorizonal className="size-5 mr-2" />
                     Submit
                   </Button>
                 </div>

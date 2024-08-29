@@ -86,7 +86,7 @@ export const ReferralDiscussions = ({ referralId }: Props) => {
             loadingIconOnly
             onClick={onSendClick}
           >
-            <LucideSendHorizontal className="w-5 h-5" />
+            <LucideSendHorizontal className="size-5" />
           </Button>
         </div>
         <CardContent>
