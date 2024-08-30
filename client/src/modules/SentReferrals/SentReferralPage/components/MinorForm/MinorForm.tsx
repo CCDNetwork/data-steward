@@ -30,7 +30,7 @@ export const MinorForm = ({
   disabled,
 }: Props) => {
   return (
-    <>
+    <div className="animate-opacity flex flex-col gap-6">
       <CardDescription>
         Remember: if it is not appropriate to involve the child’s caregiver (for
         instance if the caregiver is involved in the abuse), informed assent
@@ -261,6 +261,6 @@ export const MinorForm = ({
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 };

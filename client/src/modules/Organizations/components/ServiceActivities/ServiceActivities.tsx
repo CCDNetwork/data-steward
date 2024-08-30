@@ -78,13 +78,13 @@ export const ServiceActivities = ({
   );
 
   return (
-    <div>
+    <div className="animate-opacity">
       {filteredActivities.length > 0 && (
         <div className="pt-4 flex gap-2 flex-col">
           {filteredActivities.map((activity, idx) => (
             <div
               key={activity.id}
-              className="flex bg-muted/50 items-center justify-between gap-2 border border-border py-2 px-3 rounded-md"
+              className="flex bg-muted/50 items-center justify-between gap-2 border border-border py-2 px-3 rounded-md animate-opacity"
             >
               <p className="text-sm line-clamp-2">{activity.title}</p>
               <div>

@@ -27,7 +27,7 @@ interface Props {
 
 export const MpcaSpecificForm = ({ control, disabled }: Props) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-opacity">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField
           control={control}
