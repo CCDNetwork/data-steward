@@ -36,10 +36,10 @@ public class ReferralResponse
     public string Gender { get; set; }
     public string TaxId { get; set; }
     public string Address { get; set; }
-    public string Oblast { get; set; }
-    public string Ryon { get; set; }
-    public string Hromada { get; set; }
-    public string Settlement { get; set; }
+    [QuickSearchable] public string Oblast { get; set; }
+    [QuickSearchable] public string Ryon { get; set; }
+    [QuickSearchable] public string Hromada { get; set; }
+    [QuickSearchable] public string Settlement { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
     public string ContactPreference { get; set; }
