@@ -26,6 +26,8 @@ public class DeduplicationService
     private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
 
     private readonly IStorageService _storageService;
+    
+    private Dictionary<string, int> HeaderIndexCache = new Dictionary<string, int>();
 
     public DeduplicationService(CcdContext context, IMapper mapper, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService, IStorageService storageService)
     {
@@ -117,11 +119,11 @@ public class DeduplicationService
                 EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
                 Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
-
+        
             deduplicationRecords.Add(fileRecord);
         }
-
-
+        
+        
         for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
         {
             var fileRecord = new DeduplicationRecord
@@ -148,7 +150,7 @@ public class DeduplicationService
                 EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
                 Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
-
+        
             var hasDuplicates = false;
             worksheet.Cell(i, lastColumnIndex).Value = "NO";
             var matchedRows = new List<int>();
@@ -156,7 +158,7 @@ public class DeduplicationService
             {
                 // Skip the same record
                 if (i == k) continue;
-
+        
                 var deduplicationRecord = deduplicationRecords[k - 2];
                 var (equal, matchedFields) = AreRecordsEqual(deduplicationRecord, fileRecord, beneficiaryAttributesGroups);
                 if (equal)
@@ -164,7 +166,7 @@ public class DeduplicationService
                     hasDuplicates = true;
                     worksheet.Cell(i, lastColumnIndex).Value = "YES";
                     matchedRows.Add(k);
-
+        
                     foreach (var field in matchedFields)
                     {
                         var fieldName = template.GetType().GetProperty(field)?.GetValue(template).ToString();
@@ -173,7 +175,7 @@ public class DeduplicationService
                     }
                 };
             }
-
+        
             if (hasDuplicates)
             {
                 duplicates++;
@@ -393,19 +395,27 @@ public class DeduplicationService
         await _context.Database.ExecuteSqlRawAsync("DELETE FROM list");
     }
 
-    private static int GetHeaderIndex(string templateValue, IXLWorksheet worksheet)
+    private int GetHeaderIndex(string templateValue, IXLWorksheet worksheet)
     {
+        if(HeaderIndexCache.ContainsKey(templateValue))
+        {
+            return HeaderIndexCache[templateValue];
+        }
+        
         foreach (var cell in worksheet.Row(1).Cells())
         {
             if (cell.Value.ToString() == templateValue)
             {
-                return cell.WorksheetColumn().ColumnNumber();
+                HeaderIndexCache[templateValue] = cell.WorksheetColumn().ColumnNumber();
+                return HeaderIndexCache[templateValue];
             }
         }
 
         // TODO: find a better way to handle this
         // This is the last cell index
-        return 16384;
+
+        HeaderIndexCache[templateValue] = 16384;
+        return HeaderIndexCache[templateValue];
     }
 
     private static (bool, List<string>) AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
