@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ccd.Server.BeneficiaryAttributes;
@@ -26,10 +27,11 @@ public class DeduplicationService
     private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
 
     private readonly IStorageService _storageService;
-    
+
     private Dictionary<string, int> HeaderIndexCache = new Dictionary<string, int>();
 
-    public DeduplicationService(CcdContext context, IMapper mapper, BeneficiaryAttributeGroupService beneficiaryAttributeGroupService, IStorageService storageService)
+    public DeduplicationService(CcdContext context, IMapper mapper,
+        BeneficiaryAttributeGroupService beneficiaryAttributeGroupService, IStorageService storageService)
     {
         _context = context;
         _mapper = mapper;
@@ -38,7 +40,7 @@ public class DeduplicationService
     }
 
     private readonly string _selectSql =
-    $@"SELECT DISTINCT ON (l.id)
+        $@"SELECT DISTINCT ON (l.id)
                  l.*
             FROM
                  list as l
@@ -59,7 +61,8 @@ public class DeduplicationService
         }
     }
 
-    public async Task<PagedApiResponse<DeduplicationListResponse>> GetAllListings(Guid organizationId, RequestParameters requestParameters)
+    public async Task<PagedApiResponse<DeduplicationListResponse>> GetAllListings(Guid organizationId,
+        RequestParameters requestParameters)
     {
         return await PagedApiResponse<DeduplicationListResponse>.GetFromSql(
             _context,
@@ -70,13 +73,19 @@ public class DeduplicationService
         );
     }
 
-    public async Task<DatasetDeduplicationResponse> DatasetDeduplication(Guid organizationId, Guid userId, DatasetDeduplicationRequest model)
+    public async Task<DatasetDeduplicationResponse> DatasetDeduplication(Guid organizationId, Guid userId,
+        DatasetDeduplicationRequest model)
     {
         var file = model.File ?? throw new BadRequestException("File is required");
         using var workbook = new XLWorkbook(file.OpenReadStream());
 
-        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
-        var beneficiaryAttributesGroupsApi = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters { PageSize = 1000, Page = 1 });
+        var template =
+            await _context.Templates.FirstOrDefaultAsync(e =>
+                e.Id == model.TemplateId && e.OrganizationId == organizationId) ??
+            throw new BadRequestException("Template not found.");
+        var beneficiaryAttributesGroupsApi =
+            await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
+                { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
 
         var worksheet = workbook.Worksheet(1);
@@ -111,7 +120,8 @@ public class DeduplicationService
                 GovIdNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIdNumber, worksheet)).Value.ToString(),
                 OtherIdType = worksheet.Cell(i, GetHeaderIndex(template.OtherIdType, worksheet)).Value.ToString(),
                 OtherIdNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIdNumber, worksheet)).Value.ToString(),
-                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
+                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value
+                    .ToString(),
                 Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
                 Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
                 CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
@@ -119,76 +129,79 @@ public class DeduplicationService
                 EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
                 Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
-        
+
             deduplicationRecords.Add(fileRecord);
         }
-        
-        
-        for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
+
+        var rows = worksheet.Rows(2, worksheet.LastRowUsed().RowNumber());
+
+        Parallel.ForEach(rows, row =>
         {
             var fileRecord = new DeduplicationRecord
             {
-                FirstName = worksheet.Cell(i, GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
-                FamilyName = worksheet.Cell(i, GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
-                Gender = worksheet.Cell(i, GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
-                DateOfBirth = worksheet.Cell(i, GetHeaderIndex(template.DateOfBirth, worksheet)).Value.ToString(),
-                AdminLevel1 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
-                AdminLevel2 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
-                AdminLevel3 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
-                AdminLevel4 = worksheet.Cell(i, GetHeaderIndex(template.AdminLevel4, worksheet)).Value.ToString(),
-                HhId = worksheet.Cell(i, GetHeaderIndex(template.HHID, worksheet)).Value.ToString(),
-                MobilePhoneId = worksheet.Cell(i, GetHeaderIndex(template.MobilePhoneID, worksheet)).Value.ToString(),
-                GovIdType = worksheet.Cell(i, GetHeaderIndex(template.GovIdType, worksheet)).Value.ToString(),
-                GovIdNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIdNumber, worksheet)).Value.ToString(),
-                OtherIdType = worksheet.Cell(i, GetHeaderIndex(template.OtherIdType, worksheet)).Value.ToString(),
-                OtherIdNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIdNumber, worksheet)).Value.ToString(),
-                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
-                Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
-                Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
-                CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
-                StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
-                EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
-                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
+                FirstName = row.Cell(GetHeaderIndex(template.FirstName, worksheet)).Value.ToString(),
+                FamilyName = row.Cell(GetHeaderIndex(template.FamilyName, worksheet)).Value.ToString(),
+                Gender = row.Cell(GetHeaderIndex(template.Gender, worksheet)).Value.ToString(),
+                DateOfBirth = row.Cell(GetHeaderIndex(template.DateOfBirth, worksheet)).Value.ToString(),
+                AdminLevel1 = row.Cell(GetHeaderIndex(template.AdminLevel1, worksheet)).Value.ToString(),
+                AdminLevel2 = row.Cell(GetHeaderIndex(template.AdminLevel2, worksheet)).Value.ToString(),
+                AdminLevel3 = row.Cell(GetHeaderIndex(template.AdminLevel3, worksheet)).Value.ToString(),
+                AdminLevel4 = row.Cell(GetHeaderIndex(template.AdminLevel4, worksheet)).Value.ToString(),
+                HhId = row.Cell(GetHeaderIndex(template.HHID, worksheet)).Value.ToString(),
+                MobilePhoneId = row.Cell(GetHeaderIndex(template.MobilePhoneID, worksheet)).Value.ToString(),
+                GovIdType = row.Cell(GetHeaderIndex(template.GovIdType, worksheet)).Value.ToString(),
+                GovIdNumber = row.Cell(GetHeaderIndex(template.GovIdNumber, worksheet)).Value.ToString(),
+                OtherIdType = row.Cell(GetHeaderIndex(template.OtherIdType, worksheet)).Value.ToString(),
+                OtherIdNumber = row.Cell(GetHeaderIndex(template.OtherIdNumber, worksheet)).Value.ToString(),
+                AssistanceDetails = row.Cell(GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
+                Activity = row.Cell(GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
+                Currency = row.Cell(GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
+                CurrencyAmount = row.Cell(GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
+                StartDate = row.Cell(GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
+                EndDate = row.Cell(GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
+                Frequency = row.Cell(GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
-        
+
             var hasDuplicates = false;
-            worksheet.Cell(i, lastColumnIndex).Value = "NO";
+            row.Cell(lastColumnIndex).Value = "NO";
             var matchedRows = new List<int>();
             for (var k = 2; k <= worksheet.LastRowUsed().RowNumber(); k++)
             {
                 // Skip the same record
-                if (i == k) continue;
-        
+                if (row.RowNumber() == k) continue;
+
                 var deduplicationRecord = deduplicationRecords[k - 2];
-                var (equal, matchedFields) = AreRecordsEqual(deduplicationRecord, fileRecord, beneficiaryAttributesGroups);
+                var (equal, matchedFields) =
+                    AreRecordsEqual(deduplicationRecord, fileRecord, beneficiaryAttributesGroups);
                 if (equal)
                 {
                     hasDuplicates = true;
-                    worksheet.Cell(i, lastColumnIndex).Value = "YES";
+                    row.Cell(lastColumnIndex).Value = "YES";
                     matchedRows.Add(k);
-        
+
                     foreach (var field in matchedFields)
                     {
                         var fieldName = template.GetType().GetProperty(field)?.GetValue(template).ToString();
                         var columnIndex = GetHeaderIndex(fieldName, worksheet);
-                        worksheet.Cell(i, columnIndex).Style.Fill.BackgroundColor = XLColor.Red;
+                        row.Cell(columnIndex).Style.Fill.BackgroundColor = XLColor.Red;
                     }
-                };
+                }
             }
-        
+
             if (hasDuplicates)
             {
-                duplicates++;
-                worksheet.Cell(i, lastColumnIndex + 1).Value = string.Join(", ", matchedRows);
+                Interlocked.Increment(ref duplicates);
+                row.Cell(lastColumnIndex + 1).Value = string.Join(", ", matchedRows);
             }
-        }
+        });
 
         await _context.SaveChangesAsync();
 
         using var memoryStream = new MemoryStream();
         workbook.SaveAs(memoryStream);
 
-        var savedFile = await _storageService.SaveFile(StorageType.GetById(StorageType.Assets.Id), memoryStream, userId, model.File.FileName);
+        var savedFile = await _storageService.SaveFile(StorageType.GetById(StorageType.Assets.Id), memoryStream, userId,
+            model.File.FileName);
         var fileResponse = await _storageService.GetFileApiById(savedFile.Id);
 
         return new DatasetDeduplicationResponse
@@ -199,15 +212,20 @@ public class DeduplicationService
         };
     }
 
-    public async Task<SameOrganizationDeduplicationResponse> SameOrganizationDeduplication(Guid organizationId, Guid userId, SameOrganizationDeduplicationRequest model)
+    public async Task<SameOrganizationDeduplicationResponse> SameOrganizationDeduplication(Guid organizationId,
+        Guid userId, SameOrganizationDeduplicationRequest model)
     {
         var file = await _storageService.GetFileById(model.FileId);
         using var workbook = new XLWorkbook(_storageService.GetFileStream(file));
 
-        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
+        var template =
+            await _context.Templates.FirstOrDefaultAsync(e =>
+                e.Id == model.TemplateId && e.OrganizationId == organizationId) ??
+            throw new BadRequestException("Template not found.");
         var templateFieldsCount = GetTemplateFieldCount(template);
 
-        var beneficaries = _context.Beneficaries.Include(e => e.Organization).Where(e => e.OrganizationId == organizationId).ToList();
+        var beneficaries = _context.Beneficaries.Include(e => e.Organization)
+            .Where(e => e.OrganizationId == organizationId).ToList();
         var beneficaryAttributes = await _context.BeneficiaryAttributes.ToListAsync();
         var identicalDuplicates = 0;
         var potentialDuplicates = 0;
@@ -235,7 +253,8 @@ public class DeduplicationService
                 GovIdNumber = worksheet.Cell(i, GetHeaderIndex(template.GovIdNumber, worksheet)).Value.ToString(),
                 OtherIdType = worksheet.Cell(i, GetHeaderIndex(template.OtherIdType, worksheet)).Value.ToString(),
                 OtherIdNumber = worksheet.Cell(i, GetHeaderIndex(template.OtherIdNumber, worksheet)).Value.ToString(),
-                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value.ToString(),
+                AssistanceDetails = worksheet.Cell(i, GetHeaderIndex(template.AssistanceDetails, worksheet)).Value
+                    .ToString(),
                 Activity = worksheet.Cell(i, GetHeaderIndex(template.Activity, worksheet)).Value.ToString(),
                 Currency = worksheet.Cell(i, GetHeaderIndex(template.Currency, worksheet)).Value.ToString(),
                 CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
@@ -282,7 +301,8 @@ public class DeduplicationService
         workbook.SaveAs(memoryStream);
 
         var fileResponse = await _storageService.GetFileApiById(file.Id);
-        var duplicateBeneficiaries = _context.BeneficaryDeduplications.Where(e => e.FileId == file.Id && e.IsOrganizationDuplicate).ToList();
+        var duplicateBeneficiaries = _context.BeneficaryDeduplications
+            .Where(e => e.FileId == file.Id && e.IsOrganizationDuplicate).ToList();
 
         return new SameOrganizationDeduplicationResponse
         {
@@ -294,13 +314,18 @@ public class DeduplicationService
         };
     }
 
-    public async Task<SystemOrganizationDeduplicationResponse> SystemOrganizationsDeduplication(Guid organizationId, Guid userId, SystemOrganizationsDeduplicationRequest model)
+    public async Task<SystemOrganizationDeduplicationResponse> SystemOrganizationsDeduplication(Guid organizationId,
+        Guid userId, SystemOrganizationsDeduplicationRequest model)
     {
         var file = await _storageService.GetFileById(model.FileId);
 
-        var beneficaries = _context.Beneficaries.Include(e => e.Organization).Where(e => e.OrganizationId != organizationId).ToList();
-        var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization).Where(e => e.FileId == model.FileId).ToList();
-        var beneficiaryAttributesGroupsApi = await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters { PageSize = 1000, Page = 1 });
+        var beneficaries = _context.Beneficaries.Include(e => e.Organization)
+            .Where(e => e.OrganizationId != organizationId).ToList();
+        var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization)
+            .Where(e => e.FileId == model.FileId).ToList();
+        var beneficiaryAttributesGroupsApi =
+            await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
+                { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var totalDuplicates = 0;
 
@@ -326,7 +351,8 @@ public class DeduplicationService
         await _context.SaveChangesAsync();
 
         var fileResponse = await _storageService.GetFileApiById(file.Id);
-        var duplicateBeneficiaries = _context.BeneficaryDeduplications.Where(e => e.FileId == model.FileId && e.IsSystemDuplicate).ToList();
+        var duplicateBeneficiaries = _context.BeneficaryDeduplications
+            .Where(e => e.FileId == model.FileId && e.IsSystemDuplicate).ToList();
         var ruleFields = GetRuleFields(beneficiaryAttributesGroups);
 
         return new SystemOrganizationDeduplicationResponse
@@ -339,13 +365,19 @@ public class DeduplicationService
         };
     }
 
-    public async Task<SameOrganizationDeduplicationResponse> FinishDeduplication(Guid organizationId, Guid userId, SystemOrganizationsDeduplicationRequest model)
+    public async Task<SameOrganizationDeduplicationResponse> FinishDeduplication(Guid organizationId, Guid userId,
+        SystemOrganizationsDeduplicationRequest model)
     {
         var file = await _storageService.GetFileById(model.FileId);
 
-        var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == model.TemplateId && e.OrganizationId == organizationId) ?? throw new BadRequestException("Template not found.");
-        var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization).Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
-        var list = (await _context.Lists.AddAsync(new List { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
+        var template =
+            await _context.Templates.FirstOrDefaultAsync(e =>
+                e.Id == model.TemplateId && e.OrganizationId == organizationId) ??
+            throw new BadRequestException("Template not found.");
+        var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization)
+            .Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
+        var list = (await _context.Lists.AddAsync(new List
+            { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
 
         var newBeneficaries = new List<Beneficary>();
         foreach (var record in beneficiaryDeduplications)
@@ -360,7 +392,8 @@ public class DeduplicationService
             // Sync duplicates to old beneficaries
             if (record.DuplicateOfIds.Count != 0)
             {
-                var existingBeneficiaries = _context.Beneficaries.Where(e => record.DuplicateOfIds.Contains(e.Id)).ToList();
+                var existingBeneficiaries =
+                    _context.Beneficaries.Where(e => record.DuplicateOfIds.Contains(e.Id)).ToList();
                 foreach (var existingBeneficiary in existingBeneficiaries)
                 {
                     existingBeneficiary.DuplicateOfIds.Add(beneficary.Id);
@@ -372,10 +405,12 @@ public class DeduplicationService
 
         await _context.AddRangeAsync(newBeneficaries);
 
-        var currentBeneficaryDeduplicationsToRemove = _context.BeneficaryDeduplications.Where(e => e.FileId == model.FileId).ToList();
+        var currentBeneficaryDeduplicationsToRemove =
+            _context.BeneficaryDeduplications.Where(e => e.FileId == model.FileId).ToList();
         _context.RemoveRange(currentBeneficaryDeduplicationsToRemove);
 
-        var oldBeneficaryDeduplicationsToRemove = _context.BeneficaryDeduplications.Where(e => e.CreatedAt.Date < DateTime.UtcNow.Date.AddDays(-3)).ToList();
+        var oldBeneficaryDeduplicationsToRemove = _context.BeneficaryDeduplications
+            .Where(e => e.CreatedAt.Date < DateTime.UtcNow.Date.AddDays(-3)).ToList();
         _context.RemoveRange(oldBeneficaryDeduplicationsToRemove);
 
         await _context.SaveChangesAsync();
@@ -397,11 +432,11 @@ public class DeduplicationService
 
     private int GetHeaderIndex(string templateValue, IXLWorksheet worksheet)
     {
-        if(HeaderIndexCache.ContainsKey(templateValue))
+        if (HeaderIndexCache.ContainsKey(templateValue))
         {
             return HeaderIndexCache[templateValue];
         }
-        
+
         foreach (var cell in worksheet.Row(1).Cells())
         {
             if (cell.Value.ToString() == templateValue)
@@ -418,7 +453,8 @@ public class DeduplicationService
         return HeaderIndexCache[templateValue];
     }
 
-    private static (bool, List<string>) AreRecordsEqual(DeduplicationRecord existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
+    private static (bool, List<string>) AreRecordsEqual(DeduplicationRecord existingRecord,
+        DeduplicationRecord newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
     {
         foreach (var group in beneficiaryAttributesGroups)
         {
@@ -427,7 +463,8 @@ public class DeduplicationService
             foreach (var attribute in group.BeneficiaryAttributes)
             {
                 var attributeName = attribute.AttributeName;
-                var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
+                var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null)
+                    .ToString();
                 var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
 
                 if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) continue;
@@ -449,15 +486,16 @@ public class DeduplicationService
         return (false, []);
     }
 
-    private static (bool, List<string>) AreRecordsEqual(Beneficary existingRecord, DeduplicationRecord newRecord, List<BeneficiaryAttribute> beneficiaryAttributes)
+    private static (bool, List<string>) AreRecordsEqual(Beneficary existingRecord, DeduplicationRecord newRecord,
+        List<BeneficiaryAttribute> beneficiaryAttributes)
     {
-
         var matchedFields = new List<string>();
 
         foreach (var attribute in beneficiaryAttributes)
         {
             var attributeName = attribute.AttributeName;
-            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
+            var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null)
+                .ToString();
             var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
 
             if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) continue;
@@ -469,7 +507,8 @@ public class DeduplicationService
         return (matchedFields.Count > 0, matchedFields);
     }
 
-    private static (bool, List<string>) AreRecordsEqual(Beneficary existingRecord, BeneficaryDeduplication newRecord, List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
+    private static (bool, List<string>) AreRecordsEqual(Beneficary existingRecord, BeneficaryDeduplication newRecord,
+        List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
     {
         foreach (var group in beneficiaryAttributesGroups)
         {
@@ -478,7 +517,8 @@ public class DeduplicationService
             foreach (var attribute in group.BeneficiaryAttributes)
             {
                 var attributeName = attribute.AttributeName;
-                var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null).ToString();
+                var existingValue = existingRecord.GetType().GetProperty(attributeName)?.GetValue(existingRecord, null)
+                    .ToString();
                 var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
 
                 if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) continue;
@@ -504,12 +544,12 @@ public class DeduplicationService
     private static int GetTemplateFieldCount(Template template)
     {
         return template.GetType()
-                        .GetProperties()
-                        .Where(e => e.PropertyType == typeof(string) &&
-                                    e.Name != "Name" &&
-                                    e.GetValue(template) != null &&
-                                    !string.IsNullOrEmpty(e.GetValue(template).ToString()))
-                        .ToList().Count;
+            .GetProperties()
+            .Where(e => e.PropertyType == typeof(string) &&
+                        e.Name != "Name" &&
+                        e.GetValue(template) != null &&
+                        !string.IsNullOrEmpty(e.GetValue(template).ToString()))
+            .ToList().Count;
     }
 
     private static List<string> GetRuleFields(List<BeneficiaryAttributeGroupResponse> beneficiaryAttributesGroups)
