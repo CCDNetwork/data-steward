@@ -90,6 +90,7 @@ public class DeduplicationService
 
         var worksheet = workbook.Worksheet(1);
         var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
+        var lastRowNumber = worksheet.LastRowUsed().RowNumber();
 
         worksheet.Cell(1, lastColumnIndex).Style.Fill.BackgroundColor = XLColor.Gainsboro;
         worksheet.Cell(1, lastColumnIndex).Style.Font.Bold = true;
@@ -102,7 +103,7 @@ public class DeduplicationService
         var deduplicationRecords = new List<DeduplicationRecord>();
         var duplicates = 0;
 
-        for (var i = 2; i <= worksheet.LastRowUsed().RowNumber(); i++)
+        for (var i = 2; i <= lastRowNumber; i++)
         {
             var fileRecord = new DeduplicationRecord
             {
@@ -133,7 +134,7 @@ public class DeduplicationService
             deduplicationRecords.Add(fileRecord);
         }
 
-        var rows = worksheet.Rows(2, worksheet.LastRowUsed().RowNumber());
+        var rows = worksheet.Rows(2, lastRowNumber);
 
         Parallel.ForEach(rows, row =>
         {
@@ -165,7 +166,7 @@ public class DeduplicationService
             var hasDuplicates = false;
             row.Cell(lastColumnIndex).Value = "NO";
             var matchedRows = new List<int>();
-            for (var k = 2; k <= worksheet.LastRowUsed().RowNumber(); k++)
+            for (var k = 2; k <= lastRowNumber; k++)
             {
                 // Skip the same record
                 if (row.RowNumber() == k) continue;
@@ -178,7 +179,7 @@ public class DeduplicationService
                     hasDuplicates = true;
                     row.Cell(lastColumnIndex).Value = "YES";
                     matchedRows.Add(k);
-
+                
                     foreach (var field in matchedFields)
                     {
                         var fieldName = template.GetType().GetProperty(field)?.GetValue(template).ToString();
