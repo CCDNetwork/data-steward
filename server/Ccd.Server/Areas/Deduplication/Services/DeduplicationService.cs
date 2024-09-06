@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Ccd.Server.Beneficiaries;
 using Ccd.Server.Storage;
 using Ccd.Server.Templates;
+using CsvHelper.Expressions;
 
 namespace Ccd.Server.Deduplication;
 
@@ -85,7 +86,7 @@ public class DeduplicationService
             throw new BadRequestException("Template not found.");
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-                { PageSize = 1000, Page = 1 });
+            { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
 
         var worksheet = workbook.Worksheet(1);
@@ -179,7 +180,7 @@ public class DeduplicationService
                     hasDuplicates = true;
                     row.Cell(lastColumnIndex).Value = "YES";
                     matchedRows.Add(k);
-                
+
                     foreach (var field in matchedFields)
                     {
                         var fieldName = template.GetType().GetProperty(field)?.GetValue(template).ToString();
@@ -228,6 +229,7 @@ public class DeduplicationService
         var beneficaries = _context.Beneficaries.Include(e => e.Organization)
             .Where(e => e.OrganizationId == organizationId).ToList();
         var beneficaryAttributes = await _context.BeneficiaryAttributes.ToListAsync();
+        var deduplicationRecords = new List<DeduplicationRecord>();
         var identicalDuplicates = 0;
         var potentialDuplicates = 0;
 
@@ -263,6 +265,53 @@ public class DeduplicationService
                 EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
                 Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
             };
+            deduplicationRecords.Add(record);
+        }
+
+        // Find only identical duplicates
+        var withoutIdenticalRecords = new List<DeduplicationRecord>(deduplicationRecords);
+        foreach (var record in deduplicationRecords)
+        {
+
+            var newBeneficary = _mapper.Map<BeneficaryDeduplication>(record);
+            var markedForImport = true;
+            var identical = false;
+            var duplicateOfIds = new List<Guid>();
+
+            foreach (var e in beneficaries)
+            {
+                var (exists, matchedFields) = AreRecordsEqual(e, record, beneficaryAttributes);
+                if (exists)
+                {
+                    var isIdentical = matchedFields.Count == templateFieldsCount;
+                    if (isIdentical)
+                    {
+                        identical = true;
+                        identicalDuplicates++;
+                        withoutIdenticalRecords.Remove(record);
+                        newBeneficary.IsOrganizationDuplicate = true;
+                        markedForImport = false;
+                        duplicateOfIds.Add(e.Id);
+                        newBeneficary.MatchedFields = matchedFields;
+                        break;
+                    }
+                }
+            }
+
+            if (identical)
+            {
+                newBeneficary.OrganizationId = organizationId;
+                newBeneficary.FileId = file.Id;
+                newBeneficary.UploadedById = userId;
+                newBeneficary.MarkedForImport = markedForImport;
+                newBeneficary.DuplicateOfIds = duplicateOfIds;
+                newDeduplicationBeneficaries.Add(newBeneficary);
+            }
+        }
+
+        // Find only potential duplicates
+        foreach (var record in withoutIdenticalRecords)
+        {
 
             var newBeneficary = _mapper.Map<BeneficaryDeduplication>(record);
             var markedForImport = true;
@@ -274,9 +323,7 @@ public class DeduplicationService
                 if (exists)
                 {
                     var isIdentical = matchedFields.Count == templateFieldsCount;
-                    if (isIdentical) identicalDuplicates++;
                     if (!isIdentical) potentialDuplicates++;
-
 
                     newBeneficary.IsOrganizationDuplicate = true;
                     markedForImport = false;
@@ -326,7 +373,7 @@ public class DeduplicationService
             .Where(e => e.FileId == model.FileId).ToList();
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-                { PageSize = 1000, Page = 1 });
+            { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var totalDuplicates = 0;
 
@@ -378,7 +425,7 @@ public class DeduplicationService
         var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization)
             .Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
         var list = (await _context.Lists.AddAsync(new List
-            { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
+        { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
 
         var newBeneficaries = new List<Beneficary>();
         foreach (var record in beneficiaryDeduplications)
