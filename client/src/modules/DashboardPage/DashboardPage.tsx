@@ -16,7 +16,7 @@ export const DashboardPage = () => {
       <iframe
         onLoad={onIframeLoad}
         className="dark:invert dark:hue-rotate-180"
-        src="https://ccd-meta.initdevelopment.com/public/dashboard/be49c8cb-7a6b-4503-b888-3cf63e51c73b"
+        src="https://meta.urcportal.org/public/dashboard/736e9179-ca30-43b8-a13a-6e203804d796"
         width="100%"
         height="100%"
       />
