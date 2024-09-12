@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ccd.Server.Migrations
 {
     [DbContext(typeof(CcdContext))]
-    [Migration("20240912082634_AddSettings")]
+    [Migration("20240912093348_AddSettings")]
     partial class AddSettings
     {
         /// <inheritdoc />
@@ -1037,6 +1037,12 @@ namespace Ccd.Server.Migrations
                         .HasColumnType("text")
                         .HasColumnName("admin_level4_name");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("current_timestamp");
+
                     b.Property<string>("DeploymentCountry")
                         .HasColumnType("text")
                         .HasColumnName("deployment_country");
@@ -1055,10 +1061,41 @@ namespace Ccd.Server.Migrations
                         .HasColumnName("updated_at")
                         .HasDefaultValueSql("current_timestamp");
 
+                    b.Property<Guid>("UserCreatedId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_created_id");
+
+                    b.Property<Guid>("UserUpdatedId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_updated_id");
+
                     b.HasKey("Id")
                         .HasName("pk_settings");
 
+                    b.HasIndex("UserCreatedId")
+                        .HasDatabaseName("ix_settings_user_created_id");
+
+                    b.HasIndex("UserUpdatedId")
+                        .HasDatabaseName("ix_settings_user_updated_id");
+
                     b.ToTable("settings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("31e46b2a-d5c1-465e-ad74-12f22ed900b1"),
+                            AdminLevel1Name = "AdminLevel1",
+                            AdminLevel2Name = "AdminLevel2",
+                            AdminLevel3Name = "AdminLevel3",
+                            AdminLevel4Name = "AdminLevel4",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DeploymentCountry = "Country",
+                            DeploymentName = "CCD Data Portal",
+                            MetabaseUrl = "https://default.metabase.url",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserCreatedId = new Guid("00000000-0000-0000-0000-000000000001"),
+                            UserUpdatedId = new Guid("00000000-0000-0000-0000-000000000001")
+                        });
                 });
 
             modelBuilder.Entity("Ccd.Server.Storage.File", b =>
@@ -1317,6 +1354,21 @@ namespace Ccd.Server.Migrations
                         .HasName("pk_user");
 
                     b.ToTable("user");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                            ActivatedAt = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "admin@ccd.org",
+                            FirstName = "System",
+                            IsDeleted = false,
+                            Language = "en",
+                            LastName = "",
+                            Password = "",
+                            UpdatedAt = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        });
                 });
 
             modelBuilder.Entity("Ccd.Server.Users.UserOrganization", b =>
@@ -1536,6 +1588,27 @@ namespace Ccd.Server.Migrations
                     b.Navigation("OrganizationCreated");
 
                     b.Navigation("OrganizationReferredTo");
+
+                    b.Navigation("UserCreated");
+
+                    b.Navigation("UserUpdated");
+                });
+
+            modelBuilder.Entity("Ccd.Server.Settings.Settings", b =>
+                {
+                    b.HasOne("Ccd.Server.Users.User", "UserCreated")
+                        .WithMany()
+                        .HasForeignKey("UserCreatedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_settings_user_user_created_id");
+
+                    b.HasOne("Ccd.Server.Users.User", "UserUpdated")
+                        .WithMany()
+                        .HasForeignKey("UserUpdatedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_settings_user_user_updated_id");
 
                     b.Navigation("UserCreated");
 

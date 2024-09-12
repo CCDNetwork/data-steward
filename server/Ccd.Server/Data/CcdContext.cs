@@ -49,6 +49,8 @@ public class CcdContext : DbContext
 
     private void seedData(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>().HasData(User.SYSTEM_USER);
+        
         modelBuilder.Entity<Settings.Settings>().HasData(new Settings.Settings
         {
             Id = Guid.NewGuid(), // Or any fixed value
@@ -58,8 +60,7 @@ public class CcdContext : DbContext
             AdminLevel2Name = "AdminLevel2",
             AdminLevel3Name = "AdminLevel3",
             AdminLevel4Name = "AdminLevel4",
-            MetabaseUrl = "https://default.metabase.url",
-            UpdatedAt = DateTime.UtcNow
+            MetabaseUrl = "https://default.metabase.url"
         });
 
         modelBuilder.Entity<BeneficiaryAttribute>().HasData(
