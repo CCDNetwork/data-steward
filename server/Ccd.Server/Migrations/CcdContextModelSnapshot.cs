@@ -1080,7 +1080,7 @@ namespace Ccd.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("31e46b2a-d5c1-465e-ad74-12f22ed900b1"),
+                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             AdminLevel1Name = "AdminLevel1",
                             AdminLevel2Name = "AdminLevel2",
                             AdminLevel3Name = "AdminLevel3",

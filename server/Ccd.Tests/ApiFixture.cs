@@ -373,4 +373,22 @@ public class ApiFixture
 
         return fileResponse;
     }
+
+    public async Task ResetSettings()
+    {
+        var context = GetCcdContext();
+
+        var settings = await context.Settings.FirstAsync();
+
+        settings.DeploymentCountry = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.DeploymentCountry;
+        settings.DeploymentName = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.DeploymentName;
+        settings.AdminLevel1Name = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel1Name;
+        settings.AdminLevel2Name = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel2Name;
+        settings.AdminLevel3Name = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel3Name;
+        settings.AdminLevel4Name = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel4Name;
+        settings.MetabaseUrl = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.MetabaseUrl;
+        
+        context.Settings.Update(settings);
+        await context.SaveChangesAsync();
+    }
 }

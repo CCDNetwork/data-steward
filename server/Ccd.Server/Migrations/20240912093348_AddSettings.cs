@@ -53,7 +53,7 @@ namespace Ccd.Server.Migrations
             migrationBuilder.InsertData(
                 table: "settings",
                 columns: new[] { "id", "admin_level1_name", "admin_level2_name", "admin_level3_name", "admin_level4_name", "deployment_country", "deployment_name", "metabase_url", "user_created_id", "user_updated_id" },
-                values: new object[] { new Guid("31e46b2a-d5c1-465e-ad74-12f22ed900b1"), "AdminLevel1", "AdminLevel2", "AdminLevel3", "AdminLevel4", "Country", "CCD Data Portal", "https://default.metabase.url", new Guid("00000000-0000-0000-0000-000000000001"), new Guid("00000000-0000-0000-0000-000000000001") });
+                values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), "AdminLevel1", "AdminLevel2", "AdminLevel3", "AdminLevel4", "Country", "CCD Data Portal", "https://default.metabase.url", new Guid("00000000-0000-0000-0000-000000000001"), new Guid("00000000-0000-0000-0000-000000000001") });
 
             migrationBuilder.CreateIndex(
                 name: "ix_settings_user_created_id",

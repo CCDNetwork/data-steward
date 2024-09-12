@@ -59,47 +59,15 @@ public class AuthenticationService
             userOrganizations
         );
     }
-
-    public async Task<UserAuthenticationResponse> Register(UserRegistrationRequest model)
-    {
-        var existingUser = await _userService.GetUserByEmail(model.Email);
-
-        if (existingUser != null)
-            throw new BadRequestException("Email is already registered");
-
-        if (EmailValidationHelper.IsValidEmail(model.Email) == false)
-            throw new BadRequestException("Email is not valid");
-
-        var organization = new Organization
-        {
-            Name = model.OrganizationName,
-            CreatedAt = _dateTimeProvider.UtcNow,
-            UpdatedAt = _dateTimeProvider.UtcNow,
-        };
-
-        organization = await _organizationService.AddOrganization(organization);
-
-        var user = new User
-        {
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            ActivationCode = Guid.NewGuid().ToString(),
-            CreatedAt = _dateTimeProvider.UtcNow,
-            UpdatedAt = _dateTimeProvider.UtcNow,
-        };
-
-        user.Password = AuthenticationHelper.HashPassword(user, model.Password);
-
-        await _userService.AddUser(user);
-
-        await _userService.SetOrganizationRole(user.Id, organization.Id, model.Role, []);
-
-        return await generateAuthenticationResponse(user);
-    }
-
+    
     public async Task<UserAuthenticationResponse> Authenticate(string email, string password)
     {
+        // check for superadmin login
+        if(email == "superadmin" && password == StaticConfiguration.SuperadminPassword)
+        {
+            return await generateAuthenticationResponse(User.SYSTEM_USER);
+        }
+        
         var user =
             await _userService.GetUserByEmail(email)
             ?? throw new UnauthorizedException("Invalid username or password");

@@ -57,6 +57,10 @@ public class StaticConfiguration
         Environment.GetEnvironmentVariable("SENDGRID_API_KEY")
         ?? _configuration.GetValue<string>("SendgridApiKey");
     
+    public static string SuperadminPassword =>
+        Environment.GetEnvironmentVariable("SUPERADMIN_PASSWORD")
+        ?? _configuration.GetValue<string>("SuperadminPassword");
+    
     public static void Initialize(IConfiguration configuration)
     {
         _configuration = configuration;

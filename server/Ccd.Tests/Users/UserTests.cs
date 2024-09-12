@@ -243,7 +243,8 @@ public class UserTests
         var user = loginResult.User;
         var userHeaders = new ApiFixture.Headers { Token = loginResult.Token, OrganizationId = organization.Id };
 
-        var userUpdateData = new UserUpdateRequest { FirstName = "Some", LastName = "User", Permissions = [], Role = UserRole.User};
+        var userUpdateData = new UserUpdateRequest
+            { FirstName = "Some", LastName = "User", Permissions = [], Role = UserRole.User };
 
         // admin can update user
         await _api.Request<UserAuthenticationResponse>($"/api/v1/users/{user.Id}", HttpMethod.Put, adminHeaders,
@@ -256,5 +257,56 @@ public class UserTests
         // user can't update admin
         await _api.Request<UserAuthenticationResponse>($"/api/v1/users/{adminUser.Id}", HttpMethod.Put, userHeaders,
             userUpdateData, HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async void User_Superadmin_Success()
+    {
+        var (organization, adminUser, adminHeaders) = await _api.CreateOrganization(role: UserRole.Admin);
+
+        // create a new user
+        var userAddData = new UserAddRequest
+        {
+            Email = "user_" + Guid.NewGuid() + "@e2e.com",
+            FirstName = "Test",
+            LastName = $"Testsson {Guid.NewGuid().ToString()[..8]}",
+            Password = _api.DEFAULT_PASSWORD,
+            Role = UserRole.User,
+            Permissions = [],
+            OrganizationId = organization.Id
+        };
+
+        await _api.Request<UserResponse>("/api/v1/users", HttpMethod.Post,
+            adminHeaders, userAddData, HttpStatusCode.Created);
+
+        // log in as regular user
+        var loginData = new UserLoginRequest { Username = userAddData.Email, Password = userAddData.Password };
+
+        var loginResult = await _api.Request<UserAuthenticationResponse>("/api/v1/authentication/login",
+            HttpMethod.Post,
+            null, loginData, HttpStatusCode.OK);
+
+        var user = loginResult.User;
+
+        Assert.False(user.IsSuperAdmin);
+
+        // log in as superadmin user
+        loginData = new UserLoginRequest
+        {
+            Username = "superadmin",
+            Password = StaticConfiguration.SuperadminPassword
+        };
+
+        loginResult = await _api.Request<UserAuthenticationResponse>(
+            "/api/v1/authentication/login",
+            HttpMethod.Post,
+            null,
+            loginData,
+            HttpStatusCode.OK
+        );
+
+        user = loginResult.User;
+
+        Assert.True(user.IsSuperAdmin);
     }
 }

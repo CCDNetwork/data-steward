@@ -19,4 +19,6 @@ public class UserResponse
     public List<OrganizationResponse> Organizations { get; set; }
     public List<string> Permissions { get; set; }
 
+    public bool IsSuperAdmin => Id == User.SYSTEM_USER.Id;
+
 }

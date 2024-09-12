@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ccd.Server.Beneficiaries;
@@ -51,17 +50,7 @@ public class CcdContext : DbContext
     {
         modelBuilder.Entity<User>().HasData(User.SYSTEM_USER);
 
-        modelBuilder.Entity<Settings.Settings>().HasData(new Settings.Settings
-        {
-            Id = Guid.NewGuid(),
-            DeploymentCountry = "Country",
-            DeploymentName = "CCD Data Portal",
-            AdminLevel1Name = "AdminLevel1",
-            AdminLevel2Name = "AdminLevel2",
-            AdminLevel3Name = "AdminLevel3",
-            AdminLevel4Name = "AdminLevel4",
-            MetabaseUrl = "https://default.metabase.url"
-        });
+        modelBuilder.Entity<Settings.Settings>().HasData(Ccd.Server.Settings.Settings.DEFAULT_SETTINGS);
 
         modelBuilder.Entity<BeneficiaryAttribute>().HasData(
             new BeneficiaryAttribute

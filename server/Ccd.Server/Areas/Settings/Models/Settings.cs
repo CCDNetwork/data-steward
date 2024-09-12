@@ -6,6 +6,18 @@ namespace Ccd.Server.Settings;
 
 public class Settings : UserChangeTracked
 {
+    public static readonly Settings DEFAULT_SETTINGS = new()
+    {
+        Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+        DeploymentCountry = "Country",
+        DeploymentName = "CCD Data Portal",
+        AdminLevel1Name = "AdminLevel1",
+        AdminLevel2Name = "AdminLevel2",
+        AdminLevel3Name = "AdminLevel3",
+        AdminLevel4Name = "AdminLevel4",
+        MetabaseUrl = "https://default.metabase.url"
+    };
+
     public Guid Id { get; set; } = IdProvider.NewId();
 
     public string DeploymentCountry { get; set; }
