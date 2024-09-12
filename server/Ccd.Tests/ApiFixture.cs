@@ -28,8 +28,7 @@ namespace Ccd.Tests;
 [Collection("Api")]
 public class ApiFixture
 {
-    public readonly string DEFAULT_PASSWORD = "test123";
-    public readonly decimal DEFAULT_TAX_RATE_PERCENTAGE = 25m;
+    public readonly string DEFAULT_PASSWORD = "test1234";
 
     private readonly TestServer _server;
     private readonly HttpClient _client;
@@ -196,39 +195,47 @@ public class ApiFixture
     public async Task<(Organization, User, Headers)> CreateOrganization(
         UserRegistrationRequest registrationRequest = null,
         string email = null,
-        string role = UserRole.User
+        string role = UserRole.Admin
     )
     {
         var randomGuid = Guid.NewGuid().ToString();
 
-        var model =
-            registrationRequest
-            ?? new UserRegistrationRequest
-            {
-                OrganizationName = $"Organization {randomGuid}",
-                Email = email ?? $"organizationemail_{randomGuid}@e2e.com",
-                Password = DEFAULT_PASSWORD,
-                FirstName = $"Owner {randomGuid}",
-                LastName = "Lastname",
-                Role = role,
-            };
+        var context = this.GetCcdContext();
 
-        var result = await Request<UserAuthenticationResponse>(
-            "/api/v1/authentication/registration",
-            HttpMethod.Post,
-            null,
-            model,
-            HttpStatusCode.Created
-        );
+        var organization = new Organization
+        {
+            Name = $"Organization {randomGuid}",
+            IsMpcaActive = true,
+            IsWashActive = true,
+            IsShelterActive = true,
+            IsFoodAssistanceActive = true,
+            IsLivelihoodsActive = true,
+            IsProtectionActive = true
+        };
 
-        var context = GetCcdContext();
+        context.Organizations.Add(organization);
+        await context.SaveChangesAsync();
 
-        var organization = await context.Organizations.FirstOrDefaultAsync(e => e.Id == result.Organizations[0].Id);
+        var user = new User
+        {
+            Email = email ?? $"useremail_{randomGuid}@e2e.com",
+            Password = "test123",
+            FirstName = $"User {randomGuid}",
+            LastName = "Doe",
+            ActivatedAt = DateTime.UtcNow.AddDays(-1)
+        };
 
-        var user = await context.Users.FirstOrDefaultAsync(e => e.Id == result.User.Id);
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
 
-        user.ActivatedAt = DateTime.UtcNow;
-        context.Users.Update(user);
+        context.UserOrganizations.Add(new UserOrganization
+        {
+            UserId = user.Id,
+            OrganizationId = organization.Id,
+            Role = role,
+            Permissions = [UserPermission.Deduplication, UserPermission.Referral]
+        });
+
         await context.SaveChangesAsync();
 
         var headers = GetUserHeaders(user, organization, role);
@@ -298,7 +305,7 @@ public class ApiFixture
 
         return (user, newHeaders);
     }
-    
+
     public void SetDate(DateTime date)
     {
         var service = GetService<DateTimeProvider>();

@@ -2,6 +2,7 @@ image: node:18-alpine
 
 stages:
   - build
+  - test
   - publish
   - deploy
 
@@ -37,6 +38,7 @@ workflow:
         IMAGE_TAG: "urc"
         REMOTE_URL: "4.233.139.197"
         API_URL: "https://api.urcportal.org"
+    - when: always
 
 build-client:
   stage: build
@@ -75,6 +77,29 @@ build-server:
     name: server-build
     paths:
       - server-build
+
+test-server:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:8.0-alpine
+  services:
+    - name: postgres
+      alias: ccd-server
+  variables:
+    POSTGRES_DB: ccd-server
+    POSTGRES_USER: ccd-server
+    POSTGRES_PASSWORD: test123
+  before_script:
+    - apk update
+    - apk add nodejs npm
+  script:
+    - echo "Running CCD server tests"
+    - cd server
+    - rm Ccd.Tests/appsettings.json
+    - rm Ccd.Server/appsettings.json
+    - cp Ccd.Tests/appsettings.ci.json Ccd.Tests/appsettings.json
+    - cp Ccd.Tests/appsettings.ci.json Ccd.Server/appsettings.json
+    - npm run test
+    - echo "Tests successful"      
 
 publish-client:
   stage: publish

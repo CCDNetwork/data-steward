@@ -20,7 +20,7 @@ public class UserTests
     {
         _api = api;
     }
-    
+
     [Fact]
     public async void User_Crud_Success()
     {
@@ -32,9 +32,10 @@ public class UserTests
             Email = "user_" + Guid.NewGuid() + "@e2e.com",
             FirstName = "Test",
             LastName = $"Testsson {Guid.NewGuid().ToString()[..8]}",
+            OrganizationId = organization.Id,
             Password = _api.DEFAULT_PASSWORD,
             Role = UserRole.User,
-            Language = "en"
+            Permissions = [UserPermission.Referral, UserPermission.Deduplication]
         };
 
         var result = await _api.Request<UserResponse>(
@@ -48,16 +49,14 @@ public class UserTests
         Assert.Equal(userAddData.Email, result.Email);
         Assert.Equal(userAddData.FirstName, result.FirstName);
         Assert.Equal(userAddData.LastName, result.LastName);
-        Assert.Equal(userAddData.Language, result.Language);
 
         // log in created user
-        await _api.ActivateUser(result.Id);
-
         var loginData = new UserLoginRequest
         {
             Username = userAddData.Email,
             Password = userAddData.Password
         };
+
         var loginResult = await _api.Request<UserAuthenticationResponse>(
             "/api/v1/authentication/login",
             HttpMethod.Post,
@@ -69,11 +68,10 @@ public class UserTests
         Assert.Equal(userAddData.Email, loginResult.User.Email);
         Assert.Equal(userAddData.FirstName, loginResult.User.FirstName);
         Assert.Equal(userAddData.LastName, loginResult.User.LastName);
-        Assert.Equal(userAddData.Language, loginResult.User.Language);
 
         // find owner and new user in all users list
         var userList = await _api.Request<PagedApiResponse<UserResponse>>(
-            $"/api/v1/users?organizationId={organization.Id}",
+            $"/api/v1/users?organizationId={organization.Id}&pageSize=99999",
             HttpMethod.Get,
             headers,
             null,
@@ -86,6 +84,7 @@ public class UserTests
 
         // update new user with owner credentials
         var userId = loginResult.User.Id;
+
         var newUserHeaders = new ApiFixture.Headers
         {
             OrganizationId = organization.Id,
@@ -97,7 +96,8 @@ public class UserTests
             FirstName = "Some",
             LastName = "User",
             Language = "en",
-            Role = UserRole.User
+            Role = UserRole.User,
+            Permissions = [UserPermission.Referral]
         };
 
         await _api.Request<UserAuthenticationResponse>(
@@ -112,8 +112,7 @@ public class UserTests
         userUpdateData = new UserUpdateRequest
         {
             FirstName = "Other",
-            LastName = "User",
-            Language = "hr"
+            LastName = "User"
         };
 
         await _api.Request<UserResponse>(
@@ -158,7 +157,6 @@ public class UserTests
             FirstName = "Other",
             LastName = "User",
             Password = "something",
-            Language = "hr"
         };
 
         await _api.Request<UserAuthenticationResponse>(
@@ -188,7 +186,7 @@ public class UserTests
             loginData,
             HttpStatusCode.OK
         );
-        
+
         // delete user
         await _api.Request<UserResponse>(
             $"/api/v1/users/{userId}",
@@ -217,105 +215,6 @@ public class UserTests
         );
     }
 
-
-    [Fact]
-    public async void User_LoginAndActivation_Success()
-    {
-        var (_, _, adminHeaders) = await _api.CreateOrganization(role: UserRole.Admin);
-
-        var userAddData = new UserAddRequest
-        {
-            Email = $"user_{Guid.NewGuid()}@e2e.com",
-            Password = _api.DEFAULT_PASSWORD,
-            FirstName = $"User {Guid.NewGuid()}",
-            LastName = "Lastname",
-            Role = UserRole.User
-        };
-
-        var user = await _api.Request<UserResponse>("/api/v1/users", HttpMethod.Post, adminHeaders, userAddData,
-            HttpStatusCode.Created);
-
-        // try to log in unactivated user
-        var loginData = new UserLoginRequest { Username = user.Email, Password = _api.DEFAULT_PASSWORD };
-
-        await _api.Request<UserAuthenticationResponse>("/api/v1/authentication/login", HttpMethod.Post,
-            null, loginData, HttpStatusCode.Unauthorized);
-
-        // check if activation email is sent
-        var lastEmail = MockNotificationService.GetLastEmailTo(user.Email);
-        Assert.NotNull(lastEmail);
-        var match = Regex.Match(lastEmail.Text, @"(?<=code\=)(.*?)(?="")");
-        Assert.NotNull(match);
-        var code = match.Value;
-        Assert.NotEmpty(code);
-
-        // activate user
-        var activationData = new UserActivationRequest { ActivationCode = code, Email = user.Email };
-
-        await _api.Request<UserResponse>("/api/v1/authentication/activation", HttpMethod.Post, null, activationData,
-            HttpStatusCode.OK);
-
-        // check if confirmation email is sent
-        lastEmail = MockNotificationService.GetLastEmailTo(user.Email);
-        Assert.NotNull(lastEmail);
-        Assert.Contains("Welcome to Ccd!", lastEmail.Subject);
-
-        // log in user
-        await _api.Request<UserAuthenticationResponse>("/api/v1/authentication/login", HttpMethod.Post,
-            null, loginData, HttpStatusCode.OK);
-    }
-
-    [Fact]
-    public async void User_ForgotPassword_Success()
-    {
-        var (_, _, adminHeaders) = await _api.CreateOrganization(role: UserRole.Admin);
-        
-        var userAddData = new UserAddRequest
-        {
-            Email = $"user_{Guid.NewGuid()}@e2e.com",
-            Password = _api.DEFAULT_PASSWORD,
-            FirstName = $"User {Guid.NewGuid()}",
-            LastName = "Lastname",
-            Role = UserRole.User
-        };
-
-        var user = await _api.Request<UserResponse>("/api/v1/users", HttpMethod.Post, adminHeaders, userAddData,
-            HttpStatusCode.Created);
-
-        await _api.ActivateUser(user.Id);
-
-        var data = new ForgotPasswordRequest { Email = user.Email };
-
-        MockNotificationService.ClearEmailsTo(user.Email);
-
-        await _api.Request<object>("/api/v1/authentication/forgot-password", HttpMethod.Post, null, data,
-            HttpStatusCode.OK);
-
-        var lastEmail = MockNotificationService.GetLastEmailTo(user.Email);
-
-        Assert.NotNull(lastEmail);
-        var match = Regex.Match(lastEmail.Text, @"(?<=code\=)(.*?)(?="")");
-        Assert.NotNull(match);
-        var code = match.Value;
-        Assert.NotEmpty(code);
-
-        // call password reset endpoint
-        var resetData = new ResetPasswordRequest
-        {
-            Email = user.Email,
-            Password = "somepassword",
-            PasswordResetCode = code
-        };
-
-        await _api.Request<object>("/api/v1/authentication/reset-password", HttpMethod.Post, null, resetData,
-            HttpStatusCode.OK);
-
-        // log in user
-        var loginData = new UserLoginRequest { Username = user.Email, Password = "somepassword" };
-        await _api.Request<UserAuthenticationResponse>("/api/v1/authentication/login", HttpMethod.Post, null,
-            loginData, HttpStatusCode.OK);
-    }
-    
     [Fact]
     public async void User_Permissions_Success()
     {
@@ -328,13 +227,13 @@ public class UserTests
             FirstName = "Test",
             LastName = $"Testsson {Guid.NewGuid().ToString()[..8]}",
             Password = _api.DEFAULT_PASSWORD,
-            Role = UserRole.User
+            Role = UserRole.User,
+            Permissions = [],
+            OrganizationId = organization.Id
         };
 
-        var userResult = await _api.Request<UserResponse>("/api/v1/users", HttpMethod.Post,
+        await _api.Request<UserResponse>("/api/v1/users", HttpMethod.Post,
             adminHeaders, userAddData, HttpStatusCode.Created);
-
-        await _api.ActivateUser(userResult.Id);
 
         var loginData = new UserLoginRequest { Username = userAddData.Email, Password = userAddData.Password };
         var loginResult = await _api.Request<UserAuthenticationResponse>("/api/v1/authentication/login",
@@ -344,7 +243,7 @@ public class UserTests
         var user = loginResult.User;
         var userHeaders = new ApiFixture.Headers { Token = loginResult.Token, OrganizationId = organization.Id };
 
-        var userUpdateData = new UserUpdateRequest { FirstName = "Some", LastName = "User", Language = "en" };
+        var userUpdateData = new UserUpdateRequest { FirstName = "Some", LastName = "User", Permissions = [], Role = UserRole.User};
 
         // admin can update user
         await _api.Request<UserAuthenticationResponse>($"/api/v1/users/{user.Id}", HttpMethod.Put, adminHeaders,

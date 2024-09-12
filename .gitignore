@@ -35,3 +35,4 @@ setenv.sh
 pull-dev-db.sh
 appsettings.Development.json
 *.sln
+*.DotSettings.user
