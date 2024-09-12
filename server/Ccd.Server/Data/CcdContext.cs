@@ -50,10 +50,10 @@ public class CcdContext : DbContext
     private void seedData(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().HasData(User.SYSTEM_USER);
-        
+
         modelBuilder.Entity<Settings.Settings>().HasData(new Settings.Settings
         {
-            Id = Guid.NewGuid(), // Or any fixed value
+            Id = Guid.NewGuid(),
             DeploymentCountry = "Country",
             DeploymentName = "CCD Data Portal",
             AdminLevel1Name = "AdminLevel1",

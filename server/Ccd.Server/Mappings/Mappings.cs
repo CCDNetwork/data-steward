@@ -65,6 +65,7 @@ public class Mappings : Profile
 
         // Settings mappings
         CreateMap<SettingsUpdateRequest, Settings.Settings>();
+        CreateMap<Settings.Settings, SettingsResponse>();
     }
 
     private static DateTime? ParseDate(string date)

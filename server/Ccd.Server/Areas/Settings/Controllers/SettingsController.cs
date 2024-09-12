@@ -21,9 +21,10 @@ public class SettingsController : ControllerBaseExtended
     }
 
     [HttpGet]
+    [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<SettingsResponse>> GetSettings()
     {
-        var settings = await _settingsService.GetSettings() ?? throw new NotFoundException();
+        var settings = await _settingsService.GetSettingsApi() ?? throw new NotFoundException();
         return Ok(settings);
     }
 
@@ -33,13 +34,9 @@ public class SettingsController : ControllerBaseExtended
         [FromBody] SettingsUpdateRequest model
     )
     {
-        var settings = await _settingsService.GetSettings() ?? throw new NotFoundException();
+        await _settingsService.UpdateSettingsApi(model);
 
-        _mapper.Map(model, settings);
-
-        await _settingsService.UpdateSettings(settings);
-
-        var result = await _settingsService.GetSettings();
+        var result = await _settingsService.GetSettingsApi();
 
         return Ok(result);
     }
