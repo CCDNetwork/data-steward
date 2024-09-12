@@ -1,14 +1,15 @@
 using System;
+using System.Globalization;
 using AutoMapper;
-using Ccd.Server.Users;
-using Ccd.Server.Organizations;
+using Ccd.Server.Beneficiaries;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Deduplication;
-using System.Globalization;
-using Ccd.Server.Referrals;
-using Ccd.Server.Templates;
 using Ccd.Server.Handbooks;
-using Ccd.Server.Beneficiaries;
+using Ccd.Server.Organizations;
+using Ccd.Server.Referrals;
+using Ccd.Server.Settings;
+using Ccd.Server.Templates;
+using Ccd.Server.Users;
 
 namespace Ccd.Server.Mappings;
 
@@ -61,16 +62,17 @@ public class Mappings : Profile
 
         // Beneficiary mappings
         CreateMap<Beneficary, BeneficaryResponse>();
+
+        // Settings mappings
+        CreateMap<SettingsUpdateRequest, Settings.Settings>();
     }
 
     private static DateTime? ParseDate(string date)
     {
-        if (string.IsNullOrEmpty(date))
-        {
-            return null;
-        }
+        if (string.IsNullOrEmpty(date)) return null;
 
-        var formats = new[] {
+        var formats = new[]
+        {
             "MM-dd-yyyy",
             "yyyyMMdd",
             "MM/dd/yyyy",
@@ -80,13 +82,11 @@ public class Mappings : Profile
             "dd.MM.yyyy. hh:mm:ss",
             "dd/M/yyyy hh:mm:ss tt",
             "d/M/yyyy hh:mm:ss tt",
-            "M/d/yyyy hh:mm:ss tt",
+            "M/d/yyyy hh:mm:ss tt"
         };
 
         if (DateTime.TryParseExact(date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var result))
-        {
             return result.ToUniversalTime();
-        }
 
         Console.WriteLine($"Invalid date format: {date}");
         return null;

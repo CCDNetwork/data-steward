@@ -1,8 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
+using Ccd.Server.Authentication;
+using Ccd.Server.Beneficiaries;
+using Ccd.Server.BeneficiaryAttributes;
+using Ccd.Server.Data;
+using Ccd.Server.Deduplication;
+using Ccd.Server.Email;
+using Ccd.Server.Handbooks;
+using Ccd.Server.Helpers;
+using Ccd.Server.Notifications;
+using Ccd.Server.Organizations;
+using Ccd.Server.Referrals;
+using Ccd.Server.Settings;
+using Ccd.Server.Storage;
+using Ccd.Server.Templates;
+using Ccd.Server.Users;
 using Dapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -15,33 +29,19 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using File = System.IO.File;
 using Npgsql;
-using Ccd.Server.Authentication;
-using Ccd.Server.Data;
-using Ccd.Server.Email;
-using Ccd.Server.Helpers;
-using Ccd.Server.Notifications;
-using Ccd.Server.Users;
-using Ccd.Server.Storage;
-using Ccd.Server.BeneficiaryAttributes;
-using Ccd.Server.Organizations;
-using Ccd.Server.Deduplication;
-using Ccd.Server.Referrals;
-using Ccd.Server.Templates;
-using Ccd.Server.Handbooks;
-using Ccd.Server.Beneficiaries;
+using File = System.IO.File;
 
 namespace Ccd.Server;
 
 public class Startup
 {
-    private IConfiguration Configuration { get; }
-
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
     }
+
+    private IConfiguration Configuration { get; }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -99,7 +99,7 @@ public class Startup
                     Version = "v1",
                     Title = "INIT Ccd Server API",
                     Description = "INIT Ccd Server API",
-                    TermsOfService = new Uri("https://init.hr"),
+                    TermsOfService = new Uri("https://init.hr")
                 }
             );
 
@@ -165,6 +165,7 @@ public class Startup
         services.AddScoped<ReferralService>();
         services.AddScoped<TemplateService>();
         services.AddScoped<HandbookService>();
+        services.AddScoped<SettingsService>();
         services.AddScoped<IStorageService, StorageService>();
         services.AddScoped<INotificationService, NotificationService>();
 
@@ -176,8 +177,8 @@ public class Startup
         services.AddSingleton<DateTimeProvider>();
 
         SqlMapper.AddTypeHandler(new DateTimeHandler());
-        SqlMapper.AddTypeHandler<List<Guid>>(new JsonHandler<List<Guid>>());
-        SqlMapper.AddTypeHandler<List<string>>(new JsonHandler<List<string>>());
+        SqlMapper.AddTypeHandler(new JsonHandler<List<Guid>>());
+        SqlMapper.AddTypeHandler(new JsonHandler<List<string>>());
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -187,10 +188,7 @@ public class Startup
         CcdContext ccdContext
     )
     {
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
+        if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
         app.UseExceptionHandler("/error");
 
@@ -218,16 +216,10 @@ public class Startup
             );
         });
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
         app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "CcdServerTests Server");
-        });
+        app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "CcdServerTests Server"); });
 
         if (ccdContext.Database.GetPendingMigrations().Any())
         {

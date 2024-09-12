@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Ccd.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ccd.Server.Migrations
 {
     [DbContext(typeof(CcdContext))]
-    partial class CcdContextModelSnapshot : ModelSnapshot
+    [Migration("20240912082634_AddSettings")]
+    partial class AddSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1056,20 +1059,6 @@ namespace Ccd.Server.Migrations
                         .HasName("pk_settings");
 
                     b.ToTable("settings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("eb320169-d505-409c-bba0-424b9bd85f34"),
-                            AdminLevel1Name = "AdminLevel1",
-                            AdminLevel2Name = "AdminLevel2",
-                            AdminLevel3Name = "AdminLevel3",
-                            AdminLevel4Name = "AdminLevel4",
-                            DeploymentCountry = "Country",
-                            DeploymentName = "CCD Data Portal",
-                            MetabaseUrl = "https://default.metabase.url",
-                            UpdatedAt = new DateTime(2024, 9, 12, 8, 53, 30, 806, DateTimeKind.Utc).AddTicks(9530)
-                        });
                 });
 
             modelBuilder.Entity("Ccd.Server.Storage.File", b =>
