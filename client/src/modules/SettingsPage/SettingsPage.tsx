@@ -25,7 +25,7 @@ import { Loader2, Settings } from 'lucide-react';
 import { ModeToggle } from '@/components/ModeToggle';
 
 export const SettingsPage = () => {
-  const { isLoggedIn, logoutUser } = useAuth();
+  const { isLoggedIn, user, logoutUser } = useAuth();
 
   const { data: settingsData, isLoading: settingsLoading } = useSettings({});
 
@@ -65,6 +65,10 @@ export const SettingsPage = () => {
 
   if (!isLoggedIn) {
     return <Navigate to={APP_ROUTE.SignIn} replace />;
+  }
+
+  if (isLoggedIn && !user.isSuperAdmin) {
+    return <Navigate to={APP_ROUTE.Dashboard} replace />;
   }
 
   if (settingsLoading) {
