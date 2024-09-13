@@ -27,6 +27,10 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
     return NAVIGATION_ITEMS;
   }, [user.permissions, user.role]);
 
+  if (user.isSuperAdmin && isLoggedIn) {
+    return <Navigate to={APP_ROUTE.Settings} replace />;
+  }
+
   if (!user.id || !isLoggedIn) {
     return <Navigate to={APP_ROUTE.SignIn} />;
   }

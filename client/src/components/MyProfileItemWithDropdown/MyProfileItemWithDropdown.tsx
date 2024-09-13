@@ -66,7 +66,9 @@ export const MyProfileItemWithDropdown = ({
                 aria-hidden="true"
                 className="text-sm truncate opacity-80 font-normal"
               >
-                {(user.organizations?.[0].name ?? '-') || (user.email ?? '-')}
+                {user.organizations.length
+                  ? user.organizations?.[0].name
+                  : user.email ?? '-'}
               </span>
             </div>
           </div>

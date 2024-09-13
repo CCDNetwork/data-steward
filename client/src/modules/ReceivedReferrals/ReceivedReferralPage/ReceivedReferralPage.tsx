@@ -40,9 +40,11 @@ import { ReferralDiscussions } from '@/components/ReferralDiscussions';
 import { StatusReasonModal } from '@/components/StatusReasonModal';
 
 import { serviceCategoryToLabel } from './helpers';
+import { useAuth } from '@/providers/GlobalProvider';
 
 export const ReceivedReferralPage = () => {
   const navigate = useNavigate();
+  const { deploymentSettings } = useAuth();
   const { id: receivedReferralId } = useIdFromParams();
   const [referralAction, setReferralAction] = useState<
     'inAssessment' | 'registered' | 'delivered' | undefined
@@ -509,15 +511,15 @@ export const ReceivedReferralPage = () => {
                 </div>
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-bold tracking-tight leading-6">
-                    Oblast
+                    {deploymentSettings?.adminLevel1Name ?? 'Admin Level 1'}
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                    {receivingReferral.oblast}
+                    {receivingReferral.settlement}
                   </dd>
                 </div>
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-bold tracking-tight leading-6">
-                    Raion
+                    {deploymentSettings?.adminLevel2Name ?? 'Admin Level 2'}
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
                     {receivingReferral.ryon}
@@ -525,7 +527,7 @@ export const ReceivedReferralPage = () => {
                 </div>
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-bold tracking-tight leading-6">
-                    Hromada
+                    {deploymentSettings?.adminLevel3Name ?? 'Admin Level 3'}
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
                     {receivingReferral.hromada}
@@ -533,7 +535,7 @@ export const ReceivedReferralPage = () => {
                 </div>
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-bold tracking-tight leading-6">
-                    Settlement
+                    {deploymentSettings?.adminLevel4Name ?? 'Admin Level 4'}
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
                     {receivingReferral.settlement}

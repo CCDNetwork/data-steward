@@ -31,6 +31,7 @@ export enum APP_ROUTE {
   Rules = '/rules',
   Templates = '/templates',
   Dashboard = '/dashboard',
+  Settings = '/settings',
   // PUBLIC
   SignIn = '/sign-in',
   PermissionDenied = '/permission-denied',

@@ -1,57 +1,42 @@
 using System;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Data;
 using Ccd.Server.Organizations;
 using Ccd.Server.Users;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ccd.Server.Helpers;
 
 public class ControllerBaseExtended : ControllerBase
 {
-    protected Guid OrganizationId
-    {
-        get => getOrganizationId();
-    }
-    protected Guid? OrganizationIdOrNull
-    {
-        get => getOrganizationIdOrNull();
-    }
-    protected Organization Organization
-    {
-        get => this.getCcdServerContext().Organizations.FirstOrDefault(e => e.Id == this.OrganizationId);
-    }
+    protected Guid OrganizationId => getOrganizationId();
 
-    protected Guid UserId
-    {
-        get => getUserId();
-    }
-    protected bool IsSuperAdmin
-    {
-        get => getIsSuperAdmin();
-    }
-    protected Guid MemberId
-    {
-        get => getCurrentMemberId();
-    }
-    protected bool IsUser
-    {
-        get => getIsUser();
-    }
+    protected Guid? OrganizationIdOrNull => getOrganizationIdOrNull();
 
-    protected bool IsAdmin
-    {
-        get => getIsAdmin();
-    }
+    protected Organization Organization =>
+        getCcdServerContext().Organizations.FirstOrDefault(e => e.Id == OrganizationId);
+
+    protected Guid UserId => getUserId();
+
+    protected bool IsSuperAdmin => getIsSuperAdmin();
+
+    protected Guid MemberId => getCurrentMemberId();
+
+    protected bool IsUser => getIsUser();
+
+    protected bool IsAdmin => getIsAdmin();
 
     private Guid? getOrganizationIdOrNull()
     {
-        return (Guid?)this.HttpContext.Items["OrganizationId"];
+        return (Guid?)HttpContext.Items["OrganizationId"];
     }
 
     private Guid getOrganizationId()
     {
-        var organizationId = this.getOrganizationIdOrNull();
+        var userId = (Guid?)HttpContext.Items["UserId"];
+        if (userId == Users.User.SYSTEM_USER.Id) return new Guid("00000000-0000-0000-0000-000000000001");
+
+        var organizationId = getOrganizationIdOrNull();
         if (organizationId == null)
             throw new UnauthorizedException("Organization ID not found.");
         return organizationId.Value;
@@ -59,12 +44,12 @@ public class ControllerBaseExtended : ControllerBase
 
     private bool getIsAdmin()
     {
-        var organizationId = this.getOrganizationIdOrNull();
+        var organizationId = getOrganizationIdOrNull();
 
         if (organizationId == null)
             throw new UnauthorizedException("Organization ID not found.");
 
-        var organizationRoles = (string)this.HttpContext.Items["OrganizationRoles"];
+        var organizationRoles = (string)HttpContext.Items["OrganizationRoles"];
 
         var role = PermissionLevelAttribute.getOrganizationRole(organizationRoles, organizationId);
 
@@ -73,12 +58,12 @@ public class ControllerBaseExtended : ControllerBase
 
     private CcdContext getCcdServerContext()
     {
-        return (CcdContext)this.HttpContext.RequestServices.GetService(typeof(CcdContext));
+        return (CcdContext)HttpContext.RequestServices.GetService(typeof(CcdContext));
     }
 
     private Guid getUserId()
     {
-        var userId = (Guid?)this.HttpContext.Items["UserId"];
+        var userId = (Guid?)HttpContext.Items["UserId"];
         if (userId == null)
             throw new UnauthorizedException("User ID not found.");
         return userId.Value;
@@ -86,12 +71,12 @@ public class ControllerBaseExtended : ControllerBase
 
     private bool getIsSuperAdmin()
     {
-        return (bool)this.HttpContext.Items["IsSuperAdmin"];
+        return (bool)HttpContext.Items["IsSuperAdmin"];
     }
 
     private Guid getCurrentMemberId()
     {
-        var memberId = (Guid?)this.HttpContext.Items["MemberId"];
+        var memberId = (Guid?)HttpContext.Items["MemberId"];
         if (memberId == null)
             throw new UnauthorizedException("Member ID not found.");
         return memberId.Value;
@@ -99,6 +84,6 @@ public class ControllerBaseExtended : ControllerBase
 
     private bool getIsUser()
     {
-        return this.HttpContext.Items["UserId"] != null;
+        return HttpContext.Items["UserId"] != null;
     }
 }

@@ -15,6 +15,7 @@ export const resToUser = (res: any): User => {
       ? res.organizations.map(resToOrganization)
       : [],
     permissions: res.permissions ?? [],
+    isSuperAdmin: res.isSuperAdmin ?? false,
   };
 };
 

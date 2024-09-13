@@ -20,6 +20,8 @@ import { Organization } from '@/services/organizations';
 import { useOrganizationMe } from '@/services/organizations/api';
 import { useUserMe } from '@/services/users/api';
 import { useHdxHapiGenerateAppIdentifier } from '@/services/integrations';
+import { Settings } from '@/services/settings/types';
+import { useSettings } from '@/services/settings/api';
 
 const GlobalContext = createContext<{
   isLoggedIn: boolean;
@@ -29,6 +31,7 @@ const GlobalContext = createContext<{
   token: string | null;
   isOrganizationQueryLoading: boolean;
   hdxHapiAppIdentifier: string;
+  deploymentSettings: Settings | null;
   loginUser: (authData: AuthData) => void;
   logoutUser: () => void;
   updateUser: (user: User) => void;
@@ -45,11 +48,18 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
   const [organization, setOrganization] = useState<Organization | null>(
     LocalStorage.getOrganization()
   );
+  const [deploymentSettings, setDeploymentSettings] = useState<Settings | null>(
+    null
+  );
   const [token, setToken] = useState<string | null>(LocalStorage.getToken());
   const [collectionNotFound, setCollectionNotFound] = useState(false);
 
   const { refetch: getLoggedInUser, data: loggedInUser } = useUserMe({
     queryEnabled: false,
+  });
+  const { refetch: getDeploymentSettings } = useSettings({
+    queryEnabled: false,
+    onSuccessCallback: setDeploymentSettings,
   });
   const {
     refetch: getLoggedInOrganization,
@@ -92,6 +102,11 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     []
   );
 
+  // Handle document title based on deployment settings
+  useEffect(() => {
+    document.title = deploymentSettings?.deploymentName ?? '';
+  }, [deploymentSettings?.deploymentName]);
+
   // Handle when server returns 401
   useEffect(() => {
     const interceptor = api.interceptors.response.use(
@@ -129,6 +144,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     if (isLoggedIn) {
       getLoggedInUser();
       getLoggedInOrganization();
+      getDeploymentSettings();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
@@ -159,6 +175,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
       organization,
       isOrganizationQueryLoading,
       hdxHapiAppIdentifier,
+      deploymentSettings,
       loginUser,
       logoutUser,
       updateUser,
@@ -174,6 +191,7 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
       token,
       isOrganizationQueryLoading,
       hdxHapiAppIdentifier,
+      deploymentSettings,
       loginUser,
       logoutUser,
       updateUser,
@@ -197,6 +215,7 @@ export const useAuth = () => {
     user,
     token,
     hdxHapiAppIdentifier,
+    deploymentSettings,
     updateOrganization,
     loginUser,
     logoutUser,
@@ -209,6 +228,7 @@ export const useAuth = () => {
     token,
     organization,
     hdxHapiAppIdentifier,
+    deploymentSettings,
     loginUser,
     logoutUser,
     updateUser,

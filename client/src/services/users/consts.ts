@@ -21,4 +21,5 @@ export const initialUser: User = {
   language: '',
   organizations: [],
   permissions: [],
+  isSuperAdmin: false,
 };

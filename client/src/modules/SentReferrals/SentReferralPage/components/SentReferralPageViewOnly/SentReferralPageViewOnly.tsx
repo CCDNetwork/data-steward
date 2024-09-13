@@ -15,8 +15,10 @@ import {
 } from '@/services/referrals/const';
 import { Referral } from '@/services/referrals';
 import { serviceCategoryToLabel } from '@/modules/ReceivedReferrals';
+import { useAuth } from '@/providers/GlobalProvider';
 
 export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
+  const { deploymentSettings } = useAuth();
   const referralData = useMemo(
     () => ({
       caseNumber: sentReferralData?.caseNumber ?? 'N/A',
@@ -267,7 +269,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
             </div>
             <div className="sm:col-span-1">
               <dt className="text-sm font-bold tracking-tight leading-6">
-                Oblast
+                {deploymentSettings?.adminLevel1Name ?? 'Admin Level 1'}
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
                 {referralData.oblast}
@@ -275,7 +277,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
             </div>
             <div className="sm:col-span-1">
               <dt className="text-sm font-bold tracking-tight leading-6">
-                Raion
+                {deploymentSettings?.adminLevel2Name ?? 'Admin Level 2'}
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
                 {referralData.ryon}
@@ -283,7 +285,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
             </div>
             <div className="sm:col-span-1">
               <dt className="text-sm font-bold tracking-tight leading-6">
-                Hromada
+                {deploymentSettings?.adminLevel3Name ?? 'Admin Level 3'}
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
                 {referralData.hromada}
@@ -291,7 +293,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
             </div>
             <div className="sm:col-span-1">
               <dt className="text-sm font-bold tracking-tight leading-6">
-                Settlement
+                {deploymentSettings?.adminLevel4Name ?? 'Admin Level 4'}
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
                 {referralData.settlement}

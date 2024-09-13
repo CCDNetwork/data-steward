@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Ccd.Server.Helpers;
 using Ccd.Server.Users;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ccd.Server.Templates;
 
@@ -11,11 +11,13 @@ namespace Ccd.Server.Templates;
 [Route("/api/v1/templates")]
 public class TemplateController : ControllerBaseExtended
 {
+    private readonly IMapper _mapper;
     private readonly TemplateService _templateService;
 
     public TemplateController(TemplateService templateService, IMapper mapper)
     {
         _templateService = templateService;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -24,7 +26,7 @@ public class TemplateController : ControllerBaseExtended
         [FromQuery] RequestParameters requestParams
     )
     {
-        var templates = await _templateService.GetTemplatesApi(this.OrganizationId, requestParams);
+        var templates = await _templateService.GetTemplatesApi(OrganizationId, requestParams);
         return Ok(templates);
     }
 
@@ -32,7 +34,7 @@ public class TemplateController : ControllerBaseExtended
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<TemplateResponse>> GetTemplate(Guid id)
     {
-        var template = await _templateService.GetTemplateApi(this.OrganizationId, id);
+        var template = await _templateService.GetTemplateApi(OrganizationId, id);
 
         if (template == null)
             throw new NotFoundException();
@@ -45,8 +47,8 @@ public class TemplateController : ControllerBaseExtended
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<TemplateResponse>> Add([FromBody] TemplateAddRequest model)
     {
-        var newTemplate = await _templateService.AddTemplate(this.OrganizationId, model);
-        var result = await _templateService.GetTemplateApi(this.OrganizationId, newTemplate.Id);
+        var newTemplate = await _templateService.AddTemplate(OrganizationId, model);
+        var result = await _templateService.GetTemplateApi(OrganizationId, newTemplate.Id);
 
         return Ok(result);
     }
@@ -58,11 +60,15 @@ public class TemplateController : ControllerBaseExtended
         Guid id
     )
     {
-        var template = await _templateService.GetTemplateById(this.OrganizationId, id) ?? throw new NotFoundException("Template not found.");
+        var template = await _templateService.GetTemplateById(OrganizationId, id) ??
+                       throw new NotFoundException("Template not found.");
+
         model.Patch(template);
 
+        _mapper.Map(model, template);
+
         await _templateService.UpdateTemplate(template);
-        var result = await _templateService.GetTemplateApi(this.OrganizationId, id);
+        var result = await _templateService.GetTemplateApi(OrganizationId, id);
 
         return Ok(result);
     }
@@ -71,9 +77,10 @@ public class TemplateController : ControllerBaseExtended
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<TemplateResponse>> Delete(Guid id)
     {
-        var template = await _templateService.GetTemplateById(this.OrganizationId, id) ?? throw new NotFoundException("Template not found.");
+        var template = await _templateService.GetTemplateById(OrganizationId, id) ??
+                       throw new NotFoundException("Template not found.");
 
-        var result = await _templateService.GetTemplateApi(this.OrganizationId, template.Id);
+        var result = await _templateService.GetTemplateApi(OrganizationId, template.Id);
 
         await _templateService.DeleteTemplate(template);
 

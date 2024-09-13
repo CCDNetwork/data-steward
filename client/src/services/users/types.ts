@@ -11,6 +11,7 @@ export interface User {
   language: string;
   organizations: Organization[];
   permissions: string[];
+  isSuperAdmin: false;
 }
 
 export interface UserProfileRequestPayload {

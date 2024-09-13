@@ -68,7 +68,7 @@ import { OrgActivity } from '@/services/organizations';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
-  const { hdxHapiAppIdentifier } = useAuth();
+  const { hdxHapiAppIdentifier, deploymentSettings } = useAuth();
   const { id: sentReferralId, isCreate } = useIdFromParams();
   const { viewOnlyEnabled, setViewOnlyEnabled } = useSentReferralsProvider();
   const [activeTab, setActiveTab] = useState<
@@ -764,7 +764,9 @@ export const SentReferralPage = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {adminLvl1Fetched && !ukraineAdminLevel1DataLoading && (
                       <Combobox
-                        label="Oblast"
+                        label={
+                          deploymentSettings?.adminLevel1Name ?? 'Admin Level 1'
+                        }
                         name="oblast"
                         control={control}
                         options={uaAdminLvl1Data!.map((i) => ({
@@ -778,7 +780,10 @@ export const SentReferralPage = () => {
                       !ukraineAdminLevel2DataLoading &&
                       watch('oblast') && (
                         <Combobox
-                          label="Raion"
+                          label={
+                            deploymentSettings?.adminLevel2Name ??
+                            'Admin Level 2'
+                          }
                           name="ryon"
                           control={control}
                           options={uaAdminLvl2Data!
@@ -789,7 +794,9 @@ export const SentReferralPage = () => {
                       )}
                     {watch('ryon') && (
                       <Combobox
-                        label="Hromada"
+                        label={
+                          deploymentSettings?.adminLevel3Name ?? 'Admin Level 3'
+                        }
                         name="hromada"
                         control={control}
                         options={admin_3
@@ -804,7 +811,9 @@ export const SentReferralPage = () => {
                     )}
                     {watch('hromada') && watch('ryon') && (
                       <Combobox
-                        label="Settlement"
+                        label={
+                          deploymentSettings?.adminLevel4Name ?? 'Admin Level 4'
+                        }
                         name="settlement"
                         control={control}
                         options={admin_4

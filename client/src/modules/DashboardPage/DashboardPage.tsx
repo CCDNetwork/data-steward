@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/providers/GlobalProvider';
 
 export const DashboardPage = () => {
+  const { deploymentSettings } = useAuth();
   const [isMetabaseLoaded, setIsMetabaseLoaded] = useState<boolean>(false);
 
   const onIframeLoad = () => setIsMetabaseLoaded(true);
@@ -16,7 +18,7 @@ export const DashboardPage = () => {
       <iframe
         onLoad={onIframeLoad}
         className="dark:invert dark:hue-rotate-180"
-        src="https://ccd-meta.initdevelopment.com/public/dashboard/be49c8cb-7a6b-4503-b888-3cf63e51c73b"
+        src={deploymentSettings?.metabaseUrl}
         width="100%"
         height="100%"
       />

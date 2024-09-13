@@ -59,6 +59,7 @@ public class Mappings : Profile
         // Template mappings
         CreateMap<Template, TemplateResponse>();
         CreateMap<TemplateAddRequest, Template>();
+        CreateMap<TemplatePatchRequest, Template>();
 
         // Beneficiary mappings
         CreateMap<Beneficary, BeneficaryResponse>();

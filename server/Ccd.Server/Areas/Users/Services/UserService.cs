@@ -4,12 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
-using Dapper;
-using Microsoft.EntityFrameworkCore;
 using Ccd.Server.Data;
 using Ccd.Server.Email;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
+using Dapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Users;
 
@@ -20,7 +20,7 @@ public class UserService
     private readonly IMapper _mapper;
 
     private readonly string _selectSql =
-        $@"
+        @"
              SELECT DISTINCT ON (u.id)
                  u.*,
                  uo.role,
@@ -36,11 +36,6 @@ public class UserService
                  AND (@permission is null OR uo.permissions ? @permission)
                  AND (is_deleted = false)";
 
-    private object getSelectSqlParams(Guid? id = null, string email = null, Guid? organizationId = null, string permission = null)
-    {
-        return new { id, email, organizationId, permission };
-    }
-
     public UserService(CcdContext context, DateTimeProvider dateTimeProvider, EmailManagerService emailManagerService,
         IMapper mapper
     )
@@ -50,11 +45,17 @@ public class UserService
         _mapper = mapper;
     }
 
+    private object getSelectSqlParams(Guid? id = null, string email = null, Guid? organizationId = null,
+        string permission = null)
+    {
+        return new { id, email, organizationId, permission };
+    }
+
     public async Task<User> GetUserById(Guid id)
     {
         var user = await _context.Database
             .GetDbConnection()
-            .QueryFirstOrDefaultAsync<User>(_selectSql, getSelectSqlParams(id: id));
+            .QueryFirstOrDefaultAsync<User>(_selectSql, getSelectSqlParams(id));
 
         return user;
     }
@@ -176,11 +177,16 @@ public class UserService
         bool resolveDependenciesBool = true
     )
     {
+        var selectParams = id == User.SYSTEM_USER.Id
+            ? getSelectSqlParams(id)
+            : getSelectSqlParams(id, email, organizationId);
+
+
         var user = await _context.Database
             .GetDbConnection()
             .QueryFirstOrDefaultAsync<UserResponse>(
                 _selectSql,
-                getSelectSqlParams(id, email, organizationId)
+                selectParams
             );
 
         if (user != null && resolveDependenciesBool)

@@ -34,7 +34,7 @@ public class SettingsController : ControllerBaseExtended
     )
     {
         // check that user is superadmin
-        if(this.UserId != Ccd.Server.Users.User.SYSTEM_USER.Id)
+        if (this.UserId != Ccd.Server.Users.User.SYSTEM_USER.Id)
         {
             throw new UnauthorizedException("Only superadmin can change settings");
         }

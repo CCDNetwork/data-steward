@@ -7,8 +7,12 @@ import { APP_ROUTE } from '@/helpers/constants';
 
 export const RoleBasedIndexRoute = () => {
   const {
-    user: { role },
+    user: { role, isSuperAdmin },
   } = useAuth();
+
+  if (isSuperAdmin) {
+    return <Navigate to={APP_ROUTE.Settings} replace />;
+  }
 
   switch (role) {
     case UserRole.Admin:

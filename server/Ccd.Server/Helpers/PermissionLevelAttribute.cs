@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace Ccd.Server.Helpers;
 
 /// <summary>
-/// This attribute can be used on any controller endpoint and will check if the caller has required
-/// permission level using the organization data prepared by the PermissionLevelMiddleware
+///     This attribute can be used on any controller endpoint and will check if the caller has required
+///     permission level using the organization data prepared by the PermissionLevelMiddleware
 /// </summary>
 public class PermissionLevelAttribute : ActionFilterAttribute
 {
@@ -59,21 +59,15 @@ public class PermissionLevelAttribute : ActionFilterAttribute
         var userId = (Guid?)context.HttpContext.Items["UserId"];
         var organizationRoles = (string)context.HttpContext.Items["OrganizationRoles"];
 
-        if (!userId.HasValue)
-        {
-            throw new UnauthorizedException("Unauthorized. Please provide valid JWT token.");
-        }
+        if (!userId.HasValue) throw new UnauthorizedException("Unauthorized. Please provide valid JWT token.");
 
         var role = getOrganizationRole(organizationRoles, organizationId);
         if (userId.HasValue)
-        {
-            if (!isAuthorizedRole(role, _requiredLevel))
-            {
+            // no role check is done on superadmin
+            if (!isAuthorizedRole(role, _requiredLevel) && userId != User.SYSTEM_USER.Id)
                 throw new ForbiddenException(
                     $"Unauthorized. Authorization of '{_requiredLevel}' level is required. You have '{role}' level."
                 );
-            }
-        }
 
         await base.OnActionExecutionAsync(context, next);
     }

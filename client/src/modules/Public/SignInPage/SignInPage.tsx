@@ -68,7 +68,6 @@ export const SignInPage = () => {
                     <Input
                       id="username"
                       placeholder="email@example.com"
-                      type="email"
                       {...field}
                     />
                   </FormControl>

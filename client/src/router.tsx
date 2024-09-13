@@ -53,6 +53,7 @@ import {
   SingleBeneficiaryPage,
 } from './modules/BeneficiaryList';
 import { DashboardPage } from './modules/DashboardPage';
+import { SettingsPage } from './modules/SettingsPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -199,6 +200,8 @@ export const router = createBrowserRouter(
           element={<DynamicRoute component={<MyProfilePage />} />}
         />
       </Route>
+      {/* SuperAdmin */}
+      <Route path={APP_ROUTE.Settings} element={<SettingsPage />} />
 
       {/* Public Pages */}
       <Route
