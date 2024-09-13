@@ -26,7 +26,10 @@ export const UsersPage = () => {
 
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
-  const { data: users, isLoading: queryLoading } = useUsers(pagination);
+  const { data: users, isLoading: queryLoading } = useUsers({
+    ...pagination,
+    filters: { 'role[in]': 'admin|user' },
+  });
 
   const { deleteUser } = useUserMutation();
 
