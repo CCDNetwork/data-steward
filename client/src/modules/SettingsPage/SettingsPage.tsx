@@ -2,7 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
+import { Loader2, Settings } from 'lucide-react';
 
+import { ModeToggle } from '@/components/ModeToggle';
 import { Button } from '@/components/ui/button';
 import { CardFooter } from '@/components/ui/card';
 import {
@@ -18,11 +20,16 @@ import { toast } from '@/components/ui/use-toast';
 import { APP_ROUTE } from '@/helpers/constants';
 import { useAuth } from '@/providers/GlobalProvider';
 import { useSettings, useSettingsMutation } from '@/services/settings/api';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-import { defaultSettingsFormValues } from './const';
 import { SettingsFormData, SettingsFormSchema } from './validations';
-import { Loader2, Settings } from 'lucide-react';
-import { ModeToggle } from '@/components/ModeToggle';
+import { COUNTRIES_LIST, defaultSettingsFormValues } from './const';
 
 export const SettingsPage = () => {
   const { isLoggedIn, user, logoutUser } = useAuth();
@@ -112,7 +119,23 @@ export const SettingsPage = () => {
                   <FormItem>
                     <FormLabel>Deployment Country</FormLabel>
                     <FormControl>
-                      <Input id="country" placeholder="Country" {...field} />
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select country" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {COUNTRIES_LIST.map(({ name, code }) => (
+                            <SelectItem key={code} value={name}>
+                              {name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
