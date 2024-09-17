@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ccd.Server.AdministrativeLevels;
 using Ccd.Server.Beneficiaries;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Deduplication;
@@ -42,6 +43,7 @@ public class CcdContext : DbContext
     public DbSet<Discussion> Discussions { get; set; }
     public DbSet<Template> Templates { get; set; }
     public DbSet<Settings.Settings> Settings { get; set; }
+    public DbSet<AdministrativeRegion> AdministrativeLevels { get; set; }
     public DbSet<Handbook> Handbooks { get; set; }
     public DbSet<BeneficiaryAttributeGroup> BeneficiaryAttributeGroups { get; set; }
     public DbSet<BaBag> BaBags { get; set; }
@@ -50,7 +52,7 @@ public class CcdContext : DbContext
     {
         modelBuilder.Entity<User>().HasData(User.SYSTEM_USER);
 
-        modelBuilder.Entity<Settings.Settings>().HasData(Ccd.Server.Settings.Settings.DEFAULT_SETTINGS);
+        modelBuilder.Entity<Settings.Settings>().HasData(Server.Settings.Settings.DEFAULT_SETTINGS);
 
         modelBuilder.Entity<BeneficiaryAttribute>().HasData(
             new BeneficiaryAttribute
