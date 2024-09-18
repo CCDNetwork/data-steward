@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Ccd.Server.AdministrativeLevels;
+using Ccd.Server.AdministrativeRegions;
 using Ccd.Server.Beneficiaries;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Deduplication;
@@ -43,7 +43,7 @@ public class CcdContext : DbContext
     public DbSet<Discussion> Discussions { get; set; }
     public DbSet<Template> Templates { get; set; }
     public DbSet<Settings.Settings> Settings { get; set; }
-    public DbSet<AdministrativeRegion> AdministrativeLevels { get; set; }
+    public DbSet<AdministrativeRegion> AdministrativeRegions { get; set; }
     public DbSet<Handbook> Handbooks { get; set; }
     public DbSet<BeneficiaryAttributeGroup> BeneficiaryAttributeGroups { get; set; }
     public DbSet<BaBag> BaBags { get; set; }

@@ -11,36 +11,27 @@ using Ccd.Server.Authentication;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
 using Ccd.Server.Notifications;
+using Ccd.Server.Organizations;
+using Ccd.Server.Storage;
 using Ccd.Server.Users;
+using Ccd.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Ccd.Server.Storage;
-using Ccd.Tests.Mocks;
 using Xunit;
-using Ccd.Server.Organizations;
 
 namespace Ccd.Tests;
 
 [Collection("Api")]
 public class ApiFixture
 {
-    public readonly string DEFAULT_PASSWORD = "test1234";
-
-    private readonly TestServer _server;
     private readonly HttpClient _client;
 
-    public class Headers
-    {
-        public string Token { get; set; }
-        public Guid? OrganizationId { get; set; }
-        public string AccessKeyId { get; set; }
-        public string AccessKeySecret { get; set; }
-        public string Language { get; set; }
-    }
+    private readonly TestServer _server;
+    public readonly string DEFAULT_PASSWORD = "test1234";
 
     public ApiFixture()
     {
@@ -88,7 +79,6 @@ public class ApiFixture
         }
 
         if (token != null)
-        {
             if (token.Contains("apiKey="))
             {
                 if (!processedUrl.Contains("?"))
@@ -96,40 +86,26 @@ public class ApiFixture
                 else
                     processedUrl += $"&{token}";
             }
-        }
 
         var request = new HttpRequestMessage(method, processedUrl);
 
         if (payload != null)
         {
             if (payload is MultipartFormDataContent)
-            {
                 request.Content = payload;
-            }
             else
-            {
                 request.Content = new StringContent(
                     Json.Serialize(payload),
                     Encoding.UTF8,
                     "application/json"
                 );
-            }
         }
 
-        if (token != null && !token.Contains("apiKey="))
-        {
-            request.Headers.Add("Authorization", "Bearer " + token);
-        }
+        if (token != null && !token.Contains("apiKey=")) request.Headers.Add("Authorization", "Bearer " + token);
 
-        if (organizationId != null)
-        {
-            request.Headers.Add("organization-id", organizationId.ToString());
-        }
+        if (organizationId != null) request.Headers.Add("organization-id", organizationId.ToString());
 
-        if (language != null)
-        {
-            request.Headers.Add("language", language.ToString());
-        }
+        if (language != null) request.Headers.Add("language", language.ToString());
 
         var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
@@ -150,12 +126,9 @@ public class ApiFixture
                 ? await response.Content.ReadAsStringAsync()
                 : "";
 
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, };
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        if (content == "")
-        {
-            return default(T);
-        }
+        if (content == "") return default;
 
         return JsonSerializer.Deserialize<T>(content, options);
     }
@@ -200,7 +173,7 @@ public class ApiFixture
     {
         var randomGuid = Guid.NewGuid().ToString();
 
-        var context = this.GetCcdContext();
+        var context = GetCcdContext();
 
         var organization = new Organization
         {
@@ -364,7 +337,7 @@ public class ApiFixture
         var form = GetDummyImageForm(name, storageTypeId);
 
         var fileResponse = await Request<FileResponse>(
-            $"/api/v1/storage/files",
+            "/api/v1/storage/files",
             HttpMethod.Post,
             headers,
             form,
@@ -380,15 +353,41 @@ public class ApiFixture
 
         var settings = await context.Settings.FirstAsync();
 
-        settings.DeploymentCountry = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.DeploymentCountry;
-        settings.DeploymentName = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.DeploymentName;
-        settings.AdminLevel1Name = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel1Name;
-        settings.AdminLevel2Name = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel2Name;
-        settings.AdminLevel3Name = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel3Name;
-        settings.AdminLevel4Name = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel4Name;
-        settings.MetabaseUrl = Ccd.Server.Settings.Settings.DEFAULT_SETTINGS.MetabaseUrl;
-        
+        settings.DeploymentCountry = Server.Settings.Settings.DEFAULT_SETTINGS.DeploymentCountry;
+        settings.DeploymentName = Server.Settings.Settings.DEFAULT_SETTINGS.DeploymentName;
+        settings.AdminLevel1Name = Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel1Name;
+        settings.AdminLevel2Name = Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel2Name;
+        settings.AdminLevel3Name = Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel3Name;
+        settings.AdminLevel4Name = Server.Settings.Settings.DEFAULT_SETTINGS.AdminLevel4Name;
+        settings.MetabaseUrl = Server.Settings.Settings.DEFAULT_SETTINGS.MetabaseUrl;
+
         context.Settings.Update(settings);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<Server.AdministrativeRegions.AdministrativeRegion> AddAdministrativeRegion(int level, string name, Guid? parentId)
+    {
+        var context = GetCcdContext();
+
+        var result = context.AdministrativeRegions.Add(new Server.AdministrativeRegions.AdministrativeRegion
+        {
+            Id = Guid.NewGuid(),
+            ParentId = parentId,
+            Level = level,
+            Name = name
+        }).Entity;
+
+        await context.SaveChangesAsync();
+
+        return result;
+    }
+
+    public class Headers
+    {
+        public string Token { get; set; }
+        public Guid? OrganizationId { get; set; }
+        public string AccessKeyId { get; set; }
+        public string AccessKeySecret { get; set; }
+        public string Language { get; set; }
     }
 }

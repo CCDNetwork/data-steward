@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ccd.Server.AdministrativeRegions;
 using Ccd.Server.Authentication;
 using Ccd.Server.Beneficiaries;
 using Ccd.Server.BeneficiaryAttributes;
@@ -166,6 +167,7 @@ public class Startup
         services.AddScoped<TemplateService>();
         services.AddScoped<HandbookService>();
         services.AddScoped<SettingsService>();
+        services.AddScoped<AdministrativeRegionService>();
         services.AddScoped<IStorageService, StorageService>();
         services.AddScoped<INotificationService, NotificationService>();
 

@@ -25,6 +25,9 @@ namespace Ccd.Server.Migrations
                 {
                     table.PrimaryKey("pk_administrative_region", x => x.id);
                 });
+            
+            migrationBuilder.Sql("create index idx_administrative_region_parent_id on administrative_region(parent_id);");
+            migrationBuilder.Sql("create index idx_administrative_region_name on administrative_region(name);");
         }
 
         /// <inheritdoc />

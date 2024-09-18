@@ -1,7 +1,7 @@
 ﻿using System;
 using Ccd.Server.Helpers;
 
-namespace Ccd.Server.AdministrativeLevels;
+namespace Ccd.Server.AdministrativeRegions;
 
 public class AdministrativeRegion
 {
