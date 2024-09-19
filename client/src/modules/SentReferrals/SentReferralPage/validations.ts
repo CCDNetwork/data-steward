@@ -26,6 +26,16 @@ const OrganizationSchema = z.object(
   }
 );
 
+const AdminLevelSchema = z
+  .object({
+    id: z.string(),
+    parentId: z.string().optional(),
+    level: z.number(),
+    name: z.string(),
+    code: z.string().optional(),
+  })
+  .nullable();
+
 const FocalPointSchema = z
   .object(
     {
@@ -75,10 +85,17 @@ export const SentReferralSchema = z
     gender: z.string().min(1, { message: 'Gender required' }),
     taxId: safeHtmlString.optional(),
     address: safeHtmlString,
-    oblast: z.string(),
-    ryon: z.string(),
-    hromada: z.string(),
-    settlement: z.string(),
+
+    oblast: safeHtmlString,
+    ryon: safeHtmlString,
+    hromada: safeHtmlString,
+    settlement: safeHtmlString,
+
+    administrativeRegion1: AdminLevelSchema,
+    administrativeRegion2: AdminLevelSchema,
+    administrativeRegion3: AdminLevelSchema,
+    administrativeRegion4: AdminLevelSchema,
+
     email: safeHtmlString.optional(),
     phone: safeHtmlString.optional(),
     contactPreference: z.string(),

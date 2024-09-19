@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Ccd.Server.AdministrativeRegions;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
@@ -46,6 +47,18 @@ public class Referral : UserChangeTracked
     public string Restrictions { get; set; }
     public bool? Consent { get; set; }
 
+    public AdministrativeRegion AdministrativeRegion1 { get; set; }
+    public Guid? AdministrativeRegion1Id { get; set; }
+
+    public AdministrativeRegion AdministrativeRegion2 { get; set; }
+    public Guid? AdministrativeRegion2Id { get; set; }
+
+    public AdministrativeRegion AdministrativeRegion3 { get; set; }
+    public Guid? AdministrativeRegion3Id { get; set; }
+
+    public AdministrativeRegion AdministrativeRegion4 { get; set; }
+    public Guid? AdministrativeRegion4Id { get; set; }
+
     // Reason for refferal
     public string Required { get; set; }
     public string NeedForService { get; set; }
@@ -62,14 +75,18 @@ public class Referral : UserChangeTracked
     public string CaregiverNote { get; set; }
 
     // Internal
-    [ForeignKey("User")]
-    public Guid? FocalPointId { get; set; }
+    [ForeignKey("User")] public Guid? FocalPointId { get; set; }
+
     public User FocalPoint { get; set; }
     public string Status { get; set; }
     public bool IsDraft { get; set; }
     public bool IsRejected { get; set; }
     [Column(TypeName = "jsonb")] public List<Guid> FileIds { get; set; }
-    [ForeignKey("Organization"), Required] public Guid OrganizationCreatedId { get; set; }
+
+    [ForeignKey("Organization")]
+    [Required]
+    public Guid OrganizationCreatedId { get; set; }
+
     public Organization OrganizationCreated { get; set; }
     public string CaseNumber { get; set; }
 }

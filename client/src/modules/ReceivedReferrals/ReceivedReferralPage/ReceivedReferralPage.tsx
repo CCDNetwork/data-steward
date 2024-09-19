@@ -188,10 +188,21 @@ export const ReceivedReferralPage = () => {
       gender: receivedReferralData?.gender || 'N/A',
       taxId: receivedReferralData?.taxId || 'N/A',
       address: receivedReferralData?.address || 'N/A',
+
       oblast: receivedReferralData?.oblast || 'N/A',
       ryon: receivedReferralData?.ryon || 'N/A',
       hromada: receivedReferralData?.hromada || 'N/A',
       settlement: receivedReferralData?.settlement || 'N/A',
+
+      administrativeRegion1:
+        receivedReferralData?.administrativeRegion1?.name || 'N/A',
+      administrativeRegion2:
+        receivedReferralData?.administrativeRegion2?.name || 'N/A',
+      administrativeRegion3:
+        receivedReferralData?.administrativeRegion3?.name || 'N/A',
+      administrativeRegion4:
+        receivedReferralData?.administrativeRegion4?.name || 'N/A',
+
       email: receivedReferralData?.email || 'N/A',
       phone: receivedReferralData?.phone || 'N/A',
       contactPreference: receivedReferralData?.contactPreference || 'N/A',
@@ -514,7 +525,7 @@ export const ReceivedReferralPage = () => {
                     {deploymentSettings?.adminLevel1Name ?? 'Admin Level 1'}
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                    {receivingReferral.settlement}
+                    {receivingReferral.administrativeRegion1}
                   </dd>
                 </div>
                 <div className="sm:col-span-1">
@@ -522,7 +533,7 @@ export const ReceivedReferralPage = () => {
                     {deploymentSettings?.adminLevel2Name ?? 'Admin Level 2'}
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                    {receivingReferral.ryon}
+                    {receivingReferral.administrativeRegion2}
                   </dd>
                 </div>
                 <div className="sm:col-span-1">
@@ -530,7 +541,7 @@ export const ReceivedReferralPage = () => {
                     {deploymentSettings?.adminLevel3Name ?? 'Admin Level 3'}
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                    {receivingReferral.hromada}
+                    {receivingReferral.administrativeRegion3}
                   </dd>
                 </div>
                 <div className="sm:col-span-1">
@@ -538,7 +549,7 @@ export const ReceivedReferralPage = () => {
                     {deploymentSettings?.adminLevel4Name ?? 'Admin Level 4'}
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                    {receivingReferral.settlement}
+                    {receivingReferral.administrativeRegion4}
                   </dd>
                 </div>
                 <div className="sm:col-span-1">

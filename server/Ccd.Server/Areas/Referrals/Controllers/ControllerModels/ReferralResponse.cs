@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Ccd.Server.AdministrativeRegions;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
 using Ccd.Server.Storage;
@@ -36,10 +37,25 @@ public class ReferralResponse
     public string Gender { get; set; }
     public string TaxId { get; set; }
     public string Address { get; set; }
+
     [QuickSearchable] public string Oblast { get; set; }
     [QuickSearchable] public string Ryon { get; set; }
     [QuickSearchable] public string Hromada { get; set; }
     [QuickSearchable] public string Settlement { get; set; }
+
+    [JsonIgnore] public Guid? AdministrativeRegion1Id { get; set; }
+
+    [JsonIgnore] public Guid? AdministrativeRegion2Id { get; set; }
+
+    [JsonIgnore] public Guid? AdministrativeRegion3Id { get; set; }
+
+    [JsonIgnore] public Guid? AdministrativeRegion4Id { get; set; }
+
+    public AdministrativeRegionResponse AdministrativeRegion1 { get; set; }
+    public AdministrativeRegionResponse AdministrativeRegion2 { get; set; }
+    public AdministrativeRegionResponse AdministrativeRegion3 { get; set; }
+    public AdministrativeRegionResponse AdministrativeRegion4 { get; set; }
+
     public string Email { get; set; }
     public string Phone { get; set; }
     public string ContactPreference { get; set; }

@@ -47,14 +47,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReferralDiscussions } from '@/components/ReferralDiscussions';
-import { Combobox } from '@/components/Combobox';
-import {
-  useUkraineAdminLevel1Data,
-  useUkraineAdminLevel2Data,
-} from '@/services/integrations';
 import { useAuth } from '@/providers/GlobalProvider';
-import admin_3 from '@/local-json/admin_3.json';
-import admin_4 from '@/local-json/admin_4.json';
 
 import { dataToSentReferralFormData } from './form-transformation';
 import { SentReferralFormData, SentReferralSchema } from './validations';
@@ -65,10 +58,11 @@ import { SentReferralPageViewOnly } from './components/SentReferralPageViewOnly'
 import { useSentReferralsProvider } from '../SentReferralsProvider';
 import { StatusReasonModal } from '@/components/StatusReasonModal';
 import { OrgActivity } from '@/services/organizations';
+import { useAdminRegionsInfinite } from '@/services/administrativeRegions';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
-  const { hdxHapiAppIdentifier, deploymentSettings } = useAuth();
+  const { deploymentSettings } = useAuth();
   const { id: sentReferralId, isCreate } = useIdFromParams();
   const { viewOnlyEnabled, setViewOnlyEnabled } = useSentReferralsProvider();
   const [activeTab, setActiveTab] = useState<
@@ -82,24 +76,6 @@ export const SentReferralPage = () => {
       setViewOnlyEnabled(false);
     }
   }, [isCreate, setViewOnlyEnabled]);
-
-  const {
-    data: uaAdminLvl1Data,
-    isFetched: adminLvl1Fetched,
-    isFetching: adminLvl1Fetching,
-    isLoading: ukraineAdminLevel1DataLoading,
-  } = useUkraineAdminLevel1Data({
-    APP_IDENTIFIER: hdxHapiAppIdentifier,
-  });
-
-  const {
-    data: uaAdminLvl2Data,
-    isFetched: adminLvl2Fetched,
-    isFetching: adminLvl2Fetching,
-    isLoading: ukraineAdminLevel2DataLoading,
-  } = useUkraineAdminLevel2Data({
-    APP_IDENTIFIER: hdxHapiAppIdentifier,
-  });
 
   const { data: sentReferralData, isLoading: queryLoading } = useReferral({
     id: sentReferralId,
@@ -126,6 +102,9 @@ export const SentReferralPage = () => {
   const currentFormCaregiverContactPreference = watch(
     'caregiverContactPreference'
   );
+  const currentFormAdministrativeRegion1 = watch('administrativeRegion1');
+  const currentFormAdministrativeRegion2 = watch('administrativeRegion2');
+  const currentFormAdministrativeRegion3 = watch('administrativeRegion3');
 
   useEffect(() => {
     if (sentReferralData) {
@@ -330,12 +309,7 @@ export const SentReferralPage = () => {
           ? 'Make Referral'
           : `Case  ${sentReferralData?.caseNumber ?? '-'}`
       }
-      isLoading={
-        (queryLoading ||
-          (adminLvl1Fetching && !adminLvl1Fetched) ||
-          (adminLvl2Fetching && !adminLvl2Fetched)) &&
-        !isCreate
-      }
+      isLoading={queryLoading && !isCreate}
       breadcrumbs={[
         { href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' },
         {
@@ -762,67 +736,73 @@ export const SentReferralPage = () => {
                   />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {adminLvl1Fetched && !ukraineAdminLevel1DataLoading && (
-                      <Combobox
+                    <AsyncSelect
+                      label={
+                        deploymentSettings?.adminLevel1Name ?? 'Admin Level 1'
+                      }
+                      name="administrativeRegion1"
+                      control={control}
+                      useInfiniteQueryFunction={useAdminRegionsInfinite}
+                      queryFilters={{ level: '1' }}
+                      labelKey="name"
+                      valueKey="name"
+                      disabled={
+                        viewOnlyEnabled || !!watch('administrativeRegion2')
+                      }
+                    />
+
+                    {currentFormAdministrativeRegion1 && (
+                      <AsyncSelect
                         label={
-                          deploymentSettings?.adminLevel1Name ?? 'Admin Level 1'
+                          deploymentSettings?.adminLevel2Name ?? 'Admin Level 2'
                         }
-                        name="oblast"
+                        name="administrativeRegion2"
                         control={control}
-                        options={uaAdminLvl1Data!.map((i) => ({
-                          value: i.name,
-                          label: i.name,
-                        }))}
-                        disabled={viewOnlyEnabled}
+                        useInfiniteQueryFunction={useAdminRegionsInfinite}
+                        queryFilters={{
+                          level: '2',
+                          parentId: currentFormAdministrativeRegion1?.id,
+                        }}
+                        labelKey="name"
+                        valueKey="name"
+                        disabled={
+                          viewOnlyEnabled || !!watch('administrativeRegion3')
+                        }
                       />
                     )}
-                    {adminLvl2Fetched &&
-                      !ukraineAdminLevel2DataLoading &&
-                      watch('oblast') && (
-                        <Combobox
-                          label={
-                            deploymentSettings?.adminLevel2Name ??
-                            'Admin Level 2'
-                          }
-                          name="ryon"
-                          control={control}
-                          options={uaAdminLvl2Data!
-                            .filter((i) => i.admin1Name === watch('oblast'))
-                            .map((i) => ({ value: i.name, label: i.name }))}
-                          disabled={viewOnlyEnabled}
-                        />
-                      )}
-                    {watch('ryon') && (
-                      <Combobox
+                    {currentFormAdministrativeRegion2 && (
+                      <AsyncSelect
                         label={
                           deploymentSettings?.adminLevel3Name ?? 'Admin Level 3'
                         }
-                        name="hromada"
+                        name="administrativeRegion3"
                         control={control}
-                        options={admin_3
-                          .filter((i) => i.admin2_name === watch('ryon'))
-                          .map((i, index) => ({
-                            value: i.name,
-                            label: i.name,
-                            key: index,
-                          }))}
-                        disabled={viewOnlyEnabled}
+                        useInfiniteQueryFunction={useAdminRegionsInfinite}
+                        queryFilters={{
+                          level: '3',
+                          parentId: currentFormAdministrativeRegion2?.id,
+                        }}
+                        labelKey="name"
+                        valueKey="name"
+                        disabled={
+                          viewOnlyEnabled || !!watch('administrativeRegion4')
+                        }
                       />
                     )}
-                    {watch('hromada') && watch('ryon') && (
-                      <Combobox
+                    {currentFormAdministrativeRegion3 && (
+                      <AsyncSelect
                         label={
                           deploymentSettings?.adminLevel4Name ?? 'Admin Level 4'
                         }
-                        name="settlement"
+                        name="administrativeRegion4"
                         control={control}
-                        options={admin_4
-                          .filter((i) => i.admin3_name === watch('hromada'))
-                          .map((i, index) => ({
-                            value: i.name,
-                            label: i.name,
-                            key: index,
-                          }))}
+                        useInfiniteQueryFunction={useAdminRegionsInfinite}
+                        queryFilters={{
+                          level: '4',
+                          parentId: currentFormAdministrativeRegion3?.id,
+                        }}
+                        labelKey="name"
+                        valueKey="name"
                         disabled={viewOnlyEnabled}
                       />
                     )}

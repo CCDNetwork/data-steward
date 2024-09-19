@@ -2,6 +2,7 @@ import { Organization, OrganizationActivity } from '@/services/organizations';
 
 import { User } from '../users';
 import { StorageFile } from '../storage';
+import { AdministrativeRegion } from '../administrativeRegions/types';
 
 export interface Referral {
   caseNumber: string;
@@ -27,6 +28,17 @@ export interface Referral {
   ryon: string;
   hromada: string;
   settlement: string;
+
+  administrativeRegion1Id: string;
+  administrativeRegion2Id: string;
+  administrativeRegion3Id: string;
+  administrativeRegion4Id: string;
+
+  administrativeRegion1: AdministrativeRegion | null;
+  administrativeRegion2: AdministrativeRegion | null;
+  administrativeRegion3: AdministrativeRegion | null;
+  administrativeRegion4: AdministrativeRegion | null;
+
   email: string;
   phone: string;
   contactPreference: string;

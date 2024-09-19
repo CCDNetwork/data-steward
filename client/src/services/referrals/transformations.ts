@@ -8,6 +8,7 @@ import {
 import { Referral, ReferralUser } from './types';
 import { resToUser } from '../users';
 import { resToStorageFile } from '../storage';
+import { resToAdministrativeRegion } from '../administrativeRegions/transformations';
 
 export const resToReferral = (res: any): Referral => {
   return {
@@ -69,6 +70,22 @@ export const resToReferral = (res: any): Referral => {
     isRejected: res.isRejected ?? false,
     createdAt: res.createdAt ? new Date(res.createdAt) : null,
     updatedAt: res.updatedAt ? new Date(res.updatedAt) : null,
+    administrativeRegion1: res.administrativeRegion1
+      ? resToAdministrativeRegion(res.administrativeRegion1)
+      : null,
+    administrativeRegion2: res.administrativeRegion2
+      ? resToAdministrativeRegion(res.administrativeRegion2)
+      : null,
+    administrativeRegion3: res.administrativeRegion3
+      ? resToAdministrativeRegion(res.administrativeRegion3)
+      : null,
+    administrativeRegion4: res.administrativeRegion4
+      ? resToAdministrativeRegion(res.administrativeRegion4)
+      : null,
+    administrativeRegion1Id: res.administrativeRegion1Id ?? '',
+    administrativeRegion2Id: res.administrativeRegion2Id ?? '',
+    administrativeRegion3Id: res.administrativeRegion3Id ?? '',
+    administrativeRegion4Id: res.administrativeRegion4Id ?? '',
   };
 };
 
@@ -96,6 +113,20 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
     ryon: data.ryon,
     hromada: data.hromada,
     settlement: data.settlement,
+
+    administrativeRegion1Id: data.administrativeRegion1
+      ? data.administrativeRegion1?.id
+      : '',
+    administrativeRegion2Id: data.administrativeRegion2
+      ? data.administrativeRegion2?.id
+      : '',
+    administrativeRegion3Id: data.administrativeRegion3
+      ? data.administrativeRegion3?.id
+      : '',
+    administrativeRegion4Id: data.administrativeRegion4
+      ? data.administrativeRegion4?.id
+      : '',
+
     email: data.email,
     phone: data.phone,
     contactPreference: data.contactPreference,

@@ -19,9 +19,8 @@ import { LocalStorage } from '@/helpers/localStorage';
 import { Organization } from '@/services/organizations';
 import { useOrganizationMe } from '@/services/organizations/api';
 import { useUserMe } from '@/services/users/api';
-import { useHdxHapiGenerateAppIdentifier } from '@/services/integrations';
 import { Settings } from '@/services/settings/types';
-import { useSettings } from '@/services/settings/api';
+import { useSettings } from '@/services/settings';
 
 const GlobalContext = createContext<{
   isLoggedIn: boolean;
@@ -30,7 +29,6 @@ const GlobalContext = createContext<{
   collectionNotFound: boolean;
   token: string | null;
   isOrganizationQueryLoading: boolean;
-  hdxHapiAppIdentifier: string;
   deploymentSettings: Settings | null;
   loginUser: (authData: AuthData) => void;
   logoutUser: () => void;
@@ -44,7 +42,6 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
   const queryClient = useQueryClient();
   const [isLoggedIn, setIsLoggedIn] = useState(!!LocalStorage.getToken());
   const [user, setUser] = useState<User>(LocalStorage.getUser());
-  const [hdxHapiAppIdentifier, setHdxHapiAppIdentifier] = useState<string>('');
   const [organization, setOrganization] = useState<Organization | null>(
     LocalStorage.getOrganization()
   );
@@ -66,11 +63,6 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     data: loggedInOrganization,
     isLoading: isOrganizationQueryLoading,
   } = useOrganizationMe({ queryEnabled: false });
-
-  const { data: hdxApiData } = useHdxHapiGenerateAppIdentifier({
-    application: 'CCD_DATA_PORTAL',
-    email: 'me@tin.fyi',
-  });
 
   const logoutUser = useCallback(() => {
     api.defaults.headers.common.Authorization = '';
@@ -153,7 +145,6 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
     if (loggedInUser) {
       LocalStorage.setUser(loggedInUser);
       setUser(loggedInUser);
-      setHdxHapiAppIdentifier(hdxApiData?.encoded_app_identifier ?? '');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUser]);
@@ -174,7 +165,6 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
       token,
       organization,
       isOrganizationQueryLoading,
-      hdxHapiAppIdentifier,
       deploymentSettings,
       loginUser,
       logoutUser,
@@ -190,7 +180,6 @@ export const GlobalProvider = ({ children = <Outlet /> }: Props) => {
       collectionNotFound,
       token,
       isOrganizationQueryLoading,
-      hdxHapiAppIdentifier,
       deploymentSettings,
       loginUser,
       logoutUser,
@@ -214,7 +203,6 @@ export const useAuth = () => {
     organization,
     user,
     token,
-    hdxHapiAppIdentifier,
     deploymentSettings,
     updateOrganization,
     loginUser,
@@ -227,7 +215,6 @@ export const useAuth = () => {
     user,
     token,
     organization,
-    hdxHapiAppIdentifier,
     deploymentSettings,
     loginUser,
     logoutUser,

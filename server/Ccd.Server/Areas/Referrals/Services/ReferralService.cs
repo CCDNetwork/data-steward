@@ -1,29 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+using Ccd.Server.AdministrativeRegions;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
-using Ccd.Server.Users;
 using Ccd.Server.Organizations;
-using System.Linq;
 using Ccd.Server.Storage;
-using System.Collections.Generic;
-using DocumentFormat.OpenXml.Drawing;
-using System.Reflection;
+using Ccd.Server.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Referrals;
 
 public class ReferralService
 {
-    private readonly IMapper _mapper;
+    private readonly AdministrativeRegionService _administrativeRegionService;
     private readonly CcdContext _context;
-    private readonly IStorageService _storageService;
-    private readonly UserService _userService;
+    private readonly IMapper _mapper;
     private readonly OrganizationService _organizationService;
 
     private readonly string _selectSql =
-        $@"
+        @"
              SELECT DISTINCT ON (r.id)
                  r.*
              FROM
@@ -35,17 +33,16 @@ public class ReferralService
                 END)
                 AND (@id is null OR r.id = @id)";
 
-    private object getSelectSqlParams(Guid? id = null, Guid? organizationId = null, bool received = false)
-    {
-        return new { id, organizationId, received };
-    }
+    private readonly IStorageService _storageService;
+    private readonly UserService _userService;
 
     public ReferralService(
         IMapper mapper,
         CcdContext context,
         IStorageService storageService,
         UserService userService,
-        OrganizationService organizationService
+        OrganizationService organizationService,
+        AdministrativeRegionService administrativeRegionService
     )
     {
         _mapper = mapper;
@@ -53,9 +50,16 @@ public class ReferralService
         _storageService = storageService;
         _userService = userService;
         _organizationService = organizationService;
+        _administrativeRegionService = administrativeRegionService;
     }
 
-    public async Task<PagedApiResponse<ReferralResponse>> GetReferralsApi(Guid organizationId, RequestParameters requestParameters = null, bool received = false)
+    private object getSelectSqlParams(Guid? id = null, Guid? organizationId = null, bool received = false)
+    {
+        return new { id, organizationId, received };
+    }
+
+    public async Task<PagedApiResponse<ReferralResponse>> GetReferralsApi(Guid organizationId,
+        RequestParameters requestParameters = null, bool received = false)
     {
         return await PagedApiResponse<ReferralResponse>.GetFromSql(
             _context,
@@ -83,16 +87,19 @@ public class ReferralService
     public async Task<Referral> GetReferralById(Guid organizationId, Guid id)
     {
         return await _context.Referrals.Where(e =>
-            (e.OrganizationCreatedId == organizationId) ||
-            (e.OrganizationReferredToId == organizationId)).FirstOrDefaultAsync(e => e.Id == id);
+            e.OrganizationCreatedId == organizationId ||
+            e.OrganizationReferredToId == organizationId).FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task<ReferralCaseNumberResponse> GetReferralByCaseNumberApi(string caseNumber)
     {
-        var refferal = await _context.Referrals.FirstOrDefaultAsync(e => e.CaseNumber == caseNumber) ?? throw new NotFoundException("Referral not found.");
+        var refferal = await _context.Referrals.FirstOrDefaultAsync(e => e.CaseNumber == caseNumber) ??
+                       throw new NotFoundException("Referral not found.");
         var referralResponse = _mapper.Map<ReferralCaseNumberResponse>(refferal);
-        var organizationReffereTo = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referralResponse.OrganizationReferredToId);
-        var organizationCreated = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referralResponse.OrganizationCreatedId);
+        var organizationReffereTo =
+            await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referralResponse.OrganizationReferredToId);
+        var organizationCreated =
+            await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referralResponse.OrganizationCreatedId);
         referralResponse.OrganizationReferredTo = _mapper.Map<OrganizationResponse>(organizationReffereTo);
         referralResponse.OrganizationCreated = _mapper.Map<OrganizationResponse>(organizationCreated);
 
@@ -103,8 +110,9 @@ public class ReferralService
     {
         if (!model.IsDraft)
         {
-
-            var referredOrganization = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == model.OrganizationReferredToId) ?? throw new NotFoundException("Organization not found.");
+            var referredOrganization =
+                await _context.Organizations.FirstOrDefaultAsync(e => e.Id == model.OrganizationReferredToId) ??
+                throw new NotFoundException("Organization not found.");
         }
 
         var referral = _mapper.Map<Referral>(model);
@@ -135,7 +143,8 @@ public class ReferralService
 
     public async Task<Discussion> AddDiscussion(Guid referralId, DiscussionAddRequest model)
     {
-        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ?? throw new NotFoundException("Referral not found.");
+        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ??
+                       throw new NotFoundException("Referral not found.");
         var discussion = _mapper.Map<Discussion>(model);
         discussion.ReferralId = referralId;
 
@@ -147,7 +156,8 @@ public class ReferralService
 
     public async Task<Discussion> AddDiscussionBot(Guid referralId, DiscussionAddRequest model)
     {
-        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ?? throw new NotFoundException("Referral not found.");
+        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ??
+                       throw new NotFoundException("Referral not found.");
         var discussion = _mapper.Map<Discussion>(model);
         discussion.ReferralId = referralId;
         discussion.IsBot = true;
@@ -160,7 +170,8 @@ public class ReferralService
 
     public async Task<DiscussionResponse> GetDiscussionApi(Guid id)
     {
-        var discussion = await _context.Discussions.FirstOrDefaultAsync(e => e.Id == id) ?? throw new NotFoundException("Discussion not found.");
+        var discussion = await _context.Discussions.FirstOrDefaultAsync(e => e.Id == id) ??
+                         throw new NotFoundException("Discussion not found.");
         var discussionResponse = _mapper.Map<DiscussionResponse>(discussion);
         var userResponse = await _userService.GetUserApi(id: discussion.UserCreatedId);
         userResponse.Permissions = null;
@@ -171,10 +182,11 @@ public class ReferralService
 
     public async Task<List<DiscussionResponse>> GetDiscussionsApi(Guid referralId)
     {
-        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ?? throw new NotFoundException("Referral not found.");
+        var referral = await _context.Referrals.FirstOrDefaultAsync(e => e.Id == referralId) ??
+                       throw new NotFoundException("Referral not found.");
         var discussions = await _context.Discussions.Where(e => e.ReferralId == referralId).ToListAsync();
         var discussionsResponse = _mapper.Map<List<DiscussionResponse>>(discussions);
-        for (int i = 0; i < discussionsResponse.Count; i++)
+        for (var i = 0; i < discussionsResponse.Count; i++)
         {
             var userResponse = await _userService.GetUserApi(id: discussions[i].UserCreatedId);
             userResponse.Permissions = null;
@@ -211,7 +223,8 @@ public class ReferralService
                 var activities = await _context.Activities.Where(e => ((List<Guid>)value).Contains(e.Id)).ToListAsync();
                 var activitiesTitles = activities.Select(e => e.Title);
                 value = string.Join(", ", activitiesTitles);
-                var oldActivities = await _context.Activities.Where(e => ((List<Guid>)oldValue).Contains(e.Id)).ToListAsync();
+                var oldActivities = await _context.Activities.Where(e => ((List<Guid>)oldValue).Contains(e.Id))
+                    .ToListAsync();
                 var oldActivitiesTitles = oldActivities.Select(e => e.Title);
                 oldValue = string.Join(", ", oldActivitiesTitles);
                 filedName = "Subactivities";
@@ -226,6 +239,7 @@ public class ReferralService
                     var oldUser = await _context.Users.FirstOrDefaultAsync(e => e.Id == (Guid)oldValue);
                     oldValue = oldUser.FirstName + " " + oldUser.LastName;
                 }
+
                 filedName = "FocalPoint";
             }
 
@@ -238,19 +252,19 @@ public class ReferralService
     private async Task resolveDependencies(ReferralResponse referral)
     {
         if (!referral.IsDraft)
-        {
+            referral.OrganizationReferredTo =
+                await _organizationService.GetOrganizationApi(referral.OrganizationReferredToId);
 
-            referral.OrganizationReferredTo = await _organizationService.GetOrganizationApi(referral.OrganizationReferredToId);
-        }
-
-        var organizationCreated = await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referral.OrganizationCreatedId);
+        var organizationCreated =
+            await _context.Organizations.FirstOrDefaultAsync(e => e.Id == referral.OrganizationCreatedId);
         var userCreated = await _context.Users.FirstOrDefaultAsync(e => e.Id == referral.UserCreatedId);
         referral.OrganizationCreated = _mapper.Map<OrganizationResponse>(organizationCreated);
         referral.UserCreated = _mapper.Map<UserResponse>(userCreated);
 
         if (referral.SubactivitiesIds != null && referral.SubactivitiesIds.Count > 0)
         {
-            var activities = await _context.Activities.Where(e => referral.SubactivitiesIds.Contains(e.Id)).ToListAsync();
+            var activities = await _context.Activities.Where(e => referral.SubactivitiesIds.Contains(e.Id))
+                .ToListAsync();
             referral.Subactivities = _mapper.Map<List<Activity>>(activities);
         }
 
@@ -261,9 +275,22 @@ public class ReferralService
         }
 
         if (referral.FileIds != null && referral.FileIds.Count > 0)
-        {
             referral.Files = await _storageService.GetFilesApiById(referral.FileIds);
-        }
 
+        if (referral.AdministrativeRegion1Id != null)
+            referral.AdministrativeRegion1 =
+                await _administrativeRegionService.GetAdministrativeRegionApi(referral.AdministrativeRegion1Id.Value);
+
+        if (referral.AdministrativeRegion2Id != null)
+            referral.AdministrativeRegion2 =
+                await _administrativeRegionService.GetAdministrativeRegionApi(referral.AdministrativeRegion2Id.Value);
+
+        if (referral.AdministrativeRegion3Id != null)
+            referral.AdministrativeRegion3 =
+                await _administrativeRegionService.GetAdministrativeRegionApi(referral.AdministrativeRegion3Id.Value);
+
+        if (referral.AdministrativeRegion4Id != null)
+            referral.AdministrativeRegion4 =
+                await _administrativeRegionService.GetAdministrativeRegionApi(referral.AdministrativeRegion4Id.Value);
     }
 }

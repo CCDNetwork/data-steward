@@ -41,10 +41,21 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
       gender: sentReferralData?.gender || 'N/A',
       taxId: sentReferralData?.taxId || 'N/A',
       address: sentReferralData?.address || 'N/A',
+
       oblast: sentReferralData?.oblast || 'N/A',
       ryon: sentReferralData?.ryon || 'N/A',
       hromada: sentReferralData?.hromada || 'N/A',
       settlement: sentReferralData?.settlement || 'N/A',
+
+      administrativeRegion1:
+        sentReferralData?.administrativeRegion1?.name || 'N/A',
+      administrativeRegion2:
+        sentReferralData?.administrativeRegion2?.name || 'N/A',
+      administrativeRegion3:
+        sentReferralData?.administrativeRegion3?.name || 'N/A',
+      administrativeRegion4:
+        sentReferralData?.administrativeRegion4?.name || 'N/A',
+
       email: sentReferralData?.email || 'N/A',
       phone: sentReferralData?.phone || 'N/A',
       contactPreference: sentReferralData?.contactPreference || 'N/A',
@@ -272,7 +283,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
                 {deploymentSettings?.adminLevel1Name ?? 'Admin Level 1'}
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                {referralData.oblast}
+                {referralData.administrativeRegion1}
               </dd>
             </div>
             <div className="sm:col-span-1">
@@ -280,7 +291,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
                 {deploymentSettings?.adminLevel2Name ?? 'Admin Level 2'}
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                {referralData.ryon}
+                {referralData.administrativeRegion2}
               </dd>
             </div>
             <div className="sm:col-span-1">
@@ -288,7 +299,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
                 {deploymentSettings?.adminLevel3Name ?? 'Admin Level 3'}
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                {referralData.hromada}
+                {referralData.administrativeRegion3}
               </dd>
             </div>
             <div className="sm:col-span-1">
@@ -296,7 +307,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
                 {deploymentSettings?.adminLevel4Name ?? 'Admin Level 4'}
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
-                {referralData.settlement}
+                {referralData.administrativeRegion4}
               </dd>
             </div>
             <div className="sm:col-span-1">

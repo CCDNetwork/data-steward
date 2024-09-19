@@ -24,10 +24,17 @@ export const dataToSentReferralFormData = (
     gender: data.gender,
     taxId: data.taxId,
     address: data.address,
+
     oblast: data.oblast,
     ryon: data.ryon,
     hromada: data.hromada,
     settlement: data.settlement,
+
+    administrativeRegion1: data.administrativeRegion1,
+    administrativeRegion2: data.administrativeRegion2,
+    administrativeRegion3: data.administrativeRegion3,
+    administrativeRegion4: data.administrativeRegion4,
+
     email: data.email,
     phone: data.phone,
     contactPreference: data.contactPreference,

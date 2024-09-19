@@ -15,10 +15,17 @@ export const defaultSentReferralFormFormValues = {
   gender: '',
   taxId: '',
   address: '',
+
   oblast: '',
   ryon: '',
   hromada: '',
   settlement: '',
+
+  administrativeRegion1: null,
+  administrativeRegion2: null,
+  administrativeRegion3: null,
+  administrativeRegion4: null,
+
   email: '',
   phone: '',
   contactPreference: 'email',

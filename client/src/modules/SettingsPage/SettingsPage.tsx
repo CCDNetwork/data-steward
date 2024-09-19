@@ -19,7 +19,6 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
 import { APP_ROUTE } from '@/helpers/constants';
 import { useAuth } from '@/providers/GlobalProvider';
-import { useSettings, useSettingsMutation } from '@/services/settings/api';
 import {
   Select,
   SelectContent,
@@ -30,6 +29,7 @@ import {
 
 import { SettingsFormData, SettingsFormSchema } from './validations';
 import { COUNTRIES_LIST, defaultSettingsFormValues } from './const';
+import { useSettings, useSettingsMutation } from '@/services/settings';
 
 export const SettingsPage = () => {
   const { isLoggedIn, user, logoutUser } = useAuth();

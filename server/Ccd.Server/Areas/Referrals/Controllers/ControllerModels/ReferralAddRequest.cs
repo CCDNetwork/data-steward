@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Ccd.Server.Referrals;
 
@@ -28,10 +27,17 @@ public class ReferralAddRequest
     public string Gender { get; set; }
     public string TaxId { get; set; }
     public string Address { get; set; }
+
     public string Oblast { get; set; }
     public string Ryon { get; set; }
     public string Hromada { get; set; }
     public string Settlement { get; set; }
+
+    public Guid? AdministrativeRegion1Id { get; set; }
+    public Guid? AdministrativeRegion2Id { get; set; }
+    public Guid? AdministrativeRegion3Id { get; set; }
+    public Guid? AdministrativeRegion4Id { get; set; }
+
     public string Email { get; set; }
     public string Phone { get; set; }
     public string ContactPreference { get; set; }
@@ -58,11 +64,3 @@ public class ReferralAddRequest
     public bool IsDraft { get; set; }
     public Guid? FocalPointId { get; set; }
 }
-
-
-
-
-
-
-
-

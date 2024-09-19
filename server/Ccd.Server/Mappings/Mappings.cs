@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using AutoMapper;
+using Ccd.Server.AdministrativeRegions;
 using Ccd.Server.Beneficiaries;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Deduplication;
@@ -67,6 +68,8 @@ public class Mappings : Profile
         // Settings mappings
         CreateMap<SettingsUpdateRequest, Settings.Settings>();
         CreateMap<Settings.Settings, SettingsResponse>();
+
+        CreateMap<AdministrativeRegion, AdministrativeRegionResponse>();
     }
 
     private static DateTime? ParseDate(string date)
