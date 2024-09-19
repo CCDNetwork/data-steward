@@ -20,6 +20,7 @@ export const AsyncSelect = <T,>({
   disabled,
   queryFilters,
   customEndpoint,
+  useSearchTextQueryFilter,
   getOptionLabel = (option) => option[labelKey] as string,
   useInfiniteQueryFunction,
   onChange,
@@ -39,8 +40,10 @@ export const AsyncSelect = <T,>({
       ...initialPagination,
       pageSize: 25,
       page: 1,
-      search: debouncedSearch,
-      queryFilters,
+      search: !useSearchTextQueryFilter ? debouncedSearch : '',
+      queryFilters: useSearchTextQueryFilter
+        ? { ...queryFilters, searchText: debouncedSearch }
+        : queryFilters,
     },
     wasOpened,
     customEndpoint
@@ -208,4 +211,5 @@ export type AsyncSelectProps<T> = {
   defaultValue?: any;
   queryFilters?: Record<string, string>;
   requiredField?: boolean;
+  useSearchTextQueryFilter?: boolean;
 };

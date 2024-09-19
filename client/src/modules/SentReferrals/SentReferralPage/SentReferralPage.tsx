@@ -743,6 +743,7 @@ export const SentReferralPage = () => {
                       name="administrativeRegion1"
                       control={control}
                       useInfiniteQueryFunction={useAdminRegionsInfinite}
+                      useSearchTextQueryFilter
                       queryFilters={{ level: '1' }}
                       labelKey="name"
                       valueKey="name"
@@ -759,6 +760,7 @@ export const SentReferralPage = () => {
                         name="administrativeRegion2"
                         control={control}
                         useInfiniteQueryFunction={useAdminRegionsInfinite}
+                        useSearchTextQueryFilter
                         queryFilters={{
                           level: '2',
                           parentId: currentFormAdministrativeRegion1?.id,
@@ -778,6 +780,7 @@ export const SentReferralPage = () => {
                         name="administrativeRegion3"
                         control={control}
                         useInfiniteQueryFunction={useAdminRegionsInfinite}
+                        useSearchTextQueryFilter
                         queryFilters={{
                           level: '3',
                           parentId: currentFormAdministrativeRegion2?.id,
@@ -797,6 +800,7 @@ export const SentReferralPage = () => {
                         name="administrativeRegion4"
                         control={control}
                         useInfiniteQueryFunction={useAdminRegionsInfinite}
+                        useSearchTextQueryFilter
                         queryFilters={{
                           level: '4',
                           parentId: currentFormAdministrativeRegion3?.id,
