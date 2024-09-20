@@ -209,7 +209,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent
         className="sm:max-w-4xl p-4"
-        showCloseButton={false}
+        hideCloseButton
         disableBackdropClose
       >
         {deduplicationWizardError ? (

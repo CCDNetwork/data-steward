@@ -116,16 +116,16 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
 
     administrativeRegion1Id: data.administrativeRegion1
       ? data.administrativeRegion1?.id
-      : '',
+      : null,
     administrativeRegion2Id: data.administrativeRegion2
       ? data.administrativeRegion2?.id
-      : '',
+      : null,
     administrativeRegion3Id: data.administrativeRegion3
       ? data.administrativeRegion3?.id
-      : '',
+      : null,
     administrativeRegion4Id: data.administrativeRegion4
       ? data.administrativeRegion4?.id
-      : '',
+      : null,
 
     email: data.email,
     phone: data.phone,
@@ -172,10 +172,25 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     gender: data.gender,
     taxId: data.taxId,
     address: data.address,
+
     oblast: data.oblast,
     ryon: data.ryon,
     hromada: data.hromada,
     settlement: data.settlement,
+
+    administrativeRegion1Id: data.administrativeRegion1
+      ? data.administrativeRegion1?.id
+      : null,
+    administrativeRegion2Id: data.administrativeRegion2
+      ? data.administrativeRegion2?.id
+      : null,
+    administrativeRegion3Id: data.administrativeRegion3
+      ? data.administrativeRegion3?.id
+      : null,
+    administrativeRegion4Id: data.administrativeRegion4
+      ? data.administrativeRegion4?.id
+      : null,
+
     email: data.email,
     phone: data.phone,
     contactPreference: data.contactPreference,

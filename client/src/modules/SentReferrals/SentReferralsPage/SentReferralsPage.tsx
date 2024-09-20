@@ -23,6 +23,7 @@ import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFil
 import { OrgActivityFilterMap } from '@/services/organizations';
 import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
 import { UserPermission } from '@/services/users';
+import { AdminRegionsFilter } from '@/components/DataTable/AdminRegionsFilter';
 
 import { columns } from './columns';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
@@ -174,7 +175,7 @@ export const SentReferralsPage = () => {
               currentFilters={sentReferralsFilters}
               filterName="userCreatedId[in]"
               setCurrentFilters={setSentReferralsFilters}
-              title="Filter by creator"
+              title="Filter by Creator"
               options={
                 usersFetched
                   ? users!.data.map((user) => ({
@@ -218,6 +219,10 @@ export const SentReferralsPage = () => {
               options={Object.entries(OrgActivityFilterMap).map(
                 ([label, value]) => ({ label, value })
               )}
+            />
+            <AdminRegionsFilter
+              currentFilters={sentReferralsFilters}
+              setCurrentFilters={setSentReferralsFilters}
             />
             <DateRangePickerFilter
               setCurrentFilters={setSentReferralsFilters}

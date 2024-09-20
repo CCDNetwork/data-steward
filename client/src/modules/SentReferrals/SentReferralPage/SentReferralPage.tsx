@@ -746,7 +746,7 @@ export const SentReferralPage = () => {
                       useSearchTextQueryFilter
                       queryFilters={{ level: '1' }}
                       labelKey="name"
-                      valueKey="name"
+                      valueKey="id"
                       disabled={
                         viewOnlyEnabled || !!watch('administrativeRegion2')
                       }
@@ -766,7 +766,7 @@ export const SentReferralPage = () => {
                           parentId: currentFormAdministrativeRegion1?.id,
                         }}
                         labelKey="name"
-                        valueKey="name"
+                        valueKey="id"
                         disabled={
                           viewOnlyEnabled || !!watch('administrativeRegion3')
                         }
@@ -786,7 +786,7 @@ export const SentReferralPage = () => {
                           parentId: currentFormAdministrativeRegion2?.id,
                         }}
                         labelKey="name"
-                        valueKey="name"
+                        valueKey="id"
                         disabled={
                           viewOnlyEnabled || !!watch('administrativeRegion4')
                         }
@@ -806,7 +806,7 @@ export const SentReferralPage = () => {
                           parentId: currentFormAdministrativeRegion3?.id,
                         }}
                         labelKey="name"
-                        valueKey="name"
+                        valueKey="id"
                         disabled={viewOnlyEnabled}
                       />
                     )}

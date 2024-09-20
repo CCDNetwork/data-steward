@@ -24,6 +24,7 @@ export const AsyncSelect = <T,>({
   getOptionLabel = (option) => option[labelKey] as string,
   useInfiniteQueryFunction,
   onChange,
+  onChangeCallback,
   initialPagination,
   requiredField,
   useValue = false,
@@ -78,6 +79,7 @@ export const AsyncSelect = <T,>({
       formOnChange(newValue);
     }
     onChange?.(newValue as T);
+    onChangeCallback?.(newValue as T);
   };
 
   const handleScrollToBottom = () => {
@@ -152,6 +154,7 @@ export const AsyncSelect = <T,>({
           },
         })}
         classNames={{
+          multiValue: () => 'bg-muted',
           container: () => (disabled ? '!pointer-events-auto' : ''),
           control: (state) =>
             state.isFocused
@@ -206,6 +209,7 @@ export type AsyncSelectProps<T> = {
   options?: T[];
   getOptionLabel?: (option: T) => string;
   onChange?: (value: T | null) => void;
+  onChangeCallback?: (adminLevel: T) => Promise<void>;
   initialPagination?: Partial<PaginationRequest>;
   useValue?: boolean;
   defaultValue?: any;

@@ -19,6 +19,7 @@ public class AdministrativeRegionService
             WHERE 
                 level = @level 
             AND (@parentId IS NULL OR parent_id = @parentId) 
+            AND (@id IS NULL OR id = @id) 
             AND (@searchText IS NULL OR name ilike @searchText || '%')";
 
 
@@ -31,14 +32,15 @@ public class AdministrativeRegionService
         _mapper = mapper;
     }
 
-    private object getSelectSqlParams(int level, Guid? parentId = null, string? searchText = null)
+    private object getSelectSqlParams(int level, Guid? parentId = null, Guid? id = null, string? searchText = null)
     {
-        return new { level, parentId, searchText };
+        return new { level, parentId, id, searchText };
     }
 
     public async Task<PagedApiResponse<AdministrativeRegionResponse>> GetAdministrativeRegionsApi(
         int level,
         Guid? parentId,
+        Guid? id,
         string? searchText,
         RequestParameters requestParameters
     )
@@ -49,6 +51,7 @@ public class AdministrativeRegionService
             getSelectSqlParams(
                 level,
                 parentId,
+                id,
                 searchText
             ),
             requestParameters

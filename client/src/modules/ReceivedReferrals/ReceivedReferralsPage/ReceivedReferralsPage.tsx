@@ -19,9 +19,10 @@ import { useOrganizations } from '@/services/organizations/api';
 import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
 import { OrgActivityFilterMap } from '@/services/organizations';
 import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
+import { UserPermission } from '@/services/users';
+import { AdminRegionsFilter } from '@/components/DataTable/AdminRegionsFilter';
 
 import { columns } from './columns';
-import { UserPermission } from '@/services/users';
 
 export const ReceivedReferralsPage = () => {
   const navigate = useNavigate();
@@ -116,7 +117,7 @@ export const ReceivedReferralsPage = () => {
               currentFilters={receivedReferralsFilters}
               filterName="focalPointId[in]"
               setCurrentFilters={setReceivedReferralsFilters}
-              title="Filter by focal point"
+              title="Filter by Focal Point"
               options={
                 usersFetched
                   ? users!.data.map((user) => ({
@@ -160,6 +161,10 @@ export const ReceivedReferralsPage = () => {
               options={Object.entries(OrgActivityFilterMap).map(
                 ([label, value]) => ({ label, value })
               )}
+            />
+            <AdminRegionsFilter
+              currentFilters={receivedReferralsFilters}
+              setCurrentFilters={setReceivedReferralsFilters}
             />
             <DateRangePickerFilter
               setCurrentFilters={setReceivedReferralsFilters}

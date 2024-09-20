@@ -30,6 +30,12 @@ export const fetchAdministrativeRegions = async (
   };
 };
 
+export const getAdministrativeRegionById = async (id: string) => {
+  const resp = await api.get(`/admin-regions/${id}`);
+
+  return resToAdministrativeRegion(resp.data);
+};
+
 //
 // GET hooks
 //
@@ -56,6 +62,7 @@ export const useAdminRegionsInfinite = (
     }
   );
 };
+
 export const useAdministrativeRegions = ({
   currentPage,
   pageSize,
