@@ -164,6 +164,7 @@ public class Startup
         services.AddScoped<BeneficiaryAttributeGroupService>();
         services.AddScoped<BeneficaryService>();
         services.AddScoped<ReferralService>();
+        services.AddScoped<ExportService>();
         services.AddScoped<TemplateService>();
         services.AddScoped<HandbookService>();
         services.AddScoped<SettingsService>();

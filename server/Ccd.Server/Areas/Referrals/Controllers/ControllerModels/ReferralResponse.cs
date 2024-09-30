@@ -92,4 +92,6 @@ public class ReferralResponse
     [QuickSearchable] public string CaseNumber { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    public bool? IsBatchUploaded { get; set; }
 }

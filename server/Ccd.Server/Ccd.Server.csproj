@@ -35,4 +35,8 @@
     <EmbeddedResource Include="Emails\AccountReady.html" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\*.*" />
+  </ItemGroup>
+
 </Project>

@@ -89,6 +89,7 @@ public class Referral : UserChangeTracked
 
     public Organization OrganizationCreated { get; set; }
     public string CaseNumber { get; set; }
+    public bool? IsBatchUploaded { get; set; }
 }
 
 public class ReferralStatus

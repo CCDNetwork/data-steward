@@ -2,20 +2,26 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   DataWithMeta,
+  PaginationContext,
+  paginationContextToPaginationRequest,
   PaginationRequest,
   paginationRequestToUrl,
 } from '@/helpers/pagination';
 import { useGlobalErrors } from '@/providers/GlobalProvider';
 
 import {
+  dataToBatchCreateRequest,
   referralPatchToReq,
   referralPostToReq,
+  resToBatchCreate,
   resToReferral,
   resToReferralUser,
 } from './transformations';
-import { Referral, ReferralUser } from './types';
 import { api } from '../api';
 import { SentReferralFormData } from '@/modules/SentReferrals/SentReferralPage/validations';
+import { BatchCreateModalForm } from '@/modules/SentReferrals/SentReferralsPage/components/BatchCreateModal/validation';
+
+import { BatchCreateResponse, Referral, ReferralUser } from './types';
 
 enum QueryKeys {
   Referrals = 'referrals',
@@ -93,6 +99,37 @@ const patchReferral = async ({
 const deleteReferral = async (referralId: string): Promise<Referral> => {
   const resp = await api.delete(`/referrals/${referralId}`);
   return resToReferral(resp.data);
+};
+
+const postBatchCreateReferrals = async (
+  data: BatchCreateModalForm
+): Promise<BatchCreateResponse> => {
+  const resp = await api.post(
+    '/referrals/batch-create',
+    dataToBatchCreateRequest(data),
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }
+  );
+
+  return resToBatchCreate(resp.data);
+};
+
+export const getReferralsExport = async (
+  pagination: PaginationContext
+): Promise<any> => {
+  const url = paginationRequestToUrl(
+    'referrals/export',
+    paginationContextToPaginationRequest(pagination)
+  );
+
+  const resp = await api.get(url, { responseType: 'blob' });
+  return resp.data;
+};
+
+export const getReferralsTemplateFile = async (): Promise<any> => {
+  const resp = await api.get('/referrals/template', { responseType: 'blob' });
+  return resp.data;
 };
 
 //
@@ -206,6 +243,9 @@ export const useReferralMutation = () => {
       },
     }),
     removeReferral: useMutation(deleteReferral, {
+      onSuccess: () => queryClient.invalidateQueries([QueryKeys.Referrals]),
+    }),
+    batchCreateReferrals: useMutation(postBatchCreateReferrals, {
       onSuccess: () => queryClient.invalidateQueries([QueryKeys.Referrals]),
     }),
   };

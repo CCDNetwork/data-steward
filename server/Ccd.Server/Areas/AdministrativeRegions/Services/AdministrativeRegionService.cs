@@ -65,4 +65,12 @@ public class AdministrativeRegionService
 
         return arResponse;
     }
+
+    public async Task<Guid?> GetAdministrativeRegionByNameApi(string name, int level)
+    {
+        var ar = await _context.AdministrativeRegions.FirstOrDefaultAsync(e =>
+            e.Name.ToLower() == name.ToLower() && e.Level == level);
+
+        return ar?.Id;
+    }
 }

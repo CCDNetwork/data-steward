@@ -1,7 +1,7 @@
 import { Organization, OrganizationActivity } from '@/services/organizations';
 
 import { User } from '../users';
-import { StorageFile } from '../storage';
+import { FileShortResponse, StorageFile } from '../storage';
 import { AdministrativeRegion } from '../administrativeRegions/types';
 
 export interface Referral {
@@ -66,6 +66,7 @@ export interface Referral {
   files: StorageFile[];
   createdAt: Date | null;
   updatedAt: Date | null;
+  isBatchUploaded?: boolean;
 }
 
 export interface ReferralUser {
@@ -74,4 +75,9 @@ export interface ReferralUser {
   firstName: string;
   lastName: string;
   createdAt: Date | null;
+}
+
+export interface BatchCreateResponse {
+  file: FileShortResponse;
+  missingRequiredFields: boolean;
 }

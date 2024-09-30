@@ -59,6 +59,7 @@ public class ReferralAddRequest
     public bool? IsCaregiverInformed { get; set; }
     public string CaregiverExplanation { get; set; }
     public string CaregiverNote { get; set; }
+    public bool? IsBatchUploaded { get; set; }
 
     // Internal
     public bool IsDraft { get; set; }

@@ -17,7 +17,7 @@ export const Tooltip = ({
   className,
 }: TooltipProps) => {
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={0}>
       <BaseTooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent

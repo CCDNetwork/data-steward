@@ -1,20 +1,22 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VisibilityState } from '@tanstack/react-table';
+import { Download, FileDown, FileUp } from 'lucide-react';
 
 import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
-import { usePagination } from '@/helpers/pagination';
+import { PaginationContext, usePagination } from '@/helpers/pagination';
 import { APP_ROUTE } from '@/helpers/constants';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { toast } from '@/components/ui/use-toast';
 import { Referral } from '@/services/referrals';
 import {
+  getReferralsExport,
+  getReferralsTemplateFile,
   useReferralMutation,
   useReferrals,
   useReferralUsers,
 } from '@/services/referrals/api';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
 import { useOrganizations } from '@/services/organizations/api';
@@ -24,9 +26,12 @@ import { OrgActivityFilterMap } from '@/services/organizations';
 import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
 import { UserPermission } from '@/services/users';
 import { AdminRegionsFilter } from '@/components/DataTable/AdminRegionsFilter';
+import { ButtonWithDropdown } from '@/components/ButtonWithDropdown';
+import { downloadFile } from '@/helpers/common';
 
 import { columns } from './columns';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
+import { BatchCreateModal } from './components/BatchCreateModal';
 
 export const SentReferralsPage = () => {
   const navigate = useNavigate();
@@ -50,6 +55,8 @@ export const SentReferralsPage = () => {
   >({ status: true });
   const [sentReferralToDelete, setSentReferralToDelete] =
     useState<Referral | null>(null);
+  const [isBatchCreateModalOpen, setIsBatchCreateModalOpen] =
+    useState<boolean>(false);
 
   const { data: sentReferralsData, isLoading: queryLoading } = useReferrals({
     ...pagination,
@@ -109,14 +116,66 @@ export const SentReferralsPage = () => {
     [navigate, setViewOnlyEnabled]
   );
 
+  const onExportReferralsClick = async (pagination: PaginationContext) => {
+    try {
+      const exportedData = await getReferralsExport({
+        ...pagination,
+        pageSize: sentReferralsData?.meta.totalRows || 999,
+        filters: sentReferralsFilters,
+      });
+      downloadFile(exportedData, 'referrals-export');
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong!',
+        variant: 'destructive',
+        description:
+          error.response?.data?.errorMessage ||
+          'An error has occured. Please try again.',
+      });
+    }
+  };
+
+  const onDownloadTemplateClick = async () => {
+    try {
+      const templateFile = await getReferralsTemplateFile();
+      downloadFile(templateFile, 'referrals-template');
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong!',
+        variant: 'destructive',
+        description:
+          error.response?.data?.errorMessage ||
+          'An error has occured. Please try again.',
+      });
+    }
+  };
+
   return (
     <PageContainer
       pageTitle="Manage Sent Referrals"
       pageSubtitle="On this page you can view the referrals that you have sent to other organisations. The Sent tab will show you referrals that have already been sent. The Drafts tab will show you referrals which you have drafted but not sent."
       headerNode={
-        <Button variant="outline" onClick={onNewCaseClick}>
-          New Case
-        </Button>
+        <ButtonWithDropdown
+          buttonLabel="New Case"
+          onButtonClick={onNewCaseClick}
+          dropdownOptions={[
+            {
+              icon: <FileUp className="size-4 mr-2" />,
+              label: 'Import referrals',
+              onClick: () => setIsBatchCreateModalOpen(true),
+            },
+            {
+              icon: <FileDown className="size-4 mr-2" />,
+              label: 'Export referrals',
+              onClick: () => onExportReferralsClick(pagination),
+            },
+            {
+              icon: <Download className="size-4 mr-2" />,
+              label: 'Download template',
+              onClick: onDownloadTemplateClick,
+            },
+          ]}
+        />
       }
       breadcrumbs={[
         { href: `${APP_ROUTE.SentReferrals}`, name: 'Sent Referrals' },
@@ -230,6 +289,10 @@ export const SentReferralsPage = () => {
             />
           </div>
         }
+      />
+      <BatchCreateModal
+        open={isBatchCreateModalOpen}
+        setOpen={setIsBatchCreateModalOpen}
       />
       <ConfirmationDialog
         open={!!sentReferralToDelete}

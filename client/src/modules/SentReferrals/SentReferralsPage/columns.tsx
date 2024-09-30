@@ -31,6 +31,20 @@ export const columns = (
       />
     ),
   },
+  // {
+  //   accessorKey: 'isBatchUploaded',
+  //   id: 'isBatchUploaded',
+  //   header: '',
+  //   headerClassName: 'w-0',
+  //   cellClassName: 'pl-0 pt-0 pb-0',
+  //   cell: ({ row }) => (
+  //     <div className={cn({ hidden: !row.original.isBatchUploaded })}>
+  //       <Tooltip tooltipContent="Imported">
+  //         <FileUpIcon className="w-4 text-primary" />
+  //       </Tooltip>
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: 'status',
     id: 'status',

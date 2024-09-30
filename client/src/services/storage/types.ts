@@ -28,3 +28,9 @@ export interface StorageFileData {
   };
   type: StorageTypeId;
 }
+
+export interface FileShortResponse {
+  id: string;
+  url: string;
+  name: string;
+}

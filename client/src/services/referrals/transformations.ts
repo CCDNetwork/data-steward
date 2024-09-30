@@ -4,8 +4,9 @@ import {
   resToActivities,
   resToOrganization,
 } from '@/services/organizations';
+import { BatchCreateModalForm } from '@/modules/SentReferrals/SentReferralsPage/components/BatchCreateModal/validation';
 
-import { Referral, ReferralUser } from './types';
+import { BatchCreateResponse, Referral, ReferralUser } from './types';
 import { resToUser } from '../users';
 import { resToStorageFile } from '../storage';
 import { resToAdministrativeRegion } from '../administrativeRegions/transformations';
@@ -86,6 +87,7 @@ export const resToReferral = (res: any): Referral => {
     administrativeRegion2Id: res.administrativeRegion2Id ?? '',
     administrativeRegion3Id: res.administrativeRegion3Id ?? '',
     administrativeRegion4Id: res.administrativeRegion4Id ?? '',
+    isBatchUploaded: res.isBatchUploaded ?? false,
   };
 };
 
@@ -254,5 +256,53 @@ export const resToReferralUser = (res: any): ReferralUser => {
     firstName: res.firstName ?? '',
     lastName: res.lastName ?? '',
     createdAt: res.createdAt ? new Date(res.createdAt) : null,
+  };
+};
+
+export const dataToBatchCreateRequest = (
+  data: BatchCreateModalForm
+): FormData => {
+  const subactivitiesIds = data?.subactivities?.map((i) => i.id) ?? [];
+  const householdsVulnerabilityCriteria = data?.householdsVulnerabilityCriteria;
+
+  const formData = new FormData();
+  formData.append('file', data.file);
+  formData.append('organizationReferredToId', data.organizationReferredTo?.id);
+  formData.append('serviceCategory', data.serviceCategory);
+
+  if (data.displacementStatus) {
+    formData.append('displacementStatus', data.displacementStatus);
+  }
+
+  if (data.householdSize) {
+    formData.append('householdSize', data.householdSize);
+  }
+
+  if (data.householdMonthlyIncome) {
+    formData.append('householdMonthlyIncome', data.householdMonthlyIncome);
+  }
+
+  if (
+    Array.isArray(householdsVulnerabilityCriteria) &&
+    householdsVulnerabilityCriteria.length > 0
+  ) {
+    householdsVulnerabilityCriteria.forEach((value) => {
+      formData.append('householdsVulnerabilityCriteria[]', value);
+    });
+  }
+
+  if (Array.isArray(subactivitiesIds) && subactivitiesIds.length > 0) {
+    subactivitiesIds.forEach((value) => {
+      formData.append('subactivitiesIds[]', value);
+    });
+  }
+
+  return formData;
+};
+
+export const resToBatchCreate = (res: any): BatchCreateResponse => {
+  return {
+    file: res.file ?? null,
+    missingRequiredFields: res.missingRequiredFields ?? false,
   };
 };

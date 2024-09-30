@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ccd.Server.AdministrativeRegions;
+using Ccd.Server.Areas.Referrals.Helpers;
 using Ccd.Server.Data;
 using Ccd.Server.Helpers;
 using Ccd.Server.Organizations;
 using Ccd.Server.Storage;
 using Ccd.Server.Users;
+using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Referrals;
@@ -19,6 +22,7 @@ public class ReferralService
     private readonly CcdContext _context;
     private readonly IMapper _mapper;
     private readonly OrganizationService _organizationService;
+
 
     private readonly string _selectSql =
         @"
@@ -247,6 +251,210 @@ public class ReferralService
         }
 
         return updatedFieldsText;
+    }
+
+
+    public async Task<BatchCreateResponse> CreateBatchReferrals(Guid organizationId, Guid userId,
+        BatchCreateRequest model)
+    {
+        var file = model.File ?? throw new BadRequestException("File is required");
+        using var workbook = new XLWorkbook(file.OpenReadStream());
+
+        var worksheet = workbook.Worksheet(1);
+        var lastColumnIndex = worksheet.LastColumnUsed().ColumnNumber() + 1;
+        var lastRowNumber = worksheet.LastRowUsed().RowNumber();
+
+
+        var referralRecords = new List<ReferralAddRequest>();
+        var missingRequiredFields = false;
+
+        // receiving org specific info
+        var organizationReferredToId = model.OrganizationReferredToId;
+        var serviceCategory = model.ServiceCategory;
+        var subactivitiesIds = model.SubactivitiesIds ?? [];
+
+        // MPCA service category specific info  
+        var displacementStatus = model.DisplacementStatus;
+        var householdSize = model.HouseholdSize;
+        var householdMonthlyIncome = model.HouseholdMonthlyIncome;
+        var householdsVulnerabilityCriteria = model.HouseholdsVulnerabilityCriteria;
+
+        var requiredFields = new Dictionary<string, int>
+        {
+            { "FirstName", (int)ReferralWorksheetColumns.FirstName },
+            { "Surname", (int)ReferralWorksheetColumns.Surname },
+            { "PartronymicName", (int)ReferralWorksheetColumns.PatronymicName },
+            { "Gender", (int)ReferralWorksheetColumns.Gender },
+            { "Required", (int)ReferralWorksheetColumns.Required }
+        };
+
+        for (var i = 2; i <= lastRowNumber; i++)
+        {
+            var firstName = worksheet.Cell(i, (int)ReferralWorksheetColumns.FirstName).Value.ToString();
+            var surname = worksheet.Cell(i, (int)ReferralWorksheetColumns.Surname).Value.ToString();
+            var patronymicName = worksheet.Cell(i, (int)ReferralWorksheetColumns.PatronymicName).Value.ToString();
+            var dateOfBirthValue = worksheet.Cell(i, (int)ReferralWorksheetColumns.DateOfBirth).Value.ToString();
+            var dateOfBirth = BatchReferralsValidators.ValidateAndParseDateOfBirth(worksheet, i,
+                (int)ReferralWorksheetColumns.DateOfBirth,
+                ref missingRequiredFields);
+            var gender = worksheet.Cell(i, (int)ReferralWorksheetColumns.Gender).Value.ToString();
+            var taxId = worksheet.Cell(i, (int)ReferralWorksheetColumns.TaxId).Value.ToString();
+            var address = worksheet.Cell(i, (int)ReferralWorksheetColumns.Address).Value.ToString();
+
+            // don't really think this is the way to go but for now it'll do
+            var administrativeRegion1Id =
+                await _administrativeRegionService.GetAdministrativeRegionByNameApi(
+                    worksheet.Cell(i, (int)ReferralWorksheetColumns.AdministrativeRegion1).Value.ToString(),
+                    1);
+            var administrativeRegion2Id =
+                await _administrativeRegionService.GetAdministrativeRegionByNameApi(
+                    worksheet.Cell(i, (int)ReferralWorksheetColumns.AdministrativeRegion2).Value.ToString(), 2);
+            var administrativeRegion3Id =
+                await _administrativeRegionService.GetAdministrativeRegionByNameApi(
+                    worksheet.Cell(i, (int)ReferralWorksheetColumns.AdministrativeRegion3).Value.ToString(), 3);
+            var administrativeRegion4Id =
+                await _administrativeRegionService.GetAdministrativeRegionByNameApi(
+                    worksheet.Cell(i, (int)ReferralWorksheetColumns.AdministrativeRegion4).Value.ToString(), 4);
+            ;
+
+            var contactPreference = worksheet.Cell(i, (int)ReferralWorksheetColumns.ContactPreference).Value.ToString();
+            var email = worksheet.Cell(i, (int)ReferralWorksheetColumns.Email).Value.ToString();
+            var phone = worksheet.Cell(i, (int)ReferralWorksheetColumns.Phone).Value.ToString();
+
+            var restrictions = worksheet.Cell(i, (int)ReferralWorksheetColumns.Restrictions).Value.ToString();
+            var consent = worksheet.Cell(i, (int)ReferralWorksheetColumns.Consent).Value.ToString().ToLower() switch
+            {
+                "true" => true,
+                _ => HighlightCellAndReturnNull(worksheet.Cell(i, (int)ReferralWorksheetColumns.Consent),
+                    ref missingRequiredFields)
+            };
+            var required = worksheet.Cell(i, (int)ReferralWorksheetColumns.Required).Value.ToString();
+            var needForService = worksheet.Cell(i, (int)ReferralWorksheetColumns.NeedForService).Value.ToString();
+
+            var isSeparated =
+                worksheet.Cell(i, (int)ReferralWorksheetColumns.IsSeparated).Value.ToString().ToLower() switch
+                {
+                    "true" => true,
+                    "false" => false,
+                    _ => HighlightCellAndReturnNull(
+                        worksheet.Cell(i, (int)ReferralWorksheetColumns.IsSeparated),
+                        ref missingRequiredFields)
+                };
+            var caregiver = worksheet.Cell(i, (int)ReferralWorksheetColumns.Caregiver).Value.ToString();
+            var relationshipToChild = worksheet.Cell(i, (int)ReferralWorksheetColumns.RelationshipToChild).Value
+                .ToString();
+            var caregiverEmail = worksheet.Cell(i, (int)ReferralWorksheetColumns.CaregiverEmail).Value.ToString();
+            var caregiverPhone = worksheet.Cell(i, (int)ReferralWorksheetColumns.CaregiverPhone).Value.ToString();
+            var caregiverContactPreference =
+                worksheet.Cell(i, (int)ReferralWorksheetColumns.CaregiverContactPreference).Value.ToString();
+            var isCaregiverInformed = worksheet.Cell(i, (int)ReferralWorksheetColumns.IsCaregiverInformed).Value
+                    .ToString().ToLower() switch
+                {
+                    "true" => true,
+                    "false" => false,
+                    _ => HighlightCellAndReturnNull(
+                        worksheet.Cell(i, (int)ReferralWorksheetColumns.IsCaregiverInformed),
+                        ref missingRequiredFields)
+                };
+            var caregiverExplanation = worksheet.Cell(i, (int)ReferralWorksheetColumns.CaregiverExplanation).Value
+                .ToString();
+            var caregiverNote = worksheet.Cell(i, (int)ReferralWorksheetColumns.CaregiverNote).Value.ToString();
+
+
+            // Validations
+
+            // basic required fields validation (empty check only)
+            foreach (var field in requiredFields)
+                BatchReferralsValidators.ValidateAndHighlightRequiredField(worksheet, i, field.Value,
+                    worksheet.Cell(i, field.Value).Value.ToString(), ref missingRequiredFields);
+
+            // custom validations
+            BatchReferralsValidators.ValidateContactPreference(worksheet, i, contactPreference, email, phone,
+                ref missingRequiredFields);
+            BatchReferralsValidators.ValidateCaregiverFields(worksheet, i, isSeparated, caregiver, relationshipToChild,
+                caregiverEmail,
+                caregiverPhone, caregiverContactPreference, isCaregiverInformed, caregiverExplanation, caregiverNote,
+                ref missingRequiredFields);
+            BatchReferralsValidators.ValidateContactPreference(worksheet, i, contactPreference, email, phone,
+                ref missingRequiredFields);
+
+
+            var referralRecord = new ReferralAddRequest
+            {
+                // Receiving organization details
+                OrganizationReferredToId = organizationReferredToId,
+                ServiceCategory = serviceCategory,
+                SubactivitiesIds = subactivitiesIds,
+
+                // MPCA service category specific info
+                DisplacementStatus = displacementStatus,
+                HouseholdSize = householdSize,
+                HouseholdMonthlyIncome = householdMonthlyIncome,
+                HouseholdsVulnerabilityCriteria = householdsVulnerabilityCriteria,
+
+                // Beneficiary information 
+                FirstName = firstName,
+                Surname = surname,
+                PatronymicName = patronymicName,
+                DateOfBirth = dateOfBirth,
+                Gender = gender,
+                TaxId = taxId,
+                Address = address,
+                AdministrativeRegion1Id = administrativeRegion1Id,
+                AdministrativeRegion2Id = administrativeRegion2Id,
+                AdministrativeRegion3Id = administrativeRegion3Id,
+                AdministrativeRegion4Id = administrativeRegion4Id,
+                Email = email,
+                Phone = phone,
+                ContactPreference = contactPreference,
+                Restrictions = restrictions,
+                Consent = consent,
+                Required = required,
+                NeedForService = needForService,
+                IsSeparated = isSeparated,
+                Caregiver = caregiver,
+                RelationshipToChild = relationshipToChild,
+                CaregiverEmail = caregiverEmail,
+                CaregiverPhone = caregiverPhone,
+                CaregiverContactPreference = caregiverContactPreference,
+                IsCaregiverInformed = isCaregiverInformed,
+                CaregiverExplanation = caregiverExplanation,
+                CaregiverNote = caregiverNote,
+                IsBatchUploaded = true
+            };
+
+            referralRecords.Add(referralRecord);
+        }
+
+
+        using var memoryStream = new MemoryStream();
+        workbook.SaveAs(memoryStream);
+
+        var savedFile = await _storageService.SaveFile(StorageType.GetById(StorageType.Assets.Id), memoryStream,
+            userId, model.File.FileName);
+        var fileResponse = await _storageService.GetFileApiById(savedFile.Id);
+
+        if (missingRequiredFields)
+            return new BatchCreateResponse
+            {
+                MissingRequiredFields = true,
+                File = fileResponse
+            };
+
+        foreach (var rf in referralRecords) await AddReferral(organizationId, rf);
+
+        return new BatchCreateResponse
+        {
+            MissingRequiredFields = false,
+            File = fileResponse
+        };
+    }
+
+    private bool HighlightCellAndReturnNull(IXLCell cell, ref bool missingRequiredFields)
+    {
+        cell.Style.Fill.BackgroundColor = XLColor.Red;
+        missingRequiredFields = true;
+        return false;
     }
 
     private async Task resolveDependencies(ReferralResponse referral)

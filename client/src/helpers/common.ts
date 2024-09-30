@@ -42,11 +42,13 @@ export const capitalizeFirstLetter = (str: string): string => {
   return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
 };
 
-export const createDownloadLink = (url: string, fileName: string) => {
+export const createDownloadLink = (url: string, fileName?: string) => {
   try {
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', fileName);
+    if (fileName) {
+      link.setAttribute('download', fileName);
+    }
     link.setAttribute('target', '_blank');
     link.setAttribute('rel', 'noopener noreferrer');
 
@@ -58,6 +60,20 @@ export const createDownloadLink = (url: string, fileName: string) => {
   } catch (error) {
     console.error('Failed to download file:', error);
   }
+};
+
+export const downloadFile = (
+  data: BlobPart,
+  fileName: string,
+  extension: string = 'xlsx'
+) => {
+  const url = window.URL.createObjectURL(new Blob([data]));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', `${fileName}.${extension}`);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 };
 
 export const shortenId = (id: string | undefined) => {

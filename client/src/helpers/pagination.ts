@@ -319,3 +319,26 @@ export const paginationRequestToUrl = (
 
   return newUrl;
 };
+
+export const paginationContextToPaginationRequest = (
+  context: PaginationContext
+): PaginationRequest => {
+  const {
+    currentPage,
+    pageSize,
+    search,
+    sortBy,
+    sortDirection,
+    filters,
+    queryFilters,
+  } = context;
+  return {
+    page: currentPage,
+    pageSize,
+    search,
+    sortBy,
+    sortDirection,
+    filters,
+    queryFilters,
+  };
+};

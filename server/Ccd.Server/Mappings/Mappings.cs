@@ -51,6 +51,19 @@ public class Mappings : Profile
         CreateMap<Discussion, DiscussionResponse>();
         CreateMap<DiscussionAddRequest, Discussion>();
         CreateMap<UserResponse, FocalPointUsersResponse>();
+        // Referral export mappings
+        CreateMap<ReferralResponse, ReferralExportResponse>().ForMember(e => e.AdministrationRegion1,
+            opt => opt.MapFrom(src => src.AdministrativeRegion1.Name)).ForMember(e => e.AdministrationRegion2,
+            opt => opt.MapFrom(src => src.AdministrativeRegion2.Name)).ForMember(e => e.AdministrationRegion3,
+            opt => opt.MapFrom(src => src.AdministrativeRegion3.Name)).ForMember(e => e.AdministrationRegion4,
+            opt => opt.MapFrom(src => src.AdministrativeRegion4.Name)).ForMember(e => e.OrganizationReferredTo,
+            opt => opt.MapFrom(src => src.OrganizationReferredTo.Name)).ForMember(
+            e => e.HouseholdsVulnerabilityCriteria,
+            opt => opt.MapFrom(src => string.Join(",", src.HouseholdsVulnerabilityCriteria))).ForMember(
+            e => e.FocalPoint,
+            opt => opt.MapFrom(src => src.FocalPoint.FirstName + " " + src.FocalPoint.LastName)).ForMember(
+            e => e.OrganizationCreated,
+            opt => opt.MapFrom(src => src.OrganizationCreated.Name));
 
         // Handbook
         CreateMap<Handbook, HandbookResponse>();
