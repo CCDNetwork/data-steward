@@ -32,6 +32,7 @@ import { downloadFile } from '@/helpers/common';
 import { columns } from './columns';
 import { useSentReferralsProvider } from '../SentReferralsProvider';
 import { BatchCreateModal } from './components/BatchCreateModal';
+import { ImpexLoadingDialog } from '../SentReferralPage/components';
 
 export const SentReferralsPage = () => {
   const navigate = useNavigate();
@@ -57,6 +58,7 @@ export const SentReferralsPage = () => {
     useState<Referral | null>(null);
   const [isBatchCreateModalOpen, setIsBatchCreateModalOpen] =
     useState<boolean>(false);
+  const [impexActionLoading, setImpexActionLoading] = useState<boolean>(false);
 
   const { data: sentReferralsData, isLoading: queryLoading } = useReferrals({
     ...pagination,
@@ -117,6 +119,7 @@ export const SentReferralsPage = () => {
   );
 
   const onExportReferralsClick = async (pagination: PaginationContext) => {
+    setImpexActionLoading(true);
     try {
       const exportedData = await getReferralsExport({
         ...pagination,
@@ -133,9 +136,11 @@ export const SentReferralsPage = () => {
           'An error has occured. Please try again.',
       });
     }
+    setImpexActionLoading(false);
   };
 
   const onDownloadTemplateClick = async () => {
+    setImpexActionLoading(true);
     try {
       const templateFile = await getReferralsTemplateFile();
       downloadFile(templateFile, 'referrals-template');
@@ -148,6 +153,7 @@ export const SentReferralsPage = () => {
           'An error has occured. Please try again.',
       });
     }
+    setImpexActionLoading(false);
   };
 
   return (
@@ -303,6 +309,7 @@ export const SentReferralsPage = () => {
         actionButtonVariant="destructive"
         onCancel={() => setSentReferralToDelete(null)}
       />
+      <ImpexLoadingDialog open={impexActionLoading} />
     </PageContainer>
   );
 };
