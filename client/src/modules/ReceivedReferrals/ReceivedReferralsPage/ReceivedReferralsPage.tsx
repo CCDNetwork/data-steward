@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
-import { usePagination } from '@/helpers/pagination';
+import { PaginationContext, usePagination } from '@/helpers/pagination';
 import { APP_ROUTE } from '@/helpers/constants';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { toast } from '@/components/ui/use-toast';
 import {
+  getReferralsExport,
   useReferralMutation,
   useReferrals,
   useReferralUsers,
@@ -23,6 +24,9 @@ import { UserPermission } from '@/services/users';
 import { AdminRegionsFilter } from '@/components/DataTable/AdminRegionsFilter';
 
 import { columns } from './columns';
+import { downloadFile } from '@/helpers/common';
+import { Button } from '@/components/ui/button';
+import { FileDownIcon } from 'lucide-react';
 
 export const ReceivedReferralsPage = () => {
   const navigate = useNavigate();
@@ -42,6 +46,7 @@ export const ReceivedReferralsPage = () => {
   >({
     isDraft: 'false',
   });
+  const [exportLoading, setExportLoading] = useState<boolean>(false);
 
   const { data: receivedReferralsData, isLoading: queryLoading } = useReferrals(
     {
@@ -83,6 +88,27 @@ export const ReceivedReferralsPage = () => {
     setReceivedReferralToDelete(null);
   };
 
+  const onExportReferralsClick = async (pagination: PaginationContext) => {
+    setExportLoading(true);
+    try {
+      const exportedData = await getReferralsExport({
+        ...pagination,
+        pageSize: receivedReferralsData?.meta.totalRows || 999,
+        filters: receivedReferralsFilters,
+      });
+      downloadFile(exportedData, 'referrals-export');
+    } catch (error: any) {
+      toast({
+        title: 'Something went wrong!',
+        variant: 'destructive',
+        description:
+          error.response?.data?.errorMessage ||
+          'An error has occured. Please try again.',
+      });
+    }
+    setExportLoading(false);
+  };
+
   const onReceivedReferralTableRowClick = (referralRow: Referral) =>
     navigate(`${APP_ROUTE.ReceivedReferrals}/${referralRow.id}`);
 
@@ -93,6 +119,17 @@ export const ReceivedReferralsPage = () => {
       breadcrumbs={[
         { href: `${APP_ROUTE.ReceivedReferrals}`, name: 'Received Referrals' },
       ]}
+      headerNode={
+        <Button
+          type="button"
+          variant="outline"
+          isLoading={exportLoading}
+          onClick={() => onExportReferralsClick(pagination)}
+        >
+          <FileDownIcon className="mr-2 size-5" />
+          Export Referrals
+        </Button>
+      }
     >
       <DataTable
         data={receivedReferralsData?.data ?? []}
