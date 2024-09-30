@@ -124,6 +124,7 @@ export const ReceivedReferralsPage = () => {
           type="button"
           variant="outline"
           isLoading={exportLoading}
+          disabled={exportLoading}
           onClick={() => onExportReferralsClick(pagination)}
         >
           <FileDownIcon className="mr-2 size-5" />

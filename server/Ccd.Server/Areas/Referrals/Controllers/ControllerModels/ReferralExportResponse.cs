@@ -5,27 +5,17 @@ namespace Ccd.Server.Referrals;
 public class ReferralExportResponse
 {
     [ImpexName("isUrgent;en")] public bool IsUrgent { get; set; }
-    [ImpexName("serviceCategory;en")] public string ServiceCategory { get; set; }
 
     [ImpexName("organizationReferredTo;en")]
     public string OrganizationReferredTo { get; set; }
 
-    [ImpexName("displacementStatus;en")] public string DisplacementStatus { get; set; }
-    [ImpexName("householdSize;en")] public string HouseholdSize { get; set; }
-
-    [ImpexName("householdMonthlyIncome;en")]
-    public string HouseholMonthlyIncome { get; set; }
-
-    [ImpexName("householdsVulnerabilityCriteria;en")]
-    public string HouseholdsVulnerabilityCriteria { get; set; }
-
+    [ImpexName("serviceCategory;en")] public string ServiceCategory { get; set; }
     [ImpexName("focalPoint;en")] public string FocalPoint { get; set; }
     [ImpexName("status;en")] public string Status { get; set; }
     [ImpexName("isDraft;en")] public bool IsDraft { get; set; }
     [ImpexName("isRejected;en")] public bool IsRejected { get; set; }
     [ImpexName("organizationCreated;en")] public string OrganizationCreated { get; set; }
     [ImpexName("caseNumber;en")] public string CaseNumber { get; set; }
-    [ImpexName("isBatchUploaded;en")] public string IsBatchUploaded { get; set; }
 
 
     [ImpexName("firstName;en")] public string FirstName { get; set; }
@@ -58,4 +48,15 @@ public class ReferralExportResponse
     [ImpexName("isCaregiverInformed;en")] public string IsCaregiverInformed { get; set; }
     [ImpexName("caregiverExplanation;en")] public string CaregiverExplanation { get; set; }
     [ImpexName("caregiverNote;en")] public string CaregiverNote { get; set; }
+
+    [ImpexName("displacementStatus;en")] public string DisplacementStatus { get; set; }
+    [ImpexName("householdSize;en")] public string HouseholdSize { get; set; }
+
+    [ImpexName("householdMonthlyIncome;en")]
+    public string HouseholMonthlyIncome { get; set; }
+
+    [ImpexName("householdsVulnerabilityCriteria;en")]
+    public string HouseholdsVulnerabilityCriteria { get; set; }
+
+    [ImpexName("isBatchUploaded;en")] public string IsBatchUploaded { get; set; }
 }
