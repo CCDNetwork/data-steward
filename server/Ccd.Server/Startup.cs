@@ -156,6 +156,7 @@ public class Startup
         });
 
         services.AddScoped<EmailManagerService>();
+        services.AddScoped<SendGridService>();
         services.AddScoped<OrganizationService>();
         services.AddScoped<UserService>();
         services.AddScoped<AuthenticationService>();

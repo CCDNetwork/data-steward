@@ -119,6 +119,7 @@ export function DataTable<TData, TValue>({
             type="search"
             placeholder="Search..."
             className="sm:max-w-[250px] w-full"
+            value={searchParams.get('search') ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onSearchChange?.(e.target.value)
             }
