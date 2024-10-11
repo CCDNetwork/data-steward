@@ -293,7 +293,6 @@ public class ReferralService
             var firstName = worksheet.Cell(i, (int)ReferralWorksheetColumns.FirstName).Value.ToString();
             var surname = worksheet.Cell(i, (int)ReferralWorksheetColumns.Surname).Value.ToString();
             var patronymicName = worksheet.Cell(i, (int)ReferralWorksheetColumns.PatronymicName).Value.ToString();
-            var dateOfBirthValue = worksheet.Cell(i, (int)ReferralWorksheetColumns.DateOfBirth).Value.ToString();
             var dateOfBirth = BatchReferralsValidators.ValidateAndParseDateOfBirth(worksheet, i,
                 (int)ReferralWorksheetColumns.DateOfBirth,
                 ref missingRequiredFields);

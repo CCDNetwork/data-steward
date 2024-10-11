@@ -58,17 +58,24 @@ import { SentReferralPageViewOnly } from './components/SentReferralPageViewOnly'
 import { useSentReferralsProvider } from '../SentReferralsProvider';
 import { StatusReasonModal } from '@/components/StatusReasonModal';
 import { OrgActivity } from '@/services/organizations';
-import { useAdminRegionsInfinite } from '@/services/administrativeRegions';
+import {
+  getAdministrativeRegionById,
+  useAdminRegionsInfinite,
+} from '@/services/administrativeRegions';
+import { AdministrativeRegion } from '@/services/administrativeRegions/types';
 
 export const SentReferralPage = () => {
   const navigate = useNavigate();
   const { deploymentSettings } = useAuth();
   const { id: sentReferralId, isCreate } = useIdFromParams();
   const { viewOnlyEnabled, setViewOnlyEnabled } = useSentReferralsProvider();
+
   const [activeTab, setActiveTab] = useState<
     ReferralTab.Discussion | ReferralTab.Referral
   >(ReferralTab.Referral);
   const [isStatusReasonModal, setOpenStatusReasonModal] =
+    useState<boolean>(false);
+  const [adminLevelsPopulating, setAdminLevelsPopulating] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -90,7 +97,15 @@ export const SentReferralPage = () => {
     resolver: zodResolver(SentReferralSchema),
   });
 
-  const { control, formState, handleSubmit, reset, watch, setValue } = form;
+  const {
+    control,
+    formState,
+    handleSubmit,
+    getValues,
+    reset,
+    watch,
+    setValue,
+  } = form;
 
   const currentFormAssignedFocalPoint = watch('focalPoint');
   const currentFormIsMinor = watch('isMinor');
@@ -105,6 +120,7 @@ export const SentReferralPage = () => {
   const currentFormAdministrativeRegion1 = watch('administrativeRegion1');
   const currentFormAdministrativeRegion2 = watch('administrativeRegion2');
   const currentFormAdministrativeRegion3 = watch('administrativeRegion3');
+  const currentFormAdministrativeRegion4 = watch('administrativeRegion4');
 
   useEffect(() => {
     if (sentReferralData) {
@@ -247,6 +263,28 @@ export const SentReferralPage = () => {
 
   const onCancelWithdrawActionClick = () => {
     setOpenStatusReasonModal(false);
+  };
+
+  const propagateParentRegion = async (adminLevel: AdministrativeRegion) => {
+    if (!adminLevel.parentId) return;
+    if (adminLevel.level === 1 || adminLevel.level > 4) return;
+    if (
+      getValues(
+        `administrativeRegion${adminLevel.level - 1}.id` as keyof SentReferralFormData
+      ) === adminLevel.parentId
+    )
+      return;
+    setAdminLevelsPopulating(true);
+
+    const parentEntity = await getAdministrativeRegionById(adminLevel.parentId);
+
+    setValue(
+      `administrativeRegion${parentEntity.level}` as keyof SentReferralFormData,
+      parentEntity
+    );
+
+    setAdminLevelsPopulating(false);
+    propagateParentRegion(parentEntity);
   };
 
   const headerNodeButtons = () => {
@@ -735,7 +773,7 @@ export const SentReferralPage = () => {
                     )}
                   />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <AsyncSelect
                       label={
                         deploymentSettings?.adminLevel1Name ?? 'Admin Level 1'
@@ -744,72 +782,79 @@ export const SentReferralPage = () => {
                       control={control}
                       useInfiniteQueryFunction={useAdminRegionsInfinite}
                       useSearchTextQueryFilter
-                      queryFilters={{ level: '1' }}
+                      queryFilters={{
+                        level: '1',
+                        id: currentFormAdministrativeRegion2?.parentId ?? '',
+                      }}
                       labelKey="name"
                       valueKey="id"
                       disabled={
-                        viewOnlyEnabled || !!watch('administrativeRegion2')
+                        !!currentFormAdministrativeRegion2 ||
+                        viewOnlyEnabled ||
+                        adminLevelsPopulating
                       }
                     />
-
-                    {currentFormAdministrativeRegion1 && (
-                      <AsyncSelect
-                        label={
-                          deploymentSettings?.adminLevel2Name ?? 'Admin Level 2'
-                        }
-                        name="administrativeRegion2"
-                        control={control}
-                        useInfiniteQueryFunction={useAdminRegionsInfinite}
-                        useSearchTextQueryFilter
-                        queryFilters={{
-                          level: '2',
-                          parentId: currentFormAdministrativeRegion1?.id,
-                        }}
-                        labelKey="name"
-                        valueKey="id"
-                        disabled={
-                          viewOnlyEnabled || !!watch('administrativeRegion3')
-                        }
-                      />
-                    )}
-                    {currentFormAdministrativeRegion2 && (
-                      <AsyncSelect
-                        label={
-                          deploymentSettings?.adminLevel3Name ?? 'Admin Level 3'
-                        }
-                        name="administrativeRegion3"
-                        control={control}
-                        useInfiniteQueryFunction={useAdminRegionsInfinite}
-                        useSearchTextQueryFilter
-                        queryFilters={{
-                          level: '3',
-                          parentId: currentFormAdministrativeRegion2?.id,
-                        }}
-                        labelKey="name"
-                        valueKey="id"
-                        disabled={
-                          viewOnlyEnabled || !!watch('administrativeRegion4')
-                        }
-                      />
-                    )}
-                    {currentFormAdministrativeRegion3 && (
-                      <AsyncSelect
-                        label={
-                          deploymentSettings?.adminLevel4Name ?? 'Admin Level 4'
-                        }
-                        name="administrativeRegion4"
-                        control={control}
-                        useInfiniteQueryFunction={useAdminRegionsInfinite}
-                        useSearchTextQueryFilter
-                        queryFilters={{
-                          level: '4',
-                          parentId: currentFormAdministrativeRegion3?.id,
-                        }}
-                        labelKey="name"
-                        valueKey="id"
-                        disabled={viewOnlyEnabled}
-                      />
-                    )}
+                    <AsyncSelect
+                      label={
+                        deploymentSettings?.adminLevel2Name ?? 'Admin Level 2'
+                      }
+                      name="administrativeRegion2"
+                      control={control}
+                      useInfiniteQueryFunction={useAdminRegionsInfinite}
+                      useSearchTextQueryFilter
+                      queryFilters={{
+                        level: '2',
+                        id: currentFormAdministrativeRegion3?.parentId ?? '',
+                        parentId: currentFormAdministrativeRegion1?.id ?? '',
+                      }}
+                      labelKey="name"
+                      valueKey="id"
+                      onChangeCallback={propagateParentRegion}
+                      disabled={
+                        !!currentFormAdministrativeRegion3 ||
+                        viewOnlyEnabled ||
+                        adminLevelsPopulating
+                      }
+                    />
+                    <AsyncSelect
+                      label={
+                        deploymentSettings?.adminLevel3Name ?? 'Admin Level 3'
+                      }
+                      name="administrativeRegion3"
+                      control={control}
+                      useInfiniteQueryFunction={useAdminRegionsInfinite}
+                      useSearchTextQueryFilter
+                      queryFilters={{
+                        level: '3',
+                        id: currentFormAdministrativeRegion4?.parentId ?? '',
+                        parentId: currentFormAdministrativeRegion2?.id ?? '',
+                      }}
+                      labelKey="name"
+                      valueKey="id"
+                      onChangeCallback={propagateParentRegion}
+                      disabled={
+                        !!currentFormAdministrativeRegion4 ||
+                        viewOnlyEnabled ||
+                        adminLevelsPopulating
+                      }
+                    />
+                    <AsyncSelect
+                      label={
+                        deploymentSettings?.adminLevel4Name ?? 'Admin Level 4'
+                      }
+                      name="administrativeRegion4"
+                      control={control}
+                      useInfiniteQueryFunction={useAdminRegionsInfinite}
+                      useSearchTextQueryFilter
+                      queryFilters={{
+                        level: '4',
+                        parentId: currentFormAdministrativeRegion3?.id ?? '',
+                      }}
+                      labelKey="name"
+                      valueKey="id"
+                      onChangeCallback={propagateParentRegion}
+                      disabled={viewOnlyEnabled || adminLevelsPopulating}
+                    />
                   </div>
 
                   <FormField

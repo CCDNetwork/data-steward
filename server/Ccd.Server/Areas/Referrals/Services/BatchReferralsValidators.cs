@@ -42,8 +42,18 @@ public static class BatchReferralsValidators
             return null;
         }
 
+        var dateFormats = new[]
+        {
+            "MM-dd-yyyy",
+            "yyyyMMdd",
+            "yyyy-MM-dd",
+            "MM/dd/yyyy",
+            "dd/MM/yyyy",
+            "MM.dd.yyyy"
+        };
+
         //  try to parse the value as a datetime
-        if (DateTime.TryParse(cellValue, null, DateTimeStyles.RoundtripKind,
+        if (DateTime.TryParseExact(cellValue, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None,
                 out var parsedDate)) return parsedDate; // Return the parsed date if successful
 
         //  if fail, highlight the cell and mark as missing

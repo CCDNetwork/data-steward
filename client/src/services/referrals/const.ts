@@ -42,7 +42,7 @@ export const HOUSEHOLDS_VULNERABILITY_CRITERIA: {
   },
   {
     id: 'householdWithGroupDisability',
-    label: 'Households with memebers with 1st or 2nd group disability',
+    label: 'Households with members with 1st or 2nd group disability',
   },
   {
     id: 'householdWithSeriousHealthIssues',
