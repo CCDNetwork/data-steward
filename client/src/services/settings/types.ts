@@ -7,4 +7,5 @@ export type Settings = {
   adminLevel3Name: string;
   adminLevel4Name: string;
   metabaseUrl: string;
+  fundingSources: any[];
 };

@@ -22,6 +22,8 @@ public class ReferralResponse
     public List<Activity> Subactivities { get; set; }
     public Guid OrganizationReferredToId { get; set; }
     public OrganizationResponse OrganizationReferredTo { get; set; }
+    public string FundingSource { get; set; }
+
 
     // MPCA info
     public string DisplacementStatus { get; set; }

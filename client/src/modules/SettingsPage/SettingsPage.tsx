@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useRef, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
-import { Loader2, Settings } from 'lucide-react';
+import { Loader2, Settings, Trash2 } from 'lucide-react';
 
 import { ModeToggle } from '@/components/ModeToggle';
 import { Button } from '@/components/ui/button';
@@ -30,9 +30,14 @@ import {
 import { SettingsFormData, SettingsFormSchema } from './validations';
 import { COUNTRIES_LIST, defaultSettingsFormValues } from './const';
 import { useSettings, useSettingsMutation } from '@/services/settings';
+import { Tooltip } from '@/components/Tooltip';
 
 export const SettingsPage = () => {
   const { isLoggedIn, user, logoutUser } = useAuth();
+
+  const [inputValue, setInputValue] = useState<string>('');
+  const [valueAlreadyExists, setValueAlreadyExists] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const { data: settingsData, isLoading: settingsLoading } = useSettings({});
 
@@ -45,9 +50,19 @@ export const SettingsPage = () => {
 
   const { control, formState, handleSubmit, reset } = form;
 
+  const { fields, append, remove } = useFieldArray({
+    name: 'fundingSources',
+    control,
+  });
+
   useEffect(() => {
     if (settingsData) {
-      reset(settingsData);
+      reset({
+        ...settingsData,
+        fundingSources: settingsData.fundingSources.length
+          ? settingsData.fundingSources.map((i) => ({ value: i }))
+          : [],
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settingsData]);
@@ -69,6 +84,29 @@ export const SettingsPage = () => {
       });
     }
   });
+
+  const handleInputValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleAddBtnClick = () => {
+    if (!inputValue) {
+      inputRef.current?.focus();
+      return;
+    }
+    setValueAlreadyExists(false);
+
+    if (
+      fields.some((i) => i.value.toLowerCase() === inputValue.toLowerCase())
+    ) {
+      setValueAlreadyExists(true);
+      inputRef.current?.focus();
+      return;
+    }
+
+    append({ value: inputValue });
+    setInputValue('');
+  };
 
   if (!isLoggedIn) {
     return <Navigate to={APP_ROUTE.SignIn} replace />;
@@ -232,13 +270,64 @@ export const SettingsPage = () => {
                 </FormItem>
               )}
             />
+            <div>
+              <FormLabel>Funding Sources</FormLabel>
+              {fields.length > 0 && (
+                <div className="pt-4 flex flex-wrap gap-2 w-full">
+                  {fields.map((activity, idx) => (
+                    <div
+                      key={activity.id}
+                      className="flex w-fit bg-muted/50 items-center justify-between gap-2 border border-border py-1 px-2.5 rounded-md animate-opacity"
+                    >
+                      <p className="text-sm line-clamp-2">{activity.value}</p>
+                      <div>
+                        <Tooltip tooltipContent="Remove">
+                          <Button
+                            size="icon"
+                            onClick={() => remove(idx)}
+                            className="h-7 w-7 text-destructive hover:text-red-600"
+                            variant="ghost"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="pt-4">
+                <div className="flex gap-4">
+                  <div className="flex flex-col w-full">
+                    <Input
+                      type="text"
+                      placeholder="Add a new funding source..."
+                      ref={inputRef}
+                      value={inputValue}
+                      onChange={handleInputValueChange}
+                    />
+                    {valueAlreadyExists && (
+                      <p className="text-sm pt-2 text-red-500">
+                        Funding source already exists!
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleAddBtnClick}
+                  >
+                    Add
+                  </Button>
+                </div>
+              </div>
+            </div>
             <CardFooter className="flex justify-between p-0">
               <Button
                 type="button"
                 variant="link"
                 className="px-0"
                 onClick={logoutUser}
-                isLoading={formState.isSubmitting}
                 disabled={formState.isSubmitting}
               >
                 &larr; Back to Sign In

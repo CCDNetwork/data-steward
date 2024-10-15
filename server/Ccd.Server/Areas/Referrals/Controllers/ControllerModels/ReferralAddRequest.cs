@@ -12,6 +12,8 @@ public class ReferralAddRequest
     public Guid? OrganizationReferredToId { get; set; }
     public string ServiceCategory { get; set; }
     public List<Guid> SubactivitiesIds { get; set; }
+    public string FundingSource { get; set; }
+
 
     // MPCA info
     public string DisplacementStatus { get; set; }

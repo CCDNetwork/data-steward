@@ -28,6 +28,7 @@ export interface Referral {
   ryon: string;
   hromada: string;
   settlement: string;
+  fundingSource: string;
 
   administrativeRegion1Id: string;
   administrativeRegion2Id: string;

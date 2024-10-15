@@ -8,6 +8,7 @@ export const defaultSettingsFormValues: Omit<Settings, 'id'> = {
   adminLevel3Name: '',
   adminLevel4Name: '',
   metabaseUrl: '',
+  fundingSources: [],
 };
 
 export const COUNTRIES_LIST: Record<string, string>[] = [

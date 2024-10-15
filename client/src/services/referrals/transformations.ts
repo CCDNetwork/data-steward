@@ -88,6 +88,7 @@ export const resToReferral = (res: any): Referral => {
     administrativeRegion3Id: res.administrativeRegion3Id ?? '',
     administrativeRegion4Id: res.administrativeRegion4Id ?? '',
     isBatchUploaded: res.isBatchUploaded ?? false,
+    fundingSource: res.fundingSource ?? '',
   };
 };
 
@@ -96,6 +97,7 @@ export const referralPostToReq = (data: any): Omit<Referral, 'id'> => {
     isUrgent: data.isUrgent,
     organizationReferredToId: data.organizationReferredTo?.id,
     serviceCategory: data.serviceCategory,
+    fundingSource: data.fundingSource,
     // displacementStatus: data.displacementStatus,
     // householdSize: data.householdSize,
     // householdMonthlyIncome: data.householdMonthlyIncome,
@@ -211,6 +213,7 @@ export const referralPatchToReq = (data: any): Omit<Referral, 'id'> => {
     status: data.status,
     isDraft: data.isDraft,
     isRejected: data.isRejected,
+    fundingSource: data.fundingSource,
   };
 
   if (data.serviceCategory && data.serviceCategory === OrgActivity.Mpca) {

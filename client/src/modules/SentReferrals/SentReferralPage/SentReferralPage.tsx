@@ -473,6 +473,42 @@ export const SentReferralPage = () => {
                         required
                         disabled={viewOnlyEnabled}
                       />
+                      <FormField
+                        control={control}
+                        name="fundingSource"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel requiredField>Funding Source</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger disabled={viewOnlyEnabled}>
+                                  <SelectValue placeholder="Select funding source" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {deploymentSettings?.fundingSources &&
+                                deploymentSettings.fundingSources.length > 0 ? (
+                                  deploymentSettings?.fundingSources.map(
+                                    (fSource) => (
+                                      <SelectItem key={fSource} value={fSource}>
+                                        {fSource}
+                                      </SelectItem>
+                                    )
+                                  )
+                                ) : (
+                                  <p>No funding sources available...</p>
+                                )}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-4">
                       {currentFormSelectedOrganization &&
                         (currentFormSelectedOrganization.isMpcaActive ||
                           currentFormSelectedOrganization.isShelterActive ||

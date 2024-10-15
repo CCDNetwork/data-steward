@@ -22,6 +22,7 @@ public class Referral : UserChangeTracked
     [Column(TypeName = "jsonb")] public List<Guid> SubactivitiesIds { get; set; }
     [ForeignKey("Organization")] public Guid? OrganizationReferredToId { get; set; }
     public Organization OrganizationReferredTo { get; set; }
+    public string FundingSource { get; set; }
 
     // MPCA info
     public string DisplacementStatus { get; set; }

@@ -24,6 +24,7 @@ export const dataToSentReferralFormData = (
     gender: data.gender,
     taxId: data.taxId,
     address: data.address,
+    fundingSource: data.fundingSource,
 
     oblast: data.oblast,
     ryon: data.ryon,

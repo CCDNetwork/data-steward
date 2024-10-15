@@ -10,6 +10,7 @@ export const SettingsFormSchema = z.object({
   adminLevel3Name: safeHtmlString,
   adminLevel4Name: safeHtmlString,
   metabaseUrl: z.string(),
+  fundingSources: z.array(z.object({ value: safeHtmlString })),
 });
 
 export type SettingsFormData = z.infer<typeof SettingsFormSchema>;

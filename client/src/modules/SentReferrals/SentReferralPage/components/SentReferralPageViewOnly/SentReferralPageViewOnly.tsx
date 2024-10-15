@@ -24,6 +24,7 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
       caseNumber: sentReferralData?.caseNumber ?? 'N/A',
       isUrgent: sentReferralData?.isUrgent || false,
       serviceCategory: sentReferralData?.serviceCategory || 'N/A',
+      fundingSource: sentReferralData?.fundingSource || 'N/A',
       subactivities: sentReferralData?.subactivities || [],
       sendingOrganizationName:
         sentReferralData?.organizationCreated?.name || 'N/A',
@@ -139,6 +140,14 @@ export const SentReferralPageViewOnly = ({ sentReferralData }: Props) => {
               </dt>
               <dd className="mt-1 text-sm leading-6 sm:mt-2">
                 {referralData.sendingOrganizationName}
+              </dd>
+            </div>
+            <div className="sm:col-span-1">
+              <dt className="text-sm font-bold tracking-tight leading-6">
+                Funding Source
+              </dt>
+              <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                {referralData.fundingSource}
               </dd>
             </div>
             {referralData?.serviceCategory && (

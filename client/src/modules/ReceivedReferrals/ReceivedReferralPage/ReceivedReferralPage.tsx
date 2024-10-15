@@ -171,6 +171,7 @@ export const ReceivedReferralPage = () => {
       isUrgent: receivedReferralData?.isUrgent || false,
       serviceCategory: receivedReferralData?.serviceCategory || 'N/A',
       subactivities: receivedReferralData?.subactivities || [],
+      fundingSource: receivedReferralData?.fundingSource || 'N/A',
       sendingOrganizationName:
         receivedReferralData?.organizationCreated?.name || 'N/A',
       displacementStatus: receivedReferralData?.displacementStatus || 'N/A',
@@ -377,6 +378,14 @@ export const ReceivedReferralPage = () => {
                   </dt>
                   <dd className="mt-1 text-sm leading-6 sm:mt-2">
                     {receivingReferral.sendingOrganizationName}
+                  </dd>
+                </div>
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-bold tracking-tight leading-6">
+                    Funding source
+                  </dt>
+                  <dd className="mt-1 text-sm leading-6 sm:mt-2">
+                    {receivingReferral.fundingSource}
                   </dd>
                 </div>
                 {receivingReferral?.serviceCategory && (

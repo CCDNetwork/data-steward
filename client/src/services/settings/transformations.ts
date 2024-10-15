@@ -10,6 +10,7 @@ export const resToSettings = (res: any): Settings => {
     adminLevel3Name: res.adminLevel3Name ?? '',
     adminLevel4Name: res.adminLevel4Name ?? '',
     metabaseUrl: res.metabaseUrl ?? '',
+    fundingSources: res.fundingSources ?? [],
   };
 };
 
@@ -24,5 +25,8 @@ export const settingsToReq = (
     adminLevel3Name: data.adminLevel3Name ?? '',
     adminLevel4Name: data.adminLevel4Name ?? '',
     metabaseUrl: data.metabaseUrl ?? '',
+    fundingSources: data.fundingSources.length
+      ? data.fundingSources.map((i) => i.value)
+      : [],
   };
 };

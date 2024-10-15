@@ -68,6 +68,7 @@ export const SentReferralSchema = z
         serviceType: z.string(),
       })
     ),
+    fundingSource: z.string({ message: 'Funding source required' }),
     organizationReferredTo: OrganizationSchema,
     displacementStatus: z.string().optional(),
     householdSize: z.string().optional(),
