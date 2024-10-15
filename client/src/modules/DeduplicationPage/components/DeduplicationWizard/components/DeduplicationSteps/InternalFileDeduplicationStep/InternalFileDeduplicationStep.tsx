@@ -8,7 +8,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { DeduplicationDataset } from '@/services/deduplication';
 import { appendStringToFilename, createDownloadLink } from '@/helpers/common';
-import { useAuth } from '@/providers/GlobalProvider';
 import { StepLoadingComponent } from '../../StepLoadingComponent/StepLoadingComponent';
 
 interface Props {
@@ -20,8 +19,6 @@ export const InternalFileDeduplicationStep: React.FC<Props> = ({
   isStepLoading,
   stepDeduplicationResponse,
 }) => {
-  const { organization } = useAuth();
-
   const duplicateFileName = appendStringToFilename(
     stepDeduplicationResponse?.file.name ?? '-',
     '-duplicates'
@@ -43,19 +40,15 @@ export const InternalFileDeduplicationStep: React.FC<Props> = ({
         The platform has found no duplicate records within this file.
       </p>
       <p>
-        Next, we will check data from the uploaded file against records
-        previously uploaded by{' '}
-        <span className="px-1 border border-border rounded py-0.5 bg-muted font-semibold">
-          {organization?.name ?? '-'}
-        </span>
-        , to see if there are “organisational duplicates“.
+        Next, we will add your data to the registry and check for potential
+        duplicates with other organisations’ records.
       </p>
-      <p className="text-xs text-muted-foreground max-w-[500px] pt-6">
+      {/* <p className="text-xs text-muted-foreground max-w-[500px] pt-6">
         <strong>Note: </strong>
         Organisational duplicates are beneficiary data uploaded by your
         organisation that matches data in your file. We check for that before
         adding your data to the registry.
-      </p>
+      </p> */}
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center gap-2">

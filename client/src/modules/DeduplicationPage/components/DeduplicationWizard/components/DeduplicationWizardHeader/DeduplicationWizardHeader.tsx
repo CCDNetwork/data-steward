@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 const DEDUPLICATION_STEPS: { step: string }[] = [
   { step: 'File upload' },
   { step: 'Internal file deduplication' },
-  { step: 'Organization deduplication' },
+  // { step: 'Organization deduplication' },
   { step: 'Registry deduplication' },
 ];
 

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import {
   DeduplicationDataset,
-  SameOrgDedupeResponse,
+  // SameOrgDedupeResponse,
   SystemOrgDedupeResponse,
   useDeduplicationMutation,
 } from '@/services/deduplication';
@@ -25,7 +25,7 @@ import {
   DeduplicationWizardHeader,
   FileUploadStep,
   InternalFileDeduplicationStep,
-  OrganizationDeduplicationStep,
+  // OrganizationDeduplicationStep,
   SetupInformation,
   RegistryDeduplicationStep,
 } from './components';
@@ -46,8 +46,8 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
   const [internalFileDedupResponse, setInternalFileDedupResponse] =
     useState<DeduplicationDataset | null>(null);
-  const [sameOrgDedupResponse, setSameOrgDedupResponse] =
-    useState<SameOrgDedupeResponse | null>(null);
+  // const [sameOrgDedupResponse, setSameOrgDedupResponse] =
+  //   useState<SameOrgDedupeResponse | null>(null);
   const [systemOrgDedupResponse, setSystemOrgDedupResponse] =
     useState<SystemOrgDedupeResponse | null>(null);
 
@@ -101,23 +101,23 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
     }
   };
 
-  const handleSameOrganizationDeduplication = async () => {
-    try {
-      const resp = await deduplicateSameOrganization.mutateAsync({
-        fileId: internalFileDedupResponse?.file.id ?? '',
-        templateId: currentTemplate.id,
-      });
-      setSameOrgDedupResponse(resp);
-    } catch (error: any) {
-      toast({
-        title: 'An error has occured!',
-        variant: 'destructive',
-        description:
-          error.response?.data?.errorMessage ||
-          'Something went wrong, please try again.',
-      });
-    }
-  };
+  // const handleSameOrganizationDeduplication = async () => {
+  //   try {
+  //     const resp = await deduplicateSameOrganization.mutateAsync({
+  //       fileId: internalFileDedupResponse?.file.id ?? '',
+  //       templateId: currentTemplate.id,
+  //     });
+  //     setSameOrgDedupResponse(resp);
+  //   } catch (error: any) {
+  //     toast({
+  //       title: 'An error has occured!',
+  //       variant: 'destructive',
+  //       description:
+  //         error.response?.data?.errorMessage ||
+  //         'Something went wrong, please try again.',
+  //     });
+  //   }
+  // };
 
   const handleSystemOrganizationsDeduplication = async () => {
     try {
@@ -165,9 +165,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
         await handleInternalFileDeduplication();
         break;
       case WIZARD_STEP.INTERNAL_FILE_DEDUPLICATION:
-        await handleSameOrganizationDeduplication();
-        break;
-      case WIZARD_STEP.ORGANIZATION_DEDUPLICATION:
+        //   await handleSameOrganizationDeduplication();
+        //   break;
+        // case WIZARD_STEP.ORGANIZATION_DEDUPLICATION:
         await handleSystemOrganizationsDeduplication();
         break;
       case WIZARD_STEP.REGISTRY_DEDUPLICATION:
@@ -194,10 +194,10 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
     return false;
   }, [currentStep, fileToUpload, currentTemplate, internalFileDedupResponse]);
 
-  const sameOrgDedupUploadCount =
-    (sameOrgDedupResponse?.totalRecords ?? 0) -
-    (sameOrgDedupResponse?.potentialDuplicateRecords ?? 0) -
-    (sameOrgDedupResponse?.identicalRecords ?? 0);
+  // const sameOrgDedupUploadCount =
+  //   (sameOrgDedupResponse?.totalRecords ?? 0) -
+  //   (sameOrgDedupResponse?.potentialDuplicateRecords ?? 0) -
+  //   (sameOrgDedupResponse?.identicalRecords ?? 0);
 
   const isWizardProcessing =
     deduplicateFile.isLoading ||
@@ -260,7 +260,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       </AnimationWrapper>
                     )}
 
-                    {currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION && (
+                    {/* {currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION && (
                       <AnimationWrapper
                         key={WIZARD_STEP.ORGANIZATION_DEDUPLICATION}
                       >
@@ -270,7 +270,7 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                           duplicatesToUpload={sameOrgDedupUploadCount}
                         />
                       </AnimationWrapper>
-                    )}
+                    )} */}
 
                     {currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION && (
                       <AnimationWrapper
@@ -306,16 +306,9 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                   deduplicateFinish.isLoading
                 }
                 disabled={isContinueButtonDisabled || isWizardProcessing}
-                onClick={
-                  currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION &&
-                  sameOrgDedupUploadCount === 0
-                    ? onOpenChange
-                    : handleContinueClick
-                }
+                onClick={handleContinueClick}
               >
-                {currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION ||
-                (currentStep === WIZARD_STEP.ORGANIZATION_DEDUPLICATION &&
-                  sameOrgDedupUploadCount === 0)
+                {currentStep === WIZARD_STEP.REGISTRY_DEDUPLICATION
                   ? 'Finish'
                   : 'Continue'}
               </Button>
