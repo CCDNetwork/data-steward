@@ -7,5 +7,6 @@ export const resToAdministrativeRegion = (res: any): AdministrativeRegion => {
     code: res.code ?? '',
     level: res.level ?? 0,
     name: res.name ?? '',
+    path: res.path ?? '',
   };
 };

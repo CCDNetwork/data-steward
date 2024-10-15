@@ -54,7 +54,8 @@ public class AdministrativeRegionService
                 id,
                 searchText
             ),
-            requestParameters
+            requestParameters,
+            resolveDependencies
         );
     }
 
@@ -72,5 +73,25 @@ public class AdministrativeRegionService
             e.Name.ToLower() == name.ToLower() && e.Level == level);
 
         return ar?.Id;
+    }
+
+    private async Task resolveDependencies(AdministrativeRegionResponse adminRegion)
+    {
+        if (adminRegion.ParentId.HasValue)
+        {
+            var parentRegion = await GetAdministrativeRegionApi(adminRegion.ParentId.Value);
+
+            adminRegion.Path = await BuildRegionPath(parentRegion);
+        }
+    }
+
+    private async Task<string> BuildRegionPath(AdministrativeRegionResponse region)
+    {
+        if (region.ParentId == null) return region.Name;
+
+        var parentRegion = await GetAdministrativeRegionApi(region.ParentId.Value);
+        var parentPath = await BuildRegionPath(parentRegion);
+
+        return $"{parentPath} > {region.Name}";
     }
 }

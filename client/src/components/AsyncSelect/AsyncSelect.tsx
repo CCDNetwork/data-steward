@@ -2,7 +2,13 @@ import { useMemo, useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Control, useController } from 'react-hook-form';
-import Select, { MultiValue, SingleValue } from 'react-select';
+import Select, {
+  components,
+  GroupBase,
+  MultiValue,
+  MultiValueGenericProps,
+  SingleValue,
+} from 'react-select';
 import { cn } from '@/helpers/utils';
 import { DataWithMeta, PaginationRequest } from '@/helpers/pagination';
 
@@ -99,6 +105,16 @@ export const AsyncSelect = <T,>({
     setSearch(newValue);
   };
 
+  const MultiValueLabel = (
+    props: MultiValueGenericProps<T, boolean, GroupBase<T>>
+  ) => {
+    return (
+      <components.MultiValueLabel {...props}>
+        {props.data.name}
+      </components.MultiValueLabel>
+    );
+  };
+
   return (
     <div
       className={cn('relative w-full react-select-container', wrapperClassName)}
@@ -116,6 +132,7 @@ export const AsyncSelect = <T,>({
         </label>
       )}
       <Select
+        hideSelectedOptions={false}
         isMulti={multiple}
         value={selectedValue}
         getOptionLabel={getOptionLabel}
@@ -127,6 +144,7 @@ export const AsyncSelect = <T,>({
         onMenuOpen={handleMenuOpen}
         onMenuClose={handleMenuClose}
         isDisabled={disabled}
+        components={{ MultiValueLabel }}
         isLoading={isOpen && query?.isLoading}
         onInputChange={handleInputChange}
         maxMenuHeight={250}

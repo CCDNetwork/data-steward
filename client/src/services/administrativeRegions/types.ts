@@ -4,4 +4,5 @@ export type AdministrativeRegion = {
   level: number;
   name: string;
   code: string;
+  path: string;
 };

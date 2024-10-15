@@ -2,22 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using Ccd.Server.Data;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Helpers;
 
 public class PagedApiResponseMeta
 {
-    public int Page { get; set; }
-    public int PageSize { get; set; }
-    public int TotalRows { get; set; }
-    public int TotalPages { get; set; }
-    public string SortBy { get; set; }
-    public string SortDirection { get; set; }
-
-    public PagedApiResponseMeta() { }
+    public PagedApiResponseMeta()
+    {
+    }
 
     public PagedApiResponseMeta(
         int page,
@@ -27,13 +22,20 @@ public class PagedApiResponseMeta
         string sortDirection
     )
     {
-        this.Page = page;
-        this.PageSize = pageSize;
-        this.TotalRows = totalRows;
-        this.TotalPages = Convert.ToInt32(Math.Ceiling((decimal)totalRows / pageSize));
-        this.SortBy = sortBy;
-        this.SortDirection = sortDirection;
+        Page = page;
+        PageSize = pageSize;
+        TotalRows = totalRows;
+        TotalPages = Convert.ToInt32(Math.Ceiling((decimal)totalRows / pageSize));
+        SortBy = sortBy;
+        SortDirection = sortDirection;
     }
+
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRows { get; set; }
+    public int TotalPages { get; set; }
+    public string SortBy { get; set; }
+    public string SortDirection { get; set; }
 }
 
 public class PagedApiResponse<T>
@@ -61,11 +63,9 @@ public class PagedApiResponse<T>
 
             sqlSearch += $"id::text ILIKE '%{searchValue}%'";
 
-            for (int i = 0; i < searchColumnList.Count; i++)
-            {
+            for (var i = 0; i < searchColumnList.Count; i++)
                 sqlSearch +=
                     " OR " + searchColumnList[i].ToSnakeCase() + $" ILIKE '%{searchValue}%'";
-            }
 
             sqlSearch += ") ";
         }
@@ -88,9 +88,12 @@ public class PagedApiResponse<T>
             {
                 sqlFilter = " (";
 
-                var i = 0;
+                var sqlCondition = "AND";
 
-                foreach (var key in parameters.FilterList.Keys)
+                var i = 0;
+                var keys = parameters.FilterList.Keys.ToList();
+
+                foreach (var key in keys)
                 {
                     var column = key.Replace("'", "")
                         .Replace("[gt]", "")
@@ -98,6 +101,7 @@ public class PagedApiResponse<T>
                         .Replace("[not]", "")
                         .Replace("[like]", "")
                         .Replace("[in]", "")
+                        .Replace("[or]", "")
                         .Replace("[contains]", "")
                         .ToSnakeCase();
 
@@ -131,8 +135,10 @@ public class PagedApiResponse<T>
                         quote = "";
                     }
 
+                    if (key.Contains("[or]") && i < keys.Count - 1 && keys[i + 1].Contains("[or]")) sqlCondition = "OR";
+
                     if (i > 0)
-                        sqlFilter += " AND ";
+                        sqlFilter += $@" {sqlCondition} ";
 
                     var sqlOperator = "=";
                     var likeOperator = "";
@@ -143,10 +149,7 @@ public class PagedApiResponse<T>
                         sqlOperator = ">=";
                     if (key.Contains("[not]"))
                         sqlOperator = "<>";
-                    if (key.Contains("[contains]"))
-                    {
-                        sqlOperator = " @> ";
-                    }
+                    if (key.Contains("[contains]")) sqlOperator = " @> ";
                     if (key.Contains("[like]"))
                     {
                         if (isNumeric)
@@ -158,10 +161,7 @@ public class PagedApiResponse<T>
                         likeOperator = "%";
                     }
 
-                    if (key.Contains("[in]"))
-                    {
-                        sqlOperator = " in ";
-                    }
+                    if (key.Contains("[in]")) sqlOperator = " in ";
 
                     if (isCustomField)
                     {
@@ -238,19 +238,15 @@ public class PagedApiResponse<T>
                 .FirstOrDefault(e => e.Name.ToSnakeCase() == parameters.SortBy);
 
             if (sortProperty?.IsDefined(typeof(SortAsNumberAttribute), false) == true)
-            {
                 sqlOrder =
                     $@" ORDER BY right('00000000000000000000' || {parameters.SortBy.Replace("'", "''").ToSnakeCase()}, 20) {sortDirection}";
-            }
             else
-            {
                 sqlOrder =
                     $@" ORDER BY {parameters.SortBy.Replace("'", "''").ToSnakeCase()} {sortDirection}";
-            }
         }
         else
         {
-            sqlOrder = $@" ORDER BY id";
+            sqlOrder = @" ORDER BY id";
         }
 
         var sqlPaging = $@" OFFSET {offset.ToString()} LIMIT {limit.ToString()}";
@@ -261,7 +257,7 @@ public class PagedApiResponse<T>
 
         if (!string.IsNullOrEmpty(sqlSearch) || !string.IsNullOrEmpty(sqlFilter))
         {
-            sqlWhere = $" WHERE ";
+            sqlWhere = " WHERE ";
             if (!string.IsNullOrEmpty(sqlSearch))
                 sqlWhere += sqlSearch;
             if (!string.IsNullOrEmpty(sqlSearch) && !string.IsNullOrEmpty(sqlFilter))
@@ -284,28 +280,16 @@ public class PagedApiResponse<T>
         var data = items.ToList();
 
         if (resolveDependenciesWithLanguage != null)
-        {
             foreach (var item in items)
-            {
                 await resolveDependenciesWithLanguage(item, language);
-            }
-        }
 
         else if (resolveDependencies != null)
-        {
             foreach (var item in items)
-            {
                 await resolveDependencies(item);
-            }
-        }
 
         else if (resolveDependenciesSearch != null)
-        {
             foreach (var item in items)
-            {
                 resolveDependenciesSearch(item);
-            }
-        }
 
         var response = new PagedApiResponse<T>
         {
