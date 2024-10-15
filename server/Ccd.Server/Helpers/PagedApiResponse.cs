@@ -87,9 +87,7 @@ public class PagedApiResponse<T>
             if (filterColumnList.Count > 0)
             {
                 sqlFilter = " (";
-
                 var sqlCondition = "AND";
-
                 var i = 0;
                 var keys = parameters.FilterList.Keys.ToList();
 
@@ -135,10 +133,13 @@ public class PagedApiResponse<T>
                         quote = "";
                     }
 
-                    if (key.Contains("[or]") && i < keys.Count - 1 && keys[i + 1].Contains("[or]")) sqlCondition = "OR";
+                    if (key.Contains("[or]"))
+                        sqlCondition = "OR";
+                    else
+                        sqlCondition = "AND";
 
                     if (i > 0)
-                        sqlFilter += $@" {sqlCondition} ";
+                        sqlFilter += $" {sqlCondition} ";
 
                     var sqlOperator = "=";
                     var likeOperator = "";
