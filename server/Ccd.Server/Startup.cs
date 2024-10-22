@@ -6,6 +6,7 @@ using Ccd.Server.AdministrativeRegions;
 using Ccd.Server.Authentication;
 using Ccd.Server.Beneficiaries;
 using Ccd.Server.BeneficiaryAttributes;
+using Ccd.Server.BeneficiaryData;
 using Ccd.Server.Data;
 using Ccd.Server.Deduplication;
 using Ccd.Server.Email;
@@ -164,6 +165,7 @@ public class Startup
         services.AddScoped<BeneficiaryAttributeService>();
         services.AddScoped<BeneficiaryAttributeGroupService>();
         services.AddScoped<BeneficaryService>();
+        services.AddScoped<BeneficaryDataService>();
         services.AddScoped<ReferralService>();
         services.AddScoped<ExportService>();
         services.AddScoped<TemplateService>();

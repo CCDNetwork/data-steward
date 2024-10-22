@@ -36,6 +36,7 @@ export enum APP_ROUTE {
   SignIn = '/sign-in',
   PermissionDenied = '/permission-denied',
   ReferralData = '/referral-data',
+  BeneficiaryDataView = '/beneficiary-data',
 }
 
 export const NAVIGATION_ITEMS: NavigationItem[] = [

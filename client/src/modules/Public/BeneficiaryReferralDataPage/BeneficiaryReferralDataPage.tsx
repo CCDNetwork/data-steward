@@ -40,9 +40,9 @@ export const BeneficiaryReferralDataPage = () => {
   if (referralData) {
     return (
       <div className="w-screen h-[100svh]">
-        <div className="flex flex-col gap-10 items-center mx-auto justify-center h-full max-w-[500px]">
-          <div className="flex flex-col gap-6">
-            <div className="flex gap-2  items-center justify-evenly">
+        <div className="flex flex-col gap-4 items-center mx-auto justify-center h-full max-w-[500px]">
+          <div className="flex flex-col gap-6 bg-muted sm:p-10 p-4 border rounded-2xl">
+            <div className="flex gap-2 sm:flex-row flex-col items-center justify-evenly">
               {referralData.createdAt && (
                 <div className="text-center">
                   <span className="text-xs text-muted-foreground uppercase font-medium">
@@ -85,7 +85,7 @@ export const BeneficiaryReferralDataPage = () => {
               <span className="text-sm text-muted-foreground">
                 The status of your case is
               </span>
-              <p className="text-md font-semibold uppercase px-3 py-1 rounded-lg text-white bg-primary">
+              <p className="text-md font-semibold capitalize px-3 py-1 rounded-lg text-white bg-primary">
                 {referralData.status || ''}
               </p>
             </div>
@@ -107,7 +107,7 @@ export const BeneficiaryReferralDataPage = () => {
     <PublicPage
       shouldRedirect={false}
       title="Referral Status"
-      subtitle="Enter your referral case number"
+      subtitle="Enter your referral case number to see referral status"
       boxClassName="sm:max-w-[400px]"
     >
       <Input

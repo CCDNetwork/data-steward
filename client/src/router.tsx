@@ -54,6 +54,7 @@ import {
 } from './modules/BeneficiaryList';
 import { DashboardPage } from './modules/DashboardPage';
 import { SettingsPage } from './modules/SettingsPage';
+import { BeneficiaryDataViewPage } from './modules/Public/BeneficiaryDataView';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -207,6 +208,10 @@ export const router = createBrowserRouter(
       <Route
         path={APP_ROUTE.ReferralData}
         element={<BeneficiaryReferralDataPage />}
+      />
+      <Route
+        path={APP_ROUTE.BeneficiaryDataView}
+        element={<BeneficiaryDataViewPage />}
       />
       <Route
         path={APP_ROUTE.PermissionDenied}
