@@ -36,13 +36,16 @@ public class UserService
                  AND (@permission is null OR uo.permissions ? @permission)
                  AND (is_deleted = false)";
 
+    private readonly SendGridService _sendGridService;
+
     public UserService(CcdContext context, DateTimeProvider dateTimeProvider, EmailManagerService emailManagerService,
-        IMapper mapper
+        IMapper mapper, SendGridService sendGridService
     )
     {
         _context = context;
         _emailManagerService = emailManagerService;
         _mapper = mapper;
+        _sendGridService = sendGridService;
     }
 
     private object getSelectSqlParams(Guid? id = null, string email = null, Guid? organizationId = null,
@@ -69,7 +72,7 @@ public class UserService
         return user;
     }
 
-    public async Task<User> AddUser(User user)
+    public async Task<User> AddUser(User user, string unhashedUserPassword, Guid userOrganizationId, Guid adminId)
     {
         var existingUser = await GetUserByEmail(user.Email);
 
@@ -80,6 +83,27 @@ public class UserService
 
         var newUser = _context.Users.Add(user).Entity;
         await _context.SaveChangesAsync();
+
+        var userAdministrator = await GetUserById(adminId);
+        var createdUserOrganization = _context.Organizations.FirstOrDefault(o => o.Id == userOrganizationId);
+
+
+        var templateData = new Dictionary<string, string>
+        {
+            { "firstName", user.FirstName }, { "lastName", user.LastName }, { "userEmail", user.Email },
+            { "userPassword", unhashedUserPassword },
+            { "userOrganisationName", createdUserOrganization.Name },
+            {
+                "websiteUrl",
+                StaticConfiguration.WebAppUrl
+            },
+            { "administratorEmail", userAdministrator.Email }
+        };
+
+        await _sendGridService.SendEmail(user.Email, "Your account is ready!", StaticConfiguration.SendgridSenderEmail,
+            StaticConfiguration.SendgridInvitationEmailTemplateId,
+            templateData
+        );
 
         var activationLink =
             StaticConfiguration.WebAppUrl

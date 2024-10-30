@@ -56,11 +56,19 @@ public class StaticConfiguration
     public static string SendgridApiKey =>
         Environment.GetEnvironmentVariable("SENDGRID_API_KEY")
         ?? _configuration.GetValue<string>("SendgridApiKey");
-    
+
+    public static string SendgridSenderEmail =>
+        Environment.GetEnvironmentVariable("SENDGRID_SENDER_EMAIL")
+        ?? _configuration.GetValue<string>("SendgridSenderEmail");
+
+    public static string SendgridInvitationEmailTemplateId =>
+        Environment.GetEnvironmentVariable("SENDGRID_INVITATION_EMAIL_TEMPLATE_ID")
+        ?? _configuration.GetValue<string>("SendgridInvitationEmailTemplateId");
+
     public static string SuperadminPassword =>
         Environment.GetEnvironmentVariable("SUPERADMIN_PASSWORD")
         ?? _configuration.GetValue<string>("SuperadminPassword");
-    
+
     public static void Initialize(IConfiguration configuration)
     {
         _configuration = configuration;

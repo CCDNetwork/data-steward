@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Ccd.Server.Areas.Users.Controllers.ControllerModels;
+using Ccd.Server.Data;
 using Ccd.Server.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Ccd.Server.Data;
-using Ccd.Server.Areas.Users.Controllers.ControllerModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ccd.Server.Users;
@@ -13,10 +13,10 @@ namespace Ccd.Server.Users;
 [Route("/api/v1/users")]
 public class UserController : ControllerBaseExtended
 {
-    private readonly UserService _userService;
-    private readonly IMapper _mapper;
     private readonly CcdContext _context;
     private readonly DateTimeProvider _dateTimeProvider;
+    private readonly IMapper _mapper;
+    private readonly UserService _userService;
 
     public UserController(
         UserService userService,
@@ -70,7 +70,8 @@ public class UserController : ControllerBaseExtended
         user.Password = AuthenticationHelper.HashPassword(user, model.Password);
         user.ActivatedAt = _dateTimeProvider.UtcNow;
 
-        user = await _userService.AddUser(user);
+        var adminId = UserId;
+        user = await _userService.AddUser(user, model.Password, model.OrganizationId, adminId);
         await _userService.SetOrganizationRole(user.Id, model.OrganizationId, model.Role, model.Permissions);
 
         var result = await _userService.GetUserApi(model.OrganizationId, user.Id);
@@ -87,7 +88,7 @@ public class UserController : ControllerBaseExtended
     {
         var user = await _userService.GetUserById(id) ?? throw new NotFoundException();
         var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(
-            e => e.UserId == user.Id && e.OrganizationId == this.OrganizationId
+            e => e.UserId == user.Id && e.OrganizationId == OrganizationId
         ) ?? throw new NotFoundException();
         if (!UserRole.IsValidRole(model.Role))
             throw new BadRequestException("Invalid role");
@@ -97,14 +98,11 @@ public class UserController : ControllerBaseExtended
 
         _mapper.Map(model, user);
 
-        if (model.Password != null)
-        {
-            user.Password = AuthenticationHelper.HashPassword(user, model.Password);
-        }
+        if (model.Password != null) user.Password = AuthenticationHelper.HashPassword(user, model.Password);
 
         user = await _userService.UpdateUser(user);
 
-        var result = await _userService.GetUserApi(this.OrganizationId, user.Id);
+        var result = await _userService.GetUserApi(OrganizationId, user.Id);
 
         return Ok(result);
     }
@@ -135,10 +133,7 @@ public class UserController : ControllerBaseExtended
             _context.UserOrganizations.Update(userTenant);
         }
 
-        if (model.Password != null)
-        {
-            user.Password = AuthenticationHelper.HashPassword(user, model.Password);
-        }
+        if (model.Password != null) user.Password = AuthenticationHelper.HashPassword(user, model.Password);
         user.ActivatedAt = _dateTimeProvider.UtcNow;
 
         var newUser = await _userService.UpdateUser(user);
@@ -153,7 +148,7 @@ public class UserController : ControllerBaseExtended
     {
         var user = await _userService.GetUserById(id) ?? throw new NotFoundException();
 
-        var result = await _userService.GetUserApi(this.OrganizationId, user.Id);
+        var result = await _userService.GetUserApi(OrganizationId, user.Id);
 
         await _userService.DeleteUser(user);
 
@@ -164,7 +159,7 @@ public class UserController : ControllerBaseExtended
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult<UserMeResponse>> GetCurrentUser()
     {
-        var result = await _userService.GetUserApi(this.OrganizationId, this.UserId);
+        var result = await _userService.GetUserApi(OrganizationId, UserId);
         var user = _mapper.Map<UserMeResponse>(result);
 
         return Ok(user);
@@ -175,14 +170,11 @@ public class UserController : ControllerBaseExtended
     public async Task<ActionResult<UserMeResponse>> UpdateCurrentUser(UserUpdateMeRequest model)
     {
         var user =
-            await _userService.GetUserById(this.UserId)
+            await _userService.GetUserById(UserId)
             ?? throw new NotFoundException();
         model.Patch(user);
 
-        if (model.Password != null)
-        {
-            user.Password = AuthenticationHelper.HashPassword(user, model.Password);
-        }
+        if (model.Password != null) user.Password = AuthenticationHelper.HashPassword(user, model.Password);
 
         _context.Users.Update(user);
         await _context.SaveChangesAsync();

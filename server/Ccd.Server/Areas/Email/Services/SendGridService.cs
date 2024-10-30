@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ccd.Server.Helpers;
@@ -24,7 +23,6 @@ public class SendGridService : ISendGridService
 
         var client = new SendGridClient(apiKey);
         var sgFrom = new EmailAddress(from);
-        var sgSubject = subject;
         var sgTo = new EmailAddress(to);
 
 
@@ -41,9 +39,7 @@ public class SendGridService : ISendGridService
         var msg = MailHelper.CreateSingleTemplateEmail(sgFrom, sgTo, templateId, templateData);
         var result = await client.SendEmailAsync(msg);
 
-        Console.WriteLine("SendGrid data: " + templateData);
-
         if (!result.IsSuccessStatusCode)
-            Console.WriteLine("SendGrid error: " + await result.Body.ReadAsStringAsync());
+            throw new BadRequestException("Error sending email: " + await result.Body.ReadAsStringAsync());
     }
 }
