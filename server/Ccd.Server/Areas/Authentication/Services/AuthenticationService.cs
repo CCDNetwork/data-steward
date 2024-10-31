@@ -12,18 +12,20 @@ namespace Ccd.Server.Authentication;
 
 public class AuthenticationService
 {
-    private readonly UserService _userService;
-    private readonly EmailManagerService _emailManagerService;
     private readonly DateTimeProvider _dateTimeProvider;
+    private readonly EmailManagerService _emailManagerService;
     private readonly IMapper _mapper;
     private readonly OrganizationService _organizationService;
+    private readonly SendGridService _sendGridService;
+    private readonly UserService _userService;
 
     public AuthenticationService(
         UserService userService,
         EmailManagerService emailManagerService,
         DateTimeProvider dateTimeProvider,
         IMapper mapper,
-        OrganizationService organizationService
+        OrganizationService organizationService,
+        SendGridService sendgridService
     )
     {
         _userService = userService;
@@ -31,6 +33,7 @@ public class AuthenticationService
         _dateTimeProvider = dateTimeProvider;
         _mapper = mapper;
         _organizationService = organizationService;
+        _sendGridService = _sendGridService;
     }
 
     private async Task<UserAuthenticationResponse> generateAuthenticationResponse(User user)
@@ -59,15 +62,13 @@ public class AuthenticationService
             userOrganizations
         );
     }
-    
+
     public async Task<UserAuthenticationResponse> Authenticate(string email, string password)
     {
         // check for superadmin login
-        if(email == "superadmin" && password == StaticConfiguration.SuperadminPassword)
-        {
+        if (email == "superadmin" && password == StaticConfiguration.SuperadminPassword)
             return await generateAuthenticationResponse(User.SYSTEM_USER);
-        }
-        
+
         var user =
             await _userService.GetUserByEmail(email)
             ?? throw new UnauthorizedException("Invalid username or password");
@@ -116,7 +117,7 @@ public class AuthenticationService
     {
         var user =
             await _userService.GetUserByEmail(email)
-            ?? throw new BadRequestException("User not found");
+            ?? throw new BadRequestException("User with given email address not found");
 
         user.PasswordResetCode = Guid.NewGuid().ToString();
         await _userService.UpdateUser(user);
@@ -125,6 +126,20 @@ public class AuthenticationService
             StaticConfiguration.WebAppUrl
             + $"/reset-password?email={WebUtility.UrlEncode(user.Email)}&code={user.PasswordResetCode}";
 
+        var templateData = new Dictionary<string, string>
+        {
+            { "firstName", user.FirstName },
+            {
+                "buttonUrl",
+                resetLink
+            }
+        };
+
+        await _sendGridService.SendEmail(user.Email,
+            StaticConfiguration.SendgridPasswordResetEmailTemplateId,
+            templateData
+        );
+
         await _emailManagerService.SendForgotPasswordMail(user.Email, user.FirstName, resetLink);
     }
 
@@ -132,19 +147,13 @@ public class AuthenticationService
     {
         var user =
             await _userService.GetUserByEmail(email)
-            ?? throw new BadRequestException("User not found");
+            ?? throw new BadRequestException("User with given email address not found");
 
         if (user.PasswordResetCode != passwordResetCode)
-            throw new BadRequestException("invalid code");
+            throw new BadRequestException("Invalid password reset code");
 
         user.Password = AuthenticationHelper.HashPassword(user, password);
         user.PasswordResetCode = null;
         await _userService.UpdateUser(user);
-
-        await _emailManagerService.SendResetPasswordMail(
-            user.Email,
-            user.FirstName,
-            StaticConfiguration.WebAppUrl
-        );
     }
 }

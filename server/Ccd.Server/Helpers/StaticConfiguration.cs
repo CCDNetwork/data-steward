@@ -65,6 +65,10 @@ public class StaticConfiguration
         Environment.GetEnvironmentVariable("SENDGRID_INVITATION_EMAIL_TEMPLATE_ID")
         ?? _configuration.GetValue<string>("SendgridInvitationEmailTemplateId");
 
+    public static string SendgridPasswordResetEmailTemplateId =>
+        Environment.GetEnvironmentVariable("SENDGRID_PASSWORD_RESET_EMAIL_TEMPLATE_ID")
+        ?? _configuration.GetValue<string>("SendgridPasswordResetEmailTemplateId");
+
     public static string SuperadminPassword =>
         Environment.GetEnvironmentVariable("SUPERADMIN_PASSWORD")
         ?? _configuration.GetValue<string>("SuperadminPassword");

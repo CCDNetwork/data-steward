@@ -10,8 +10,6 @@ public class SendGridService : ISendGridService
 {
     public async Task SendEmail(
         string to,
-        string subject,
-        string from,
         string templateId = null,
         Dictionary<string, string> templateData = null
     )
@@ -22,7 +20,7 @@ public class SendGridService : ISendGridService
             return;
 
         var client = new SendGridClient(apiKey);
-        var sgFrom = new EmailAddress(from);
+        var sgFrom = new EmailAddress(StaticConfiguration.SendgridSenderEmail);
         var sgTo = new EmailAddress(to);
 
 

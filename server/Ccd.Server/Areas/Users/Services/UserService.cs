@@ -100,7 +100,7 @@ public class UserService
             { "administratorEmail", userAdministrator.Email }
         };
 
-        await _sendGridService.SendEmail(user.Email, "Your account is ready!", StaticConfiguration.SendgridSenderEmail,
+        await _sendGridService.SendEmail(user.Email,
             StaticConfiguration.SendgridInvitationEmailTemplateId,
             templateData
         );
