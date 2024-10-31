@@ -55,6 +55,8 @@ import {
 import { DashboardPage } from './modules/DashboardPage';
 import { SettingsPage } from './modules/SettingsPage';
 import { BeneficiaryDataViewPage } from './modules/Public/BeneficiaryDataView';
+import { RequestNewPasswordPage } from './modules/Public/RequestNewPasswordPage';
+import { SetNewPasswordPage } from './modules/Public/SetNewPasswordPage';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -209,6 +211,11 @@ export const router = createBrowserRouter(
         path={APP_ROUTE.ReferralData}
         element={<BeneficiaryReferralDataPage />}
       />
+      <Route
+        path={APP_ROUTE.RequestNewPassword}
+        element={<RequestNewPasswordPage />}
+      />
+      <Route path={APP_ROUTE.SetNewPassword} element={<SetNewPasswordPage />} />
       <Route
         path={APP_ROUTE.BeneficiaryDataView}
         element={<BeneficiaryDataViewPage />}

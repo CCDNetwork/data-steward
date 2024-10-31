@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { NavLink } from 'react-router-dom';
+import { APP_ROUTE } from '@/helpers/constants';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -57,7 +59,7 @@ export const SignInPage = () => {
       boxClassName="sm:max-w-[400px]"
     >
       <Form {...form}>
-        <form onSubmit={onSubmit} className="space-y-4 w-full">
+        <form onSubmit={onSubmit} className="w-full">
           <div className="grid grid-cols-1 gap-4">
             <FormField
               control={control}
@@ -94,6 +96,14 @@ export const SignInPage = () => {
               )}
             />
           </div>
+          <div className="flex justify-end pt-2 pb-4">
+            <NavLink
+              to={APP_ROUTE.RequestNewPassword}
+              className="text-sm text-primary font-medium hover:underline focus:outline-primary"
+            >
+              Reset your password?
+            </NavLink>
+          </div>
           <Button
             isLoading={formState.isSubmitting || login.isLoading}
             disabled={formState.isSubmitting || login.isLoading}
@@ -105,11 +115,6 @@ export const SignInPage = () => {
           </Button>
         </form>
       </Form>
-      {/* <p className="text-center text-sm text-muted-foreground">
-        <Link to={APP_ROUTE.ForgotPassword} className="underline underline-offset-4">
-          Forgot password?
-        </Link>
-      </p> */}
     </PublicPage>
   );
 };

@@ -33,7 +33,7 @@ public class AuthenticationService
         _dateTimeProvider = dateTimeProvider;
         _mapper = mapper;
         _organizationService = organizationService;
-        _sendGridService = _sendGridService;
+        _sendGridService = sendgridService;
     }
 
     private async Task<UserAuthenticationResponse> generateAuthenticationResponse(User user)
@@ -139,8 +139,6 @@ public class AuthenticationService
             StaticConfiguration.SendgridPasswordResetEmailTemplateId,
             templateData
         );
-
-        await _emailManagerService.SendForgotPasswordMail(user.Email, user.FirstName, resetLink);
     }
 
     public async Task ResetPassword(string email, string passwordResetCode, string password)

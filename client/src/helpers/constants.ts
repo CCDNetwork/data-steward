@@ -37,6 +37,8 @@ export enum APP_ROUTE {
   PermissionDenied = '/permission-denied',
   ReferralData = '/referral-data',
   BeneficiaryDataView = '/beneficiary-data',
+  RequestNewPassword = '/request-new-password',
+  SetNewPassword = '/reset-password',
 }
 
 export const NAVIGATION_ITEMS: NavigationItem[] = [
