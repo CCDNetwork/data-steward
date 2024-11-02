@@ -100,7 +100,7 @@ public class DeduplicationService
         worksheet.Cell(1, lastColumnIndex + 1).Value = "Duplicate of";
 
         var deduplicationRecords = new List<DeduplicationRecord>();
-        var uniqueDuplicates = new HashSet<Guid>();
+        var uniqueDuplicates = new HashSet<string>();
 
 
         for (var i = 2; i <= lastRowNumber; i++)
@@ -180,7 +180,8 @@ public class DeduplicationService
                     row.Cell(lastColumnIndex).Value = "YES";
                     matchedRows.Add(k);
 
-                    var uniqueIdentifier = new Guid();
+                    var uniqueIdentifier =
+                        $"{deduplicationRecord.FirstName}-{deduplicationRecord.FamilyName}-{deduplicationRecord.DateOfBirth}";
                     uniqueDuplicates.Add(uniqueIdentifier);
 
                     foreach (var field in matchedFields)
