@@ -3,33 +3,39 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Ccd.Server.Beneficiaries;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Data;
 using Ccd.Server.Deduplication.Controllers.ControllerModels;
 using Ccd.Server.Helpers;
+using Ccd.Server.Storage;
+using Ccd.Server.Templates;
 using Ccd.Server.Users;
 using ClosedXML.Excel;
 using FuzzySharp;
 using Microsoft.EntityFrameworkCore;
-using Ccd.Server.Beneficiaries;
-using Ccd.Server.Storage;
-using Ccd.Server.Templates;
-using CsvHelper.Expressions;
 
 namespace Ccd.Server.Deduplication;
 
 public class DeduplicationService
 {
+    private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
     private readonly CcdContext _context;
     private readonly IMapper _mapper;
-    private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
+
+    private readonly string _selectSql =
+        @"SELECT DISTINCT ON (l.id)
+                 l.*
+            FROM
+                 list as l
+            WHERE
+                (@organizationId is null OR l.organization_id = @organizationId)";
 
     private readonly IStorageService _storageService;
 
-    private Dictionary<string, int> HeaderIndexCache = new Dictionary<string, int>();
+    private readonly Dictionary<string, int> HeaderIndexCache = new();
 
     public DeduplicationService(CcdContext context, IMapper mapper,
         BeneficiaryAttributeGroupService beneficiaryAttributeGroupService, IStorageService storageService)
@@ -39,14 +45,6 @@ public class DeduplicationService
         _beneficiaryAttributeGroupService = beneficiaryAttributeGroupService;
         _storageService = storageService;
     }
-
-    private readonly string _selectSql =
-        $@"SELECT DISTINCT ON (l.id)
-                 l.*
-            FROM
-                 list as l
-            WHERE
-                (@organizationId is null OR l.organization_id = @organizationId)";
 
     private object getSelectSqlParams(Guid? organizationId = null)
     {
@@ -86,7 +84,7 @@ public class DeduplicationService
             throw new BadRequestException("Template not found.");
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-            { PageSize = 1000, Page = 1 });
+                { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
 
         var worksheet = workbook.Worksheet(1);
@@ -102,7 +100,8 @@ public class DeduplicationService
         worksheet.Cell(1, lastColumnIndex + 1).Value = "Duplicate of";
 
         var deduplicationRecords = new List<DeduplicationRecord>();
-        var duplicates = 0;
+        var uniqueDuplicates = new HashSet<string>();
+
 
         for (var i = 2; i <= lastRowNumber; i++)
         {
@@ -129,7 +128,7 @@ public class DeduplicationService
                 CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
                 StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
                 EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
-                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
+                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString()
             };
 
             deduplicationRecords.Add(fileRecord);
@@ -161,7 +160,7 @@ public class DeduplicationService
                 CurrencyAmount = row.Cell(GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
                 StartDate = row.Cell(GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
                 EndDate = row.Cell(GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
-                Frequency = row.Cell(GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
+                Frequency = row.Cell(GetHeaderIndex(template.Frequency, worksheet)).Value.ToString()
             };
 
             var hasDuplicates = false;
@@ -181,6 +180,10 @@ public class DeduplicationService
                     row.Cell(lastColumnIndex).Value = "YES";
                     matchedRows.Add(k);
 
+                    var uniqueIdentifier =
+                        $"{deduplicationRecord.FirstName}-{deduplicationRecord.FamilyName}-{deduplicationRecord.DateOfBirth}";
+                    uniqueDuplicates.Add(uniqueIdentifier);
+
                     foreach (var field in matchedFields)
                     {
                         var fieldName = template.GetType().GetProperty(field)?.GetValue(template).ToString();
@@ -190,11 +193,7 @@ public class DeduplicationService
                 }
             }
 
-            if (hasDuplicates)
-            {
-                Interlocked.Increment(ref duplicates);
-                row.Cell(lastColumnIndex + 1).Value = string.Join(", ", matchedRows);
-            }
+            if (hasDuplicates) row.Cell(lastColumnIndex + 1).Value = string.Join(", ", matchedRows);
         });
 
         await _context.SaveChangesAsync();
@@ -210,7 +209,7 @@ public class DeduplicationService
         {
             File = fileResponse,
             TemplateId = model.TemplateId,
-            Duplicates = duplicates
+            Duplicates = uniqueDuplicates.Count
         };
     }
 
@@ -263,7 +262,7 @@ public class DeduplicationService
                 CurrencyAmount = worksheet.Cell(i, GetHeaderIndex(template.CurrencyAmount, worksheet)).Value.ToString(),
                 StartDate = worksheet.Cell(i, GetHeaderIndex(template.StartDate, worksheet)).Value.ToString(),
                 EndDate = worksheet.Cell(i, GetHeaderIndex(template.EndDate, worksheet)).Value.ToString(),
-                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString(),
+                Frequency = worksheet.Cell(i, GetHeaderIndex(template.Frequency, worksheet)).Value.ToString()
             };
             deduplicationRecords.Add(record);
         }
@@ -272,7 +271,6 @@ public class DeduplicationService
         var withoutIdenticalRecords = new List<DeduplicationRecord>(deduplicationRecords);
         foreach (var record in deduplicationRecords)
         {
-
             var newBeneficary = _mapper.Map<BeneficaryDeduplication>(record);
             var markedForImport = true;
             var identical = false;
@@ -312,7 +310,6 @@ public class DeduplicationService
         // Find only potential duplicates
         foreach (var record in withoutIdenticalRecords)
         {
-
             var newBeneficary = _mapper.Map<BeneficaryDeduplication>(record);
             var markedForImport = true;
             var duplicateOfIds = new List<Guid>();
@@ -373,7 +370,7 @@ public class DeduplicationService
             .Where(e => e.FileId == model.FileId).ToList();
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-            { PageSize = 1000, Page = 1 });
+                { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var totalDuplicates = 0;
 
@@ -425,7 +422,7 @@ public class DeduplicationService
         var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization)
             .Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
         var list = (await _context.Lists.AddAsync(new List
-        { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
+            { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
 
         var newBeneficaries = new List<Beneficary>();
         foreach (var record in beneficiaryDeduplications)
@@ -443,9 +440,7 @@ public class DeduplicationService
                 var existingBeneficiaries =
                     _context.Beneficaries.Where(e => record.DuplicateOfIds.Contains(e.Id)).ToList();
                 foreach (var existingBeneficiary in existingBeneficiaries)
-                {
                     existingBeneficiary.DuplicateOfIds.Add(beneficary.Id);
-                }
 
                 _context.UpdateRange(existingBeneficiaries);
             }
@@ -468,7 +463,7 @@ public class DeduplicationService
         return new SameOrganizationDeduplicationResponse
         {
             File = fileResponse,
-            TemplateId = model.TemplateId,
+            TemplateId = model.TemplateId
         };
     }
 
@@ -480,19 +475,14 @@ public class DeduplicationService
 
     private int GetHeaderIndex(string templateValue, IXLWorksheet worksheet)
     {
-        if (HeaderIndexCache.ContainsKey(templateValue))
-        {
-            return HeaderIndexCache[templateValue];
-        }
+        if (HeaderIndexCache.ContainsKey(templateValue)) return HeaderIndexCache[templateValue];
 
         foreach (var cell in worksheet.Row(1).Cells())
-        {
             if (cell.Value.ToString() == templateValue)
             {
                 HeaderIndexCache[templateValue] = cell.WorksheetColumn().ColumnNumber();
                 return HeaderIndexCache[templateValue];
             }
-        }
 
         // TODO: find a better way to handle this
         // This is the last cell index
@@ -523,7 +513,10 @@ public class DeduplicationService
                     var ratio = Fuzz.Ratio(firstString, secondString);
                     if (ratio < 85) continue;
                 }
-                else if (existingValue != newValue) continue;
+                else if (existingValue != newValue)
+                {
+                    continue;
+                }
 
                 matchedFields.Add(attributeName);
             }
@@ -547,7 +540,7 @@ public class DeduplicationService
             var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
 
             if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) continue;
-            else if (existingValue != newValue) continue;
+            if (existingValue != newValue) continue;
 
             matchedFields.Add(attributeName);
         }
@@ -577,7 +570,10 @@ public class DeduplicationService
                     var ratio = Fuzz.Ratio(firstString, secondString);
                     if (ratio < 85) continue;
                 }
-                else if (existingValue != newValue) continue;
+                else if (existingValue != newValue)
+                {
+                    continue;
+                }
 
                 matchedFields.Add(attributeName);
             }
@@ -605,13 +601,11 @@ public class DeduplicationService
         var ruleFields = new List<string>();
 
         foreach (var group in beneficiaryAttributesGroups)
+        foreach (var attribute in group.BeneficiaryAttributes)
         {
-            foreach (var attribute in group.BeneficiaryAttributes)
-            {
-                var fieldName = attribute.AttributeName;
-                fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
-                ruleFields.Add(fieldName);
-            }
+            var fieldName = attribute.AttributeName;
+            fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
+            ruleFields.Add(fieldName);
         }
 
         return ruleFields;

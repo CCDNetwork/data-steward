@@ -54,12 +54,12 @@ export const InternalFileDeduplicationStep: React.FC<Props> = ({
     <div className="flex flex-col items-center justify-center gap-2">
       <AlertTriangle className="w-16 h-16 text-yellow-500" />
       <p className="text-sm">
-        The platform has found{' '}
+        The platform has found duplicate records for{' '}
         <span className="px-1 border border-border rounded py-0.5 bg-muted font-bold">
           {stepDeduplicationResponse.duplicates}
         </span>{' '}
-        duplicate records within this file. Please make sure there are no
-        duplicate records and start the wizard again.
+        unique records within this file. Please make sure there are no duplicate
+        records and start the wizard again.
       </p>
       <p className="text-sm">
         To assist you, we created a version of your file with a “Duplicate”
