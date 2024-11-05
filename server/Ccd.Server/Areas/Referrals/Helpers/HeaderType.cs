@@ -51,16 +51,3 @@ public enum MpcaReferralsWorksheetColumns
     VulnerabilityCriteria9,
     VulnerabilityCriteria10,
 }
-
-
-
-// "householdWithPregnantPersons"
-// "householdOfElderly"
-// "householdAffectedByConflict"
-// "householdWithGroupDisability"
-// "householdWithSeriousHealthIssues"
-// "householdWith3OrMoreChildren"
-// "highlyVulnerableIDPHouseholds"
-// "householdsWithChildrenUpTo2Years"
-// "singleHeadedHouseholdsIncludingWomanHeaded"
-// "singleParentHouseholds"
