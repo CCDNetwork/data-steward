@@ -1,6 +1,6 @@
 namespace Ccd.Server.Areas.Referrals.Helpers;
 
-public enum ReferralWorksheetColumns
+public enum GeneralReferralsWorksheetColumns
 {
     FirstName = 1,
     Surname,
@@ -19,8 +19,12 @@ public enum ReferralWorksheetColumns
     Restrictions,
     Consent,
     Required,
-    NeedForService,
-    IsSeparated,
+    NeedForService
+}
+
+public enum MinorReferralsWorksheetColumns
+{
+    IsSeparated = 19,
     Caregiver,
     RelationshipToChild,
     CaregiverEmail,
@@ -30,3 +34,33 @@ public enum ReferralWorksheetColumns
     CaregiverExplanation,
     CaregiverNote
 }
+
+public enum MpcaReferralsWorksheetColumns
+{
+    DisplacementStatus = 19,
+    HouseholdSize,
+    HouseholdMonthlyIncome,
+    VulnerabilityCriteria1,
+    VulnerabilityCriteria2,
+    VulnerabilityCriteria3,
+    VulnerabilityCriteria4,
+    VulnerabilityCriteria5,
+    VulnerabilityCriteria6,
+    VulnerabilityCriteria7,
+    VulnerabilityCriteria8,
+    VulnerabilityCriteria9,
+    VulnerabilityCriteria10,
+}
+
+
+
+// "householdWithPregnantPersons"
+// "householdOfElderly"
+// "householdAffectedByConflict"
+// "householdWithGroupDisability"
+// "householdWithSeriousHealthIssues"
+// "householdWith3OrMoreChildren"
+// "highlyVulnerableIDPHouseholds"
+// "householdsWithChildrenUpTo2Years"
+// "singleHeadedHouseholdsIncludingWomanHeaded"
+// "singleParentHouseholds"

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ccd.Server.Helpers;
@@ -273,19 +272,19 @@ public class ReferralController : ControllerBaseExtended
     public async Task<ActionResult> DownloadTemplate()
     {
         var resourceStream = typeof(ReferralService).Assembly.GetManifestResourceStream(
-            "Ccd.Server.Templates.Referrals_template.xlsx"
+            "Ccd.Server.Templates.Referrals_templates.zip" // Updated resource name
         );
 
-        using var reader = new StreamReader(resourceStream, Encoding.UTF8);
+        if (resourceStream == null) return NotFound();
 
-        var memoryStream = new MemoryStream();
-        await reader.BaseStream.CopyToAsync(memoryStream);
+        using var memoryStream = new MemoryStream();
+        await resourceStream.CopyToAsync(memoryStream);
         memoryStream.Position = 0;
 
         return File(
             memoryStream.ToArray(),
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "Referrals_template.xlsx"
+            "application/zip",
+            "Referrals_templates.zip"
         );
     }
 }

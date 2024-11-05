@@ -18,11 +18,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -33,8 +31,6 @@ import { AsyncSelect } from '@/components/AsyncSelect';
 import { useOrganizationsInfinite } from '@/services/organizations/api';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useReferralMutation } from '@/services/referrals/api';
-import { HOUSEHOLDS_VULNERABILITY_CRITERIA } from '@/services/referrals/const';
-import { Separator } from '@/components/ui/separator';
 import { SingleFileDropzone } from '@/components/SingleFileDropzone';
 import { createDownloadLink } from '@/helpers/common';
 import { BatchCreateResponse } from '@/services/referrals';
@@ -58,11 +54,7 @@ export const BatchCreateModal: React.FC<BatchCreateModalProps> = ({
       file: undefined,
       organizationReferredTo: undefined,
       serviceCategory: '',
-      displacementStatus: '',
-      subactivities: [],
-      householdMonthlyIncome: '',
-      householdSize: '',
-      householdsVulnerabilityCriteria: [],
+      batchType: '',
     },
     mode: 'onChange',
     resolver: zodResolver(BatchCreateFormSchema),
@@ -184,6 +176,37 @@ export const BatchCreateModal: React.FC<BatchCreateModalProps> = ({
             <Form {...form}>
               <form onSubmit={onSubmit} className="flex flex-col gap-4">
                 <div className="grid gap-4">
+                  <FormField
+                    control={control}
+                    name="batchType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel requiredField>Import data type</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select import data type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="generalBeneficiary">
+                              General beneficiary data
+                            </SelectItem>
+                            <SelectItem value="beneficiaryWithMPCA">
+                              Beneficiary data with MPCA
+                            </SelectItem>
+                            <SelectItem value="beneficiaryMinors">
+                              Beneficiary minors
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <div className="grid sm:grid-cols-2 gap-4">
                     <AsyncSelect
                       requiredField
@@ -289,153 +312,6 @@ export const BatchCreateModal: React.FC<BatchCreateModalProps> = ({
                         )}
                       />
                     )}
-
-                  {currentFormServiceCategory === 'mpca' && (
-                    <>
-                      <Separator />
-                      <h2 className="font-medium leading-none">
-                        MPCA Specific Information
-                      </h2>
-                      <div className="grid gap-4 animate-opacity">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <FormField
-                            control={control}
-                            name="displacementStatus"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel requiredField>
-                                  Displacement status
-                                </FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select displacement status" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="idp">IDP</SelectItem>
-                                    <SelectItem value="nonDisplaced">
-                                      Non-displaced
-                                    </SelectItem>
-                                    <SelectItem value="returnee">
-                                      Returnee
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={control}
-                            name="householdSize"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel requiredField>
-                                  Household size
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    id="householdSize"
-                                    placeholder="Number"
-                                    type="number"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <FormField
-                            control={control}
-                            name="householdMonthlyIncome"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel requiredField>
-                                  Household monthly income
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    id="householdMonthlyIncome"
-                                    placeholder="Number"
-                                    type="number"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormDescription>
-                                  Includes income of all household members,
-                                  inclusive of social benefits
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <Separator />
-                        <div>
-                          <FormField
-                            control={control}
-                            name="householdsVulnerabilityCriteria"
-                            render={() => (
-                              <FormItem>
-                                <div className="mb-4">
-                                  <FormLabel className="text-base">
-                                    Household vulnerability criteria
-                                  </FormLabel>
-                                </div>
-                                {HOUSEHOLDS_VULNERABILITY_CRITERIA.map(
-                                  (item) => (
-                                    <FormField
-                                      key={item.id}
-                                      control={control}
-                                      name="householdsVulnerabilityCriteria"
-                                      render={({ field }) => {
-                                        return (
-                                          <FormItem
-                                            key={item.id}
-                                            className="flex flex-row items-center space-x-3 space-y-0"
-                                          >
-                                            <FormControl>
-                                              <Checkbox
-                                                checked={field.value?.includes(
-                                                  item.id
-                                                )}
-                                                onCheckedChange={(checked) => {
-                                                  return checked
-                                                    ? field.onChange([
-                                                        ...field.value,
-                                                        item.id,
-                                                      ])
-                                                    : field.onChange(
-                                                        field.value?.filter(
-                                                          (value: any) =>
-                                                            value !== item.id
-                                                        )
-                                                      );
-                                                }}
-                                              />
-                                            </FormControl>
-                                            <FormLabel className="text-sm font-normal">
-                                              {item.label}
-                                            </FormLabel>
-                                          </FormItem>
-                                        );
-                                      }}
-                                    />
-                                  )
-                                )}
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
                 </div>
                 <SingleFileDropzone control={control} name="file" />
                 <DialogFooter>

@@ -143,7 +143,7 @@ export const SentReferralsPage = () => {
     setImpexActionLoading(true);
     try {
       const templateFile = await getReferralsTemplateFile();
-      downloadFile(templateFile, 'referrals-template');
+      downloadFile(templateFile, 'referrals-templates', 'zip');
     } catch (error: any) {
       toast({
         title: 'Something went wrong!',
@@ -177,7 +177,7 @@ export const SentReferralsPage = () => {
             },
             {
               icon: <Download className="size-4 mr-2" />,
-              label: 'Download template',
+              label: 'Download templates',
               onClick: onDownloadTemplateClick,
             },
           ]}

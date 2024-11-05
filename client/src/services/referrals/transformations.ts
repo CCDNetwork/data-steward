@@ -266,33 +266,12 @@ export const dataToBatchCreateRequest = (
   data: BatchCreateModalForm
 ): FormData => {
   const subactivitiesIds = data?.subactivities?.map((i) => i.id) ?? [];
-  const householdsVulnerabilityCriteria = data?.householdsVulnerabilityCriteria;
 
   const formData = new FormData();
   formData.append('file', data.file);
   formData.append('organizationReferredToId', data.organizationReferredTo?.id);
   formData.append('serviceCategory', data.serviceCategory);
-
-  if (data.displacementStatus) {
-    formData.append('displacementStatus', data.displacementStatus);
-  }
-
-  if (data.householdSize) {
-    formData.append('householdSize', data.householdSize);
-  }
-
-  if (data.householdMonthlyIncome) {
-    formData.append('householdMonthlyIncome', data.householdMonthlyIncome);
-  }
-
-  if (
-    Array.isArray(householdsVulnerabilityCriteria) &&
-    householdsVulnerabilityCriteria.length > 0
-  ) {
-    householdsVulnerabilityCriteria.forEach((value) => {
-      formData.append('householdsVulnerabilityCriteria[]', value);
-    });
-  }
+  formData.append('batchType', data.batchType);
 
   if (Array.isArray(subactivitiesIds) && subactivitiesIds.length > 0) {
     subactivitiesIds.forEach((value) => {
