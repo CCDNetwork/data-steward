@@ -101,7 +101,7 @@ export const SignInPage = () => {
               to={APP_ROUTE.RequestNewPassword}
               className="text-sm text-primary font-medium hover:underline focus:outline-primary"
             >
-              Reset your password?
+              Forgot your password?
             </NavLink>
           </div>
           <Button

@@ -57,7 +57,7 @@ export const RequestNewPasswordPage = () => {
   return (
     <PublicPage
       title="Reset your password"
-      subtitle="Enter your user account's verified email address and we will send you a password reset link email"
+      subtitle="Enter the email address for your account, and we will send you an email with a link to reset your password."
       boxClassName="sm:max-w-[400px]"
     >
       <Form {...form}>

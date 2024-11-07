@@ -46,8 +46,8 @@ export const BeneficiaryDataViewPage = () => {
       <div className="w-full h-[100svh]">
         <div className="flex flex-col gap-4 items-center mx-auto justify-center h-full max-w-[500px]">
           <h1 className="text-center font-medium text-lg">
-            The platform currently holds the following information about the
-            beneficiary:
+            The platform currently holds the following data related to Tax ID:{' '}
+            <code>{beneficiaryData.taxId}</code>
           </h1>
           <div className="flex flex-col bg-muted sm:p-10 p-4 border rounded-2xl w-full">
             {availableBeneficiaryData.map(([key, value]) => (
