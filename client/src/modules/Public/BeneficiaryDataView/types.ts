@@ -1,11 +1,7 @@
+import { Beneficiary } from '@/services/beneficiaryList';
+import { Referral } from '@/services/referrals';
+
 export type BeneficiaryData = {
-  firstName: string;
-  patronymicName: string;
-  surname: string;
-  dateOfBirth: Date | null;
-  gender: string;
-  taxId: string;
-  address: string;
-  email: string;
-  phone: string;
+  referralData: Referral | null;
+  duplicateBeneficiaryData: Beneficiary | null;
 };

@@ -101,26 +101,26 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
     }
   };
 
-  // const handleSameOrganizationDeduplication = async () => {
-  //   try {
-  //     const resp = await deduplicateSameOrganization.mutateAsync({
-  //       fileId: internalFileDedupResponse?.file.id ?? '',
-  //       templateId: currentTemplate.id,
-  //     });
-  //     setSameOrgDedupResponse(resp);
-  //   } catch (error: any) {
-  //     toast({
-  //       title: 'An error has occured!',
-  //       variant: 'destructive',
-  //       description:
-  //         error.response?.data?.errorMessage ||
-  //         'Something went wrong, please try again.',
-  //     });
-  //   }
-  // };
+  const handleSameOrganizationDeduplication = async () => {
+    try {
+      await deduplicateSameOrganization.mutateAsync({
+        fileId: internalFileDedupResponse?.file.id ?? '',
+        templateId: currentTemplate.id,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'An error has occured!',
+        variant: 'destructive',
+        description:
+          error.response?.data?.errorMessage ||
+          'Something went wrong, please try again.',
+      });
+    }
+  };
 
   const handleSystemOrganizationsDeduplication = async () => {
     try {
+      await handleSameOrganizationDeduplication();
       const resp = await deduplicateSystemOrganizations.mutateAsync({
         fileId: internalFileDedupResponse?.file.id ?? '',
         templateId: currentTemplate.id,
@@ -278,7 +278,8 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                       >
                         <RegistryDeduplicationStep
                           isStepLoading={
-                            deduplicateSystemOrganizations.isLoading
+                            deduplicateSystemOrganizations.isLoading ||
+                            deduplicateSameOrganization.isLoading
                           }
                           stepDeduplicationResponse={systemOrgDedupResponse}
                         />

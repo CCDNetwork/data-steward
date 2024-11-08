@@ -8,6 +8,8 @@ import { toast } from '@/components/ui/use-toast';
 import { fetchBeneficiaryData } from './api';
 import { BeneficiaryData } from './types';
 import { formatDate } from 'date-fns';
+import { Referral } from '@/services/referrals';
+import { Beneficiary } from '@/services/beneficiaryList';
 
 export const BeneficiaryDataViewPage = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -39,32 +41,139 @@ export const BeneficiaryDataViewPage = () => {
   };
 
   if (beneficiaryData) {
-    const availableBeneficiaryData = Object.entries(beneficiaryData).filter(
-      ([, value]) => !!value
-    );
+    const referralData = beneficiaryData.referralData;
+    const deduplicationBeneficiaryData =
+      beneficiaryData.duplicateBeneficiaryData;
+    const referralOrgHoldingData =
+      referralData?.organizationCreated?.name ?? '';
+    const beneficiaryOrgHoldingData =
+      deduplicationBeneficiaryData?.uploadedBy?.organizations[0].name ?? '';
+
+    const referralObjKeysToDisplay: Array<
+      keyof Pick<
+        Referral,
+        | 'firstName'
+        | 'patronymicName'
+        | 'surname'
+        | 'dateOfBirth'
+        | 'gender'
+        | 'taxId'
+        | 'address'
+        | 'email'
+        | 'phone'
+      >
+    > = [
+      'firstName',
+      'patronymicName',
+      'surname',
+      'dateOfBirth',
+      'gender',
+      'taxId',
+      'address',
+      'email',
+      'phone',
+    ];
+
+    const beneficiaryObjKeysToDisplay: Array<
+      keyof Omit<
+        Beneficiary,
+        | 'id'
+        | 'isPrimary'
+        | 'createdAt'
+        | 'updatedAt'
+        | 'matchedFields'
+        | 'pointOfContact'
+        | 'uploadedBy'
+        | 'organization'
+        | 'duplicates'
+      >
+    > = [
+      'activity',
+      'adminLevel1',
+      'adminLevel2',
+      'adminLevel3',
+      'adminLevel4',
+      'assistanceDetails',
+      'currency',
+      'currencyAmount',
+      'dateOfBirth',
+      'endDate',
+      'familyName',
+      'firstName',
+      'frequency',
+      'gender',
+      'otherIdNumber',
+      'govIdType',
+      'hhId',
+      'mobilePhoneId',
+      'otherIdNumber',
+      'otherIdType',
+      'startDate',
+      'status',
+    ];
+
     return (
-      <div className="w-full h-[100svh]">
+      <div className="w-full py-8">
         <div className="flex flex-col gap-4 items-center mx-auto justify-center h-full max-w-[500px]">
-          <h1 className="text-center font-medium text-lg">
+          <h1 className="text-center font-medium text-md">
             The platform currently holds the following data related to Tax ID:{' '}
-            <code>{beneficiaryData.taxId}</code>
+            <code>{beneficiaryData.referralData?.taxId}</code>
           </h1>
-          <div className="flex flex-col bg-muted sm:p-10 p-4 border rounded-2xl w-full">
-            {availableBeneficiaryData.map(([key, value]) => (
-              <div
-                key={key}
-                className="flex w-full justify-between border-b py-2 text-sm"
-              >
-                <span className="capitalize font-medium">
-                  {key.replace(/([A-Z])/g, ' $1')}:
-                </span>
-                <span>
-                  {key === 'dateOfBirth' && !!value
-                    ? formatDate(value, 'dd/MM/yyyy')
-                    : value?.toString()}
-                </span>
+          <div className="flex flex-col gap-4 w-full">
+            {referralData && (
+              <div className="bg-muted/80 sm:px-8 sm:py-4 px-4 py-2  border rounded-2xl flex-1">
+                <div className="text-center text-muted-foreground pb-4">
+                  <h1 className="text-xl font-medium">Referral Data</h1>
+                  <p className="text-sm">held by</p>
+                  <code className="text-sm">{referralOrgHoldingData}</code>
+                </div>
+                <>
+                  {referralObjKeysToDisplay.map(
+                    (i) =>
+                      !!referralData[i] && (
+                        <div
+                          key={i}
+                          className="flex w-full justify-between border-b py-2 text-sm"
+                        >
+                          <span className="capitalize font-medium">
+                            {i.replace(/([A-Z])/g, ' $1')}
+                          </span>
+                          <span>
+                            {i === 'dateOfBirth'
+                              ? formatDate(referralData[i], 'dd/MM/yyyy')
+                              : referralData[i]}
+                          </span>
+                        </div>
+                      )
+                  )}
+                </>
               </div>
-            ))}
+            )}
+            {deduplicationBeneficiaryData && (
+              <div className="bg-muted/80 sm:px-8 sm:py-4 px-4 py-2 border rounded-2xl flex-1">
+                <div className="text-center text-muted-foreground pb-4">
+                  <h1 className="text-xl font-medium"> Beneficiary Data</h1>
+                  <p className="text-sm">held by</p>
+                  <code className="text-sm">{beneficiaryOrgHoldingData}</code>
+                </div>
+                <>
+                  {beneficiaryObjKeysToDisplay.map(
+                    (i) =>
+                      !!deduplicationBeneficiaryData[i] && (
+                        <div
+                          key={i}
+                          className="flex w-full justify-between border-b py-2 text-sm"
+                        >
+                          <span className="capitalize font-medium">
+                            {i.replace(/([A-Z])/g, ' $1')}
+                          </span>
+                          <span>{deduplicationBeneficiaryData[i]}</span>
+                        </div>
+                      )
+                  )}
+                </>
+              </div>
+            )}
           </div>
           <Button
             type="button"
