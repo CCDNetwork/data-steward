@@ -40,7 +40,10 @@ export const BeneficiaryDataViewPage = () => {
     setIsLoading(false);
   };
 
-  if (beneficiaryData) {
+  if (
+    beneficiaryData?.duplicateBeneficiaryData ||
+    beneficiaryData?.referralData
+  ) {
     const referralData = beneficiaryData.referralData;
     const deduplicationBeneficiaryData =
       beneficiaryData.duplicateBeneficiaryData;

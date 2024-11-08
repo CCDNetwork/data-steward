@@ -44,7 +44,7 @@ public class BeneficaryDataService
 
         var referralResponse = referral != null ? _mapper.Map<ReferralResponse>(referral) : null;
 
-        if (referral.OrganizationCreatedId != null)
+        if (referral != null && referral.OrganizationCreatedId != null)
         {
             var organization =
                 await _context.Organizations.FirstOrDefaultAsync(u => u.Id == referral.OrganizationCreatedId);
@@ -53,7 +53,7 @@ public class BeneficaryDataService
 
         var beneficiaryResponse = beneficiary != null ? _mapper.Map<BeneficaryResponse>(beneficiary) : null;
 
-        if (beneficiary.UploadedById != null)
+        if (beneficiaryResponse != null && beneficiary.UploadedById != null)
         {
             var user = await _userService.GetUserApi(null, beneficiary.UploadedById);
             beneficiaryResponse.UploadedBy = _mapper.Map<UserResponse>(user);
