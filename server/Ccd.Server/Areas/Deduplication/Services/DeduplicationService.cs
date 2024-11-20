@@ -84,7 +84,7 @@ public class DeduplicationService
             throw new BadRequestException("Template not found.");
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-                { PageSize = 1000, Page = 1 });
+            { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
 
         var worksheet = workbook.Worksheet(1);
@@ -370,7 +370,7 @@ public class DeduplicationService
             .Where(e => e.FileId == model.FileId).ToList();
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-                { PageSize = 1000, Page = 1 });
+            { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var totalDuplicates = 0;
 
@@ -422,7 +422,7 @@ public class DeduplicationService
         var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization)
             .Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
         var list = (await _context.Lists.AddAsync(new List
-            { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
+        { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
 
         var newBeneficaries = new List<Beneficary>();
         foreach (var record in beneficiaryDeduplications)
@@ -562,13 +562,15 @@ public class DeduplicationService
                     .ToString();
                 var newValue = newRecord.GetType().GetProperty(attributeName)?.GetValue(newRecord, null).ToString();
 
-                if (string.IsNullOrEmpty(existingValue) || string.IsNullOrEmpty(newValue)) continue;
                 if (group.UseFuzzyMatch)
                 {
-                    var firstString = Regex.Replace(existingValue, @"\s+", "").ToLower();
-                    var secondString = Regex.Replace(newValue, @"\s+", "").ToLower();
-                    var ratio = Fuzz.Ratio(firstString, secondString);
-                    if (ratio < 85) continue;
+                    if (!string.IsNullOrEmpty(existingValue) || !string.IsNullOrEmpty(newValue))
+                    {
+                        var firstString = Regex.Replace(existingValue, @"\s+", "").ToLower();
+                        var secondString = Regex.Replace(newValue, @"\s+", "").ToLower();
+                        var ratio = Fuzz.Ratio(firstString, secondString);
+                        if (ratio < 85) continue;
+                    }
                 }
                 else if (existingValue != newValue)
                 {
@@ -601,12 +603,12 @@ public class DeduplicationService
         var ruleFields = new List<string>();
 
         foreach (var group in beneficiaryAttributesGroups)
-        foreach (var attribute in group.BeneficiaryAttributes)
-        {
-            var fieldName = attribute.AttributeName;
-            fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
-            ruleFields.Add(fieldName);
-        }
+            foreach (var attribute in group.BeneficiaryAttributes)
+            {
+                var fieldName = attribute.AttributeName;
+                fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
+                ruleFields.Add(fieldName);
+            }
 
         return ruleFields;
     }

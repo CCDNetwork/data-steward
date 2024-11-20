@@ -18,6 +18,10 @@ public class Beneficary
     public string CommunityId { get; set; }
     public string HhId { get; set; }
     public string MobilePhoneId { get; set; }
+    public string AdminLevel1 { get; set; }
+    public string AdminLevel2 { get; set; }
+    public string AdminLevel3 { get; set; }
+    public string AdminLevel4 { get; set; }
     public string GovIdType { get; set; }
     public string GovIdNumber { get; set; }
     public string OtherIdType { get; set; }
