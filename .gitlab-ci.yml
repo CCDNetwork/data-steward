@@ -110,6 +110,7 @@ publish-client:
   stage: publish
   only:
     - develop
+    - poc
     - tags
   services:
     - docker:26.1.4-dind
@@ -130,6 +131,7 @@ publish-server:
   stage: publish
   only:
     - develop
+    - poc
     - tags
   services:
     - docker:26.1.4-dind
@@ -149,6 +151,7 @@ deploy:
   stage: deploy
   only:
     - develop
+    - poc
     - tags
   before_script:
     - apk update
