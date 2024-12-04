@@ -22,7 +22,7 @@ using Ccd.Server.Templates;
 using Ccd.Server.Users;
 using Dapper;
 using Hangfire;
-using Hangfire.PostgreSql;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -183,13 +183,7 @@ public class Startup
         services.AddSingleton<JobConfiguration>();
         services.AddSingleton<CommcareScheduler>();
 
-        services.AddHangfire(
-            config =>
-                config.UsePostgreSqlStorage(
-                    c => c.UseNpgsqlConnection(StaticConfiguration.DbConnectionString)
-                )
-        );
-
+        services.AddHangfire(config => config.UseMemoryStorage());
         services.AddHangfireServer();
 
         // configure DI for application services
@@ -201,7 +195,7 @@ public class Startup
 
         SqlMapper.AddTypeHandler(new DateTimeHandler());
         SqlMapper.AddTypeHandler(new JsonHandler<List<Guid>>());
-        // SqlMapper.AddTypeHandler(new JsonHandler<List<string>>());
+        SqlMapper.AddTypeHandler(new JsonHandler<List<string>>());
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
