@@ -73,6 +73,14 @@ public class StaticConfiguration
         Environment.GetEnvironmentVariable("SUPERADMIN_PASSWORD")
         ?? _configuration.GetValue<string>("SuperadminPassword");
 
+    public static string CommcareApiKey =>
+        Environment.GetEnvironmentVariable("COMMCARE_API_KEY")
+        ?? _configuration.GetValue<string>("CommcareApiKey");
+
+    public static string CommcareSchedulerCronExpression =>
+        Environment.GetEnvironmentVariable("COMMCARE_SCHEDULER_CRON_EXPRESSION")
+        ?? _configuration.GetValue<string>("CommcareSchedulerCronExpression");
+
     public static void Initialize(IConfiguration configuration)
     {
         _configuration = configuration;

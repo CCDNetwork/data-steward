@@ -15,11 +15,14 @@ using Ccd.Server.Helpers;
 using Ccd.Server.Notifications;
 using Ccd.Server.Organizations;
 using Ccd.Server.Referrals;
+using Ccd.Server.Schedulers;
 using Ccd.Server.Settings;
 using Ccd.Server.Storage;
 using Ccd.Server.Templates;
 using Ccd.Server.Users;
 using Dapper;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -174,6 +177,20 @@ public class Startup
         services.AddScoped<AdministrativeRegionService>();
         services.AddScoped<IStorageService, StorageService>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<CommcareSchedulerService>();
+
+        // Register schedulers here as singletons
+        services.AddSingleton<JobConfiguration>();
+        services.AddSingleton<CommcareScheduler>();
+
+        services.AddHangfire(
+            config =>
+                config.UsePostgreSqlStorage(
+                    c => c.UseNpgsqlConnection(StaticConfiguration.DbConnectionString)
+                )
+        );
+
+        services.AddHangfireServer();
 
         // configure DI for application services
         services.AddDbContext<CcdContext>(options => options.UseNpgsql(dbConnectionString));
@@ -184,7 +201,7 @@ public class Startup
 
         SqlMapper.AddTypeHandler(new DateTimeHandler());
         SqlMapper.AddTypeHandler(new JsonHandler<List<Guid>>());
-        SqlMapper.AddTypeHandler(new JsonHandler<List<string>>());
+        // SqlMapper.AddTypeHandler(new JsonHandler<List<string>>());
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -232,5 +249,8 @@ public class Startup
             Console.WriteLine("Applying DB migrations");
             ccdContext.Database.Migrate();
         }
+
+        var jobConfiguration = app.ApplicationServices.GetRequiredService<JobConfiguration>();
+        jobConfiguration.Configure();
     }
 }
