@@ -9,6 +9,7 @@ using Ccd.Server.Beneficiaries;
 using Ccd.Server.BeneficiaryAttributes;
 using Ccd.Server.Data;
 using Ccd.Server.Deduplication.Controllers.ControllerModels;
+using Ccd.Server.Email;
 using Ccd.Server.Helpers;
 using Ccd.Server.Storage;
 using Ccd.Server.Templates;
@@ -24,6 +25,7 @@ public class DeduplicationService
     private readonly BeneficiaryAttributeGroupService _beneficiaryAttributeGroupService;
     private readonly CcdContext _context;
     private readonly IMapper _mapper;
+    private readonly SendGridService _sendGridService;
 
     private readonly string _selectSql =
         @"SELECT DISTINCT ON (l.id)
@@ -38,12 +40,14 @@ public class DeduplicationService
     private readonly Dictionary<string, int> HeaderIndexCache = new();
 
     public DeduplicationService(CcdContext context, IMapper mapper,
-        BeneficiaryAttributeGroupService beneficiaryAttributeGroupService, IStorageService storageService)
+        BeneficiaryAttributeGroupService beneficiaryAttributeGroupService, IStorageService storageService,
+        SendGridService sendGridService)
     {
         _context = context;
         _mapper = mapper;
         _beneficiaryAttributeGroupService = beneficiaryAttributeGroupService;
         _storageService = storageService;
+        _sendGridService = sendGridService;
     }
 
     private object getSelectSqlParams(Guid? organizationId = null)
@@ -84,7 +88,7 @@ public class DeduplicationService
             throw new BadRequestException("Template not found.");
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-            { PageSize = 1000, Page = 1 });
+                { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
 
         var worksheet = workbook.Worksheet(1);
@@ -370,7 +374,7 @@ public class DeduplicationService
             .Where(e => e.FileId == model.FileId).ToList();
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-            { PageSize = 1000, Page = 1 });
+                { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var totalDuplicates = 0;
 
@@ -422,13 +426,13 @@ public class DeduplicationService
 
         foreach (var record in beneficiaryDeduplications)
         {
-            var exsits = _context.CommcareData.Where(
+            var exists = _context.CommcareData.Where(
                 e => e.TaxId == record.GovIdNumber &&
-                e.FirstName == record.FirstName &&
-                e.FamilyName == record.FamilyName
+                     e.FirstName == record.FirstName &&
+                     e.FamilyName == record.FamilyName
             ).FirstOrDefault();
 
-            if (exsits != null)
+            if (exists != null)
             {
                 totalDuplicates++;
                 record.IsCommcareDuplicate = true;
@@ -448,7 +452,7 @@ public class DeduplicationService
         };
     }
 
-    public async Task<SameOrganizationDeduplicationResponse> FinishDeduplication(Guid organizationId, Guid userId,
+    public async Task<SameOrganizationDeduplicationResponse> FinishDeduplication(Guid organizationId, User user,
         SystemOrganizationsDeduplicationRequest model)
     {
         var file = await _storageService.GetFileById(model.FileId);
@@ -460,7 +464,7 @@ public class DeduplicationService
         var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization)
             .Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
         var list = (await _context.Lists.AddAsync(new List
-        { FileName = file.Name, UserCreatedId = userId, OrganizationId = organizationId })).Entity;
+            { FileName = file.Name, UserCreatedId = user.Id, OrganizationId = organizationId })).Entity;
 
         var newBeneficaries = new List<Beneficary>();
         foreach (var record in beneficiaryDeduplications)
@@ -485,6 +489,22 @@ public class DeduplicationService
         }
 
         await _context.AddRangeAsync(newBeneficaries);
+
+        // get the duplicates count
+        var (systemDuplicatesCount, commcareDuplicatesCount) =
+            (beneficiaryDeduplications.Count(e => e.IsSystemDuplicate),
+                beneficiaryDeduplications.Count(e => e.IsCommcareDuplicate));
+
+        var templateData = new Dictionary<string, string>
+        {
+            { "firstName", user.FirstName }, { "lastName", user.LastName },
+            { "ccdDuplicates", $"{systemDuplicatesCount}" }, { "commcareDuplicates", $"{commcareDuplicatesCount}" },
+        };
+
+        // send the email to the user doing the deduplication
+        await _sendGridService.SendEmail(user.Email, StaticConfiguration.SendgridInvitationEmailTemplateId,
+            templateData);
+
 
         var currentBeneficaryDeduplicationsToRemove =
             _context.BeneficaryDeduplications.Where(e => e.FileId == model.FileId).ToList();
@@ -641,12 +661,12 @@ public class DeduplicationService
         var ruleFields = new List<string>();
 
         foreach (var group in beneficiaryAttributesGroups)
-            foreach (var attribute in group.BeneficiaryAttributes)
-            {
-                var fieldName = attribute.AttributeName;
-                fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
-                ruleFields.Add(fieldName);
-            }
+        foreach (var attribute in group.BeneficiaryAttributes)
+        {
+            var fieldName = attribute.AttributeName;
+            fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
+            ruleFields.Add(fieldName);
+        }
 
         return ruleFields;
     }

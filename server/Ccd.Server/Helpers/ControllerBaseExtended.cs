@@ -18,6 +18,9 @@ public class ControllerBaseExtended : ControllerBase
 
     protected Guid UserId => getUserId();
 
+    protected User User =>
+        getCcdServerContext().Users.FirstOrDefault(e => e.Id == UserId);
+
     protected bool IsSuperAdmin => getIsSuperAdmin();
 
     protected Guid MemberId => getCurrentMemberId();

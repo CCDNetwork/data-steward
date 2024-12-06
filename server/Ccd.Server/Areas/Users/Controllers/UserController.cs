@@ -70,8 +70,7 @@ public class UserController : ControllerBaseExtended
         user.Password = AuthenticationHelper.HashPassword(user, model.Password);
         user.ActivatedAt = _dateTimeProvider.UtcNow;
 
-        var adminId = UserId;
-        user = await _userService.AddUser(user, model.Password, model.OrganizationId, adminId);
+        user = await _userService.AddUser(user, model.Password, model.OrganizationId, adminId: UserId);
         await _userService.SetOrganizationRole(user.Id, model.OrganizationId, model.Role, model.Permissions);
 
         var result = await _userService.GetUserApi(model.OrganizationId, user.Id);

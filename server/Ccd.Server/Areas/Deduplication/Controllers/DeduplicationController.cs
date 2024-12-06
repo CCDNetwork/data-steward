@@ -21,7 +21,8 @@ public class DeduplicationController : ControllerBaseExtended
 
     [HttpGet("listings")]
     [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult<DeduplicationListResponse>> GetAllListings([FromQuery] RequestParameters requestParameters)
+    public async Task<ActionResult<DeduplicationListResponse>> GetAllListings(
+        [FromQuery] RequestParameters requestParameters)
     {
         var listings = await _deduplicationService.GetAllListings(this.OrganizationId, requestParameters);
         return Ok(listings);
@@ -37,7 +38,8 @@ public class DeduplicationController : ControllerBaseExtended
 
     [HttpPost("dataset")]
     [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult<DatasetDeduplicationResponse>> DatasetDeduplicate([FromForm] DatasetDeduplicationRequest model)
+    public async Task<ActionResult<DatasetDeduplicationResponse>> DatasetDeduplicate(
+        [FromForm] DatasetDeduplicationRequest model)
     {
         if (model.TemplateId == Guid.Empty) throw new BadRequestException("Template ID is required.");
 
@@ -51,15 +53,18 @@ public class DeduplicationController : ControllerBaseExtended
     {
         if (model.TemplateId == Guid.Empty) throw new BadRequestException("Template ID is required.");
 
-        var response = await _deduplicationService.SameOrganizationDeduplication(this.OrganizationId, this.UserId, model);
+        var response =
+            await _deduplicationService.SameOrganizationDeduplication(this.OrganizationId, this.UserId, model);
         return Ok(response);
     }
 
     [HttpPost("system-organizations")]
     [PermissionLevel(UserRole.User)]
-    public async Task<ActionResult> SystemOrganizationsDeduplication([FromBody] SystemOrganizationsDeduplicationRequest model)
+    public async Task<ActionResult> SystemOrganizationsDeduplication(
+        [FromBody] SystemOrganizationsDeduplicationRequest model)
     {
-        var result = await _deduplicationService.SystemOrganizationsDeduplication(this.OrganizationId, this.UserId, model);
+        var result =
+            await _deduplicationService.SystemOrganizationsDeduplication(this.OrganizationId, this.UserId, model);
         return Ok(result);
     }
 
@@ -75,7 +80,8 @@ public class DeduplicationController : ControllerBaseExtended
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult> FinishDeduplication([FromBody] SystemOrganizationsDeduplicationRequest model)
     {
-        var result = await _deduplicationService.FinishDeduplication(this.OrganizationId, this.UserId, model);
+        var result =
+            await _deduplicationService.FinishDeduplication(this.OrganizationId, this.User, model);
         return Ok(result);
     }
 }
