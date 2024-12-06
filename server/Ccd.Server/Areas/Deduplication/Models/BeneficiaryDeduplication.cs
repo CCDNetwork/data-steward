@@ -35,6 +35,7 @@ public class BeneficaryDeduplication
     public string Frequency { get; set; }
     public bool IsOrganizationDuplicate { get; set; }
     public bool IsSystemDuplicate { get; set; }
+    public bool IsCommcareDuplicate { get; set; }
     [Column(TypeName = "jsonb")] public List<string> MatchedFields { get; set; }
     [Column(TypeName = "jsonb")] public List<Guid> DuplicateOfIds { get; set; }
     [ForeignKey("User")] public Guid UploadedById { get; set; }

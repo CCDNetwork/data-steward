@@ -410,6 +410,44 @@ public class DeduplicationService
         };
     }
 
+    public async Task<SystemOrganizationDeduplicationResponse> CommcareDeduplication(Guid organizationId,
+        Guid userId, SystemOrganizationsDeduplicationRequest model)
+    {
+        var file = await _storageService.GetFileById(model.FileId);
+
+        var commcareData = _context.CommcareData.ToList();
+        var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization)
+            .Where(e => e.FileId == model.FileId).ToList();
+        var totalDuplicates = 0;
+
+        foreach (var record in beneficiaryDeduplications)
+        {
+            var exsits = _context.CommcareData.Where(
+                e => e.TaxId == record.GovIdNumber &&
+                e.FirstName == record.FirstName &&
+                e.FamilyName == record.FamilyName
+            ).FirstOrDefault();
+
+            if (exsits != null)
+            {
+                totalDuplicates++;
+                record.IsCommcareDuplicate = true;
+            }
+        }
+
+        _context.UpdateRange(beneficiaryDeduplications);
+        await _context.SaveChangesAsync();
+
+        var fileResponse = await _storageService.GetFileApiById(file.Id);
+
+        return new SystemOrganizationDeduplicationResponse
+        {
+            File = fileResponse,
+            TemplateId = model.TemplateId,
+            Duplicates = totalDuplicates,
+        };
+    }
+
     public async Task<SameOrganizationDeduplicationResponse> FinishDeduplication(Guid organizationId, Guid userId,
         SystemOrganizationsDeduplicationRequest model)
     {

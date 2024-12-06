@@ -63,6 +63,14 @@ public class DeduplicationController : ControllerBaseExtended
         return Ok(result);
     }
 
+    [HttpPost("commcare")]
+    [PermissionLevel(UserRole.User)]
+    public async Task<ActionResult> CommcareDeduplication([FromBody] SystemOrganizationsDeduplicationRequest model)
+    {
+        var result = await _deduplicationService.CommcareDeduplication(this.OrganizationId, this.UserId, model);
+        return Ok(result);
+    }
+
     [HttpPost("finish")]
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult> FinishDeduplication([FromBody] SystemOrganizationsDeduplicationRequest model)
