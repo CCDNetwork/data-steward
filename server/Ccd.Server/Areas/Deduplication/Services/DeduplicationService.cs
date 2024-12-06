@@ -502,7 +502,7 @@ public class DeduplicationService
         };
 
         // send the email to the user doing the deduplication
-        await _sendGridService.SendEmail(user.Email, StaticConfiguration.SendgridInvitationEmailTemplateId,
+        await _sendGridService.SendEmail(user.Email, StaticConfiguration.SendgridDeduplicationCompletionEmailTemplateId,
             templateData);
 
 
