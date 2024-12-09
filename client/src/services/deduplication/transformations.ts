@@ -73,3 +73,13 @@ export const resToSystemDedupeResponse = (
     ruleFields: res.ruleFields,
   };
 };
+
+export const resToCommcareDedupeResponse = (
+  res: any
+): DeduplicationDataset => {
+  return {
+    file: res.file ?? null,
+    templateId: res.templateId ?? '',
+    duplicates: res.duplicates ?? 0,
+  };
+};

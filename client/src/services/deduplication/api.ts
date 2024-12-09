@@ -7,6 +7,7 @@ import { useDeduplicationProvider } from '@/modules/DeduplicationPage';
 import { api } from '@/services';
 import {
   dataToDatasetRequest,
+  resToCommcareDedupeResponse,
   resToDatasetResponse,
   resToDeduplicationListing,
   resToSameOrgDedupResponse,
@@ -74,6 +75,15 @@ const postDeduplicationSystemOrganizations = async (data: {
   return resToSystemDedupeResponse(resp.data);
 };
 
+const postDeduplicationCommcare = async (data: {
+  fileId: string;
+  templateId: string;
+}): Promise<DeduplicationDataset> => {
+  const resp = await api.post('/deduplication/commcare', data);
+
+  return resToCommcareDedupeResponse(resp.data);
+};
+
 const postDeduplicationFinish = async (data: {
   fileId: string;
   templateId: string;
@@ -130,6 +140,9 @@ export const useDeduplicationMutation = () => {
         onError: (error) => setDeduplicationWizardError(error),
       }
     ),
+    deduplicateCommcare: useMutation(postDeduplicationCommcare, {
+      onError: (error) => setDeduplicationWizardError(error),
+    }),
     deduplicateFinish: useMutation(postDeduplicationFinish, {
       onSuccess: () =>
         queryClient.invalidateQueries([QueryKeys.DeduplicationListings]),

@@ -50,11 +50,14 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
   //   useState<SameOrgDedupeResponse | null>(null);
   const [systemOrgDedupResponse, setSystemOrgDedupResponse] =
     useState<SystemOrgDedupeResponse | null>(null);
+  const [commcareDedupResponse, setCommcareDedupResponse] =
+    useState<DeduplicationDataset | null>(null);
 
   const {
     deduplicateFile,
     deduplicateSameOrganization,
     deduplicateSystemOrganizations,
+    deduplicateCommcare,
     deduplicateFinish,
   } = useDeduplicationMutation();
 
@@ -125,7 +128,12 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
         fileId: internalFileDedupResponse?.file.id ?? '',
         templateId: currentTemplate.id,
       });
+      const commcareResp = await deduplicateCommcare.mutateAsync({
+        fileId: internalFileDedupResponse?.file.id ?? '',
+        templateId: currentTemplate.id,
+      });
       setSystemOrgDedupResponse(resp);
+      setCommcareDedupResponse(commcareResp);
     } catch (error: any) {
       toast({
         title: 'An error has occured!',
@@ -279,9 +287,11 @@ export const DeduplicationWizard = ({ isOpen, setIsOpen }: Props) => {
                         <RegistryDeduplicationStep
                           isStepLoading={
                             deduplicateSystemOrganizations.isLoading ||
-                            deduplicateSameOrganization.isLoading
+                            deduplicateSameOrganization.isLoading ||
+                            deduplicateCommcare.isLoading
                           }
                           stepDeduplicationResponse={systemOrgDedupResponse}
+                          commcareDedupResponse={commcareDedupResponse}
                         />
                       </AnimationWrapper>
                     )}
