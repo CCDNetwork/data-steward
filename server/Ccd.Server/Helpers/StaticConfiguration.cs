@@ -73,6 +73,10 @@ public class StaticConfiguration
         Environment.GetEnvironmentVariable("SENDGRID_DEDUPLICATION_COMPLETION_EMAIL_TEMPLATE_ID")
         ?? _configuration.GetValue<string>("SendgridDeduplicationCompletionEmailTemplateId");
 
+    public static string SendgridCommcareEmailTemplateId =>
+        Environment.GetEnvironmentVariable("SENDGRID_COMMCARE_EMAIL_TEMPLATE_ID")
+        ?? _configuration.GetValue<string>("SendgridCommcareEmailTemplateId");
+
     public static string SuperadminPassword =>
         Environment.GetEnvironmentVariable("SUPERADMIN_PASSWORD")
         ?? _configuration.GetValue<string>("SuperadminPassword");
