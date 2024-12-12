@@ -63,7 +63,7 @@ public class CommcareSchedulerService
                     var workerEmail = workerData["email"]?.ToString();
                     var workerFirstName = workerData["first_name"]?.ToString();
                     var workerLastName = workerData["last_name"]?.ToString();
-                    var templateData = new Dictionary<string, string>
+                    var templateData = new Dictionary<string, object>
                     {
                         { "firstName", workerFirstName },
                         { "lastName", workerLastName },

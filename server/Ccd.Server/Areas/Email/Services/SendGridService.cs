@@ -11,7 +11,7 @@ public class SendGridService : ISendGridService
     public async Task SendEmail(
         string to,
         string templateId = null,
-        Dictionary<string, string> templateData = null
+        Dictionary<string, object> templateData = null
     )
     {
         var apiKey = StaticConfiguration.SendgridApiKey;
@@ -32,7 +32,7 @@ public class SendGridService : ISendGridService
 
 
     private async Task SendEmailTemplate(EmailAddress sgFrom, EmailAddress sgTo, string templateId,
-        Dictionary<string, string> templateData, SendGridClient client)
+        Dictionary<string, object> templateData, SendGridClient client)
     {
         var msg = MailHelper.CreateSingleTemplateEmail(sgFrom, sgTo, templateId, templateData);
         var result = await client.SendEmailAsync(msg);

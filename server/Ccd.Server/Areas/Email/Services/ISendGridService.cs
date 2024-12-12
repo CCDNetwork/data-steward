@@ -8,6 +8,6 @@ public interface ISendGridService
     public Task SendEmail(
         string from,
         string templateId = null,
-        Dictionary<string, string> templateData = null
+        Dictionary<string, object> templateData = null
     );
 }

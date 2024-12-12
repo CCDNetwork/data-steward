@@ -469,11 +469,11 @@ public class DeduplicationService
 
         if (totalDuplicates > 0)
         {
-            var templateData = new Dictionary<string, string>
+            var templateData = new Dictionary<string, object>
             {
                 { "firstName", lmmsUser.FirstName },
                 { "lastName", lmmsUser.LastName },
-                { "taxId", string.Join("\n", taxIds) },
+                { "taxIds", taxIds },
                 { "ccdDuplicates", totalDuplicates.ToString() }
             };
 
@@ -524,10 +524,12 @@ public class DeduplicationService
             (beneficiaryDeduplications.Count(e => e.IsSystemDuplicate),
                 beneficiaryDeduplications.Count(e => e.IsCommcareDuplicate));
 
-        var templateData = new Dictionary<string, string>
+        var templateData = new Dictionary<string, object>
         {
-            { "firstName", user.FirstName }, { "lastName", user.LastName },
-            { "ccdDuplicates", $"{systemDuplicatesCount}" }, { "commcareDuplicates", $"{commcareDuplicatesCount}" },
+            { "firstName", user.FirstName },
+            { "lastName", user.LastName },
+            { "ccdDuplicates", $"{systemDuplicatesCount}" },
+            { "commcareDuplicates", $"{commcareDuplicatesCount}" },
         };
 
         // send the email to the user doing the deduplication

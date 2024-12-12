@@ -88,7 +88,7 @@ public class UserService
         var createdUserOrganization = _context.Organizations.FirstOrDefault(o => o.Id == userOrganizationId);
 
 
-        var templateData = new Dictionary<string, string>
+        var templateData = new Dictionary<string, object>
         {
             { "firstName", user.FirstName }, { "lastName", user.LastName }, { "userEmail", user.Email },
             { "userPassword", unhashedUserPassword },

@@ -126,7 +126,7 @@ public class AuthenticationService
             StaticConfiguration.WebAppUrl
             + $"/reset-password?email={WebUtility.UrlEncode(user.Email)}&code={user.PasswordResetCode}";
 
-        var templateData = new Dictionary<string, string>
+        var templateData = new Dictionary<string, object>
         {
             { "firstName", user.FirstName },
             {
