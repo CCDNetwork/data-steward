@@ -76,6 +76,17 @@ public class DeduplicationController : ControllerBaseExtended
         return Ok(result);
     }
 
+    [HttpPost("lmms")]
+    public async Task<ActionResult> LmmsDeduplication([FromQuery] Guid apiKey, [FromBody] LmmsDeduplicationRequest model)
+    {
+        if (Guid.Empty == apiKey) throw new UnauthorizedException("Provide a correct apiKey.");
+        var isEnvApiKeyValid = Guid.TryParse(StaticConfiguration.LmmsApiKey, out var envApiKey);
+        if (!isEnvApiKeyValid && envApiKey != apiKey) throw new UnauthorizedException("Provide a correct apiKey.");
+
+        await _deduplicationService.LmmsDeduplication(model);
+        return Ok();
+    }
+
     [HttpPost("finish")]
     [PermissionLevel(UserRole.User)]
     public async Task<ActionResult> FinishDeduplication([FromBody] SystemOrganizationsDeduplicationRequest model)

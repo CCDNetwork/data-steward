@@ -88,7 +88,7 @@ public class DeduplicationService
             throw new BadRequestException("Template not found.");
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-                { PageSize = 1000, Page = 1 });
+            { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
 
         var worksheet = workbook.Worksheet(1);
@@ -374,7 +374,7 @@ public class DeduplicationService
             .Where(e => e.FileId == model.FileId).ToList();
         var beneficiaryAttributesGroupsApi =
             await _beneficiaryAttributeGroupService.GetBeneficiaryAttributeGroupsApi(new RequestParameters
-                { PageSize = 1000, Page = 1 });
+            { PageSize = 1000, Page = 1 });
         var beneficiaryAttributesGroups = beneficiaryAttributesGroupsApi.Data.Where(e => e.IsActive).ToList();
         var totalDuplicates = 0;
 
@@ -452,6 +452,35 @@ public class DeduplicationService
         };
     }
 
+    public async Task LmmsDeduplication(LmmsDeduplicationRequest model)
+    {
+        var totalDuplicates = 0;
+        var taxIds = new List<string>();
+        var lmmsUser = model.User;
+        foreach (var data in model.BeneficiaryData)
+        {
+            var existingBeneficiary = await _context.Beneficaries.FirstOrDefaultAsync(e =>
+                e.FirstName == data.FirstName && e.FamilyName == data.LastName && e.GovIdNumber == data.TaxId);
+            if (existingBeneficiary == null) continue;
+
+            totalDuplicates++;
+            taxIds.Add(data.TaxId);
+        }
+
+        if (totalDuplicates > 0)
+        {
+            var templateData = new Dictionary<string, string>
+            {
+                { "firstName", lmmsUser.FirstName },
+                { "lastName", lmmsUser.LastName },
+                { "taxId", string.Join("\n", taxIds) },
+                { "ccdDuplicates", totalDuplicates.ToString() }
+            };
+
+            await _sendGridService.SendEmail(lmmsUser.Email, StaticConfiguration.SendgridLmmsEmailTemplateId, templateData);
+        };
+    }
+
     public async Task<SameOrganizationDeduplicationResponse> FinishDeduplication(Guid organizationId, User user,
         SystemOrganizationsDeduplicationRequest model)
     {
@@ -464,7 +493,7 @@ public class DeduplicationService
         var beneficiaryDeduplications = _context.BeneficaryDeduplications.Include(e => e.Organization)
             .Where(e => e.FileId == model.FileId && e.MarkedForImport).ToList();
         var list = (await _context.Lists.AddAsync(new List
-            { FileName = file.Name, UserCreatedId = user.Id, OrganizationId = organizationId })).Entity;
+        { FileName = file.Name, UserCreatedId = user.Id, OrganizationId = organizationId })).Entity;
 
         var newBeneficaries = new List<Beneficary>();
         foreach (var record in beneficiaryDeduplications)
@@ -661,12 +690,12 @@ public class DeduplicationService
         var ruleFields = new List<string>();
 
         foreach (var group in beneficiaryAttributesGroups)
-        foreach (var attribute in group.BeneficiaryAttributes)
-        {
-            var fieldName = attribute.AttributeName;
-            fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
-            ruleFields.Add(fieldName);
-        }
+            foreach (var attribute in group.BeneficiaryAttributes)
+            {
+                var fieldName = attribute.AttributeName;
+                fieldName = char.ToLower(fieldName[0]) + fieldName[1..];
+                ruleFields.Add(fieldName);
+            }
 
         return ruleFields;
     }

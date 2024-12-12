@@ -77,6 +77,10 @@ public class StaticConfiguration
         Environment.GetEnvironmentVariable("SENDGRID_COMMCARE_EMAIL_TEMPLATE_ID")
         ?? _configuration.GetValue<string>("SendgridCommcareEmailTemplateId");
 
+    public static string SendgridLmmsEmailTemplateId =>
+        Environment.GetEnvironmentVariable("SENDGRID_LMMS_EMAIL_TEMPLATE_ID")
+        ?? _configuration.GetValue<string>("SendgridLmmsEmailTemplateId");
+
     public static string SuperadminPassword =>
         Environment.GetEnvironmentVariable("SUPERADMIN_PASSWORD")
         ?? _configuration.GetValue<string>("SuperadminPassword");
@@ -88,6 +92,10 @@ public class StaticConfiguration
     public static string CommcareSchedulerCronExpression =>
         Environment.GetEnvironmentVariable("COMMCARE_SCHEDULER_CRON_EXPRESSION")
         ?? _configuration.GetValue<string>("CommcareSchedulerCronExpression");
+
+    public static string LmmsApiKey =>
+        Environment.GetEnvironmentVariable("LMMS_API_KEY")
+        ?? _configuration.GetValue<string>("LmmsApiKey");
 
     public static void Initialize(IConfiguration configuration)
     {
