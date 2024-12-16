@@ -459,8 +459,7 @@ public class DeduplicationService
         var lmmsUser = model.User;
         foreach (var data in model.BeneficiaryData)
         {
-            var existingBeneficiary = await _context.Beneficaries.FirstOrDefaultAsync(e =>
-                e.FirstName == data.FirstName && e.FamilyName == data.LastName && e.GovIdNumber == data.TaxId);
+            var existingBeneficiary = await _context.Beneficaries.FirstOrDefaultAsync(e => e.GovIdNumber == data.TaxId);
             if (existingBeneficiary == null) continue;
 
             totalDuplicates++;
