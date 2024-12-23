@@ -454,11 +454,13 @@ public class DeduplicationService
 
     public async Task LmmsDeduplication(LmmsDeduplicationRequest model)
     {
+        Console.WriteLine("Entered LMMS Deduplication Service");
         var totalDuplicates = 0;
         var taxIds = new List<string>();
         var lmmsUser = model.User;
         foreach (var data in model.BeneficiaryData)
         {
+            Console.WriteLine($"Checking for {data.TaxId}");
             var existingBeneficiary = await _context.Beneficaries.FirstOrDefaultAsync(e => e.GovIdNumber == data.TaxId);
             if (existingBeneficiary == null) continue;
 
@@ -468,6 +470,7 @@ public class DeduplicationService
 
         if (totalDuplicates > 0)
         {
+            Console.WriteLine("Sending LMMS Deduplication Email");
             var templateData = new Dictionary<string, object>
             {
                 { "firstName", lmmsUser.FirstName },
@@ -475,8 +478,11 @@ public class DeduplicationService
                 { "taxIds", taxIds },
                 { "ccdDuplicates", totalDuplicates.ToString() }
             };
+            Console.WriteLine("Sending LMMS Deduplication Email");
+            Console.WriteLine(lmmsUser.Email);
 
             await _sendGridService.SendEmail(lmmsUser.Email, StaticConfiguration.SendgridLmmsEmailTemplateId, templateData);
+            Console.WriteLine("Email Sent");
         };
     }
 
