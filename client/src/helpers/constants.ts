@@ -1,4 +1,3 @@
-import { NavigationItem } from '@/helpers/types';
 import { UserPermission } from '@/services/users';
 import {
   BookCopyIcon,
@@ -11,6 +10,7 @@ import {
   TextSelectIcon,
   UsersIcon,
 } from 'lucide-react';
+import { HomepageData } from '@/providers/DirectusProvider/types.ts';
 
 export enum PAGE_TYPE {
   Create = 'new',
@@ -41,25 +41,25 @@ export enum APP_ROUTE {
   SetNewPassword = '/reset-password',
 }
 
-export const NAVIGATION_ITEMS: NavigationItem[] = [
+export const getNavigationItems = (cmsData?: HomepageData) => [
   {
-    categoryName: 'Deduplication',
+    categoryName: cmsData?.deduplication ?? '',
     userPermissions: [UserPermission.Deduplication],
     routes: [
       {
-        name: 'Deduplicate Cases',
+        name: cmsData?.deduplication ?? '',
         to: APP_ROUTE.Deduplication,
         userPermissions: [UserPermission.Deduplication],
         icon: BookCopyIcon,
       },
       {
-        name: 'Manage Duplicates',
+        name: cmsData?.manage_duplicates ?? '',
         to: APP_ROUTE.BeneficiaryList,
         icon: BookUserIcon,
         userPermissions: [UserPermission.Deduplication],
       },
       {
-        name: 'Manage Templates',
+        name: cmsData?.manage_templates ?? '',
         to: APP_ROUTE.Templates,
         icon: FilesIcon,
         userPermissions: [UserPermission.Deduplication],
@@ -67,46 +67,40 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     ],
   },
   {
-    categoryName: 'Referrals',
+    categoryName: cmsData?.referrals ?? '',
     userPermissions: [UserPermission.Referrals],
     routes: [
       {
-        name: 'Manage Received',
+        name: cmsData?.manage_received ?? '',
         to: APP_ROUTE.ReceivedReferrals,
         icon: LogInIcon,
         userPermissions: [UserPermission.Referrals],
       },
       {
-        name: 'Manage Sent',
+        name: cmsData?.manage_sent ?? '',
         to: APP_ROUTE.SentReferrals,
         icon: LogOutIcon,
         userPermissions: [UserPermission.Referrals],
       },
-      // {
-      //   name: 'Service List',
-      //   to: APP_ROUTE.ServiceList,
-      //   icon: HeartHandshakeIcon,
-      //   userPermissions: [UserPermission.Referrals],
-      // },
     ],
   },
   {
-    categoryName: 'Admin',
+    categoryName: cmsData?.admin ?? '',
     routes: [
       {
-        name: 'Organisations',
+        name: cmsData?.organisations ?? '',
         to: APP_ROUTE.Organizations,
         icon: Building2Icon,
       },
-      { name: 'Users', to: APP_ROUTE.Users, icon: UsersIcon },
+      { name: cmsData?.users ?? '', to: APP_ROUTE.Users, icon: UsersIcon },
       {
-        name: 'Rules',
+        name: cmsData?.rules ?? '',
         to: APP_ROUTE.Rules,
 
         icon: TextSelectIcon,
       },
       {
-        name: 'Handbook entries',
+        name: cmsData?.handbook_entries ?? '',
         to: APP_ROUTE.Handbook,
         icon: BookOpenTextIcon,
       },

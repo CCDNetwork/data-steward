@@ -240,6 +240,11 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
+"@directus/sdk@^18.0.3":
+  version "18.0.3"
+  resolved "https://registry.yarnpkg.com/@directus/sdk/-/sdk-18.0.3.tgz#779f4e7bae1bba71c87b7ac2e7f8248bf97da01a"
+  integrity sha512-PnEDRDqr2x/DG3HZ3qxU7nFp2nW6zqJqswjii57NhriXgTz4TBUI8NmSdzQvnyHuTL9J0nedYfQGfW4v8odS1A==
+
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.11.0.tgz#c2d872b6a7767a9d176d007f5b31f7d504bb5d6c"

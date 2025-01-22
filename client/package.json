@@ -13,6 +13,7 @@
     "lint:fix": "eslint --quiet --fix src --ext .ts,.tsx && stylelint --fix src/**/*"
   },
   "dependencies": {
+    "@directus/sdk": "^18.0.3",
     "@headlessui-float/react": "^0.13.0",
     "@headlessui/react": "^1.7.18",
     "@headlessui/tailwindcss": "^0.2.0",

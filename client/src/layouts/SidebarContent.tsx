@@ -6,14 +6,21 @@ import { Separator } from '@/components/ui/separator';
 import { NavigationItem } from '@/helpers/types';
 import { cn } from '@/helpers/utils';
 import { APP_ROUTE } from '@/helpers/constants';
+import { LabelWithLoading } from '@/components/LabelWithLoading.tsx';
 
 export const SidebarContent = ({
   navigationItems,
   showHandbookRoute,
+  isCmsDataLoading,
   closeSidebar,
+  handbookRouteName,
+  dashboardRouteName,
 }: {
-  showHandbookRoute: boolean;
   navigationItems: NavigationItem[];
+  showHandbookRoute: boolean;
+  isCmsDataLoading: boolean;
+  handbookRouteName: string;
+  dashboardRouteName: string;
   closeSidebar?: () => void;
 }) => {
   const { pathname } = useLocation();
@@ -48,7 +55,12 @@ export const SidebarContent = ({
             )}
           >
             <BookOpenTextIcon className="h-6 w-6 shrink-0" />
-            Handbook
+
+            <LabelWithLoading
+              label={handbookRouteName}
+              isLoading={isCmsDataLoading}
+              skeletonClassName="w-full h-6"
+            />
           </NavLink>
         </div>
       )}
@@ -70,7 +82,11 @@ export const SidebarContent = ({
           )}
         >
           <LayoutDashboardIcon className="h-6 w-6 shrink-0" />
-          Dashboard
+          <LabelWithLoading
+            label={dashboardRouteName}
+            isLoading={isCmsDataLoading}
+            skeletonClassName="w-full h-6"
+          />
         </NavLink>
       </div>
       <div className="-mx-2 mt-3">
@@ -78,12 +94,16 @@ export const SidebarContent = ({
       </div>
       <nav className="overflow-y-auto no-scrollbar pt-4">
         <ul role="list">
-          {navigationItems.map((item, idx) => {
+          {navigationItems?.map((item, idx) => {
             return (
               <div key={`${item.categoryName}-${idx}`} className="pb-3">
-                <p className="font-bold pb-2">{item.categoryName}</p>
-                {item.routes.map((item) => (
-                  <li key={item.name} className="ml-1 relative">
+                <LabelWithLoading
+                  label={<p className="font-bold pb-2">{item.categoryName}</p>}
+                  isLoading={isCmsDataLoading}
+                  skeletonClassName="w-full h-8 mb-2"
+                />
+                {item.routes.map((item, idx) => (
+                  <li key={`${item.name}-${idx}`} className="ml-1 relative">
                     <NavLink
                       onClick={closeSidebar}
                       to={item.to}
@@ -104,7 +124,11 @@ export const SidebarContent = ({
                         className="h-6 w-6 shrink-0"
                         aria-hidden="true"
                       />
-                      {item.name}
+                      <LabelWithLoading
+                        label={item.name}
+                        isLoading={isCmsDataLoading}
+                        skeletonClassName="w-full h-6"
+                      />
                     </NavLink>
                   </li>
                 ))}

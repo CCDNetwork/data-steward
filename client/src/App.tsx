@@ -8,6 +8,8 @@ import { ThemeProvider } from '@/providers/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 
 import { router } from './router';
+import { LanguageProvider } from '@/providers/LanguageProvider.tsx';
+import { DirectusProvider } from '@/providers/DirectusProvider';
 
 const queryClientConfig: QueryClientConfig = {
   defaultOptions: {
@@ -31,8 +33,12 @@ const App = () => {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <Toaster />
-        <RouterProvider router={router} />
+        <LanguageProvider>
+          <DirectusProvider>
+            <Toaster />
+            <RouterProvider router={router} />
+          </DirectusProvider>
+        </LanguageProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

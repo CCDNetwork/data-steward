@@ -1,5 +1,12 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LaptopIcon, LogOut, Moon, Sun, User } from 'lucide-react';
+import {
+  LanguagesIcon,
+  LaptopIcon,
+  LogOut,
+  Moon,
+  Sun,
+  User,
+} from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -18,6 +25,8 @@ import { APP_ROUTE } from '@/helpers/constants';
 import { cn } from '@/helpers/utils';
 import { useAuth } from '@/providers/GlobalProvider';
 import { useTheme } from '@/providers/ThemeProvider';
+import { useLanguage } from '@/providers/LanguageProvider.tsx';
+import { CheckIcon } from '@radix-ui/react-icons';
 
 export const MyProfileItemWithDropdown = ({
   closeSidebar,
@@ -28,6 +37,7 @@ export const MyProfileItemWithDropdown = ({
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { setTheme } = useTheme();
+  const { language, setLanguage } = useLanguage();
 
   const userInitials = `${user.firstName[0] ?? ''} ${user.lastName[0] ?? ''}`;
 
@@ -105,6 +115,41 @@ export const MyProfileItemWithDropdown = ({
               <DropdownMenuItem onClick={() => setTheme('system')}>
                 <LaptopIcon className="mr-2 h-4 w-4" />
                 System
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <LanguagesIcon className="size-5 mr-2" />
+            Language
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem onClick={() => setLanguage('en-US')}>
+                <CheckIcon
+                  className={cn('mr-2 h-4 w-4 hidden', {
+                    block: language === 'en-US',
+                  })}
+                />
+                English
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('fr-FR')}>
+                <CheckIcon
+                  className={cn('mr-2 h-4 w-4 hidden', {
+                    block: language === 'fr-FR',
+                  })}
+                />
+                French
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('uk-UA')}>
+                <CheckIcon
+                  className={cn('mr-2 h-4 w-4 hidden', {
+                    block: language === 'uk-UA',
+                  })}
+                />
+                Ukrainian
               </DropdownMenuItem>
             </DropdownMenuSubContent>
           </DropdownMenuPortal>

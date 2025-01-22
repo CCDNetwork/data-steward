@@ -1,31 +1,36 @@
-import { useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 
 import { useAuth } from '@/providers/GlobalProvider';
-import { APP_ROUTE, NAVIGATION_ITEMS } from '@/helpers/constants';
+import { APP_ROUTE, getNavigationItems } from '@/helpers/constants';
 import { UserRole } from '@/services/users';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-
+import { useDirectus } from '@/providers/DirectusProvider';
 import { SidebarContent } from './SidebarContent';
 
 interface Props {
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
   const { isLoggedIn, user } = useAuth();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
 
+  const { useHomepageData } = useDirectus();
+
+  const { data: homepageData, isLoading: isCmsDataLoading } = useHomepageData;
+
   const roleBasedNavigationItems = useMemo(() => {
+    const navigationItems = getNavigationItems(homepageData);
     if (user.role === UserRole.User) {
-      return NAVIGATION_ITEMS.filter((permissions) =>
+      return navigationItems.filter((permissions) =>
         permissions?.userPermissions?.some((p) => user.permissions.includes(p))
       );
     }
 
-    return NAVIGATION_ITEMS;
-  }, [user.permissions, user.role]);
+    return navigationItems;
+  }, [user.permissions, user.role, homepageData]);
 
   if (user.isSuperAdmin && isLoggedIn) {
     return <Navigate to={APP_ROUTE.Settings} replace />;
@@ -40,8 +45,11 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
       {/* DESKTOP */}
       <div className="hidden md:flex w-[300px] z-10">
         <SidebarContent
+          isCmsDataLoading={isCmsDataLoading}
           navigationItems={roleBasedNavigationItems}
           showHandbookRoute={user.role === UserRole.User}
+          handbookRouteName={homepageData?.handbook ?? ''}
+          dashboardRouteName={homepageData?.dashboard ?? ''}
         />
       </div>
 
@@ -59,9 +67,12 @@ export const PrivateLayout = ({ children = <Outlet /> }: Props) => {
           side="left"
         >
           <SidebarContent
-            closeSidebar={() => setMobileSidebarOpen(false)}
+            isCmsDataLoading={isCmsDataLoading}
             navigationItems={roleBasedNavigationItems}
             showHandbookRoute={user.role === UserRole.User}
+            handbookRouteName={homepageData?.handbook ?? ''}
+            dashboardRouteName={homepageData?.dashboard ?? ''}
+            closeSidebar={() => setMobileSidebarOpen(false)}
           />
         </SheetContent>
       </Sheet>
