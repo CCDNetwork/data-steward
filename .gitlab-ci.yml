@@ -66,9 +66,9 @@ build-client:
     - echo "Building CCD client"
     - cd client
     - yarn
-    - echo VITE_API_URL=$API_URL > .env
-    - echo VITE_DIRECTUS_URL=$DIRECTUS_URL > .env
-    - echo VITE_DIRECTUS_TOKEN=$DIRECTUS_TOKEN > .env
+    - echo VITE_API_URL=$API_URL >> .env
+    - echo VITE_DIRECTUS_URL=$DIRECTUS_URL >> .env
+    - echo VITE_DIRECTUS_TOKEN=$DIRECTUS_TOKEN >> .env
     - yarn build
     - mv dist ../client-build
     - echo "Build successful"
