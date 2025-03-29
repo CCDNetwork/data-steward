@@ -1,3 +1,5 @@
+![HotPot Logo Light](https://github.com/user-attachments/assets/bd835d94-eb67-4b89-853e-293bbd7dc641)
+
 # HotPot: A Data Stewardship Platform
 
 ## Background
