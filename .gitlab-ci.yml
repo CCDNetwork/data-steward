@@ -18,42 +18,42 @@ workflow:
         IMAGE_TAG: "dev"
         REMOTE_URL: "168.119.189.177"
         API_URL: "https://ccd-api.initdevelopment.com"
-        DIRECTUS_URL: "https://ccd-directus.initdevelopment.com"
+        DIRECTUS_URL: "https://hotpot-directus.initdevelopment.com"
         DIRECTUS_TOKEN: "oGnFt9LogzdrBmueNZm_VNffgj3ZLrm2"
     - if: '$CI_COMMIT_BRANCH == "poc"'
       variables:
         IMAGE_TAG: "poc"
         REMOTE_URL: "157.90.151.18"
         API_URL: "https://poc-ccd-api.initdevelopment.com"
-        DIRECTUS_URL: "https://ccd-directus.initdevelopment.com"
+        DIRECTUS_URL: "https://hotpot-directus.initdevelopment.com"
         DIRECTUS_TOKEN: "oGnFt9LogzdrBmueNZm_VNffgj3ZLrm2"
     - if: '$CI_COMMIT_TAG == "ukraine"'
       variables:
         IMAGE_TAG: "ukraine"
         REMOTE_URL: "49.13.8.195"
         API_URL: "https://ua-ccd-api.initdevelopment.com"
-        DIRECTUS_URL: "https://ccd-directus.initdevelopment.com"
+        DIRECTUS_URL: "https://hotpot-directus.initdevelopment.com"
         DIRECTUS_TOKEN: "oGnFt9LogzdrBmueNZm_VNffgj3ZLrm2"
     - if: '$CI_COMMIT_TAG == "south-sudan"'
       variables:
         IMAGE_TAG: "south-sudan"
         REMOTE_URL: "162.55.47.222"
         API_URL: "https://ss-ccd-api.initdevelopment.com"
-        DIRECTUS_URL: "https://ccd-directus.initdevelopment.com"
+        DIRECTUS_URL: "https://hotpot-directus.initdevelopment.com"
         DIRECTUS_TOKEN: "oGnFt9LogzdrBmueNZm_VNffgj3ZLrm2"
     - if: '$CI_COMMIT_TAG == "pentest"'
       variables:
         IMAGE_TAG: "pentest"
         REMOTE_URL: "159.69.123.93"
         API_URL: "https://pentest-ccd-api.initdevelopment.com"
-        DIRECTUS_URL: "https://ccd-directus.initdevelopment.com"
+        DIRECTUS_URL: "https://hotpot-directus.initdevelopment.com"
         DIRECTUS_TOKEN: "oGnFt9LogzdrBmueNZm_VNffgj3ZLrm2"
     - if: '$CI_COMMIT_TAG == "urc"'
       variables:
         IMAGE_TAG: "urc"
         REMOTE_URL: "4.233.139.197"
         API_URL: "https://api.urcportal.org"
-        DIRECTUS_URL: "https://ccd-directus.initdevelopment.com"
+        DIRECTUS_URL: "https://hotpot-directus.initdevelopment.com"
         DIRECTUS_TOKEN: "oGnFt9LogzdrBmueNZm_VNffgj3ZLrm2"
     - when: always
 
