@@ -141,7 +141,7 @@ export function DataTable<TData, TValue>({
                         <Button
                           variant="ghost"
                           className={cn(
-                            'p-0 hover:bg-transparent',
+                            'p-0 hover:bg-transparent font-semibold',
                             columns[index]?.headerClassName
                           )}
                           onClick={() =>

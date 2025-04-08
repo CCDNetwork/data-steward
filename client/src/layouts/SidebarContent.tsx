@@ -1,12 +1,13 @@
 import { BookOpenTextIcon, LayoutDashboardIcon } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 
+import { LabelWithLoading } from '@/components/LabelWithLoading.tsx';
 import { MyProfileItemWithDropdown } from '@/components/MyProfileItemWithDropdown';
 import { Separator } from '@/components/ui/separator';
+import { APP_ROUTE } from '@/helpers/constants';
 import { NavigationItem } from '@/helpers/types';
 import { cn } from '@/helpers/utils';
-import { APP_ROUTE } from '@/helpers/constants';
-import { LabelWithLoading } from '@/components/LabelWithLoading.tsx';
+import { useTheme } from '@/providers/ThemeProvider';
 
 export const SidebarContent = ({
   navigationItems,
@@ -24,14 +25,15 @@ export const SidebarContent = ({
   closeSidebar?: () => void;
 }) => {
   const { pathname } = useLocation();
+  const { theme } = useTheme();
 
   return (
     <div className="flex dark:bg-muted/50 h-full grow flex-col overflow-hidden bg-primary/5 border-r border-border px-6">
       <div className="flex mt-4 -ml-1 shrink-0 items-center">
         <NavLink to="/" onClick={closeSidebar} className="flex-shrink-0">
           <img
-            className="h-12 object-contain grayscale dark:brightness-[20]"
-            src="/ccd_logo.png"
+            className="h-10 mt-2 object-contain"
+            src={theme === 'dark' ? '/hotpot-dark.png' : '/hotpot-white.png'}
             alt="CCD Logo"
           />
         </NavLink>

@@ -38,8 +38,12 @@ public class UserService
 
     private readonly SendGridService _sendGridService;
 
-    public UserService(CcdContext context, DateTimeProvider dateTimeProvider, EmailManagerService emailManagerService,
-        IMapper mapper, SendGridService sendGridService
+    public UserService(
+        CcdContext context,
+        DateTimeProvider dateTimeProvider,
+        EmailManagerService emailManagerService,
+        IMapper mapper,
+        SendGridService sendGridService
     )
     {
         _context = context;
@@ -48,16 +52,26 @@ public class UserService
         _sendGridService = sendGridService;
     }
 
-    private object getSelectSqlParams(Guid? id = null, string email = null, Guid? organizationId = null,
-        string permission = null)
+    private object getSelectSqlParams(
+        Guid? id = null,
+        string email = null,
+        Guid? organizationId = null,
+        string permission = null
+    )
     {
-        return new { id, email, organizationId, permission };
+        return new
+        {
+            id,
+            email,
+            organizationId,
+            permission
+        };
     }
 
     public async Task<User> GetUserById(Guid id)
     {
-        var user = await _context.Database
-            .GetDbConnection()
+        var user = await _context
+            .Database.GetDbConnection()
             .QueryFirstOrDefaultAsync<User>(_selectSql, getSelectSqlParams(id));
 
         return user;
@@ -65,14 +79,19 @@ public class UserService
 
     public async Task<User> GetUserByEmail(string email)
     {
-        var user = await _context.Database
-            .GetDbConnection()
+        var user = await _context
+            .Database.GetDbConnection()
             .QueryFirstOrDefaultAsync<User>(_selectSql, getSelectSqlParams(email: email));
 
         return user;
     }
 
-    public async Task<User> AddUser(User user, string unhashedUserPassword, Guid userOrganizationId, Guid adminId)
+    public async Task<User> AddUser(
+        User user,
+        string unhashedUserPassword,
+        Guid userOrganizationId,
+        Guid adminId
+    )
     {
         var existingUser = await GetUserByEmail(user.Email);
 
@@ -81,37 +100,48 @@ public class UserService
 
         user.ActivationCode = Guid.NewGuid().ToString();
 
-        var newUser = _context.Users.Add(user).Entity;
-        await _context.SaveChangesAsync();
-
-        var userAdministrator = await GetUserById(adminId);
-        var createdUserOrganization = _context.Organizations.FirstOrDefault(o => o.Id == userOrganizationId);
-
-
-        var templateData = new Dictionary<string, string>
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
         {
-            { "firstName", user.FirstName }, { "lastName", user.LastName }, { "userEmail", user.Email },
-            { "userPassword", unhashedUserPassword },
-            { "userOrganisationName", createdUserOrganization.Name },
+            var newUser = _context.Users.Add(user).Entity;
+            await _context.SaveChangesAsync();
+
+            var userAdministrator = await GetUserById(adminId);
+            var createdUserOrganization = _context.Organizations.FirstOrDefault(o =>
+                o.Id == userOrganizationId
+            );
+
+            var templateData = new Dictionary<string, string>
             {
-                "websiteUrl",
-                StaticConfiguration.WebAppUrl
-            },
-            { "administratorEmail", userAdministrator.Email }
-        };
+                { "firstName", user.FirstName },
+                { "lastName", user.LastName },
+                { "userEmail", user.Email },
+                { "userPassword", unhashedUserPassword },
+                { "userOrganisationName", createdUserOrganization.Name },
+                { "websiteUrl", StaticConfiguration.WebAppUrl },
+                { "administratorEmail", userAdministrator.Email }
+            };
 
-        await _sendGridService.SendEmail(user.Email,
-            StaticConfiguration.SendgridInvitationEmailTemplateId,
-            templateData
-        );
+            await _sendGridService.SendEmail(
+                user.Email,
+                StaticConfiguration.SendgridInvitationEmailTemplateId,
+                templateData
+            );
 
-        var activationLink =
-            StaticConfiguration.WebAppUrl
-            + $"/activation?email={WebUtility.UrlEncode(user.Email)}&code={user.ActivationCode}";
+            // var activationLink =
+            //     StaticConfiguration.WebAppUrl
+            //     + $"/activation?email={WebUtility.UrlEncode(user.Email)}&code={user.ActivationCode}";
 
-        await _emailManagerService.SendWelcomeMail(user.Email, user.FirstName, activationLink);
+            // await _emailManagerService.SendWelcomeMail(user.Email, user.FirstName, activationLink);
 
-        return newUser;
+            await transaction.CommitAsync();
+            return newUser;
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task<User> UpdateUser(User user)
@@ -128,10 +158,15 @@ public class UserService
         await _context.SaveChangesAsync();
     }
 
-    public async Task SetOrganizationRole(Guid userId, Guid organizationId, string role, List<string> permissions)
+    public async Task SetOrganizationRole(
+        Guid userId,
+        Guid organizationId,
+        string role,
+        List<string> permissions
+    )
     {
-        var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(
-            e => e.UserId == userId && e.OrganizationId == organizationId
+        var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(e =>
+            e.UserId == userId && e.OrganizationId == organizationId
         );
 
         if (userOrganization == null)
@@ -158,8 +193,8 @@ public class UserService
 
     public async Task<string> GetOrganizationRole(Guid userId, Guid organizationId)
     {
-        var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(
-            e => e.UserId == userId && e.OrganizationId == organizationId
+        var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(e =>
+            e.UserId == userId && e.OrganizationId == organizationId
         );
 
         return userOrganization?.Role;
@@ -167,8 +202,8 @@ public class UserService
 
     public async Task RemoveFromOrganization(User user, Guid organizationId)
     {
-        var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(
-            e => e.UserId == user.Id && e.OrganizationId == organizationId
+        var userOrganization = await _context.UserOrganizations.FirstOrDefaultAsync(e =>
+            e.UserId == user.Id && e.OrganizationId == organizationId
         );
 
         if (userOrganization != null)
@@ -180,8 +215,8 @@ public class UserService
 
     public async Task<List<Organization>> GetOrganizationsForUser(Guid userId)
     {
-        return await _context.UserOrganizations
-            .Include(e => e.Organization)
+        return await _context
+            .UserOrganizations.Include(e => e.Organization)
             .Where(e => e.UserId == userId)
             .Select(e => e.Organization)
             .ToListAsync();
@@ -201,17 +236,14 @@ public class UserService
         bool resolveDependenciesBool = true
     )
     {
-        var selectParams = id == User.SYSTEM_USER.Id
-            ? getSelectSqlParams(id)
-            : getSelectSqlParams(id, email, organizationId);
+        var selectParams =
+            id == User.SYSTEM_USER.Id
+                ? getSelectSqlParams(id)
+                : getSelectSqlParams(id, email, organizationId);
 
-
-        var user = await _context.Database
-            .GetDbConnection()
-            .QueryFirstOrDefaultAsync<UserResponse>(
-                _selectSql,
-                selectParams
-            );
+        var user = await _context
+            .Database.GetDbConnection()
+            .QueryFirstOrDefaultAsync<UserResponse>(_selectSql, selectParams);
 
         if (user != null && resolveDependenciesBool)
             await resolveDependencies(user);
@@ -219,8 +251,11 @@ public class UserService
         return user;
     }
 
-    public async Task<PagedApiResponse<UserResponse>> GetUsersApi(Guid? organizationId,
-        RequestParameters requestParameters = null, string permission = null)
+    public async Task<PagedApiResponse<UserResponse>> GetUsersApi(
+        Guid? organizationId,
+        RequestParameters requestParameters = null,
+        string permission = null
+    )
     {
         return await PagedApiResponse<UserResponse>.GetFromSql(
             _context,

@@ -5,6 +5,7 @@ import { useAuth } from '@/providers/GlobalProvider';
 
 import { ModeToggle } from '@/components/ModeToggle';
 import { cn } from '@/helpers/utils';
+import { useTheme } from '@/providers/ThemeProvider';
 
 interface Props {
   title: string;
@@ -30,6 +31,7 @@ export const PublicPage = ({
   isError = false,
 }: Props) => {
   const { isLoggedIn } = useAuth();
+  const { theme } = useTheme();
 
   if (isLoggedIn && shouldRedirect) {
     return <Navigate to="/" />;
@@ -69,10 +71,10 @@ export const PublicPage = ({
       >
         <div className="flex flex-col space-y-2 text-center">
           <img
-            src="/ccd_logo.png"
+            src={theme === 'dark' ? '/hotpot-dark.png' : '/hotpot-white.png'}
             alt="company-logo"
             loading="lazy"
-            className="mx-auto mb-2 w-fit h-20 object-contain grayscale dark:brightness-[10]"
+            className="mx-auto mb-4 w-fit h-16 object-contain"
           />
           <h1
             className={cn(

@@ -2,6 +2,7 @@ import {
   DataWithMeta,
   PaginationRequest,
   paginationRequestToUrl,
+  SortDirection,
 } from '@/helpers/pagination';
 import { useDeduplicationProvider } from '@/modules/DeduplicationPage';
 import { api } from '@/services';
@@ -86,8 +87,8 @@ const postDeduplicationFinish = async (data: {
 export const useDeduplicationListings = ({
   currentPage,
   pageSize,
-  sortBy,
-  sortDirection,
+  sortBy = 'createdAt',
+  sortDirection = SortDirection.Desc,
   debouncedSearch,
 }: any) => {
   return useQuery(

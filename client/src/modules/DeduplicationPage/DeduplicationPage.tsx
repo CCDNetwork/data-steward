@@ -5,19 +5,14 @@ import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
 import { Button } from '@/components/ui/button';
 import { useDeduplicationListings } from '@/services/deduplication';
-import { SortDirection, usePagination } from '@/helpers/pagination';
+import { usePagination } from '@/helpers/pagination';
 import { APP_ROUTE } from '@/helpers/constants';
 
 import { columns } from './columns';
 import { DeduplicationWizard } from './components';
 
 export const DeduplicationPage = () => {
-  const pagination = usePagination({
-    initialPagination: {
-      sortBy: 'createdAt',
-      sortDirection: SortDirection.Desc,
-    },
-  });
+  const pagination = usePagination();
   const {
     currentPage,
     onPageChange,

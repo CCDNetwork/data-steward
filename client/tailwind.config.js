@@ -17,7 +17,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        altone: ['Altone Trial', 'sans-serif'],
+        altone: ['Mona Sans', 'Noto Sans', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
