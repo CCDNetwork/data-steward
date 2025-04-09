@@ -7,7 +7,6 @@ import { Separator } from '@/components/ui/separator';
 import { APP_ROUTE } from '@/helpers/constants';
 import { NavigationItem } from '@/helpers/types';
 import { cn } from '@/helpers/utils';
-import { useTheme } from '@/providers/ThemeProvider';
 
 export const SidebarContent = ({
   navigationItems,
@@ -25,15 +24,19 @@ export const SidebarContent = ({
   closeSidebar?: () => void;
 }) => {
   const { pathname } = useLocation();
-  const { theme } = useTheme();
 
   return (
     <div className="flex dark:bg-muted/50 h-full grow flex-col overflow-hidden bg-primary/5 border-r border-border px-6">
       <div className="flex mt-4 -ml-1 shrink-0 items-center">
         <NavLink to="/" onClick={closeSidebar} className="flex-shrink-0">
           <img
-            className="h-10 mt-2 object-contain"
-            src={theme === 'dark' ? '/hotpot-dark.png' : '/hotpot-white.png'}
+            className="h-10 mt-2 object-contain block dark:hidden"
+            src={'/hotpot-white.png'}
+            alt="CCD Logo"
+          />
+          <img
+            className="h-10 mt-2 object-contain hidden dark:block"
+            src={'/hotpot-dark.png'}
             alt="CCD Logo"
           />
         </NavLink>
@@ -46,7 +49,7 @@ export const SidebarContent = ({
             className={cn(
               'group flex border-l-[3px] border-transparent gap-x-3 w-full p-2 text-sm leading-6 font-semibold transition-colors duration-150 ease-linear',
               {
-                'border-primary bg-gradient-to-r from-muted-foreground/10 to-transparent dark:from-muted-foreground/20 animate-grow-right':
+                'border-primary bg-gradient-to-r from-primary/10 to-transparent dark:from-primary/20 animate-grow-right':
                   pathname.includes(APP_ROUTE.UserHandbookList),
               },
               {
@@ -73,7 +76,7 @@ export const SidebarContent = ({
           className={cn(
             'group flex border-l-[3px] border-transparent gap-x-3 w-full p-2 text-sm leading-6 font-semibold transition-colors duration-150 ease-linear',
             {
-              'border-primary bg-gradient-to-r from-muted-foreground/10 to-transparent dark:from-muted-foreground/20 animate-grow-right':
+              'border-primary bg-gradient-to-r from-primary/10 to-transparent dark:from-primary/20 animate-grow-right':
                 pathname.includes(APP_ROUTE.Dashboard),
             },
             {
@@ -112,7 +115,7 @@ export const SidebarContent = ({
                       className={cn(
                         'group flex whitespace-nowrap border-l-[3px] border-transparent gap-x-3 w-full p-2 text-sm leading-6 font-semibold transition-all duration-200 ease-linear',
                         {
-                          'border-primary bg-gradient-to-r from-muted-foreground/10 to-transparent dark:from-muted-foreground/20 animate-grow-right':
+                          'border-primary bg-gradient-to-r from-primary/10 to-transparent dark:from-primary/20 animate-grow-right':
                             pathname.includes(item.to),
                         },
                         {

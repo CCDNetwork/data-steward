@@ -18,6 +18,7 @@ import { useAuthMutation } from '@/services/auth';
 import { useAuth } from '@/providers/GlobalProvider';
 
 import { SignInFormData, SignInFormSchema } from './validations';
+import { PasswordInput } from '@/components/PasswordInput';
 
 export const SignInPage = () => {
   const { loginUser } = useAuth();
@@ -83,11 +84,10 @@ export const SignInPage = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       id="password"
                       autoComplete="current-password"
                       placeholder="Password"
-                      type="password"
                       {...field}
                     />
                   </FormControl>

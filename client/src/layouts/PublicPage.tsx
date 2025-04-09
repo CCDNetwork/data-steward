@@ -1,11 +1,10 @@
-import { Navigate, Outlet } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
+import { Navigate, Outlet } from 'react-router-dom';
 
 import { useAuth } from '@/providers/GlobalProvider';
 
 import { ModeToggle } from '@/components/ModeToggle';
 import { cn } from '@/helpers/utils';
-import { useTheme } from '@/providers/ThemeProvider';
 
 interface Props {
   title: string;
@@ -31,7 +30,6 @@ export const PublicPage = ({
   isError = false,
 }: Props) => {
   const { isLoggedIn } = useAuth();
-  const { theme } = useTheme();
 
   if (isLoggedIn && shouldRedirect) {
     return <Navigate to="/" />;
@@ -71,10 +69,16 @@ export const PublicPage = ({
       >
         <div className="flex flex-col space-y-2 text-center">
           <img
-            src={theme === 'dark' ? '/hotpot-dark.png' : '/hotpot-white.png'}
-            alt="company-logo"
+            className="mx-auto mb-4 w-fit h-16 object-contain block dark:hidden"
+            src={'/hotpot-white.png'}
             loading="lazy"
-            className="mx-auto mb-4 w-fit h-16 object-contain"
+            alt="CCD Logo"
+          />
+          <img
+            className="mx-auto mb-4 w-fit h-16 object-contain hidden dark:block"
+            src={'/hotpot-dark.png'}
+            loading="lazy"
+            alt="CCD Logo"
           />
           <h1
             className={cn(
