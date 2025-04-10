@@ -5,7 +5,11 @@ import { Download, FileDown, FileUp } from 'lucide-react';
 
 import { DataTable } from '@/components/DataTable';
 import { PageContainer } from '@/components/PageContainer';
-import { PaginationContext, usePagination } from '@/helpers/pagination';
+import {
+  PaginationContext,
+  SortDirection,
+  usePagination,
+} from '@/helpers/pagination';
 import { APP_ROUTE } from '@/helpers/constants';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
 import { toast } from '@/components/ui/use-toast';
@@ -36,7 +40,12 @@ import { ImpexLoadingDialog } from '../SentReferralPage/components';
 
 export const SentReferralsPage = () => {
   const navigate = useNavigate();
-  const pagination = usePagination();
+  const pagination = usePagination({
+    initialPagination: {
+      sortBy: 'createdAt',
+      sortDirection: SortDirection.Asc,
+    },
+  });
   const { setViewOnlyEnabled } = useSentReferralsProvider();
   const {
     currentPage,

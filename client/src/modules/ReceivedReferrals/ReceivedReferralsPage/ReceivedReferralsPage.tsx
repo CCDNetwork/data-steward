@@ -1,36 +1,45 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { DataTable } from '@/components/DataTable';
-import { PageContainer } from '@/components/PageContainer';
-import { PaginationContext, usePagination } from '@/helpers/pagination';
-import { APP_ROUTE } from '@/helpers/constants';
 import { ConfirmationDialog } from '@/components/ConfirmationDialog';
+import { DataTable } from '@/components/DataTable';
+import { AdminRegionsFilter } from '@/components/DataTable/AdminRegionsFilter';
+import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
+import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
+import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
+import { PageContainer } from '@/components/PageContainer';
 import { toast } from '@/components/ui/use-toast';
+import { APP_ROUTE } from '@/helpers/constants';
+import {
+  PaginationContext,
+  SortDirection,
+  usePagination,
+} from '@/helpers/pagination';
+import { OrgActivityFilterMap } from '@/services/organizations';
+import { useOrganizations } from '@/services/organizations/api';
+import { Referral } from '@/services/referrals';
 import {
   getReferralsExport,
   useReferralMutation,
   useReferrals,
   useReferralUsers,
 } from '@/services/referrals/api';
-import { Referral } from '@/services/referrals';
-import { FilterDropdown } from '@/components/DataTable/FilterDropdown';
 import { ReferralStatusDisplayNames } from '@/services/referrals/const';
-import { useOrganizations } from '@/services/organizations/api';
-import { DateRangePickerFilter } from '@/components/DataTable/DateRangePickerFilter';
-import { OrgActivityFilterMap } from '@/services/organizations';
-import { FilterByUrgencyButton } from '@/components/FilterByUrgencyButton';
 import { UserPermission } from '@/services/users';
-import { AdminRegionsFilter } from '@/components/DataTable/AdminRegionsFilter';
 
-import { columns } from './columns';
-import { downloadFile } from '@/helpers/common';
 import { Button } from '@/components/ui/button';
+import { downloadFile } from '@/helpers/common';
 import { FileDownIcon } from 'lucide-react';
+import { columns } from './columns';
 
 export const ReceivedReferralsPage = () => {
   const navigate = useNavigate();
-  const pagination = usePagination();
+  const pagination = usePagination({
+    initialPagination: {
+      sortBy: 'createdAt',
+      sortDirection: SortDirection.Asc,
+    },
+  });
   const {
     currentPage,
     onPageChange,
