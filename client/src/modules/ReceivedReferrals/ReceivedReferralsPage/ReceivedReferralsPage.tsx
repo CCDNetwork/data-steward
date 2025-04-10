@@ -37,7 +37,7 @@ export const ReceivedReferralsPage = () => {
   const pagination = usePagination({
     initialPagination: {
       sortBy: 'createdAt',
-      sortDirection: SortDirection.Asc,
+      sortDirection: SortDirection.Desc,
     },
   });
   const {
